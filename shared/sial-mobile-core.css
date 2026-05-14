@@ -1,0 +1,1895 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+:root {
+  color-scheme: light;
+  --sial-primary-50: #f2f7fc;
+  --sial-primary-100: #e6f0f8;
+  --sial-primary-500: #005ca8;
+  --sial-primary-600: #004a87;
+  --sial-primary-700: #003766;
+  --sial-yellow: #fecc00;
+  --sial-success: #2e7d32;
+  --sial-success-bg: #edf7ed;
+  --sial-warning: #d4a800;
+  --sial-warning-bg: #fff7cc;
+  --sial-warning-text: #6b5300;
+  --sial-error: #d32f2f;
+  --sial-error-bg: #fdecea;
+  --sial-info: #0288d1;
+  --sial-info-bg: #e3f2fd;
+  --sial-bg: #f5f7fa;
+  --sial-surface: #ffffff;
+  --sial-surface-raised: #ffffff;
+  --sial-surface-overlay: #ffffff;
+  --sial-field-bg: #ffffff;
+  --sial-border: #d9dde3;
+  --sial-border-subtle: #e7eaf0;
+  --sial-text: #1a1f36;
+  --sial-text-2: #5b6475;
+  --sial-text-3: #8c94a6;
+  --sial-focus: #005ca8;
+  --sial-on-primary: #ffffff;
+  --sial-backdrop: rgba(26, 31, 54, .34);
+  --sial-shadow-soft: 0 4px 16px rgba(16, 24, 40, .08);
+  --sial-shadow-overlay: 0 18px 44px rgba(16, 24, 40, .18);
+  --sial-font: "Poppins", "Segoe UI", Arial, sans-serif;
+  --sial-radius-control: 8px;
+  --sial-radius-surface: 12px;
+  --sial-radius-large: 20px;
+  --sial-radius-pill: 999px;
+  --sial-page-content-max: 480px;
+  --sial-page-gutter: 16px;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --sial-primary-50: #102b45;
+  --sial-primary-100: #12345a;
+  --sial-primary-500: #1d7fe0;
+  --sial-primary-600: #176bc0;
+  --sial-primary-700: #12559a;
+  --sial-success: #4caf63;
+  --sial-success-bg: #153322;
+  --sial-warning: #e0b23a;
+  --sial-warning-bg: #3b2f10;
+  --sial-warning-text: #ffe082;
+  --sial-error: #f06262;
+  --sial-error-bg: #3b171a;
+  --sial-info: #4aa8e8;
+  --sial-info-bg: #143142;
+  --sial-bg: #0f1724;
+  --sial-surface: #151e2d;
+  --sial-surface-raised: #1b2636;
+  --sial-surface-overlay: #223048;
+  --sial-field-bg: #101928;
+  --sial-border: #2e3b52;
+  --sial-border-subtle: #253247;
+  --sial-text: #f3f6fb;
+  --sial-text-2: #c3cbda;
+  --sial-text-3: #94a0b6;
+  --sial-focus: #4da3f5;
+  --sial-backdrop: rgba(3, 7, 18, .66);
+  --sial-shadow-soft: 0 4px 18px rgba(0, 0, 0, .32);
+  --sial-shadow-overlay: 0 18px 44px rgba(0, 0, 0, .45);
+}
+
+* { box-sizing: border-box; }
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--sial-bg);
+  color: var(--sial-text);
+  font-family: var(--sial-font);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sial-focus);
+  outline-offset: 3px;
+}
+
+.sial-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sial-app {
+  min-height: 100svh;
+  background: var(--sial-bg);
+}
+
+.sial-mobile-screen {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sial-brand-mark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sial-brand-name {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.sial-brand-caption {
+  margin: 2px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sial-field {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-label {
+  color: var(--sial-text-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sial-input-wrap {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text-2);
+}
+
+.sial-input-wrap:focus-within {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--sial-text);
+  font-size: 14px;
+}
+
+.sial-input::placeholder {
+  color: var(--sial-text-3);
+}
+
+.sial-input-wrap.sial-input {
+  min-height: 48px;
+  display: block;
+  padding: 0 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+}
+
+.sial-input-wrap.sial-input:focus {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-field-note {
+  margin: 0;
+  color: var(--sial-text-3);
+  font-size: 12px;
+}
+
+.sial-picker-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+.sial-picker-trigger::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: .72;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.sial-picker-trigger:focus-visible {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-inline-error {
+  margin: 0;
+  color: var(--sial-error);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sial-btn {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--sial-radius-control);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.sial-btn:active {
+  transform: translateY(1px);
+}
+
+.sial-btn-primary {
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+}
+
+.sial-btn-primary:hover {
+  background: var(--sial-primary-600);
+}
+
+.sial-btn-secondary {
+  border-color: var(--sial-border);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+}
+
+.sial-btn-ghost {
+  background: transparent;
+  color: var(--sial-primary-500);
+}
+
+.sial-btn-icon {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+  color: var(--sial-text-2);
+}
+
+.sial-btn-full {
+  width: 100%;
+}
+
+.sial-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-status strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sial-feedback-copy {
+  min-width: 0;
+  display: block;
+}
+
+.sial-feedback-copy p,
+.sial-status p {
+  margin: 2px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sial-status.info {
+  border-color: color-mix(in srgb, var(--sial-info) 28%, var(--sial-border));
+  background: var(--sial-info-bg);
+}
+
+.sial-status.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 34%, var(--sial-border));
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+}
+
+.sial-status.error {
+  border-color: color-mix(in srgb, var(--sial-error) 34%, var(--sial-border));
+  background: var(--sial-error-bg);
+}
+
+.sial-toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 80;
+  width: min(calc(100vw - 32px), 448px);
+  display: grid;
+  gap: 10px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.sial-toast {
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sial-surface-overlay) 96%, transparent);
+  color: var(--sial-text);
+  box-shadow: var(--sial-shadow-overlay);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  animation: sial-toast-in .18s ease-out both;
+}
+
+.sial-toast-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-toast strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-toast .sial-feedback-copy {
+  min-width: 0;
+}
+
+.sial-toast p {
+  margin: 2px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-toast.success {
+  border-color: color-mix(in srgb, var(--sial-success) 36%, var(--sial-border));
+}
+
+.sial-toast.success .sial-toast-icon {
+  background: var(--sial-success-bg);
+  color: var(--sial-success);
+}
+
+.sial-toast.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 38%, var(--sial-border));
+}
+
+.sial-toast.warning .sial-toast-icon {
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+}
+
+.sial-toast.error {
+  border-color: color-mix(in srgb, var(--sial-error) 38%, var(--sial-border));
+}
+
+.sial-toast.error .sial-toast-icon {
+  background: var(--sial-error-bg);
+  color: var(--sial-error);
+}
+
+@keyframes sial-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sial-banner-region {
+  position: fixed;
+  left: 50%;
+  top: max(14px, env(safe-area-inset-top));
+  z-index: 85;
+  width: min(calc(100vw - 32px), 520px);
+  display: grid;
+  gap: 10px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.sial-banner {
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-surface);
+  background: color-mix(in srgb, var(--sial-surface-overlay) 98%, transparent);
+  color: var(--sial-text);
+  box-shadow: var(--sial-shadow-overlay);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+}
+
+.sial-banner.info {
+  border-color: color-mix(in srgb, var(--sial-info) 30%, var(--sial-border));
+}
+
+.sial-banner.success {
+  border-color: color-mix(in srgb, var(--sial-success) 34%, var(--sial-border));
+}
+
+.sial-banner.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 38%, var(--sial-border));
+}
+
+.sial-banner.error {
+  border-color: color-mix(in srgb, var(--sial-error) 38%, var(--sial-border));
+}
+
+.sial-banner-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-banner.warning .sial-banner-icon {
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+}
+
+.sial-banner.error .sial-banner-icon {
+  background: var(--sial-error-bg);
+  color: var(--sial-error);
+}
+
+.sial-banner.success .sial-banner-icon {
+  background: var(--sial-success-bg);
+  color: var(--sial-success);
+}
+
+.sial-banner strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-banner p {
+  margin: 2px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sial-banner-close {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+  color: var(--sial-text-2);
+  font-weight: 700;
+}
+
+.sial-empty-state {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  padding: 24px 18px;
+  border: 1px dashed var(--sial-border);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  text-align: center;
+}
+
+.sial-empty-state strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 16px;
+}
+
+.sial-empty-state p {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sial-loading-skeleton {
+  position: relative;
+  min-height: 14px;
+  overflow: hidden;
+  border-radius: var(--sial-radius-control);
+  background: color-mix(in srgb, var(--sial-border-subtle) 72%, var(--sial-surface));
+}
+
+.sial-loading-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sial-surface) 72%, transparent), transparent);
+  animation: sial-skeleton-pass 1.2s ease-in-out infinite;
+}
+
+.sial-loading-skeleton.line {
+  width: 100%;
+  height: 14px;
+}
+
+.sial-loading-skeleton.block {
+  width: 100%;
+  min-height: 92px;
+}
+
+@keyframes sial-skeleton-pass {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.sial-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgba(5, 12, 24, .54);
+  backdrop-filter: blur(10px);
+}
+
+.sial-modal,
+.sial-bottom-sheet {
+  width: min(100%, 420px);
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  box-shadow: var(--sial-shadow-overlay);
+}
+
+.sial-bottom-sheet {
+  width: min(100%, 560px);
+  align-self: end;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.sial-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sial-modal-backdrop[data-dialog-id="access-recovery"] .sial-dialog-header {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: start;
+}
+
+.sial-modal-backdrop[data-dialog-id="access-recovery"] .sial-dialog-header h2 {
+  grid-column: 2;
+  justify-self: center;
+  width: 100%;
+  text-align: center;
+}
+
+.sial-modal-backdrop[data-dialog-id="access-recovery"] .sial-dialog-header .sial-btn-icon {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.sial-dialog-header h2 {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.sial-dialog-copy {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.sial-dialog-body {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.sial-picker {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-picker-search {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 0 14px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.sial-picker-search:focus {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-picker-list {
+  max-height: min(48svh, 420px);
+  display: grid;
+  gap: 8px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.sial-picker-option {
+  min-height: 50px;
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+}
+
+.sial-picker-option strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.sial-picker-option span,
+.sial-picker-empty {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sial-picker-option[aria-selected="true"] {
+  border-color: var(--sial-focus);
+  background: color-mix(in srgb, var(--sial-primary-500) 12%, var(--sial-surface));
+}
+
+.sial-picker-empty {
+  padding: 12px;
+  border: 1px dashed var(--sial-border);
+  border-radius: var(--sial-radius-control);
+}
+
+.sial-recovery-flow {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-recovery-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.sial-recovery-step {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--sial-text-3);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sial-recovery-step span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-surface-raised);
+  color: inherit;
+}
+
+.sial-recovery-step strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-recovery-step.is-current,
+.sial-recovery-step.is-done {
+  color: var(--sial-primary-500);
+}
+
+.sial-recovery-step.is-current span,
+.sial-recovery-step.is-done span {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 42%, var(--sial-border));
+  background: var(--sial-primary-100);
+}
+
+.sial-recovery-heading {
+  display: grid;
+  gap: 5px;
+}
+
+.sial-recovery-heading h3,
+.sial-recovery-heading p {
+  margin: 0;
+}
+
+.sial-recovery-heading h3 {
+  color: var(--sial-text);
+  font-size: 17px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.sial-recovery-heading p {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sial-recovery-body {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-otp-group {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sial-otp-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sial-otp-input:focus {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-auth-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sial-auth-secondary-actions button {
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sial-primary-500);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-auth-secondary-actions button:disabled {
+  color: var(--sial-text-3);
+  cursor: default;
+}
+
+body.dialog-open {
+  overflow: hidden;
+}
+
+.sial-pill {
+  min-height: 28px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sial-segmented {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.sial-segment-option {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 0;
+  border-radius: calc(var(--sial-radius-control) - 4px);
+  background: transparent;
+  color: var(--sial-text-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-segment-option[aria-pressed="true"],
+.sial-segment-option.active {
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+}
+
+.sial-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.sial-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.sial-tab {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-surface);
+  color: var(--sial-text-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-tab[aria-selected="true"],
+.sial-tab.active {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 42%, var(--sial-border));
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+.sial-media-capture,
+.sial-signature-pad,
+.sial-scan-panel {
+  min-height: 148px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  padding: 18px;
+  border: 1px dashed var(--sial-border);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  text-align: center;
+}
+
+.sial-media-capture strong,
+.sial-signature-pad strong,
+.sial-scan-panel strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 15px;
+}
+
+.sial-media-capture span,
+.sial-signature-pad span,
+.sial-scan-panel span {
+  display: block;
+  max-width: 28rem;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.sial-signature-pad {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 30px, color-mix(in srgb, var(--sial-border-subtle) 68%, transparent) 30px 31px),
+    var(--sial-surface-raised);
+}
+
+.sial-scan-panel {
+  border-style: solid;
+  background:
+    linear-gradient(90deg, transparent 12px, color-mix(in srgb, var(--sial-primary-500) 32%, transparent) 12px 14px, transparent 14px) center / 72px 72px no-repeat,
+    var(--sial-surface-raised);
+}
+
+.sial-sync-stack {
+  container-type: inline-size;
+  display: grid;
+  gap: 10px;
+}
+
+.sial-sync-item {
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+}
+
+.sial-sync-item::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-info);
+}
+
+.sial-sync-item.pending::before {
+  background: var(--sial-warning);
+}
+
+.sial-sync-item.success::before {
+  background: var(--sial-success);
+}
+
+.sial-sync-item.error::before {
+  background: var(--sial-error);
+}
+
+.sial-sync-item strong {
+  grid-column: 2;
+  grid-row: 1;
+  color: var(--sial-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.sial-sync-item > span:not(.sial-pill) {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.sial-sync-item > .sial-pill,
+.sial-sync-item > .sial-chip-action {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+}
+
+@container (min-width: 520px) {
+  .sial-sync-item {
+    grid-template-columns: 10px minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .sial-sync-item > span:not(.sial-pill) {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .sial-sync-item > .sial-pill,
+  .sial-sync-item > .sial-chip-action {
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
+}
+
+.sial-theme-toggle {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  top: max(16px, env(safe-area-inset-top));
+  z-index: 20;
+}
+
+.sial-login-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-password-button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--sial-radius-control);
+  background: transparent;
+  color: var(--sial-text-2);
+}
+
+.sial-password-button:hover {
+  background: color-mix(in srgb, var(--sial-primary-500) 8%, transparent);
+  color: var(--sial-primary-500);
+}
+
+.sial-safe-bottom {
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+
+.sial-page {
+  min-height: 100svh;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--sial-bg);
+}
+
+.sial-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  width: min(100%, var(--sial-page-content-max));
+  margin: 0 auto;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(14px, env(safe-area-inset-top)) var(--sial-page-gutter) 12px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+  background: color-mix(in srgb, var(--sial-surface) 94%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.sial-page-title {
+  min-width: 0;
+}
+
+.sial-page-title h1,
+.sial-page-title p {
+  margin: 0;
+}
+
+.sial-page-title h1 {
+  color: var(--sial-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.sial-page-title p {
+  margin-top: 3px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-page-body {
+  flex: 1;
+  width: min(100%, var(--sial-page-content-max));
+  margin: 0 auto;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 18px var(--sial-page-gutter) max(24px, env(safe-area-inset-bottom));
+}
+
+.sial-section {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-section-title {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.sial-section-copy {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 13px;
+}
+
+.sial-card {
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-card-pad {
+  padding: 16px;
+}
+
+.sial-finca-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.sial-finca-card {
+  width: 100%;
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  text-align: left;
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-finca-card[aria-pressed="true"] {
+  border-color: var(--sial-primary-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-primary-500) 16%, transparent);
+}
+
+.sial-logo-box {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.sial-finca-info {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.sial-finca-info strong {
+  color: var(--sial-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sial-finca-info span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-finca-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sial-app-header-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sial-company-logo {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sial-context-text {
+  min-width: 0;
+}
+
+.sial-context-text strong,
+.sial-context-text span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-context-text strong {
+  color: var(--sial-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sial-context-text span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-quick-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-action-card {
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-action-card strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.sial-action-card span {
+  display: block;
+  margin-top: 4px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-action-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+.sial-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.sial-stat {
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 16px;
+  background: var(--sial-surface);
+}
+
+.sial-stat strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.sial-stat span {
+  display: block;
+  margin-top: 2px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-command-hero {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--sial-primary-500) 12%, transparent), transparent 58%),
+    var(--sial-surface);
+}
+
+.sial-command-hero h1 {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 22px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.sial-command-hero p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sial-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.sial-control-card {
+  min-height: 112px;
+  display: grid;
+  align-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 16px;
+  background: var(--sial-surface);
+  color: var(--sial-text);
+}
+
+.sial-control-card strong {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.sial-control-card span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.sial-control-card.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 42%, var(--sial-border));
+  background: var(--sial-warning-bg);
+}
+
+.sial-control-card.danger {
+  border-color: color-mix(in srgb, var(--sial-error) 42%, var(--sial-border));
+  background: var(--sial-error-bg);
+}
+
+.sial-control-card.success {
+  border-color: color-mix(in srgb, var(--sial-success) 38%, var(--sial-border));
+  background: var(--sial-success-bg);
+}
+
+.sial-priority-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-priority-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 16px;
+  background: var(--sial-surface);
+  color: var(--sial-text);
+}
+
+.sial-priority-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--sial-primary-500);
+}
+
+.sial-priority-dot.warning {
+  background: var(--sial-warning);
+}
+
+.sial-priority-dot.danger {
+  background: var(--sial-error);
+}
+
+.sial-priority-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.sial-priority-copy strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.sial-priority-copy span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.sial-flow-banner {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 18px;
+  background: var(--sial-surface);
+}
+
+.sial-flow-banner strong {
+  color: var(--sial-text);
+  font-size: 14px;
+}
+
+.sial-flow-banner span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-form {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.sial-select,
+.sial-textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 0 14px;
+}
+
+.sial-textarea {
+  min-height: 92px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.sial-radio-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sial-radio-card {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sial-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.sial-evidence-slot {
+  min-height: 74px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px dashed var(--sial-border);
+  border-radius: 14px;
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 11px;
+  text-align: center;
+}
+
+.sial-evidence-slot.done {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--sial-success) 36%, var(--sial-border));
+  background: var(--sial-success-bg);
+  color: var(--sial-success);
+}
+
+.sial-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-list-row {
+  min-height: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 14px;
+  background: var(--sial-surface);
+}
+
+.sial-list-row strong {
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.sial-list-row span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sial-chip-action {
+  min-height: 34px;
+  max-width: 100%;
+  padding: 0 10px;
+  border: 1px solid var(--sial-border);
+  border-radius: 999px;
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-timeline-item {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  padding: 12px 12px 12px 38px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 16px;
+  background: var(--sial-surface);
+}
+
+.sial-timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sial-primary-500);
+}
+
+.sial-timeline-item strong {
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.sial-timeline-item span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-bottom-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  display: grid;
+  gap: 10px;
+  padding: 12px 16px max(14px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--sial-border-subtle);
+  background: color-mix(in srgb, var(--sial-surface) 96%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.sial-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--sial-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+
+.sial-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 75;
+  width: min(88vw, 340px);
+  display: flex;
+  flex-direction: column;
+  padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+  border-right: 1px solid var(--sial-border);
+  background: var(--sial-surface-overlay);
+  box-shadow: var(--sial-shadow-overlay);
+  transform: translateX(-102%);
+  transition: transform .2s ease;
+}
+
+body.drawer-open {
+  overflow: hidden;
+}
+
+body.drawer-open .sial-drawer-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.drawer-open .sial-drawer {
+  transform: translateX(0);
+}
+
+.sial-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.sial-drawer-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sial-drawer-content {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  overflow: auto;
+  padding: 18px 0;
+}
+
+.sial-menu-group {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-menu-label {
+  margin: 0;
+  color: var(--sial-text-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sial-menu-link {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: var(--sial-radius-control);
+  color: var(--sial-text-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sial-menu-link.active {
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+@media (min-width: 600px) {
+  .sial-page {
+    --sial-page-content-max: 720px;
+    --sial-page-gutter: 24px;
+  }
+
+  .sial-page-header {
+    min-height: 80px;
+  }
+
+  .sial-page-body {
+    gap: 20px;
+    padding-top: 22px;
+  }
+
+  .sial-card-pad,
+  .sial-command-hero,
+  .sial-form {
+    padding: 20px;
+  }
+
+  .sial-finca-list {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .sial-page {
+    --sial-page-content-max: 1040px;
+    --sial-page-gutter: 28px;
+  }
+
+  .sial-page-body {
+    gap: 22px;
+  }
+
+  .sial-control-grid,
+  .sial-stat-row {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .sial-form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .sial-evidence-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 340px) {
+  .sial-page-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .sial-page-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .sial-stat-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

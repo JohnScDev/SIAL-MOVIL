@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Inicio</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("sial-mobile-theme");
+      var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <div class="sial-app-header-brand">
+        <button class="sial-btn sial-btn-icon" type="button" data-drawer-open aria-label="Abrir menu">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <div class="sial-company-logo" data-context-logo>SI</div>
+        <div class="sial-context-text">
+          <strong data-context-name>Finca Santa Isabel</strong>
+          <span data-context-subtitle>Operacion movil</span>
+        </div>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body">
+      <section class="sial-command-hero">
+        <div>
+          <h1>Torre de control</h1>
+          <p><span data-flow-operation></span> - <span data-flow-container></span> - <span data-flow-sync></span></p>
+        </div>
+        <a class="sial-btn sial-btn-primary sial-btn-full" href="../puerto-ze/recepcion-ze.html" data-next-action>
+          <span data-next-action-label>Continuar flujo</span>
+        </a>
+        <p data-next-action-detail>Evento siguiente segun trazabilidad local.</p>
+      </section>
+
+      <section class="sial-control-grid" aria-label="Indicadores operativos">
+        <a class="sial-control-card danger" href="../trazabilidad/consultar-contenedor.html">
+          <strong data-flow-alert-count>0</strong>
+          <span>Inspecciones rechazadas</span>
+        </a>
+        <a class="sial-control-card warning" href="../trazabilidad/consultar-operacion.html">
+          <strong data-flow-in-transit-count>0</strong>
+          <span>Contenedores en transito</span>
+        </a>
+        <a class="sial-control-card" href="../trazabilidad/consultar-operacion.html">
+          <strong data-flow-pending-sync-count>0</strong>
+          <span>Pendientes de sincronizar</span>
+        </a>
+        <a class="sial-control-card success" href="../trazabilidad/consultar-contenedor.html">
+          <strong data-flow-available-vehicle-count>0</strong>
+          <span>Vehiculos disponibles</span>
+        </a>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-form">
+        <h2 class="sial-section-title">Criticidad operativa</h2>
+        <div class="sial-priority-list">
+          <a class="sial-priority-item" href="../trazabilidad/consultar-contenedor.html">
+            <span class="sial-priority-dot danger"></span>
+            <span class="sial-priority-copy"><strong>Alertas de inspeccion</strong><span><span data-flow-alert-count>0</span> evento(s) requieren gestion.</span></span>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="sial-priority-item" href="../trazabilidad/consultar-operacion.html">
+            <span class="sial-priority-dot warning"></span>
+            <span class="sial-priority-copy"><strong>Operacion en movimiento</strong><span>Ubicacion: <span data-flow-location></span>.</span></span>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="sial-priority-item" href="../pallets/cargar-pallets.html">
+            <span class="sial-priority-dot"></span>
+            <span class="sial-priority-copy"><strong>Cargue y cierre</strong><span><span data-flow-loaded-pallets>0</span> pallet(s) cargados.</span></span>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <section class="sial-stat-row" aria-label="Resumen de trazabilidad">
+        <div class="sial-stat">
+          <strong data-flow-event-count>0</strong>
+          <span>Eventos registrados</span>
+        </div>
+        <div class="sial-stat">
+          <strong data-flow-container-status></strong>
+          <span>Estado contenedor</span>
+        </div>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-form">
+        <h2 class="sial-section-title">Entidad activa</h2>
+        <div class="sial-list-row"><strong>Vehiculo</strong><span data-flow-vehicle></span></div>
+        <div class="sial-list-row"><strong>Conductor</strong><span data-flow-driver></span></div>
+        <div class="sial-list-row"><strong>Vehiculo estado</strong><span data-flow-vehicle-status></span></div>
+      </section>
+    </section>
+  </main>
+
+  <div class="sial-drawer-backdrop" data-drawer-close></div>
+  <aside class="sial-drawer" aria-label="Menu principal">
+    <header class="sial-drawer-head">
+      <div class="sial-drawer-user">
+        <div class="sial-company-logo" data-context-logo>SI</div>
+        <div class="sial-context-text">
+          <strong data-context-name>Finca Santa Isabel</strong>
+          <span>operador.sial</span>
+        </div>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-drawer-close aria-label="Cerrar menu">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </header>
+
+    <div class="sial-drawer-content">
+      <nav class="sial-menu-group" aria-label="Navegacion movil">
+        <p class="sial-menu-label">Puerto / ZE</p>
+        <a class="sial-menu-link active" href="../puerto-ze/recepcion-ze.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/></svg>
+          Recepcion en ZE
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/inspeccion-externa.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/></svg>
+          Inspeccion externa
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/inspeccion-interna.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/></svg>
+          Inspeccion interna
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/despacho-finca.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          Despacho a finca
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/recepcion-ze-retorno.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>
+          Recepcion ZE retorno
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/despacho-puerto.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/><path d="M4 18h16"/></svg>
+          Despacho puerto
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/recepcion-puerto.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16"/><path d="M6 8v9h12V8"/><path d="M8 17h8"/></svg>
+          Recepcion puerto
+        </a>
+        <a class="sial-menu-link" href="../puerto-ze/entrega-puerto.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M7 20h10"/><path d="M9 17v3"/><path d="M15 17v3"/></svg>
+          Entrega en puerto
+        </a>
+      </nav>
+
+      <nav class="sial-menu-group" aria-label="Navegacion finca">
+        <p class="sial-menu-label">Finca</p>
+        <a class="sial-menu-link" href="../finca/recepcion-finca.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/></svg>
+          Recepcion en finca
+        </a>
+        <a class="sial-menu-link" href="../finca/inspeccion-externa.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/></svg>
+          Inspeccion externa
+        </a>
+        <a class="sial-menu-link" href="../finca/inspeccion-interna.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/></svg>
+          Inspeccion interna
+        </a>
+        <a class="sial-menu-link" href="../finca/sesion-responsabilidad.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
+          Sesion responsabilidad
+        </a>
+        <a class="sial-menu-link" href="../finca/cierre-contenedor.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          Cierre de contenedor
+        </a>
+        <a class="sial-menu-link" href="../finca/despacho-ze.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          Despacho a ZE
+        </a>
+      </nav>
+
+      <nav class="sial-menu-group" aria-label="Navegacion pallets">
+        <p class="sial-menu-label">Pallets</p>
+        <a class="sial-menu-link" href="../pallets/armar-pallet.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg>
+          Armar pallet
+        </a>
+        <a class="sial-menu-link" href="../pallets/armar-pallet.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/></svg>
+          Registrar cajas
+        </a>
+        <a class="sial-menu-link" href="../pallets/cargar-pallets.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          Cargar pallets
+        </a>
+      </nav>
+
+      <nav class="sial-menu-group" aria-label="Navegacion trazabilidad">
+        <p class="sial-menu-label">Trazabilidad</p>
+        <a class="sial-menu-link" href="../trazabilidad/consultar-contenedor.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          Consultar contenedor
+        </a>
+        <a class="sial-menu-link" href="../trazabilidad/consultar-operacion.html">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+          Consultar operacion
+        </a>
+      </nav>
+    </div>
+
+    <a class="sial-btn sial-btn-secondary sial-btn-full" href="seleccion-finca.html">Cambiar finca</a>
+  </aside>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Armar pallet</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <div class="sial-page-title"><h1>Armar pallet</h1><p>Escaneo o digitacion de cajas</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+    <section class="sial-page-body">
+      <div class="sial-status warning" data-requires="farmReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>
+      <section class="sial-stat-row">
+        <div class="sial-stat"><strong data-flow-boxes>0</strong><span>Cajas registradas</span></div>
+        <div class="sial-stat"><strong>48</strong><span>Capacidad maxima</span></div>
+      </section>
+
+      <div class="sial-card sial-card-pad sial-form">
+        <div class="sial-field"><label class="sial-label">Codigo finca</label><input class="sial-input-wrap sial-input" required value="FIN-001"></div>
+        <div class="sial-field"><label class="sial-label">Codigo SSCC / QR</label><input class="sial-input-wrap sial-input" data-box-code-input placeholder="Escanea o digita codigo"></div>
+        <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-add-box>Registrar caja</button>
+        <div class="sial-list" data-box-list></div>
+      </div>
+
+      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="palletBuilt" data-detail="Pallet armado con cajas registradas" data-next="cargar-pallets.html" data-assert-boxes-min="1">
+        <div class="sial-field"><label class="sial-label">Identificador unico de pallet</label><input class="sial-input-wrap sial-input" name="pallet" required value="PALLET-001"></div>
+        <div class="sial-field"><label class="sial-label">Referencia</label><input class="sial-input-wrap sial-input" name="referencia" required value="BAN-REF-001"></div>
+        <div class="sial-field"><label class="sial-label">Contenedor</label><input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567"></div>
+        <div class="sial-field"><label class="sial-label">Operacion activa</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Cerrar armado de pallet</button>
+      </form>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

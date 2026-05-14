@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Catalogo de libreria</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("sial-mobile-theme");
+      var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <link rel="stylesheet" href="sial-mobile-library.css">
+</head>
+<body>
+  <main class="library-shell" data-library-audit="complete">
+    <header class="library-topbar">
+      <a class="library-brand" href="../index.html" aria-label="Volver al inicio">
+        <span class="sial-company-logo">S</span>
+        <span>
+          <strong>SIAL Movil</strong>
+          <small>Libreria reutilizable</small>
+        </span>
+      </a>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="library-hero">
+      <div>
+        <h1>Catalogo visual de libreria movil</h1>
+        <p>Componentes, patrones de feedback y estados reutilizables para construir nuevas vistas sin depender de modulos actuales.</p>
+      </div>
+      <nav class="library-jump" aria-label="Secciones del catalogo">
+        <a href="#fundamentos">Fundamentos</a>
+        <a href="#navegacion">Navegacion</a>
+        <a href="#acciones">Acciones</a>
+        <a href="#formularios">Formularios</a>
+        <a href="#autenticacion">Autenticacion</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#capas">Capas</a>
+        <a href="#estados">Estados</a>
+        <a href="#offline-sync">Offline</a>
+      </nav>
+    </section>
+
+    <section class="library-rule-grid" aria-label="Reglas de uso por componente">
+      <article class="library-rule-card">
+        <strong>Usar</strong>
+        <p>Componentes de la libreria cuando el patron sea transversal y pueda repetirse en varias vistas.</p>
+      </article>
+      <article class="library-rule-card">
+        <strong>No usar</strong>
+        <p>Variantes locales para resolver problemas que ya tienen clase o API compartida.</p>
+      </article>
+      <article class="library-rule-card">
+        <strong>API / clase</strong>
+        <p>Todo patron debe indicar si se consume por clase CSS, por `SialMobileUI` o por ambos.</p>
+      </article>
+    </section>
+
+    <section class="library-section" aria-label="Inventario de componentes">
+      <div class="library-section-head">
+        <h2>Reglas de uso</h2>
+        <p>Inventario inicial para revisar consistencia antes de crear o modificar vistas.</p>
+      </div>
+      <div class="library-component-meta">
+        <div class="library-component-row"><strong>Feedback temporal</strong><span>Toast flotante</span><code>SialMobileUI.showToast</code></div>
+        <div class="library-component-row"><strong>Feedback persistente</strong><span>Banner global</span><code>SialMobileUI.showBanner</code></div>
+        <div class="library-component-row"><strong>Decision critica</strong><span>Modal centrado</span><code>SialMobileUI.openDialog</code></div>
+        <div class="library-component-row"><strong>Decision contextual</strong><span>Bottom sheet</span><code>variant: "sheet"</code></div>
+        <div class="library-component-row"><strong>Recuperacion de acceso</strong><span>Usuario, OTP y contrasena</span><code>.sial-recovery-flow</code></div>
+        <div class="library-component-row"><strong>Sin datos</strong><span>Empty state</span><code>.sial-empty-state</code></div>
+      </div>
+    </section>
+
+    <section id="fundamentos" class="library-section" data-library-section="fundamentos">
+      <div class="library-section-head">
+        <h2>Fundamentos</h2>
+        <p>Tokens, superficies, estados semanticos y estructura responsive base.</p>
+      </div>
+      <div class="library-preview-grid tokens">
+        <article class="library-token primary"><strong>Primary</strong><span>Accion principal</span></article>
+        <article class="library-token success"><strong>Success</strong><span>Confirmacion</span></article>
+        <article class="library-token warning"><strong>Warning</strong><span>Advertencia</span></article>
+        <article class="library-token error"><strong>Error</strong><span>Bloqueo o falla</span></article>
+      </div>
+      <div class="library-spec">
+        <strong>Regla</strong>
+        <p>La libreria define tokens y componentes globales; las vistas consumen clases y API compartida, no estilos aislados.</p>
+      </div>
+    </section>
+
+    <section id="navegacion" class="library-section" data-library-section="navegacion">
+      <div class="library-section-head">
+        <h2>Navegacion</h2>
+        <p>Header, tabs, segmented controls y patrones de acceso contextual.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <header class="library-mini-header">
+            <div class="sial-app-header-brand">
+              <button class="sial-btn sial-btn-icon" type="button" aria-label="Abrir menu">
+                <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+              </button>
+              <div class="sial-company-logo">SI</div>
+              <div class="sial-context-text"><strong>Contexto activo</strong><span>Operacion movil</span></div>
+            </div>
+          </header>
+          <div class="sial-tabs" role="tablist" aria-label="Ejemplo de tabs">
+            <button class="sial-tab active" type="button" role="tab" aria-selected="true">Resumen</button>
+            <button class="sial-tab" type="button" role="tab" aria-selected="false">Detalle</button>
+            <button class="sial-tab" type="button" role="tab" aria-selected="false">Historial</button>
+          </div>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-segmented" aria-label="Modo de captura">
+            <button class="sial-segment-option" type="button" aria-pressed="true">Manual</button>
+            <button class="sial-segment-option" type="button" aria-pressed="false">Escaner</button>
+          </div>
+          <div class="library-spec compact">
+            <strong>Uso</strong>
+            <p>Tabs cambian secciones pares; segmented cambia modo dentro del mismo contexto.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="acciones" class="library-section" data-library-section="acciones">
+      <div class="library-section-head">
+        <h2>Acciones</h2>
+        <p>Botones, icon buttons, cards accionables y jerarquia tactil.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <button class="sial-btn sial-btn-primary" type="button">Accion primaria</button>
+          <button class="sial-btn sial-btn-secondary" type="button">Accion secundaria</button>
+          <button class="sial-btn sial-btn-ghost" type="button">Accion ghost</button>
+          <button class="sial-btn sial-btn-icon" type="button" aria-label="Accion icono">
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          </button>
+        </article>
+        <a class="sial-action-card" href="#feedback">
+          <span><strong>Card accionable</strong><span>Entrada reusable hacia una tarea o detalle.</span></span>
+          <span class="sial-action-icon"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="formularios" class="library-section" data-library-section="formularios">
+      <div class="library-section-head">
+        <h2>Formularios y captura</h2>
+        <p>Campos base, entrada manual alternativa, media, firma y escaneo como componentes reutilizables.</p>
+      </div>
+      <div class="library-preview-grid">
+        <form class="sial-card sial-card-pad sial-form" aria-label="Formulario ejemplo">
+          <div class="sial-form-grid">
+            <label class="sial-field">
+              <span class="sial-label">Campo de escritura</span>
+              <input class="sial-input" type="text" inputmode="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="next" value="Texto de ejemplo">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Selector movil</span>
+              <button class="sial-picker-trigger" type="button" data-library-picker aria-haspopup="dialog">Seleccion activa</button>
+              <input type="hidden" name="selectorMovil" value="Seleccion activa" data-library-picker-value>
+            </label>
+          </div>
+          <label class="sial-field">
+            <span class="sial-label">Textarea</span>
+            <textarea class="sial-input sial-textarea">Observacion corta reutilizable.</textarea>
+          </label>
+          <div class="sial-status info" data-library-inline hidden></div>
+          <button class="sial-btn sial-btn-secondary" type="button" data-library-inline-trigger>Mostrar alerta inline</button>
+          <code>SialMobileUI.openMobilePicker({ title, items, target })</code>
+        </form>
+        <div class="library-capture-grid">
+          <div class="sial-media-capture"><div class="sial-feedback-copy"><strong>Captura de imagen</strong><span>Vista previa, reemplazo y estado pendiente.</span></div></div>
+          <div class="sial-signature-pad"><div class="sial-feedback-copy"><strong>Firma digital</strong><span>Area tactil reusable con limpieza y confirmacion.</span></div></div>
+          <div class="sial-scan-panel"><div class="sial-feedback-copy"><strong>Escaner</strong><span>Codigo de barras, QR o digitacion alternativa.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="autenticacion" class="library-section" data-library-section="autenticacion">
+      <div class="library-section-head">
+        <h2>Autenticacion</h2>
+        <p>Login y recuperacion de acceso como patrones reutilizables, alineados con el flujo web.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-recovery-flow">
+            <ol class="sial-recovery-steps" data-recovery-stepper>
+              <li class="sial-recovery-step is-current" aria-current="step"><span>1</span><strong>Usuario</strong></li>
+              <li class="sial-recovery-step"><span>2</span><strong>Codigo</strong></li>
+              <li class="sial-recovery-step"><span>3</span><strong>Contrasena</strong></li>
+            </ol>
+            <div class="sial-recovery-heading">
+              <h3 data-recovery-title>Recuperar contrasena</h3>
+              <p data-recovery-copy>Ingresa tu usuario. Enviaremos un codigo de verificacion al correo registrado para restablecer tu acceso.</p>
+            </div>
+            <form class="sial-form" data-recovery-step="user">
+              <label class="sial-field">
+                <span class="sial-label">Usuario</span>
+                <input class="sial-input-wrap sial-input" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" enterkeyhint="send" value="operador.sial">
+              </label>
+              <button class="sial-btn sial-btn-primary" type="button">Enviar codigo</button>
+            </form>
+          </div>
+          <code>Usuario -> Codigo -> Contrasena</code>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-recovery-flow">
+            <ol class="sial-recovery-steps" data-recovery-stepper>
+              <li class="sial-recovery-step is-done"><span>1</span><strong>Usuario</strong></li>
+              <li class="sial-recovery-step is-current" aria-current="step"><span>2</span><strong>Codigo</strong></li>
+              <li class="sial-recovery-step"><span>3</span><strong>Contrasena</strong></li>
+            </ol>
+            <div class="sial-recovery-heading">
+              <h3>Verificar codigo de seguridad</h3>
+              <p>El OTP mantiene 6 campos tactiles, entrada numerica y soporte de codigo de un solo uso.</p>
+            </div>
+            <div class="sial-otp-group" aria-label="Codigo de seguridad demo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" autocomplete="one-time-code" value="1" aria-label="Digito 1 del codigo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" value="2" aria-label="Digito 2 del codigo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" value="3" aria-label="Digito 3 del codigo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" value="4" aria-label="Digito 4 del codigo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" value="5" aria-label="Digito 5 del codigo">
+              <input class="sial-otp-input" data-recovery-otp type="text" inputmode="numeric" value="6" aria-label="Digito 6 del codigo">
+            </div>
+            <div class="sial-auth-secondary-actions">
+              <button class="login-link" type="button" data-recovery-resend disabled>Reenviar codigo en 45s</button>
+              <button class="login-link" type="button">Cambiar usuario</button>
+            </div>
+          </div>
+          <code>data-recovery-otp + inputmode="numeric"</code>
+        </article>
+      </div>
+    </section>
+
+    <section id="feedback" class="library-section" data-library-section="feedback">
+      <div class="library-section-head">
+        <h2>Feedback</h2>
+        <p>Reglas de uso por componente: temporal, inline y persistente.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <h3>Toast flotante</h3>
+          <p class="library-muted">Uso: confirmaciones rapidas y advertencias no bloqueantes.</p>
+          <button class="sial-btn sial-btn-primary" type="button" data-library-toast>Probar toast</button>
+          <code>SialMobileUI.showToast({ type, title, message })</code>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <h3>Banner persistente</h3>
+          <p class="library-muted">Uso: estados globales que permanecen visibles mientras existan.</p>
+          <button class="sial-btn sial-btn-secondary" type="button" data-library-banner>Probar banner</button>
+          <code>SialMobileUI.showBanner({ id, type, title, message })</code>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-status info"><div class="sial-feedback-copy"><strong>Alerta inline</strong><p>Error o validacion junto al control que lo origina.</p></div></div>
+          <div class="sial-status warning"><div class="sial-feedback-copy"><strong>Advertencia</strong><p>Requiere atencion, pero no siempre bloquea.</p></div></div>
+          <div class="sial-status error"><div class="sial-feedback-copy"><strong>Error</strong><p>Bloquea continuidad hasta correccion.</p></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="capas" class="library-section" data-library-section="capas">
+      <div class="library-section-head">
+        <h2>Capas</h2>
+        <p>Modal centrado y bottom sheet para decisiones bloqueantes o contextuales.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <h3>Modal centrado</h3>
+          <p class="library-muted">Uso: confirmacion critica que bloquea la pantalla.</p>
+          <button class="sial-btn sial-btn-primary" type="button" data-library-modal>Probar modal</button>
+          <code>SialMobileUI.openDialog({ variant: "modal" })</code>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <h3>Bottom sheet</h3>
+          <p class="library-muted">Uso: decision contextual en movil.</p>
+          <button class="sial-btn sial-btn-secondary" type="button" data-library-sheet>Probar sheet</button>
+          <code>SialMobileUI.openDialog({ variant: "sheet" })</code>
+        </article>
+      </div>
+    </section>
+
+    <section id="estados" class="library-section" data-library-section="estados">
+      <div class="library-section-head">
+        <h2>Estados</h2>
+        <p>Empty state, loading skeleton, timeline y listas como patrones genericos.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-empty-state">
+          <div class="sial-feedback-copy"><strong>Empty state</strong><p>No hay datos para mostrar en esta seccion.</p></div>
+          <button class="sial-btn sial-btn-secondary" type="button">Crear registro</button>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-loading-skeleton line"></div>
+          <div class="sial-loading-skeleton line"></div>
+          <div class="sial-loading-skeleton block"></div>
+          <strong>Loading skeleton</strong>
+        </article>
+        <article class="sial-card sial-card-pad">
+          <div class="sial-timeline">
+            <div class="sial-timeline-item"><strong>Evento generico</strong><span>Estado registrado y visible.</span></div>
+            <div class="sial-timeline-item"><strong>Evento siguiente</strong><span>Continuidad de trazabilidad visual.</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="offline-sync" class="library-section" data-library-section="offline-sync">
+      <div class="library-section-head">
+        <h2>Modelo offline y sincronizacion como patron de interfaz</h2>
+        <p>Estados visuales reutilizables, sin acoplarse a entidades de negocio.</p>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad">
+          <div class="sial-sync-stack">
+            <div class="sial-sync-item pending"><strong>Pendiente local</strong><span>Guardado en dispositivo</span><span class="sial-pill">Pendiente</span></div>
+            <div class="sial-sync-item"><strong>Sincronizando</strong><span>En cola de envio</span><span class="sial-pill">En proceso</span></div>
+            <div class="sial-sync-item success"><strong>Sincronizado</strong><span>Confirmado por servicio</span><span class="sial-pill">OK</span></div>
+            <div class="sial-sync-item error"><strong>Error de sincronizacion</strong><span>Requiere reintento</span><button class="sial-chip-action" type="button">Reintentar</button></div>
+          </div>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <div class="sial-status warning"><div class="sial-feedback-copy"><strong>Sin conexion</strong><p>La accion puede continuar si el registro queda local y trazable.</p></div></div>
+          <div class="sial-status error"><div class="sial-feedback-copy"><strong>Conflicto</strong><p>Debe resolverse con una decision contextual.</p></div></div>
+          <button class="sial-btn sial-btn-ghost" type="button" data-library-reset>Limpiar estados demo</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="sial-mobile-library.js"></script>
+</body>
+</html>

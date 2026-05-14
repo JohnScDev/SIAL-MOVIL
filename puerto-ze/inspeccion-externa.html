@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Inspeccion externa ZE</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <div class="sial-page-title"><h1>Inspeccion externa</h1><p>Paredes, techo, puertas y piso</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+    <section class="sial-page-body">
+      <div class="sial-status warning" data-requires="zeReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>
+      <div class="sial-flow-banner"><strong>Contenedor <span data-flow-container></span></strong><span>Ubicacion <span data-flow-location></span> - Estado <span data-flow-container-status></span></span></div>
+
+      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="portExternalInspection" data-detail="Inspeccion externa ZE" data-next="inspeccion-interna.html" data-required-photos="ze-ext-paredes,ze-ext-techo,ze-ext-puertas,ze-ext-piso" data-prevent-duplicate="true">
+        <div class="sial-evidence-grid">
+          <button class="sial-evidence-slot" type="button" data-add-photo="ze-ext-paredes">Paredes</button>
+          <button class="sial-evidence-slot" type="button" data-add-photo="ze-ext-techo">Techo</button>
+          <button class="sial-evidence-slot" type="button" data-add-photo="ze-ext-puertas">Puertas</button>
+          <button class="sial-evidence-slot" type="button" data-add-photo="ze-ext-piso">Piso</button>
+        </div>
+        <div class="sial-field"><label class="sial-label">Resultado</label><select class="sial-select" name="resultado" required><option>Aprobado</option><option>Rechazado</option></select></div>
+        <div class="sial-field"><label class="sial-label">Observaciones</label><textarea class="sial-textarea" name="observaciones" placeholder="Integridad estructural, golpes, abolladuras o novedades"></textarea></div>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Guardar inspeccion</button>
+      </form>
+
+      <section class="sial-section"><h2 class="sial-section-title">Alertas</h2><div data-flow-alerts></div></section>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Entrega en puerto</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <div class="sial-page-title"><h1>Entrega puerto</h1><p>Exportacion y liberacion del vehiculo</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+    <section class="sial-page-body">
+      <div class="sial-status warning" data-requires="portReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>
+      <section class="sial-card sial-card-pad sial-form">
+        <div class="sial-list-row"><strong>Vehiculo asociado</strong><span data-flow-vehicle></span></div>
+        <div class="sial-list-row"><strong>Estado vehiculo</strong><span data-flow-vehicle-status></span></div>
+        <div class="sial-list-row"><strong>Estado contenedor</strong><span data-flow-container-status></span></div>
+      </section>
+      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="portDelivery" data-status="EXPORTADO" data-location="PUERTO" data-vehicle-status="DISPONIBLE" data-vehicle-associated="false" data-exported="true" data-detail="Contenedor entregado para exportacion y vehiculo liberado" data-next="../trazabilidad/consultar-contenedor.html" data-assert-vehicle-associated="true" data-assert-not-exported="true" data-assert-container-status-any="RECIBIDO_EN_PUERTO" data-assert-container-location="PUERTO" data-prevent-duplicate="true">
+        <div class="sial-field"><label class="sial-label">Fecha y hora llegada / entrega</label><input class="sial-input-wrap sial-input" name="fechaEntrega" type="datetime-local" required value="2026-05-05T18:00"></div>
+        <div class="sial-field"><label class="sial-label">Validacion de sellos</label><select class="sial-select" name="sellos" required><option>Sellos coinciden</option><option>Sellos con novedad</option></select></div>
+        <div class="sial-field"><label class="sial-label">Operacion asociada</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>
+        <div class="sial-field"><label class="sial-label">Terminal</label><select class="sial-select" name="terminal" required><option>Puerto Norte</option><option>Terminal Logistica</option></select></div>
+        <div class="sial-field"><label class="sial-label">Resultado de entrega</label><select class="sial-select" name="resultadoEntrega" required><option>EXPORTADO</option><option>ENTREGADO_EN_PUERTO</option></select></div>
+        <div class="sial-field"><label class="sial-label">Usuario que registra</label><input class="sial-input-wrap sial-input" name="usuario" required value="Maria Operadora"></div>
+        <div class="sial-field"><label class="sial-label">Observaciones</label><textarea class="sial-textarea" name="observaciones" placeholder="Novedades de entrega, exportacion o liberacion"></textarea></div>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Registrar entrega</button>
+      </form>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Consulta de operacion</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <div class="sial-page-title"><h1>Operacion</h1><p>Resumen logistico movil</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+    <section class="sial-page-body">
+      <div class="sial-flow-banner"><strong>Operacion <span data-flow-operation></span></strong><span>Estado <span data-flow-operation-status></span> - Sincronizacion <span data-flow-sync></span></span></div>
+      <section class="sial-stat-row">
+        <div class="sial-stat"><strong data-flow-loaded-pallets>0</strong><span>Pallets cargados</span></div>
+        <div class="sial-stat"><strong data-flow-boxes>0</strong><span>Cajas</span></div>
+      </section>
+      <section class="sial-card sial-card-pad sial-form">
+        <div class="sial-list-row"><strong>Vehiculo</strong><span data-flow-vehicle></span></div>
+        <div class="sial-list-row"><strong>Conductor</strong><span data-flow-driver></span></div>
+        <div class="sial-list-row"><strong>Contenedor</strong><span data-flow-container></span></div>
+        <div class="sial-list-row"><strong>Ubicacion</strong><span data-flow-location></span></div>
+      </section>
+      <section class="sial-section"><h2 class="sial-section-title">Alertas</h2><div data-flow-alerts></div></section>
+      <section class="sial-section"><h2 class="sial-section-title">Eventos</h2><div class="sial-timeline" data-flow-timeline></div></section>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

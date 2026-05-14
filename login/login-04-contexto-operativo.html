@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Login contexto operativo</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("sial-mobile-theme");
+      var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-mobile-login.css">
+</head>
+<body>
+  <main class="sial-app login-screen variant-context">
+    <button class="sial-btn sial-btn-icon sial-theme-toggle" type="button" data-theme-toggle aria-label="Cambiar tema">
+      <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+    </button>
+
+    <section class="login-content">
+      <header class="login-top">
+        <div class="sial-brand-lockup">
+          <div class="sial-brand-mark">S</div>
+          <div>
+            <p class="sial-brand-name">SIAL</p>
+            <p class="sial-brand-caption">Operacion conectada</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="login-main">
+        <section class="login-hero" aria-labelledby="login-title">
+          <h1 class="login-title" id="login-title">Control movil para la operacion diaria</h1>
+          <p class="login-copy">Ingresa, selecciona tu finca o contexto operativo y registra la actividad asignada.</p>
+        </section>
+
+        <section class="login-panel" aria-label="Formulario de ingreso">
+          <div class="context-strip" aria-label="Contextos futuros de la aplicacion">
+            <div class="context-chip">
+              <strong>Campo</strong>
+              <span>Captura y evidencia</span>
+            </div>
+            <div class="context-chip">
+              <strong>Operacion</strong>
+              <span>Seguimiento y control</span>
+            </div>
+          </div>
+
+          <form class="login-form" data-login-form>
+            <div class="sial-field">
+              <label class="sial-label" for="usuario">Usuario</label>
+              <div class="sial-input-wrap">
+                <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+                <input class="sial-input" id="usuario" name="usuario" type="text" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="usuario.sial">
+              </div>
+            </div>
+
+            <div class="sial-field">
+              <label class="sial-label" for="contrasena">Contrasena</label>
+              <div class="sial-input-wrap">
+                <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/><path d="m9.5 12 1.8 1.8 3.7-4"/></svg>
+                <input class="sial-input" id="contrasena" name="contrasena" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Ingresa tu contrasena">
+                <button class="sial-password-button" type="button" data-password-toggle="#contrasena" aria-label="Mostrar contrasena">
+                  <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="login-meta">
+              <button class="login-link" type="button" data-recover-access>Recuperar acceso</button>
+            </div>
+
+            <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Ingresar a SIAL Movil</button>
+
+            <div class="sial-status warning">
+              <span aria-hidden="true">!</span>
+              <span><strong>Contexto requerido</strong>Despues del login se selecciona la finca asignada.</span>
+            </div>
+            <div class="sial-status info" data-login-status hidden></div>
+          </form>
+
+          <footer class="login-footer">
+            <span>Propuesta 04</span>
+            <span class="login-network">Listo para operar</span>
+          </footer>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="sial-mobile-login.js"></script>
+</body>
+</html>

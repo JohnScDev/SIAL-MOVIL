@@ -1,0 +1,322 @@
+body {
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--sial-primary-500) 12%, transparent), transparent 32rem),
+    var(--sial-bg);
+}
+
+body .library-shell {
+  width: min(100%, 1160px);
+  margin: 0 auto;
+  display: grid;
+  gap: 22px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+}
+
+body .library-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  background: color-mix(in srgb, var(--sial-bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.library-brand {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sial-text);
+}
+
+.library-brand strong,
+.library-brand small {
+  display: block;
+}
+
+.library-brand strong {
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.library-brand small {
+  margin-top: 3px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+body .library-hero {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--sial-primary-500) 12%, transparent), transparent 60%),
+    var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.library-hero h1 {
+  max-width: 780px;
+  margin: 0;
+  color: var(--sial-text);
+  font-size: clamp(28px, 6vw, 50px);
+  line-height: 1.05;
+}
+
+.library-hero p {
+  max-width: 48rem;
+  margin: 10px 0 0;
+  color: var(--sial-text-2);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.library-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.library-jump a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+body .library-section {
+  display: grid;
+  gap: 14px;
+  scroll-margin-top: 84px;
+}
+
+.library-section-head {
+  display: grid;
+  gap: 6px;
+}
+
+.library-section h2,
+.library-section h3,
+.library-section p {
+  margin: 0;
+}
+
+.library-section h2 {
+  color: var(--sial-text);
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.library-section-head p,
+.library-muted {
+  color: var(--sial-text-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+body .library-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.library-preview-grid.tokens {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+body .library-spec {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+}
+
+.library-spec.compact {
+  margin-top: auto;
+}
+
+.library-spec strong {
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.library-spec p {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.library-token {
+  min-height: 102px;
+  display: grid;
+  align-content: end;
+  gap: 4px;
+  padding: 14px;
+  border-radius: var(--sial-radius-large);
+  color: #fff;
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.library-token strong {
+  font-size: 15px;
+}
+
+.library-token span {
+  font-size: 12px;
+  opacity: .86;
+}
+
+.library-token.primary {
+  background: linear-gradient(135deg, var(--sial-primary-500), #0e6fd8);
+}
+
+.library-token.success {
+  background: linear-gradient(135deg, var(--sial-success), #177f56);
+}
+
+.library-token.warning {
+  background: linear-gradient(135deg, #bc7a00, var(--sial-warning));
+}
+
+.library-token.error {
+  background: linear-gradient(135deg, var(--sial-error), #9f2934);
+}
+
+body .library-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+body .library-rule-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.library-rule-card strong {
+  color: var(--sial-text);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.library-rule-card p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+body .library-component-meta {
+  display: grid;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  overflow: hidden;
+}
+
+body .library-component-row {
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 12px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.library-component-row:last-child {
+  border-bottom: 0;
+}
+
+.library-component-row strong {
+  color: var(--sial-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.library-component-row span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.library-component-row code {
+  justify-self: start;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 6px 8px;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text-2);
+  font-size: 11px;
+}
+
+body .library-demo-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.library-demo-card code {
+  display: block;
+  overflow-x: auto;
+  padding: 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text-2);
+  font-size: 11px;
+}
+
+.library-mini-header {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.library-capture-grid {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 720px) {
+  body .library-shell {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  body .library-hero {
+    padding: 28px;
+  }
+
+  .library-capture-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body .library-component-row {
+    grid-template-columns: minmax(150px, .8fr) minmax(190px, 1fr) minmax(170px, auto);
+    align-items: center;
+  }
+}

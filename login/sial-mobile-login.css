@@ -1,0 +1,632 @@
+@import url("../shared/sial-mobile-core.css");
+
+body {
+  min-width: 0;
+}
+
+.phone-stage {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0;
+  background: var(--sial-bg);
+}
+
+.phone-stage .login-screen {
+  width: 100%;
+  max-width: none;
+  min-height: 100svh;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.phone-stage .login-content {
+  min-height: 100svh;
+}
+
+.login-screen {
+  position: relative;
+  min-height: 100svh;
+  background: var(--sial-bg);
+  overflow-x: hidden;
+  overflow-y: auto;
+  isolation: isolate;
+}
+
+.login-screen .sial-theme-toggle {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  top: max(16px, env(safe-area-inset-top));
+}
+
+.login-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--login-active-image, var(--login-image, none)) var(--login-active-position, var(--login-image-position, center)) / cover no-repeat;
+  filter: blur(var(--login-image-blur, 0));
+  opacity: var(--login-image-opacity, 1);
+  transform: none;
+  transition: opacity .28s ease;
+  will-change: opacity;
+}
+
+.login-screen.login-bg-transition::before {
+  opacity: 0;
+}
+
+.login-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--login-overlay);
+  pointer-events: none;
+}
+
+.login-content {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: max(clamp(18px, 4.6svh, 32px), env(safe-area-inset-top)) clamp(14px, 5vw, 22px) max(18px, env(safe-area-inset-bottom));
+}
+
+.login-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.login-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(14px, 3.2svh, 22px);
+  padding-top: clamp(20px, 7svh, 56px);
+}
+
+.login-hero {
+  display: grid;
+  gap: 12px;
+}
+
+.login-title {
+  max-width: 310px;
+  margin: 0;
+  color: var(--login-title, var(--sial-text));
+  font-size: clamp(25px, 7.4vw, 36px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.login-copy {
+  max-width: 310px;
+  margin: 0;
+  color: var(--login-copy, var(--sial-text-2));
+  font-size: 14px;
+}
+
+.login-panel {
+  width: 100%;
+  display: grid;
+  gap: clamp(14px, 2.5svh, 18px);
+  padding: clamp(16px, 4.6vw, 20px);
+  border: 1px solid var(--login-panel-border, var(--sial-border-subtle));
+  border-radius: 24px;
+  background: var(--login-panel-bg, var(--sial-surface));
+  box-shadow: var(--sial-shadow-overlay);
+  backdrop-filter: blur(18px);
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.login-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.login-link {
+  border: 0;
+  background: transparent;
+  color: var(--sial-primary-500);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+}
+
+.login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--login-footer, var(--sial-text-3));
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.login-network {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.login-network::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sial-success);
+}
+
+.variant-institutional {
+  --login-image: url("../assets/login/Imagen 4.jpg");
+  --login-image-position: center;
+  --login-image-blur: 1.25px;
+  --login-image-opacity: .88;
+  --login-overlay:
+    radial-gradient(circle at 16% 12%, rgba(254, 204, 0, .22), transparent 30%),
+    linear-gradient(180deg, rgba(245, 247, 250, .34), rgba(245, 247, 250, .72) 42%, rgba(245, 247, 250, .94) 78%);
+  --login-panel-bg: color-mix(in srgb, var(--sial-surface) 92%, transparent);
+  --login-panel-border: color-mix(in srgb, var(--sial-border) 76%, transparent);
+}
+
+html[data-theme="dark"] .variant-institutional {
+  --login-image: url("../assets/login/Imagen 4.jpg");
+  --login-image-position: center;
+  --login-image-blur: 2.5px;
+  --login-image-opacity: .62;
+  --login-overlay:
+    radial-gradient(circle at 18% 12%, rgba(29, 127, 224, .3), transparent 30%),
+    linear-gradient(180deg, rgba(15, 23, 36, .2), rgba(15, 23, 36, .78) 44%, rgba(15, 23, 36, .98) 78%);
+}
+
+.variant-context {
+  --login-image: url("../assets/login/Imagen 1.jpg");
+  --login-image-position: 82% 78%;
+  --login-image-blur: 1.25px;
+  --login-image-opacity: .9;
+  --login-overlay:
+    radial-gradient(circle at 18% 14%, rgba(254, 204, 0, .28), transparent 28%),
+    linear-gradient(180deg, rgba(0, 92, 168, .14), rgba(15, 23, 36, .66) 46%, rgba(15, 23, 36, .94));
+  --login-title: #ffffff;
+  --login-copy: rgba(255, 255, 255, .82);
+  --login-footer: rgba(255, 255, 255, .68);
+  --login-panel-bg: color-mix(in srgb, var(--sial-surface) 92%, transparent);
+  --login-panel-border: color-mix(in srgb, var(--sial-border) 72%, transparent);
+}
+
+.variant-context .sial-brand-name,
+.variant-context .sial-brand-caption {
+  color: #ffffff;
+}
+
+.variant-context .sial-btn-icon {
+  border-color: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .14);
+  color: #ffffff;
+}
+
+.context-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.context-chip {
+  min-height: 54px;
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--login-panel-border, var(--sial-border-subtle));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--sial-surface-raised) 86%, transparent);
+}
+
+.context-chip strong {
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.context-chip span {
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.variant-minimal {
+  --login-overlay: linear-gradient(180deg, var(--sial-bg), var(--sial-bg));
+}
+
+.variant-minimal .login-content {
+  justify-content: center;
+}
+
+.variant-minimal .login-main {
+  flex: 0;
+  justify-content: center;
+  padding-top: 44px;
+}
+
+.variant-minimal .login-panel {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.variant-minimal .login-hero {
+  padding: 8px 0 4px;
+}
+
+.minimal-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 16px;
+  background: var(--sial-surface);
+}
+
+.minimal-card strong {
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.minimal-card p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.catalog-shell {
+  min-height: 100svh;
+  padding: 32px 20px;
+}
+
+.catalog-header {
+  max-width: 1120px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.catalog-title {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+}
+
+.catalog-copy {
+  max-width: 680px;
+  margin: 0;
+  color: var(--sial-text-2);
+}
+
+.catalog-grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.catalog-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 18px;
+  background: var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.catalog-card h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.catalog-card p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 13px;
+}
+
+.catalog-frame {
+  width: 100%;
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+  border: 1px solid var(--sial-border);
+  border-radius: 28px;
+  background: var(--sial-bg);
+}
+
+.catalog-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 980px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+    max-width: 430px;
+  }
+
+  .catalog-header {
+    max-width: 430px;
+    display: grid;
+  }
+}
+
+@media (min-width: 540px) {
+  .login-content {
+    --login-content-width: min(100%, 560px);
+    width: var(--login-content-width);
+    max-width: none;
+    margin: 0 auto;
+    padding-left: clamp(24px, 7vw, 48px);
+    padding-right: clamp(24px, 7vw, 48px);
+  }
+
+  .login-panel {
+    max-width: 460px;
+    justify-self: center;
+  }
+
+  .login-title,
+  .login-copy {
+    max-width: 420px;
+  }
+
+  .login-title {
+    font-size: clamp(30px, 6vw, 42px);
+  }
+}
+
+@media (min-width: 600px) and (orientation: portrait) {
+  .login-content {
+    --login-content-width: min(100%, 640px);
+    width: var(--login-content-width);
+    max-width: none;
+    justify-content: stretch;
+    padding:
+      max(28px, env(safe-area-inset-top))
+      clamp(32px, 8vw, 72px)
+      max(28px, env(safe-area-inset-bottom));
+  }
+
+  .login-top {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .login-main {
+    justify-content: center;
+    gap: clamp(22px, 4svh, 36px);
+    padding-top: 0;
+  }
+
+  .login-hero,
+  .login-panel {
+    width: min(100%, 500px);
+    justify-self: center;
+  }
+
+  .login-title {
+    font-size: clamp(34px, 5vw, 48px);
+  }
+}
+
+@media (min-width: 700px) and (max-width: 899px) {
+  .login-content {
+    --login-content-width: min(100%, 580px);
+    width: var(--login-content-width);
+    max-width: none;
+    padding-left: clamp(28px, 7vw, 56px);
+    padding-right: clamp(28px, 7vw, 56px);
+  }
+
+  .login-main {
+    align-items: center;
+    place-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3svh, 28px);
+    padding-top: clamp(12px, 4svh, 32px);
+  }
+
+  .login-top,
+  .login-hero,
+  .login-panel {
+    width: min(100%, 520px);
+    justify-self: center;
+  }
+
+  .login-hero {
+    text-align: center;
+  }
+
+  .login-title,
+  .login-copy {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .login-panel {
+    max-width: 460px;
+  }
+
+  .login-title {
+    font-size: clamp(32px, 5.4vw, 44px);
+  }
+}
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .login-screen::before {
+    background-position: center;
+  }
+
+  .login-screen .sial-theme-toggle {
+    right: max(22px, env(safe-area-inset-right));
+    top: max(18px, env(safe-area-inset-top));
+  }
+
+  .login-content {
+    --login-content-width: min(100%, 960px);
+    width: var(--login-content-width);
+    max-width: none;
+    margin: 0 auto;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(18px, 3vh, 28px);
+    padding:
+      max(18px, env(safe-area-inset-top))
+      clamp(24px, 6vw, 72px)
+      max(18px, env(safe-area-inset-bottom));
+  }
+
+  .login-main {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(320px, 420px);
+    align-items: end;
+    gap: clamp(22px, 4vw, 56px);
+    padding-top: 0;
+  }
+
+  .login-title,
+  .login-copy {
+    max-width: 480px;
+  }
+
+  .login-title {
+    font-size: clamp(34px, 4.6vw, 48px);
+  }
+
+  .login-panel {
+    max-width: 420px;
+    justify-self: end;
+  }
+}
+
+@media (min-width: 1100px) and (orientation: landscape) {
+  .login-content {
+    --login-content-width: min(100%, 1120px);
+  }
+
+  .login-main {
+    grid-template-columns: minmax(320px, 1fr) minmax(360px, 460px);
+    gap: clamp(24px, 6vw, 72px);
+  }
+
+  .login-panel {
+    max-width: 460px;
+  }
+
+  .login-title {
+    font-size: clamp(38px, 4vw, 52px);
+  }
+}
+
+@media (max-width: 360px) {
+  .login-content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .login-panel {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .login-title {
+    font-size: 25px;
+  }
+
+  .sial-brand-mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sial-brand-name {
+    font-size: 18px;
+  }
+}
+
+@media (max-height: 720px) {
+  .login-content {
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+  }
+
+  .login-main {
+    gap: 12px;
+    padding-top: 16px;
+  }
+
+  .login-copy {
+    font-size: 13px;
+  }
+
+  .login-form {
+    gap: 12px;
+  }
+
+  .sial-input-wrap,
+  .sial-btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-height: 620px) {
+  .login-title {
+    font-size: clamp(22px, 7vw, 28px);
+  }
+
+  .login-hero {
+    gap: 8px;
+  }
+
+  .login-panel {
+    gap: 12px;
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .login-footer {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) and (min-height: 600px) and (orientation: landscape) {
+  .login-main {
+    gap: clamp(24px, 6vw, 72px);
+    padding-top: 0;
+  }
+
+  .login-title {
+    font-size: clamp(34px, 5vw, 52px);
+  }
+
+  .login-footer {
+    display: flex;
+  }
+}
