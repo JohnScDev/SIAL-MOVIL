@@ -178,13 +178,29 @@ button {
   --sial-auth-icon-size: clamp(64px, 17.2vw, 76px);
   --sial-auth-name-size: clamp(36px, 9.8vw, 42px);
   --sial-auth-caption-size: clamp(8.5px, 2.25vw, 10.5px);
+  --sial-auth-halo: radial-gradient(ellipse at 44% 50%, rgba(255, 255, 255, .74), rgba(255, 255, 255, .34) 42%, transparent 72%);
+  --sial-auth-halo-opacity: 1;
+  --sial-auth-shadow: 0 10px 24px rgba(16, 24, 40, .1);
   width: min(292px, 82vw);
   max-width: 100%;
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--sial-auth-gap);
   color: var(--sial-text);
   line-height: 1;
+}
+
+.sial-auth-logo::before {
+  content: "";
+  position: absolute;
+  inset: -12px -18px;
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--sial-auth-halo);
+  opacity: var(--sial-auth-halo-opacity);
+  filter: blur(1px);
+  pointer-events: none;
 }
 
 .sial-auth-logo img {
@@ -193,6 +209,7 @@ button {
   flex: 0 0 auto;
   display: block;
   object-fit: contain;
+  filter: drop-shadow(var(--sial-auth-shadow));
 }
 
 .sial-auth-wordmark {
@@ -207,6 +224,7 @@ button {
   font-weight: 700;
   line-height: .9;
   letter-spacing: 0;
+  text-shadow: var(--sial-auth-shadow);
 }
 
 .sial-auth-wordmark span {
@@ -216,11 +234,14 @@ button {
   line-height: 1.2;
   letter-spacing: 0;
   white-space: nowrap;
+  text-shadow: var(--sial-auth-shadow);
 }
 
 html[data-theme="dark"] .sial-auth-logo {
   --sial-auth-wordmark-color: var(--sial-text);
   --sial-auth-caption-color: var(--sial-text-2);
+  --sial-auth-halo: radial-gradient(ellipse at 44% 50%, rgba(10, 28, 48, .72), rgba(10, 28, 48, .38) 44%, transparent 74%);
+  --sial-auth-shadow: 0 12px 26px rgba(0, 0, 0, .34);
 }
 
 .sial-app-isotype {
@@ -884,6 +905,8 @@ html[data-theme="dark"] .sial-auth-logo {
   --sial-auth-icon-size: clamp(52px, 13.5vw, 58px);
   --sial-auth-name-size: clamp(30px, 8.2vw, 34px);
   --sial-auth-caption-size: clamp(7.5px, 1.95vw, 8.5px);
+  --sial-auth-halo-opacity: 0;
+  --sial-auth-shadow: none;
   width: auto;
   max-width: min(250px, 92%);
   justify-self: center;

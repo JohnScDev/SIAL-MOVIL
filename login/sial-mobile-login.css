@@ -181,6 +181,8 @@ body {
     linear-gradient(180deg, rgba(245, 247, 250, .34), rgba(245, 247, 250, .72) 42%, rgba(245, 247, 250, .94) 78%);
   --login-panel-bg: color-mix(in srgb, var(--sial-surface) 92%, transparent);
   --login-panel-border: color-mix(in srgb, var(--sial-border) 76%, transparent);
+  --sial-auth-halo: radial-gradient(ellipse at 44% 50%, rgba(255, 255, 255, .86), rgba(255, 255, 255, .46) 42%, transparent 74%);
+  --sial-auth-shadow: 0 12px 24px rgba(16, 24, 40, .14);
 }
 
 html[data-theme="dark"] .variant-institutional {
@@ -191,6 +193,7 @@ html[data-theme="dark"] .variant-institutional {
   --login-overlay:
     radial-gradient(circle at 18% 12%, rgba(29, 127, 224, .3), transparent 30%),
     linear-gradient(180deg, rgba(15, 23, 36, .2), rgba(15, 23, 36, .78) 44%, rgba(15, 23, 36, .98) 78%);
+  --sial-auth-halo: radial-gradient(ellipse at 44% 50%, rgba(7, 24, 42, .82), rgba(7, 24, 42, .48) 44%, transparent 76%);
 }
 
 .variant-context {
@@ -208,6 +211,8 @@ html[data-theme="dark"] .variant-institutional {
   --login-panel-border: color-mix(in srgb, var(--sial-border) 72%, transparent);
   --sial-auth-wordmark-color: #ffffff;
   --sial-auth-caption-color: rgba(255, 255, 255, .82);
+  --sial-auth-halo: radial-gradient(ellipse at 44% 50%, rgba(4, 20, 36, .72), rgba(4, 20, 36, .4) 44%, transparent 76%);
+  --sial-auth-shadow: 0 12px 26px rgba(0, 0, 0, .36);
 }
 
 .variant-context .sial-btn-icon {
