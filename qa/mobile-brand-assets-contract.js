@@ -52,7 +52,10 @@ const css = read(path.join(root, "shared", "sial-mobile-core.css"));
   "--sial-auth-caption-color",
   "--sial-app-isotype-size: 46px",
   "--sial-page-isotype-size: 40px",
+  "--sial-isotype-plate-bg",
+  "--sial-isotype-plate-border",
   ".sial-app-isotype",
+  ".sial-app-isotype::before",
   ".sial-app-isotype img"
 ].forEach((selector) => {
   if (!css.includes(selector)) fail(`CSS marca incompleto: falta ${selector}`);

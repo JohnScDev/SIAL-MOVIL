@@ -41,6 +41,10 @@
   --sial-page-gutter: 16px;
   --sial-app-isotype-size: 46px;
   --sial-page-isotype-size: 40px;
+  --sial-isotype-plate-bg: rgba(255, 255, 255, .78);
+  --sial-isotype-plate-border: rgba(217, 221, 227, .92);
+  --sial-isotype-plate-shadow: 0 6px 16px rgba(16, 24, 40, .1);
+  --sial-isotype-image-shadow: 0 3px 8px rgba(16, 24, 40, .08);
 }
 
 html[data-theme="dark"] {
@@ -73,6 +77,10 @@ html[data-theme="dark"] {
   --sial-backdrop: rgba(3, 7, 18, .66);
   --sial-shadow-soft: 0 4px 18px rgba(0, 0, 0, .32);
   --sial-shadow-overlay: 0 18px 44px rgba(0, 0, 0, .45);
+  --sial-isotype-plate-bg: rgba(21, 30, 45, .74);
+  --sial-isotype-plate-border: rgba(77, 103, 143, .54);
+  --sial-isotype-plate-shadow: 0 8px 18px rgba(0, 0, 0, .28);
+  --sial-isotype-image-shadow: 0 3px 8px rgba(0, 0, 0, .24);
 }
 
 * { box-sizing: border-box; }
@@ -248,11 +256,25 @@ html[data-theme="dark"] .sial-auth-logo {
   width: var(--sial-app-isotype-size);
   height: var(--sial-app-isotype-size);
   min-width: var(--sial-app-isotype-size);
+  position: relative;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   background: transparent;
+  isolation: isolate;
   line-height: 0;
+}
+
+.sial-app-isotype::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  border: 1px solid var(--sial-isotype-plate-border);
+  border-radius: 14px;
+  background: var(--sial-isotype-plate-bg);
+  box-shadow: var(--sial-isotype-plate-shadow);
+  pointer-events: none;
 }
 
 .sial-app-isotype img {
@@ -260,6 +282,7 @@ html[data-theme="dark"] .sial-auth-logo {
   height: 100%;
   display: block;
   object-fit: contain;
+  filter: drop-shadow(var(--sial-isotype-image-shadow));
 }
 
 .sial-brand-lockup {
