@@ -206,11 +206,8 @@ html[data-theme="dark"] .variant-institutional {
   --login-footer: rgba(255, 255, 255, .68);
   --login-panel-bg: color-mix(in srgb, var(--sial-surface) 92%, transparent);
   --login-panel-border: color-mix(in srgb, var(--sial-border) 72%, transparent);
-}
-
-.variant-context .sial-brand-name,
-.variant-context .sial-brand-caption {
-  color: #ffffff;
+  --sial-auth-wordmark-color: #ffffff;
+  --sial-auth-caption-color: rgba(255, 255, 255, .82);
 }
 
 .variant-context .sial-btn-icon {
@@ -561,13 +558,12 @@ html[data-theme="dark"] .variant-institutional {
     font-size: 25px;
   }
 
-  .sial-brand-mark {
-    width: 40px;
-    height: 40px;
-  }
-
-  .sial-brand-name {
-    font-size: 18px;
+  .sial-auth-logo {
+    --sial-auth-gap: 10px;
+    --sial-auth-icon-size: 56px;
+    --sial-auth-name-size: 32px;
+    --sial-auth-caption-size: 7.5px;
+    width: min(252px, 84vw);
   }
 }
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1024 1024"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="monograma-sial-s.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="false"
+     inkscape:zoom="0.68362863"
+     inkscape:cx="428.59528"
+     inkscape:cy="559.51431"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5" />
+  <title
+     id="title">Monograma S SIAL</title>
+  <desc
+     id="desc">Monograma S de SIAL compacto con cortes digitales organicos.</desc>
+  <defs
+     id="defs2">
+    <linearGradient
+       id="sblue"
+       x1="188"
+       x2="842"
+       y1="150"
+       y2="870"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(10.343434,-20.686869)">
+      <stop
+         stop-color="#005CA8"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#004B91"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <path
+     fill="none"
+     stroke="url(#sblue)"
+     stroke-width="208"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     d="m 752.36456,152.79811 c -93.86621,2.19457 -183.39837,-2.49002 -277.28156,-2.92556 -129.9986,-0.60308 -196.93891,129.67041 -196.93891,225.67041 0,91 29.44378,138.31966 177.44378,162.31966 l 106,-0.54949 c 150,23 191.66991,83.46278 191.66991,173.46278 0,90 -38.15322,185.8659 -166.15178,185.25829 l -308.14887,-1.46278"
+     id="path2"
+     sodipodi:nodetypes="cssccssc"
+     style="stroke:url(#sblue)" />
+  <path
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="52"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     d="m 864.25215,992.2435 c -35.37786,-1.75478 -595.00128,0.49343 -730.95129,-3.87706"
+     id="path4-7-8"
+     sodipodi:nodetypes="cc"
+     inkscape:label="path6" />
+  <path
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="52"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     d="m 893.76725,67.572103 c -35.37786,-1.75478 -511.62268,-2.43213 -647.57269,-6.80262"
+     id="path4-7-3"
+     sodipodi:nodetypes="cc"
+     inkscape:label="path5" />
+  <path
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="52"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     d="M 637.68273,661.42183 C 580.03719,608.16221 492.05488,501.30449 411.35056,401.07719 M 855.73217,690.1507 C 816.70481,684.47088 745.272,674.84144 640.77778,663.56768"
+     id="path4-7-9"
+     sodipodi:nodetypes="cccc"
+     inkscape:label="path6" />
+</svg>

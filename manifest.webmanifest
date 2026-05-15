@@ -1,0 +1,17 @@
+{
+  "name": "SIAL Movil",
+  "short_name": "SIAL",
+  "description": "Sistema de Informacion Agrologistico",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f1724",
+  "theme_color": "#005CA8",
+  "icons": [
+    {
+      "src": "assets/brand/isotipo-sial.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 860 1100"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="logo-vertical-sial.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.9"
+     inkscape:cx="478.33333"
+     inkscape:cy="441.66667"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13" />
+  <title
+     id="title">Logo vertical SIAL</title>
+  <desc
+     id="desc">Version vertical del logo SIAL con isotipo centrado.</desc>
+  <defs
+     id="defs2">
+    <linearGradient
+       id="blue"
+       x1="138"
+       x2="820"
+       y1="138"
+       y2="820"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#005CA8"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#004B91"
+         id="stop2" />
+    </linearGradient>
+    <clipPath
+       id="leafClip">
+      <path
+         d="M162 884V524c0-205 166-371 371-371h318c10 0 18 8 18 18v318c0 205-166 371-371 371H186c-13 0-24 11-24 24z"
+         id="path2" />
+    </clipPath>
+    <clipPath
+       id="leafClip-7">
+      <path
+         d="M 162,884 V 524 C 162,319 328,153 533,153 h 318 c 10,0 18,8 18,18 V 489 C 869,694 703,860 498,860 H 186 c -13,0 -24,11 -24,24 z"
+         id="path4" />
+    </clipPath>
+  </defs>
+  <text
+     x="422.7742"
+     y="688.2489"
+     text-anchor="middle"
+     fill="#005ca8"
+     font-family="Poppins, Montserrat, Arial, sans-serif"
+     font-size="198.562px"
+     font-weight="700"
+     letter-spacing="5"
+     id="text12"
+     transform="scale(1.0130719,0.98709678)"
+     style="stroke-width:1.04506">SIAL</text>
+  <g
+     transform="matrix(0.62027974,0,0,0.59944064,103.40356,2.0633577)"
+     clip-path="url(#leafClip-7)"
+     id="g14">
+    <path
+       fill="url(#blue)"
+       d="M 162,884 V 524 C 162,319 328,153 533,153 h 318 c 10,0 18,8 18,18 v 318 c 0,205 -166.00526,369.53091 -371,371 l -300.16867,2.15115 C 184.83166,862.24431 162,871 162,884 Z"
+       id="path5"
+       sodipodi:nodetypes="csssssssc"
+       style="fill:url(#blue)" />
+    <path
+       id="banana-accent"
+       fill="#fecc00"
+       d="m 486,866 c 20,-76 58,-127 118,-160 52,-28 100,-21 144,-66 45,-46 78,-102 112,-130 l 9,359 z" />
+    <path
+       id="banana-separator"
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="28"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       d="m 486,866 c 20,-76 58,-127 118,-160 52,-28 100,-21 144,-66 38.3738,-39.22655 86.82535,-101.21056 121.34584,-135.9772 5.96083,-6.00334 14.19522,-26.2532 19.20169,-30.37617"
+       sodipodi:nodetypes="cccsc" />
+    <path
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="48"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       d="m 236.2147,874.49295 c -1.7872,-198.09923 41.98343,-409.2361 108.57033,-469.76284 58.03464,-52.75283 173.38951,-69.80776 251.74794,-98.7305"
+       id="path6"
+       sodipodi:nodetypes="csc" />
+    <path
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="46"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       d="m 353.55754,851.73274 c -7.59431,-99.70678 -17.56539,-303.09726 70.23418,-326.48582 6.92159,-1.84381 72.42887,4.19778 56.53364,-54.68669 -7.42581,-27.50917 21.26119,-69.30566 93.28945,-25.1792"
+       id="path7"
+       sodipodi:nodetypes="cssc" />
+    <path
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="46"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       d="M 393.02302,854.95947 C 347.8748,626.09941 407.06401,683.2609 540.63964,590.43593 M 202.25116,858.80959 C 225.13026,633.62681 246.66352,476.54342 351.09623,398.0727"
+       id="path8"
+       sodipodi:nodetypes="cccc" />
+    <circle
+       cx="653.09302"
+       cy="294.87479"
+       r="62"
+       fill="#ffffff"
+       id="circle9" />
+    <circle
+       fill="#005ca8"
+       id="circle10"
+       r="30"
+       cy="294.87479"
+       cx="651.57184" />
+    <circle
+       cx="606.69666"
+       cy="459.33185"
+       r="57"
+       fill="#ffffff"
+       id="circle11" />
+    <circle
+       fill="#005ca8"
+       id="circle14-9"
+       r="27"
+       cy="460.69028"
+       cx="605.51227" />
+    <circle
+       cx="566.45343"
+       cy="587.20923"
+       r="57"
+       fill="#ffffff"
+       id="circle13" />
+    <circle
+       fill="#005ca8"
+       id="circle14"
+       r="27"
+       cy="588.28479"
+       cx="568.60461" />
+  </g>
+  <text
+     x="440.69208"
+     y="723.26691"
+     text-anchor="middle"
+     fill="#263652"
+     font-family="Poppins, Arial, sans-serif"
+     font-size="37.9127px"
+     font-weight="400"
+     id="text13"
+     transform="scale(1.0046877,0.99533418)"
+     style="stroke-width:1.14887">Sistema de Informacion Agrologistico</text>
+</svg>

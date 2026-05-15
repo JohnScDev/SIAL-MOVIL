@@ -53,6 +53,18 @@ Regla movil de campos:
 - Campo de seleccion: se presenta como accion tactil. Para listas largas usa `SialMobileUI.openMobilePicker` con bottom sheet y busqueda opcional.
 - Recuperar acceso: no es enlace decorativo; usa la misma logica del modulo web en tres pasos: usuario, codigo de 6 digitos y nueva contrasena. En movil se presenta como bottom sheet o pantalla dedicada, con titulos centrados, validacion inline, OTP tactil, reenvio de codigo, confirmacion no bloqueante y retorno automatico al login al finalizar.
 
+## Identidad SIAL
+
+Los activos de marca se ubican en `assets/brand` y provienen de la Hoja Digital de identidad. Antes de ajustar logos se debe revisar nuevamente esa carpeta fuente, porque los SVG pueden actualizarse.
+
+- `isotipo-sial.svg`: icono de aplicacion, icono de pestana, apple touch icon, manifest y marca compacta para seleccion, headers internos y drawer, sin caja contenedora.
+- `logo-horizontal-sial.svg`: activo disponible como referencia de marca; login y recuperacion usan isotipo + texto editable.
+- `aplicacion-fondo-oscuro-sial.svg`: activo disponible para evaluacion posterior; no se usa por ahora en login.
+- `isotipo-sial-monocromo.svg`: uso monocromo o de baja saturacion.
+- `monograma-sial-s.svg`: respaldo para tamanos muy reducidos.
+
+Regla: la marca SIAL identifica el producto/app. Login y recuperacion usan isotipo SIAL con texto editable; el interior de la app usa isotipo SIAL y el texto de contexto identifica finca/unidad seleccionada.
+
 ## Vistas incluidas
 
 - `index.html`: entrada de login institucional.

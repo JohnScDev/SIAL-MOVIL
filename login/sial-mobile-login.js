@@ -13,6 +13,35 @@
     return new URL(basePath + fileName, window.location.href).href;
   }
 
+  function brandAssetUrl(fileName) {
+    const normalizedPath = window.location.pathname.replace(/\\/g, "/");
+    const isNestedLogin = /\/login\/[^/]*$/i.test(normalizedPath);
+    const basePath = isNestedLogin ? "../assets/brand/" : "assets/brand/";
+    return new URL(basePath + fileName, window.location.href).href;
+  }
+
+  function createAuthLogo() {
+    const logo = document.createElement("span");
+    logo.className = "sial-auth-logo";
+    logo.dataset.recoveryLogo = "";
+
+    const isotype = document.createElement("img");
+    isotype.src = brandAssetUrl("isotipo-sial.svg");
+    isotype.alt = "";
+    isotype.setAttribute("aria-hidden", "true");
+
+    const wordmark = document.createElement("span");
+    wordmark.className = "sial-auth-wordmark";
+    const name = document.createElement("strong");
+    name.textContent = "SIAL";
+    const caption = document.createElement("span");
+    caption.textContent = "Sistema de Informacion Agrologistico";
+    wordmark.append(name, caption);
+
+    logo.append(isotype, wordmark);
+    return logo;
+  }
+
   function preloadLoginImages() {
     loginBackgroundImages.forEach(({ file }) => {
       const image = new Image();
@@ -120,7 +149,7 @@
     const body = document.createElement("div");
     body.className = "sial-recovery-body";
 
-    shell.append(stepper, heading, body);
+    shell.append(createAuthLogo(), stepper, heading, body);
 
     function clearResendTimer() {
       if (!state.resendTimer) return;

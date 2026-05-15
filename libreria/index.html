@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" type="image/svg+xml" href="../assets/brand/isotipo-sial.svg">
+  <link rel="apple-touch-icon" href="../assets/brand/isotipo-sial.svg">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
   <title>SIAL Movil - Catalogo de libreria</title>
   <script>
     (function () {
@@ -18,7 +22,9 @@
   <main class="library-shell" data-library-audit="complete">
     <header class="library-topbar">
       <a class="library-brand" href="../index.html" aria-label="Volver al inicio">
-        <span class="sial-company-logo">S</span>
+        <span class="sial-app-isotype" aria-hidden="true">
+          <img src="../assets/brand/isotipo-sial.svg" alt="">
+        </span>
         <span>
           <strong>SIAL Movil</strong>
           <small>Libreria reutilizable</small>
@@ -72,6 +78,8 @@
         <div class="library-component-row"><strong>Feedback persistente</strong><span>Banner global</span><code>SialMobileUI.showBanner</code></div>
         <div class="library-component-row"><strong>Decision critica</strong><span>Modal centrado</span><code>SialMobileUI.openDialog</code></div>
         <div class="library-component-row"><strong>Decision contextual</strong><span>Bottom sheet</span><code>variant: "sheet"</code></div>
+        <div class="library-component-row"><strong>Marca autenticacion</strong><span>Logo horizontal unico</span><code>.sial-auth-logo</code></div>
+        <div class="library-component-row"><strong>Marca aplicacion</strong><span>Isotipo en header y drawer</span><code>.sial-app-isotype</code></div>
         <div class="library-component-row"><strong>Recuperacion de acceso</strong><span>Usuario, OTP y contrasena</span><code>.sial-recovery-flow</code></div>
         <div class="library-component-row"><strong>Sin datos</strong><span>Empty state</span><code>.sial-empty-state</code></div>
       </div>
@@ -87,6 +95,22 @@
         <article class="library-token success"><strong>Success</strong><span>Confirmacion</span></article>
         <article class="library-token warning"><strong>Warning</strong><span>Advertencia</span></article>
         <article class="library-token error"><strong>Error</strong><span>Bloqueo o falla</span></article>
+      </div>
+      <div class="library-preview-grid">
+        <article class="sial-card sial-card-pad library-demo-card">
+          <span class="sial-auth-logo" role="img" aria-label="SIAL - Sistema de Informacion Agrologistico">
+            <img src="../assets/brand/logo-horizontal-sial.svg" alt="">
+          </span>
+          <p class="library-muted">Uso: login y recuperacion de acceso. Por ahora se usa un solo logo horizontal.</p>
+          <code>assets/brand/logo-horizontal-sial.svg</code>
+        </article>
+        <article class="sial-card sial-card-pad library-demo-card">
+          <span class="sial-app-isotype" aria-hidden="true">
+            <img src="../assets/brand/isotipo-sial.svg" alt="">
+          </span>
+          <p class="library-muted">Uso: header, menu y vistas internas de aplicacion. No debe ir dentro de cuadros comprimidos.</p>
+          <code>assets/brand/isotipo-sial.svg</code>
+        </article>
       </div>
       <div class="library-spec">
         <strong>Regla</strong>
@@ -106,7 +130,7 @@
               <button class="sial-btn sial-btn-icon" type="button" aria-label="Abrir menu">
                 <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
               </button>
-              <div class="sial-company-logo">SI</div>
+              <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
               <div class="sial-context-text"><strong>Contexto activo</strong><span>Operacion movil</span></div>
             </div>
           </header>

@@ -78,6 +78,10 @@ test("login movil recupera acceso con la misma logica de tres pasos del modulo w
 
   await page.goto(loginUrl, { waitUntil: "networkidle" });
   await expect(page.locator("[data-recover-access]")).toBeVisible();
+  const brandLogo = page.locator(".sial-auth-logo img[src$='logo-horizontal-sial.svg']");
+  await expect(brandLogo).toBeVisible();
+  await expect(brandLogo).toHaveJSProperty("complete", true);
+  await expect(page.locator(".sial-auth-logo img")).toHaveCount(1);
 
   const username = page.locator("input[name='usuario']");
   await expect(username).toHaveAttribute("inputmode", "email");
@@ -86,6 +90,10 @@ test("login movil recupera acceso con la misma logica de tres pasos del modulo w
 
   await page.click("[data-recover-access]");
   await expect(page.locator(".sial-modal-backdrop .sial-bottom-sheet")).toBeVisible();
+  const recoveryLogo = page.locator("[data-recovery-logo] img[src$='logo-horizontal-sial.svg']");
+  await expect(recoveryLogo).toBeVisible();
+  await expect(recoveryLogo).toHaveJSProperty("complete", true);
+  await expect(page.locator("[data-recovery-logo] img")).toHaveCount(1);
   await expect(page.locator(".sial-dialog-copy")).toHaveCount(0);
   await expect(page.locator(".sial-dialog-header h2")).toHaveCSS("text-align", "center");
   await expect(page.locator("[data-recovery-stepper]")).toBeVisible();
@@ -111,8 +119,10 @@ test("login movil recupera acceso con la misma logica de tres pasos del modulo w
   await expect(page.locator("[data-recovery-step='code'] button[type='submit']")).toBeDisabled();
   await expect(page.locator("[data-recovery-resend]")).toContainText("Reenviar codigo en 45s");
 
-  await page.locator("[data-recovery-otp]").first().click();
-  await page.keyboard.type("123456");
+  const otpInputs = page.locator("[data-recovery-otp]");
+  for (let index = 0; index < 6; index += 1) {
+    await otpInputs.nth(index).fill(String(index + 1));
+  }
   await expect(page.locator("[data-recovery-step='code'] button[type='submit']")).toBeEnabled();
   await page.click("[data-recovery-step='code'] button[type='submit']");
   await expect(page.locator("[data-recovery-title]")).toContainText("Crear nueva contrasena");

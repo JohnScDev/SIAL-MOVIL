@@ -49,6 +49,10 @@ const doc = readIfExists(docPath || "", "documento base");
   "data-library-modal",
   "data-library-sheet",
   "data-library-inline",
+  "sial-auth-logo",
+  "sial-app-isotype",
+  "logo-horizontal-sial.svg",
+  "isotipo-sial.svg",
   "SialMobileUI.showToast",
   "SialMobileUI.showBanner",
   "SialMobileUI.openMobilePicker",
@@ -73,6 +77,10 @@ const doc = readIfExists(docPath || "", "documento base");
   "window.SialMobileUI.setInlineStatus",
   "data-library-reset"
 ].forEach((needle) => requireContains(script, needle, "script catalogo"));
+
+if (html.includes("aplicacion-fondo-oscuro-sial.svg") || html.includes("sial-logo-dark")) {
+  failures.push("catalogo: autenticacion debe mostrar un solo logo horizontal, sin variante oscura simultanea");
+}
 
 [
   ".library-shell",
