@@ -280,6 +280,9 @@
 
       function updateSubmit() {
         state.otp = inputs.map((otpInput) => otpInput.value).join("");
+        inputs.forEach((otpInput) => {
+          otpInput.classList.toggle("has-value", Boolean(otpInput.value));
+        });
         submit.disabled = state.otp.length !== 6;
       }
 

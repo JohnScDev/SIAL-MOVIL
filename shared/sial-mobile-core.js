@@ -1,6 +1,40 @@
 (function () {
   const storageKey = "sial-mobile-theme";
   const root = document.documentElement;
+  const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  const dialogExitDelay = 220;
+
+  function prefersReducedMotion() {
+    return Boolean(motionQuery && motionQuery.matches);
+  }
+
+  function navigateTo(href, options = {}) {
+    if (!href) return;
+    if (prefersReducedMotion()) {
+      window.location.href = href;
+      return;
+    }
+    if (document.body.classList.contains("sial-screen-exiting")) return;
+    document.body.classList.remove("drawer-open");
+    document.body.classList.add("sial-screen-exiting");
+    window.setTimeout(() => {
+      window.location.href = href;
+    }, options.delay || 150);
+  }
+
+  function shouldAnimateAnchor(anchor, event) {
+    if (!anchor || event.defaultPrevented || event.button !== 0) return false;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+    if (anchor.target && anchor.target !== "_self") return false;
+    if (anchor.hasAttribute("download") || anchor.hasAttribute("data-no-transition")) return false;
+    const rawHref = anchor.getAttribute("href") || "";
+    if (!rawHref || rawHref.startsWith("#") || rawHref.startsWith("javascript:")) return false;
+    const nextUrl = new URL(anchor.href, window.location.href);
+    const currentUrl = new URL(window.location.href);
+    if (nextUrl.href === currentUrl.href) return false;
+    if (nextUrl.origin !== currentUrl.origin && currentUrl.protocol !== "file:") return false;
+    return true;
+  }
 
   function preferredTheme() {
     const saved = localStorage.getItem(storageKey);
@@ -140,18 +174,45 @@
     document.querySelectorAll(`[data-banner-id="${id}"]`).forEach((banner) => banner.remove());
   }
 
-  function closeDialog(id) {
-    const selector = id ? `[data-dialog-id="${id}"]` : ".sial-modal-backdrop:last-of-type";
-    const dialog = document.querySelector(selector);
-    if (dialog) dialog.remove();
+  function syncDialogOpenState() {
     if (!document.querySelector(".sial-modal-backdrop")) {
       document.body.classList.remove("dialog-open");
     }
   }
 
+  function closeDialog(id, options = {}) {
+    const selector = id ? `[data-dialog-id="${id}"]` : ".sial-modal-backdrop:last-of-type";
+    const dialog = document.querySelector(selector);
+    if (!dialog) {
+      syncDialogOpenState();
+      return;
+    }
+
+    const shouldAnimate = !options.immediate
+      && dialog.dataset.dialogId === "access-recovery"
+      && !prefersReducedMotion();
+
+    if (!shouldAnimate) {
+      dialog.remove();
+      syncDialogOpenState();
+      return;
+    }
+
+    if (dialog.classList.contains("is-closing")) return;
+    if (dialog.contains(document.activeElement) && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    dialog.classList.add("is-closing");
+    dialog.setAttribute("aria-hidden", "true");
+    window.setTimeout(() => {
+      dialog.remove();
+      syncDialogOpenState();
+    }, options.delay || dialogExitDelay);
+  }
+
   function openDialog(options = {}) {
     const id = options.id || `dialog-${Date.now()}`;
-    closeDialog(id);
+    closeDialog(id, { immediate: true });
 
     const backdrop = document.createElement("div");
     backdrop.className = "sial-modal-backdrop";
@@ -355,7 +416,15 @@
     hideBanner,
     openDialog,
     openMobilePicker,
-    closeDialog
+    closeDialog,
+    navigateTo
+  });
+
+  document.addEventListener("click", (event) => {
+    const anchor = event.target.closest("a[href]");
+    if (!shouldAnimateAnchor(anchor, event)) return;
+    event.preventDefault();
+    navigateTo(anchor.href);
   });
 
   document.addEventListener("click", (event) => {
@@ -428,7 +497,7 @@
     });
     if (next) {
       window.setTimeout(() => {
-        window.location.href = next;
+        navigateTo(next);
       }, 760);
     }
   });
@@ -464,7 +533,7 @@
       });
       if (form.dataset.next) {
         window.setTimeout(() => {
-          window.location.href = form.dataset.next;
+          navigateTo(form.dataset.next);
         }, 780);
       }
     }, 900);
