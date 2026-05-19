@@ -8,6 +8,18 @@
     return Boolean(motionQuery && motionQuery.matches);
   }
 
+  function replayMotionState(element, stateClass, duration = 520) {
+    const node = resolveElement(element);
+    if (!node || !stateClass || prefersReducedMotion()) return;
+    node.classList.remove(stateClass);
+    window.requestAnimationFrame(() => {
+      node.classList.add(stateClass);
+    });
+    window.setTimeout(() => {
+      node.classList.remove(stateClass);
+    }, duration);
+  }
+
   function navigateTo(href, options = {}) {
     if (!href) return;
     if (prefersReducedMotion()) {
@@ -417,6 +429,7 @@
     openDialog,
     openMobilePicker,
     closeDialog,
+    replayMotionState,
     navigateTo
   });
 
@@ -479,9 +492,20 @@
   document.addEventListener("click", (event) => {
     const finca = event.target.closest("[data-finca-option]");
     if (!finca) return;
+    if (finca.disabled || finca.getAttribute("aria-disabled") === "true") {
+      replayMotionState(finca, "is-blocked-attempt", 420);
+      showToast({
+        type: "error",
+        title: "Finca no disponible",
+        message: "Selecciona una finca activa para continuar."
+      });
+      return;
+    }
     document.querySelectorAll("[data-finca-option]").forEach((option) => {
       option.setAttribute("aria-pressed", String(option === finca));
+      option.classList.remove("is-continuing");
     });
+    finca.classList.add("is-continuing");
     const next = finca.dataset.next;
     localStorage.setItem("sial-mobile-context", JSON.stringify({
       name: finca.dataset.fincaName || "Contexto operativo",
@@ -498,7 +522,9 @@
     if (next) {
       window.setTimeout(() => {
         navigateTo(next);
-      }, 760);
+      }, 700);
+    } else {
+      window.setTimeout(() => finca.classList.remove("is-continuing"), 900);
     }
   });
 
@@ -508,8 +534,10 @@
     event.preventDefault();
 
     const submit = form.querySelector("[type='submit']");
+    form.classList.add("is-submitting");
     if (submit) {
       submit.disabled = true;
+      submit.classList.add("is-loading");
       submit.dataset.originalText = submit.textContent;
       submit.textContent = "Validando acceso...";
     }
@@ -523,8 +551,10 @@
     window.setTimeout(() => {
       if (submit) {
         submit.disabled = false;
+        submit.classList.remove("is-loading");
         submit.textContent = submit.dataset.originalText || "Ingresar";
       }
+      form.classList.remove("is-submitting");
       showToast({
         type: "success",
         icon: "ok",

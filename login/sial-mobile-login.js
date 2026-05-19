@@ -241,6 +241,7 @@
         const value = input.value.trim();
 
         if (!value) {
+          window.SialMobileUI?.replayMotionState?.(input, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
             title: "Dato requerido",
@@ -289,7 +290,11 @@
       function distributeDigits(value) {
         const digits = value.replace(/\D/g, "").slice(0, 6).split("");
         inputs.forEach((otpInput, digitIndex) => {
+          const hadValue = Boolean(otpInput.value);
           otpInput.value = digits[digitIndex] || "";
+          if (!hadValue && otpInput.value) {
+            window.SialMobileUI?.replayMotionState?.(otpInput, "is-digit-entered", 260);
+          }
         });
         const focusIndex = Math.min(digits.length, inputs.length) - 1;
         if (focusIndex >= 0) inputs[focusIndex].focus();
@@ -304,6 +309,7 @@
         }
 
         input.value = value;
+        if (value) window.SialMobileUI?.replayMotionState?.(input, "is-digit-entered", 260);
         if (value && inputs[index + 1]) inputs[index + 1].focus();
         updateSubmit();
       });
@@ -382,6 +388,7 @@
         state.otp = inputs.map((input) => input.value).join("");
 
         if (state.otp.length !== 6) {
+          window.SialMobileUI?.replayMotionState?.(group, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
             title: "Codigo incompleto",
@@ -448,6 +455,7 @@
         const confirmValue = confirmPassword.value;
 
         if (!newValue || !confirmValue) {
+          window.SialMobileUI?.replayMotionState?.(!newValue ? newWrap : confirmWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
             title: "Datos requeridos",
@@ -458,6 +466,7 @@
         }
 
         if (newValue.length < 8) {
+          window.SialMobileUI?.replayMotionState?.(newWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
             title: "Contrasena insegura",
@@ -468,6 +477,7 @@
         }
 
         if (newValue !== confirmValue) {
+          window.SialMobileUI?.replayMotionState?.(confirmWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
             title: "Las contrasenas no coinciden",
@@ -477,6 +487,9 @@
           return;
         }
 
+        form.classList.add("is-submitting");
+        submit.disabled = true;
+        submit.classList.add("is-loading");
         window.SialMobileUI?.setInlineStatus(status, {
           type: "success",
           title: "Contrasena actualizada",
