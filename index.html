@@ -3,8 +3,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <link rel="icon" type="image/svg+xml" href="assets/brand/isotipo-sial.svg">
-  <link rel="apple-touch-icon" href="assets/brand/isotipo-sial.svg">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#005CA8">
   <title>SIAL Movil - Login institucional</title>
@@ -44,12 +42,12 @@
           </section>
 
           <section class="login-panel" aria-label="Formulario de ingreso">
-            <form class="login-form" data-login-form data-next="app/seleccion-finca.html">
+            <form class="login-form" data-login-form data-next="app/seleccion-finca.html" novalidate>
               <div class="sial-field">
                 <label class="sial-label" for="usuario">Usuario</label>
                 <div class="sial-input-wrap">
                   <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
-                  <input class="sial-input" id="usuario" name="usuario" type="text" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="usuario.sial">
+                  <input class="sial-input" id="usuario" name="usuario" type="text" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="usuario.sial" required aria-required="true">
                 </div>
               </div>
 
@@ -57,7 +55,7 @@
                 <label class="sial-label" for="contrasena">Contrasena</label>
                 <div class="sial-input-wrap">
                   <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-                  <input class="sial-input" id="contrasena" name="contrasena" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Ingresa tu contrasena">
+                  <input class="sial-input" id="contrasena" name="contrasena" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Ingresa tu contrasena" required aria-required="true">
                   <button class="sial-password-button" type="button" data-password-toggle="#contrasena" aria-label="Mostrar contrasena">
                     <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>

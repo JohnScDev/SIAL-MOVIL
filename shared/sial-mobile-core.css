@@ -540,6 +540,12 @@ html[data-theme="dark"] .sial-auth-logo {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
 }
 
+.sial-input-wrap.is-invalid,
+.sial-input-wrap.sial-input.is-invalid {
+  border-color: color-mix(in srgb, var(--sial-error) 64%, var(--sial-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-error) 14%, transparent);
+}
+
 .sial-input {
   width: 100%;
   min-width: 0;
@@ -566,6 +572,10 @@ html[data-theme="dark"] .sial-auth-logo {
 .sial-input-wrap.sial-input:focus {
   border-color: var(--sial-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-input[aria-invalid="true"] {
+  color: var(--sial-text);
 }
 
 .sial-field-note {
@@ -1209,19 +1219,24 @@ html[data-theme="dark"] .sial-auth-logo {
 
 .sial-recovery-flow {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  padding-top: 2px;
 }
 
 .sial-recovery-flow > .sial-auth-logo {
   --sial-auth-gap: 10px;
-  --sial-auth-icon-size: clamp(52px, 13.5vw, 58px);
-  --sial-auth-name-size: clamp(30px, 8.2vw, 34px);
+  --sial-auth-icon-size: clamp(54px, 14vw, 62px);
+  --sial-auth-name-size: clamp(31px, 8.1vw, 36px);
   --sial-auth-caption-size: clamp(7.5px, 1.95vw, 8.5px);
-  --sial-auth-halo-opacity: 0;
-  --sial-auth-shadow: none;
-  width: auto;
-  max-width: min(250px, 92%);
+  --sial-auth-halo-opacity: .62;
+  --sial-auth-shadow: 0 6px 14px rgba(16, 24, 40, .1);
+  width: min(262px, 92%);
   justify-self: center;
+  justify-content: center;
+}
+
+html[data-theme="dark"] .sial-recovery-flow > .sial-auth-logo {
+  --sial-auth-shadow: 0 8px 16px rgba(0, 0, 0, .28);
 }
 
 .sial-recovery-flow > .sial-auth-logo,
@@ -1337,7 +1352,9 @@ html[data-theme="dark"] .sial-auth-logo {
 
 .sial-recovery-heading {
   display: grid;
-  gap: 5px;
+  gap: 6px;
+  margin-top: 2px;
+  text-align: center;
 }
 
 .sial-recovery-heading h3,
@@ -1356,6 +1373,8 @@ html[data-theme="dark"] .sial-auth-logo {
   color: var(--sial-text-2);
   font-size: 12px;
   line-height: 1.45;
+  max-width: 34ch;
+  margin-inline: auto;
 }
 
 .sial-recovery-body {
@@ -1425,6 +1444,11 @@ html[data-theme="dark"] .sial-auth-logo {
   border-color: var(--sial-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
   transform: translateY(-1px);
+}
+
+.sial-otp-input[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--sial-error) 64%, var(--sial-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-error) 14%, transparent);
 }
 
 .sial-otp-group .sial-otp-input {

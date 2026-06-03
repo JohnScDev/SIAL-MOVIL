@@ -125,6 +125,8 @@
     if (!node) return null;
     const type = normalizeType(options.type);
     node.className = `sial-status ${type}`;
+    node.setAttribute("role", type === "error" ? "alert" : "status");
+    node.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
     node.hidden = false;
     node.replaceChildren();
     appendFeedbackText(node, options.title, options.message || "");
@@ -136,6 +138,44 @@
     if (!node) return;
     node.hidden = true;
     node.replaceChildren();
+  }
+
+  function setFieldInvalid(field, invalid) {
+    if (!field) return;
+    field.setAttribute("aria-invalid", String(Boolean(invalid)));
+    const frame = field.closest(".sial-input-wrap");
+    if (frame) frame.classList.toggle("is-invalid", Boolean(invalid));
+  }
+
+  function validateLoginForm(form) {
+    const status = form.querySelector("[data-login-status]");
+    const rules = [
+      {
+        field: form.querySelector("input[name='usuario']"),
+        title: "Usuario requerido",
+        message: "Ingresa tu usuario para continuar."
+      },
+      {
+        field: form.querySelector("input[name='contrasena']"),
+        title: "Contrasena requerida",
+        message: "Ingresa tu contrasena para continuar."
+      }
+    ];
+    rules.forEach(({ field }) => setFieldInvalid(field, false));
+    const invalid = rules.find(({ field }) => field && !field.value.trim());
+    if (!invalid) {
+      clearInlineStatus(status);
+      return true;
+    }
+    setFieldInvalid(invalid.field, true);
+    replayMotionState(invalid.field.closest(".sial-input-wrap") || invalid.field, "is-blocked-attempt", 420);
+    setInlineStatus(status, {
+      type: "error",
+      title: invalid.title,
+      message: invalid.message
+    });
+    invalid.field.focus();
+    return false;
   }
 
   function ensureBannerRegion() {
@@ -489,6 +529,15 @@
     }
   });
 
+  document.addEventListener("input", (event) => {
+    const field = event.target.closest("[data-login-form] input");
+    if (!field) return;
+    setFieldInvalid(field, false);
+    const form = field.closest("[data-login-form]");
+    const hasPendingRequired = Array.from(form.querySelectorAll("input[required]")).some((input) => !input.value.trim());
+    if (!hasPendingRequired) clearInlineStatus(form.querySelector("[data-login-status]"));
+  });
+
   document.addEventListener("click", (event) => {
     const finca = event.target.closest("[data-finca-option]");
     if (!finca) return;
@@ -532,6 +581,8 @@
     const form = event.target.closest("[data-login-form]");
     if (!form) return;
     event.preventDefault();
+
+    if (!validateLoginForm(form)) return;
 
     const submit = form.querySelector("[type='submit']");
     form.classList.add("is-submitting");

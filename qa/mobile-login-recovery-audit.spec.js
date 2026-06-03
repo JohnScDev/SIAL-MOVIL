@@ -58,6 +58,9 @@ test("login movil no expone opcion demo y mantiene ingreso", async ({ page }) =>
   await expect(page.locator("[data-fill-demo]")).toHaveCount(0);
   await expect(page.locator("[data-login-form]")).toBeVisible();
 
+  await page.click("[data-login-form] button[type='submit']");
+  await expect(page.locator("[data-login-status]")).toContainText("Usuario requerido");
+
   await page.fill("input[name='usuario']", "operador.sial");
   await page.fill("input[name='contrasena']", "Sial1234!");
   await page.click("[data-login-form] button[type='submit']");
@@ -78,22 +81,25 @@ test("login movil recupera acceso con la misma logica de tres pasos del modulo w
 
   await page.goto(loginUrl, { waitUntil: "networkidle" });
   await expect(page.locator("[data-recover-access]")).toBeVisible();
-  const brandLogo = page.locator(".sial-auth-logo img[src$='logo-horizontal-sial.svg']");
+  const brandLogo = page.locator(".sial-auth-logo img[src$='isotipo-sial.svg']");
   await expect(brandLogo).toBeVisible();
   await expect(brandLogo).toHaveJSProperty("complete", true);
   await expect(page.locator(".sial-auth-logo img")).toHaveCount(1);
+  await expect(page.locator(".sial-auth-logo .sial-auth-wordmark")).toBeVisible();
 
   const username = page.locator("input[name='usuario']");
   await expect(username).toHaveAttribute("inputmode", "email");
   await expect(username).toHaveAttribute("autocapitalize", "none");
   await expect(username).toHaveAttribute("spellcheck", "false");
+  await expect(username).toHaveAttribute("required", "");
 
   await page.click("[data-recover-access]");
   await expect(page.locator(".sial-modal-backdrop .sial-bottom-sheet")).toBeVisible();
-  const recoveryLogo = page.locator("[data-recovery-logo] img[src$='logo-horizontal-sial.svg']");
+  const recoveryLogo = page.locator("[data-recovery-logo] img[src$='isotipo-sial.svg']");
   await expect(recoveryLogo).toBeVisible();
   await expect(recoveryLogo).toHaveJSProperty("complete", true);
   await expect(page.locator("[data-recovery-logo] img")).toHaveCount(1);
+  await expect(page.locator("[data-recovery-logo] .sial-auth-wordmark")).toBeVisible();
   await expect(page.locator(".sial-dialog-copy")).toHaveCount(0);
   await expect(page.locator(".sial-dialog-header h2")).toHaveCSS("text-align", "center");
   await expect(page.locator("[data-recovery-stepper]")).toBeVisible();

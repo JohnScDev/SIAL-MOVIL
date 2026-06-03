@@ -108,8 +108,18 @@
     const status = document.createElement("div");
     status.className = "sial-status info";
     status.dataset.recoveryStatus = "";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
     status.hidden = true;
     return status;
+  }
+
+  function markInputInvalid(input, invalid) {
+    if (!input) return;
+    input.setAttribute("aria-invalid", String(Boolean(invalid)));
+    const frame = input.closest(".sial-input-wrap");
+    if (frame) frame.classList.toggle("is-invalid", Boolean(invalid));
+    if (input.classList.contains("sial-input-wrap")) input.classList.toggle("is-invalid", Boolean(invalid));
   }
 
   function createPasswordToggle(targetSelector) {
@@ -221,7 +231,13 @@
       input.spellcheck = false;
       input.enterKeyHint = "send";
       input.placeholder = "Nombre de usuario";
+      input.required = true;
+      input.setAttribute("aria-required", "true");
       input.value = state.user;
+      input.addEventListener("input", () => {
+        markInputInvalid(input, false);
+        window.SialMobileUI?.clearInlineStatus?.(status);
+      });
       const note = createTextElement("p", "sial-field-note", "Debe corresponder al usuario asignado en SIAL.");
       field.append(label, input, note);
 
@@ -241,6 +257,7 @@
         const value = input.value.trim();
 
         if (!value) {
+          markInputInvalid(input, true);
           window.SialMobileUI?.replayMotionState?.(input, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
@@ -276,12 +293,14 @@
       input.autocorrect = "off";
       input.spellcheck = false;
       input.enterKeyHint = index === 5 ? "done" : "next";
+      input.required = true;
       input.setAttribute("aria-label", `Digito ${index + 1} del codigo`);
       if (index === 0) input.autocomplete = "one-time-code";
 
       function updateSubmit() {
         state.otp = inputs.map((otpInput) => otpInput.value).join("");
         inputs.forEach((otpInput) => {
+          markInputInvalid(otpInput, false);
           otpInput.classList.toggle("has-value", Boolean(otpInput.value));
         });
         submit.disabled = state.otp.length !== 6;
@@ -388,6 +407,7 @@
         state.otp = inputs.map((input) => input.value).join("");
 
         if (state.otp.length !== 6) {
+          inputs.forEach((input) => markInputInvalid(input, !input.value));
           window.SialMobileUI?.replayMotionState?.(group, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
@@ -425,6 +445,9 @@
       newPassword.autocomplete = "new-password";
       newPassword.placeholder = "Nueva contrasena";
       newPassword.enterKeyHint = "next";
+      newPassword.required = true;
+      newPassword.minLength = 8;
+      newPassword.setAttribute("aria-required", "true");
       newWrap.append(newPassword, createPasswordToggle("#recoveryNewPassword"));
       newField.append(newWrap);
 
@@ -440,8 +463,17 @@
       confirmPassword.autocomplete = "new-password";
       confirmPassword.placeholder = "Confirma la contrasena";
       confirmPassword.enterKeyHint = "done";
+      confirmPassword.required = true;
+      confirmPassword.minLength = 8;
+      confirmPassword.setAttribute("aria-required", "true");
       confirmWrap.append(confirmPassword, createPasswordToggle("#recoveryConfirmPassword"));
       confirmField.append(confirmWrap);
+      [newPassword, confirmPassword].forEach((input) => {
+        input.addEventListener("input", () => {
+          markInputInvalid(input, false);
+          window.SialMobileUI?.clearInlineStatus?.(status);
+        });
+      });
 
       const note = createTextElement("p", "sial-field-note", "Usa minimo 8 caracteres, combinando letras, numeros y simbolos.");
       const status = createStatus();
@@ -455,6 +487,8 @@
         const confirmValue = confirmPassword.value;
 
         if (!newValue || !confirmValue) {
+          markInputInvalid(newPassword, !newValue);
+          markInputInvalid(confirmPassword, !confirmValue);
           window.SialMobileUI?.replayMotionState?.(!newValue ? newWrap : confirmWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
@@ -466,6 +500,7 @@
         }
 
         if (newValue.length < 8) {
+          markInputInvalid(newPassword, true);
           window.SialMobileUI?.replayMotionState?.(newWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
@@ -477,6 +512,7 @@
         }
 
         if (newValue !== confirmValue) {
+          markInputInvalid(confirmPassword, true);
           window.SialMobileUI?.replayMotionState?.(confirmWrap, "is-blocked-attempt", 420);
           window.SialMobileUI?.setInlineStatus(status, {
             type: "error",
