@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const storageThemeKey = "sial-mobile-theme";
   const contextStorageKey = "sial-mobile-context";
   const companyStorageKey = "sial-mobile-company";
@@ -502,13 +502,13 @@
     const company = selectedCompany();
     if (!company.name) return;
 
-    document.querySelectorAll("[data-company-name]").forEach((node) => {
+    document.querySelectorAll("[data-company-name]:not([data-company-option])").forEach((node) => {
       node.textContent = company.name;
     });
-    document.querySelectorAll("[data-company-subtitle]").forEach((node) => {
+    document.querySelectorAll("[data-company-subtitle]:not([data-company-option])").forEach((node) => {
       node.textContent = company.subtitle || "Empresa";
     });
-    document.querySelectorAll("[data-company-logo]").forEach((node) => {
+    document.querySelectorAll("[data-company-logo]:not([data-company-option])").forEach((node) => {
       node.textContent = company.logo || "--";
     });
   }
@@ -528,47 +528,120 @@
   }
 
   function hydrateSelectionCards() {
-    document.querySelectorAll("[data-company-option]").forEach((card) => {
-      const titleNode = card.querySelector(".sial-finca-info strong");
-      if (titleNode && !titleNode.textContent.trim()) {
-        const fallback = card.dataset.companyName || card.getAttribute("aria-label");
-        if (fallback) titleNode.textContent = fallback;
-      }
-
-      const subtitleNodes = card.querySelectorAll(".sial-finca-info > span:not(.sial-finca-meta)");
-      if (subtitleNodes.length) {
-        const subtitleNode = subtitleNodes[subtitleNodes.length - 1];
-        if (!subtitleNode.textContent.trim()) {
-          subtitleNode.textContent = card.dataset.companySubtitle || "";
+    const renderCompanyCard = (card) => {
+      const infoNode = card.querySelector(".sial-finca-info") || (() => {
+        const created = document.createElement("span");
+        created.className = "sial-finca-info";
+        card.appendChild(created);
+        return created;
+      })();
+      const titleNode = infoNode.querySelector("strong") || (() => {
+        const created = document.createElement("strong");
+        const reference = infoNode.querySelector("span.sial-finca-meta");
+        if (reference) {
+          infoNode.insertBefore(created, reference);
+        } else {
+          infoNode.appendChild(created);
         }
-      }
+        return created;
+      })();
+      const existingSubtitleNode = infoNode.querySelector(".sial-finca-meta") ? infoNode.querySelector(".sial-finca-meta").previousElementSibling : null;
+      const subtitleNode = existingSubtitleNode && existingSubtitleNode.tagName === "SPAN" && !existingSubtitleNode.classList.contains("sial-finca-meta")
+        ? existingSubtitleNode
+        : (() => {
+            const created = document.createElement("span");
+            if (infoNode.querySelector(".sial-finca-meta")) {
+              infoNode.insertBefore(created, infoNode.querySelector(".sial-finca-meta"));
+            } else {
+              infoNode.appendChild(created);
+            }
+            return created;
+          })();
+      const logoNode = card.querySelector(".sial-logo-box") || (() => {
+        const created = document.createElement("span");
+        created.className = "sial-logo-box";
+        card.insertBefore(created, infoNode);
+        return created;
+      })();
+      const rawName = card.dataset.companyName || card.dataset.companyItemName;
+      const rawSubtitle = card.dataset.companySubtitle || card.dataset.companyItemSubtitle;
+      const rawLogo = card.dataset.companyLogo || card.dataset.companyItemLogo;
 
-      const logoNode = card.querySelector(".sial-logo-box");
-      if (logoNode && !logoNode.textContent.trim()) {
-        logoNode.textContent = (card.dataset.companyLogo || "--");
+      if (titleNode) {
+        titleNode.textContent = rawName || titleNode.textContent || "Empresa";
       }
-    });
-
-    document.querySelectorAll("[data-finca-option]").forEach((card) => {
-      const titleNode = card.querySelector(".sial-finca-info strong");
-      if (titleNode && !titleNode.textContent.trim()) {
-        const fallback = card.dataset.fincaName || card.getAttribute("aria-label");
-        if (fallback) titleNode.textContent = fallback;
+      if (subtitleNode) {
+        subtitleNode.textContent = rawSubtitle || subtitleNode.textContent || "";
       }
+      if (logoNode) {
+        logoNode.textContent = rawLogo || logoNode.textContent || "--";
+      }
+    };
 
-      const subtitleNodes = card.querySelectorAll(".sial-finca-info > span:not(.sial-finca-meta)");
-      if (subtitleNodes.length) {
-        const subtitleNode = subtitleNodes[subtitleNodes.length - 1];
-        if (!subtitleNode.textContent.trim()) {
-          subtitleNode.textContent = card.dataset.fincaSubtitle || "";
+    const renderFincaCard = (card) => {
+      const infoNode = card.querySelector(".sial-finca-info") || (() => {
+        const created = document.createElement("span");
+        created.className = "sial-finca-info";
+        card.appendChild(created);
+        return created;
+      })();
+      const titleNode = infoNode.querySelector("strong") || (() => {
+        const created = document.createElement("strong");
+        const reference = infoNode.querySelector("span.sial-finca-meta");
+        if (reference) {
+          infoNode.insertBefore(created, reference);
+        } else {
+          infoNode.appendChild(created);
         }
-      }
+        return created;
+      })();
+      const existingSubtitleNode = infoNode.querySelector(".sial-finca-meta") ? infoNode.querySelector(".sial-finca-meta").previousElementSibling : null;
+      const subtitleNode = existingSubtitleNode && existingSubtitleNode.tagName === "SPAN" && !existingSubtitleNode.classList.contains("sial-finca-meta")
+        ? existingSubtitleNode
+        : (() => {
+            const created = document.createElement("span");
+            if (infoNode.querySelector(".sial-finca-meta")) {
+              infoNode.insertBefore(created, infoNode.querySelector(".sial-finca-meta"));
+            } else {
+              infoNode.appendChild(created);
+            }
+            return created;
+          })();
+      const logoNode = card.querySelector(".sial-logo-box") || (() => {
+        const created = document.createElement("span");
+        created.className = "sial-logo-box";
+        card.insertBefore(created, infoNode);
+        return created;
+      })();
 
-      const logoNode = card.querySelector(".sial-logo-box");
-      if (logoNode && !logoNode.textContent.trim()) {
-        logoNode.textContent = (card.dataset.fincaLogo || "--");
+      if (titleNode) {
+        titleNode.textContent = card.dataset.fincaName || titleNode.textContent || "Contexto operativo";
       }
+      if (subtitleNode) {
+        subtitleNode.textContent = card.dataset.fincaSubtitle || subtitleNode.textContent || "";
+      }
+      if (logoNode) {
+        logoNode.textContent = card.dataset.fincaLogo || logoNode.textContent || "--";
+      }
+    };
+
+    document.querySelectorAll("[data-company-option]").forEach(renderCompanyCard);
+    document.querySelectorAll("[data-finca-option]").forEach(renderFincaCard);
+  }
+
+  function resetSelectionSearchInputs() {
+    document.querySelectorAll("[data-company-search],[data-finca-search]").forEach((input) => {
+      if (!input) return;
+      input.value = "";
     });
+  }
+
+  function refreshSelectionViews() {
+    resetSelectionSearchInputs();
+    hydrateSelectionCards();
+    syncCompanySelectionFromContext();
+    updateFincaSelectionScope();
+    updateCompanySelectionScope();
   }
 
   function updateFincaSelectionScope() {
@@ -626,8 +699,8 @@
     let visibleCount = 0;
 
     companyCards.forEach((company) => {
-      const companyName = (company.dataset.companyName || "").toLowerCase();
-      const companySubtitle = (company.dataset.companySubtitle || "").toLowerCase();
+      const companyName = (company.dataset.companyName || company.dataset.companyItemName || "").toLowerCase();
+      const companySubtitle = (company.dataset.companySubtitle || company.dataset.companyItemSubtitle || "").toLowerCase();
       const visible = !searchTerm || companyName.includes(searchTerm) || companySubtitle.includes(searchTerm);
       company.hidden = !visible;
       if (visible) visibleCount += 1;
@@ -670,10 +743,7 @@
   setTheme(preferredTheme());
   hydrateContext();
   hydrateCompanyContext();
-  hydrateSelectionCards();
-  syncCompanySelectionFromContext();
-  updateFincaSelectionScope();
-  updateCompanySelectionScope();
+  refreshSelectionViews();
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
     setTheme,
@@ -772,6 +842,10 @@
     if (!hasPendingRequired) clearInlineStatus(form.querySelector("[data-login-status]"));
   });
 
+  window.addEventListener("pageshow", () => {
+    refreshSelectionViews();
+  });
+
   document.addEventListener("click", (event) => {
     const company = event.target.closest("[data-company-option]");
     if (company) {
@@ -793,9 +867,9 @@
 
       setSelectedCompany({
         id: company.dataset.companyId,
-        name: company.dataset.companyName || company.dataset.companyTitle || "Empresa",
-        subtitle: company.dataset.companySubtitle || "Operación movil",
-        logo: company.dataset.companyLogo || ""
+        name: company.dataset.companyName || company.dataset.companyItemName || company.dataset.companyTitle || "Empresa",
+        subtitle: company.dataset.companySubtitle || company.dataset.companyItemSubtitle || "Operacion movil",
+        logo: company.dataset.companyLogo || company.dataset.companyItemLogo || ""
       });
       clearSelectedContext();
 
@@ -803,7 +877,7 @@
         type: "success",
         icon: "ok",
         title: "Empresa seleccionada",
-        message: company.dataset.companyName || "Empresa activa.",
+        message: company.dataset.companyName || company.dataset.companyItemName || "Empresa activa.",
         duration: 1100
       });
 
@@ -907,7 +981,7 @@
         type: "success",
         icon: "ok",
         title: "Acceso validado",
-        message: "El siguiente paso será selección de empresa."
+        message: "El siguiente paso serÃ¡ selecciÃ³n de empresa."
       });
       if (form.dataset.next) {
         window.setTimeout(() => {
@@ -917,3 +991,4 @@
     }, 900);
   });
 })();
+
