@@ -716,7 +716,8 @@ html[data-theme="dark"] .sial-auth-logo {
   display: block;
   color: var(--sial-text);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 .sial-feedback-copy {
@@ -729,7 +730,13 @@ html[data-theme="dark"] .sial-auth-logo {
   margin: 2px 0 0;
   color: var(--sial-text-2);
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 1.4;
+}
+
+.sial-status.warning p,
+.sial-status.error p,
+.sial-status.info p {
+  color: inherit;
 }
 
 .sial-status.info {
@@ -1220,7 +1227,7 @@ html[data-theme="dark"] .sial-auth-logo {
 .sial-recovery-flow {
   display: grid;
   gap: 10px;
-  padding-top: 2px;
+  padding-top: 0;
 }
 
 .sial-recovery-flow > .sial-auth-logo {
@@ -1233,6 +1240,7 @@ html[data-theme="dark"] .sial-auth-logo {
   width: min(262px, 92%);
   justify-self: center;
   justify-content: center;
+  text-align: center;
 }
 
 html[data-theme="dark"] .sial-recovery-flow > .sial-auth-logo {
@@ -1353,7 +1361,7 @@ html[data-theme="dark"] .sial-recovery-flow > .sial-auth-logo {
 .sial-recovery-heading {
   display: grid;
   gap: 6px;
-  margin-top: 2px;
+  margin-top: 0;
   text-align: center;
 }
 
@@ -1524,8 +1532,12 @@ html[data-theme="dark"] .sial-recovery-flow > .sial-auth-logo {
 }
 
 .sial-auth-secondary-actions button {
-  min-height: 34px;
-  padding: 0;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
   border: 0;
   background: transparent;
   color: var(--sial-primary-500);

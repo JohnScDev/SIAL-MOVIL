@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - Seleccion de empresa</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("sial-mobile-theme");
+      var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <div class="sial-brand-lockup">
+        <span class="sial-app-isotype" aria-hidden="true">
+          <img src="../assets/brand/isotipo-sial.svg" alt="">
+        </span>
+        <div class="sial-page-title">
+          <h1>Selecciona una empresa</h1>
+          <p>Elige una sola empresa para filtrar fincas y sectores</p>
+        </div>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body">
+      <section class="sial-section">
+        <h2 class="sial-section-title">Empresas asignadas</h2>
+      </section>
+
+      <div class="sial-field">
+        <label class="sial-label" for="buscar-empresa">Buscar empresa</label>
+        <div class="sial-input-wrap">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input class="sial-input" id="buscar-empresa" type="search" data-company-search placeholder="Nombre o codigo">
+        </div>
+      </div>
+
+      <section class="sial-finca-list" aria-label="Listado de empresas">
+        <button class="sial-finca-card" type="button" data-company-option data-company-id="agrofrut" data-company-name="Agrofrut SAS" data-company-subtitle="Produccion y transporte" data-company-logo="AS" data-next="seleccion-finca.html" aria-pressed="false">
+          <span class="sial-logo-box">AS</span>
+          <span class="sial-finca-info">
+            <strong>Agrofrut SAS</strong>
+            <span>Producción y transporte</span>
+            <span class="sial-finca-meta">
+              <span class="sial-pill">Logística</span>
+              <span class="sial-pill">8 fincas</span>
+            </span>
+          </span>
+        </button>
+
+        <button class="sial-finca-card" type="button" data-company-option data-company-id="puerto-fina" data-company-name="Puerto Frio Group" data-company-subtitle="Operación portuaria" data-company-logo="PF" data-next="seleccion-finca.html" aria-pressed="false">
+          <span class="sial-logo-box">PF</span>
+          <span class="sial-finca-info">
+            <strong>Puerto Frio Group</strong>
+            <span>Operación portuaria y cadena fría</span>
+            <span class="sial-finca-meta">
+              <span class="sial-pill">Logística</span>
+              <span class="sial-pill">3 zonas</span>
+            </span>
+          </span>
+        </button>
+
+        <button class="sial-finca-card" type="button" data-company-option data-company-id="cafe-del-sur" data-company-name="Cafe del Sur" data-company-subtitle="Trazabilidad agrícola" data-company-logo="CS" data-next="seleccion-finca.html" aria-pressed="false">
+          <span class="sial-logo-box">CS</span>
+          <span class="sial-finca-info">
+            <strong>Cafe del Sur</strong>
+            <span>Proyectos de trazabilidad agrícola</span>
+            <span class="sial-finca-meta">
+              <span class="sial-pill">Campo</span>
+              <span class="sial-pill">5 fincas</span>
+            </span>
+          </span>
+        </button>
+      </section>
+
+      <p class="sial-status info" data-company-empty-state hidden>
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9h6"/><path d="M9 15h6"/></svg>
+        <span><strong>Sin coincidencias</strong> Ajusta el término de búsqueda para encontrar una empresa.</span>
+      </p>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+</body>
+</html>

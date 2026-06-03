@@ -20,10 +20,12 @@
     return new URL(basePath + fileName, window.location.href).href;
   }
 
-  function createAuthLogo() {
+  function createAuthLogo(options = {}) {
     const logo = document.createElement("span");
     logo.className = "sial-auth-logo";
-    logo.dataset.recoveryLogo = "";
+    if (options.isRecoveryLogo) {
+      logo.dataset.recoveryLogo = "";
+    }
 
     const isotype = document.createElement("img");
     isotype.src = brandAssetUrl("isotipo-sial.svg");
@@ -40,6 +42,15 @@
 
     logo.append(isotype, wordmark);
     return logo;
+  }
+
+  function mountBrandLockups() {
+    document.querySelectorAll(".sial-brand-lockup").forEach((node) => {
+      if (node.classList.contains("sial-brand-lockup-mounted")) return;
+      if (node.querySelector(".sial-auth-logo, .sial-app-isotype, img")) return;
+      node.classList.add("sial-brand-lockup-mounted");
+      node.appendChild(createAuthLogo());
+    });
   }
 
   function preloadLoginImages() {
@@ -159,7 +170,7 @@
     const body = document.createElement("div");
     body.className = "sial-recovery-body";
 
-    shell.append(createAuthLogo(), stepper, heading, body);
+    shell.append(createAuthLogo({ isRecoveryLogo: true }), stepper, heading, body);
 
     function clearResendTimer() {
       if (!state.resendTimer) return;
@@ -579,5 +590,6 @@
     button.addEventListener("click", () => openAccessRecovery(button));
   });
 
+  mountBrandLockups();
   startLoginBackgroundRotation();
 })();

@@ -1,5 +1,7 @@
 (function () {
-  const storageKey = "sial-mobile-theme";
+  const storageThemeKey = "sial-mobile-theme";
+  const contextStorageKey = "sial-mobile-context";
+  const companyStorageKey = "sial-mobile-company";
   const root = document.documentElement;
   const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   const dialogExitDelay = 220;
@@ -49,18 +51,76 @@
   }
 
   function preferredTheme() {
-    const saved = localStorage.getItem(storageKey);
+    const saved = localStorage.getItem(storageThemeKey);
     if (saved === "light" || saved === "dark") return saved;
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   function setTheme(theme) {
     root.dataset.theme = theme;
-    localStorage.setItem(storageKey, theme);
+    localStorage.setItem(storageThemeKey, theme);
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.setAttribute("aria-label", theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
       button.dataset.themeState = theme;
     });
+  }
+
+  function readStoredPayload(storageKey, fallback = {}) {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey) || JSON.stringify(fallback));
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  function resolveRelativeUrl(relativeUrl) {
+    try {
+      return new URL(relativeUrl, window.location.href).href;
+    } catch (_) {
+      return relativeUrl;
+    }
+  }
+
+  function selectedCompany() {
+    return readStoredPayload(companyStorageKey, {});
+  }
+
+  function setSelectedCompany(company) {
+    if (!company || typeof company !== "object") {
+      localStorage.removeItem(companyStorageKey);
+      return;
+    }
+
+    const normalized = {
+      id: String(company.id || "").trim() || String(company.value || "").trim(),
+      name: String(company.name || company.title || "Empresa").trim(),
+      subtitle: String(company.subtitle || "").trim(),
+      logo: String(company.logo || company.tag || "").trim()
+    };
+
+    if (!normalized.id) {
+      localStorage.removeItem(companyStorageKey);
+      return;
+    }
+
+    localStorage.setItem(companyStorageKey, JSON.stringify(normalized));
+  }
+
+  function clearSelectedCompany() {
+    localStorage.removeItem(companyStorageKey);
+  }
+
+  function setSelectedContext(context) {
+    if (!context || typeof context !== "object") {
+      localStorage.removeItem(contextStorageKey);
+      return;
+    }
+
+    localStorage.setItem(contextStorageKey, JSON.stringify(context));
+  }
+
+  function clearSelectedContext() {
+    localStorage.removeItem(contextStorageKey);
   }
 
   function ensureToastRegion() {
@@ -435,11 +495,22 @@
   }
 
   function selectedContext() {
-    try {
-      return JSON.parse(localStorage.getItem("sial-mobile-context") || "{}");
-    } catch (_) {
-      return {};
-    }
+    return readStoredPayload(contextStorageKey, {});
+  }
+
+  function hydrateCompanyContext() {
+    const company = selectedCompany();
+    if (!company.name) return;
+
+    document.querySelectorAll("[data-company-name]").forEach((node) => {
+      node.textContent = company.name;
+    });
+    document.querySelectorAll("[data-company-subtitle]").forEach((node) => {
+      node.textContent = company.subtitle || "Empresa";
+    });
+    document.querySelectorAll("[data-company-logo]").forEach((node) => {
+      node.textContent = company.logo || "--";
+    });
   }
 
   function hydrateContext() {
@@ -456,8 +527,153 @@
     });
   }
 
+  function hydrateSelectionCards() {
+    document.querySelectorAll("[data-company-option]").forEach((card) => {
+      const titleNode = card.querySelector(".sial-finca-info strong");
+      if (titleNode && !titleNode.textContent.trim()) {
+        const fallback = card.dataset.companyName || card.getAttribute("aria-label");
+        if (fallback) titleNode.textContent = fallback;
+      }
+
+      const subtitleNodes = card.querySelectorAll(".sial-finca-info > span:not(.sial-finca-meta)");
+      if (subtitleNodes.length) {
+        const subtitleNode = subtitleNodes[subtitleNodes.length - 1];
+        if (!subtitleNode.textContent.trim()) {
+          subtitleNode.textContent = card.dataset.companySubtitle || "";
+        }
+      }
+
+      const logoNode = card.querySelector(".sial-logo-box");
+      if (logoNode && !logoNode.textContent.trim()) {
+        logoNode.textContent = (card.dataset.companyLogo || "--");
+      }
+    });
+
+    document.querySelectorAll("[data-finca-option]").forEach((card) => {
+      const titleNode = card.querySelector(".sial-finca-info strong");
+      if (titleNode && !titleNode.textContent.trim()) {
+        const fallback = card.dataset.fincaName || card.getAttribute("aria-label");
+        if (fallback) titleNode.textContent = fallback;
+      }
+
+      const subtitleNodes = card.querySelectorAll(".sial-finca-info > span:not(.sial-finca-meta)");
+      if (subtitleNodes.length) {
+        const subtitleNode = subtitleNodes[subtitleNodes.length - 1];
+        if (!subtitleNode.textContent.trim()) {
+          subtitleNode.textContent = card.dataset.fincaSubtitle || "";
+        }
+      }
+
+      const logoNode = card.querySelector(".sial-logo-box");
+      if (logoNode && !logoNode.textContent.trim()) {
+        logoNode.textContent = (card.dataset.fincaLogo || "--");
+      }
+    });
+  }
+
+  function updateFincaSelectionScope() {
+    const fincaCards = Array.from(document.querySelectorAll("[data-finca-option]"));
+    if (!fincaCards.length) return;
+
+    const company = selectedCompany();
+    const currentCompanyId = company.id || "";
+    const searchTerm = (document.querySelector("[data-finca-search]")?.value || "").trim().toLowerCase();
+    let visibleCount = 0;
+
+    fincaCards.forEach((finca) => {
+      const companyId = finca.dataset.companyId || "";
+      const fincaName = (finca.dataset.fincaName || "").toLowerCase();
+      const fincaSubtitle = (finca.dataset.fincaSubtitle || "").toLowerCase();
+      const matchesCompany = !currentCompanyId || !companyId || companyId === currentCompanyId;
+      const matchesSearch = !searchTerm || fincaName.includes(searchTerm) || fincaSubtitle.includes(searchTerm);
+      const isVisible = matchesCompany && matchesSearch;
+      finca.hidden = !isVisible;
+      if (isVisible) visibleCount += 1;
+    });
+
+    const noCompanySelected = !currentCompanyId;
+    const selectedCompanyName = company.name || "Sin empresa";
+
+    document.querySelectorAll("[data-company-name-display]").forEach((node) => {
+      node.textContent = noCompanySelected ? "Sin empresa" : selectedCompanyName;
+    });
+    document.querySelectorAll("[data-company-summary]").forEach((node) => {
+      node.textContent = noCompanySelected
+        ? "Primero selecciona una empresa para continuar."
+        : `Fincas disponibles para ${selectedCompanyName}.`;
+    });
+
+    const emptyNode = document.querySelector("[data-finca-empty-state]");
+    if (!emptyNode) return;
+
+    if (visibleCount > 0 || noCompanySelected) {
+      emptyNode.hidden = true;
+      return;
+    }
+
+    const message = emptyNode.querySelector("[data-finca-empty-message]");
+    if (message) {
+      message.textContent = "No se encontraron fincas para esta empresa.";
+    }
+    emptyNode.hidden = false;
+  }
+
+  function updateCompanySelectionScope() {
+    const companyCards = Array.from(document.querySelectorAll("[data-company-option]"));
+    if (!companyCards.length) return;
+
+    const searchTerm = (document.querySelector("[data-company-search]")?.value || "").trim().toLowerCase();
+    let visibleCount = 0;
+
+    companyCards.forEach((company) => {
+      const companyName = (company.dataset.companyName || "").toLowerCase();
+      const companySubtitle = (company.dataset.companySubtitle || "").toLowerCase();
+      const visible = !searchTerm || companyName.includes(searchTerm) || companySubtitle.includes(searchTerm);
+      company.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+
+    const emptyNode = document.querySelector("[data-company-empty-state]");
+    if (!emptyNode) return;
+    emptyNode.hidden = visibleCount > 0;
+  }
+
+  function syncCompanySelectionFromContext() {
+    const company = selectedCompany();
+    const selectedId = company.id || "";
+    if (!selectedId) return;
+    document.querySelectorAll("[data-company-option]").forEach((option) => {
+      option.setAttribute("aria-pressed", String(option.dataset.companyId === selectedId));
+    });
+  }
+
+  function requireCompanyBeforeFinca() {
+    const isFincaSelection = /[\\/]app[\\/]seleccion-finca\\.html$/i.test(window.location.pathname);
+    if (!isFincaSelection) return false;
+
+    const company = selectedCompany();
+    if (!company.id) {
+      showToast({
+        type: "warning",
+        title: "Empresa requerida",
+        message: "Selecciona primero una empresa para filtrar las fincas."
+      });
+      window.setTimeout(() => {
+        navigateTo(resolveRelativeUrl("seleccion-empresa.html"));
+      }, 320);
+      return true;
+    }
+
+    return false;
+  }
+
   setTheme(preferredTheme());
   hydrateContext();
+  hydrateCompanyContext();
+  hydrateSelectionCards();
+  syncCompanySelectionFromContext();
+  updateFincaSelectionScope();
+  updateCompanySelectionScope();
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
     setTheme,
@@ -470,7 +686,13 @@
     openMobilePicker,
     closeDialog,
     replayMotionState,
-    navigateTo
+    navigateTo,
+    selectedContext,
+    setSelectedContext,
+    selectedCompany,
+    setSelectedCompany,
+    clearSelectedCompany,
+    clearSelectedContext
   });
 
   document.addEventListener("click", (event) => {
@@ -530,6 +752,18 @@
   });
 
   document.addEventListener("input", (event) => {
+    const fincaSearch = event.target.closest("[data-finca-search]");
+    if (fincaSearch) {
+      updateFincaSelectionScope();
+      return;
+    }
+
+    const companySearch = event.target.closest("[data-company-search]");
+    if (companySearch) {
+      updateCompanySelectionScope();
+      return;
+    }
+
     const field = event.target.closest("[data-login-form] input");
     if (!field) return;
     setFieldInvalid(field, false);
@@ -539,8 +773,51 @@
   });
 
   document.addEventListener("click", (event) => {
+    const company = event.target.closest("[data-company-option]");
+    if (company) {
+      if (company.disabled || company.getAttribute("aria-disabled") === "true") {
+        replayMotionState(company, "is-blocked-attempt", 420);
+        showToast({
+          type: "error",
+          title: "Empresa no disponible",
+          message: "Selecciona una empresa activa para continuar."
+        });
+        return;
+      }
+
+      document.querySelectorAll("[data-company-option]").forEach((option) => {
+        option.setAttribute("aria-pressed", String(option === company));
+        option.classList.remove("is-continuing");
+      });
+      company.classList.add("is-continuing");
+
+      setSelectedCompany({
+        id: company.dataset.companyId,
+        name: company.dataset.companyName || company.dataset.companyTitle || "Empresa",
+        subtitle: company.dataset.companySubtitle || "Operación movil",
+        logo: company.dataset.companyLogo || ""
+      });
+      clearSelectedContext();
+
+      showToast({
+        type: "success",
+        icon: "ok",
+        title: "Empresa seleccionada",
+        message: company.dataset.companyName || "Empresa activa.",
+        duration: 1100
+      });
+
+      const next = company.dataset.next || resolveRelativeUrl("seleccion-finca.html");
+      window.setTimeout(() => {
+        company.classList.remove("is-continuing");
+        if (next) navigateTo(next);
+      }, 700);
+      return;
+    }
+
     const finca = event.target.closest("[data-finca-option]");
     if (!finca) return;
+    if (requireCompanyBeforeFinca()) return;
     if (finca.disabled || finca.getAttribute("aria-disabled") === "true") {
       replayMotionState(finca, "is-blocked-attempt", 420);
       showToast({
@@ -550,17 +827,37 @@
       });
       return;
     }
+
+    const selectedCompanyData = selectedCompany();
+    const companyId = String(selectedCompanyData.id || "");
+    const nextCompanyId = String(finca.dataset.companyId || "");
+    if (companyId && nextCompanyId && companyId !== nextCompanyId) {
+      showToast({
+        type: "error",
+        title: "Finca fuera de contexto",
+        message: "La finca pertenece a otra empresa. Selecciona la empresa correcta."
+      });
+      window.setTimeout(() => {
+        navigateTo(resolveRelativeUrl("seleccion-empresa.html"));
+      }, 260);
+      return;
+    }
+
     document.querySelectorAll("[data-finca-option]").forEach((option) => {
       option.setAttribute("aria-pressed", String(option === finca));
       option.classList.remove("is-continuing");
     });
     finca.classList.add("is-continuing");
+
     const next = finca.dataset.next;
-    localStorage.setItem("sial-mobile-context", JSON.stringify({
-      name: finca.dataset.fincaName || "Contexto operativo",
+    setSelectedContext({
+      id: finca.dataset.fincaId || finca.dataset.fincaValue || "",
+      name: finca.dataset.fincaName || finca.dataset.contextName || "Contexto operativo",
       subtitle: finca.dataset.fincaSubtitle || "Operacion movil",
-      logo: finca.dataset.fincaLogo || "SI"
-    }));
+      logo: finca.dataset.fincaLogo || "SI",
+      companyId: selectedCompanyData.id || "",
+      companyName: selectedCompanyData.name || ""
+    });
     showToast({
       type: "success",
       icon: "ok",
@@ -610,7 +907,7 @@
         type: "success",
         icon: "ok",
         title: "Acceso validado",
-        message: "El siguiente paso sera seleccion de finca."
+        message: "El siguiente paso será selección de empresa."
       });
       if (form.dataset.next) {
         window.setTimeout(() => {
