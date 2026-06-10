@@ -569,6 +569,22 @@ html[data-theme="dark"] .sial-auth-logo {
   background: var(--sial-field-bg);
 }
 
+.sial-input-wrap.sial-input[type="date"],
+.sial-input-wrap.sial-input[type="datetime-local"] {
+  display: flex;
+  align-items: center;
+  -webkit-appearance: none;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .sial-input-wrap.sial-input[type="date"],
+  .sial-input-wrap.sial-input[type="datetime-local"] {
+    line-height: 1.45;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
 .sial-input-wrap.sial-input:focus {
   border-color: var(--sial-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
@@ -2563,6 +2579,18 @@ body.drawer-open .sial-drawer .sial-btn-full {
   transform: scaleY(1);
 }
 
+@media (min-width: 520px) {
+  .sial-form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .sial-cp-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 600px) {
   .sial-page {
     --sial-page-content-max: 720px;
@@ -2669,13 +2697,13 @@ body.drawer-open .sial-drawer .sial-btn-full {
 }
 
 .sial-cp-option {
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--sial-border);
   border-radius: var(--sial-radius-pill);
   background: var(--sial-surface);
   color: var(--sial-text-2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   transition:
     background-color var(--sial-motion-fast) var(--sial-motion-ease),
@@ -2742,6 +2770,25 @@ body.drawer-open .sial-drawer .sial-btn-full {
   min-height: 60px;
   padding-top: 8px;
   resize: vertical;
+}
+
+.sial-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--sial-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sial-checkbox-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--sial-primary-500);
 }
 
 .sial-novelty-form .sial-checkbox-row {
