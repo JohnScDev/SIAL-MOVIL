@@ -2629,6 +2629,267 @@ body.drawer-open .sial-drawer .sial-btn-full {
   }
 }
 
+.sial-checklist {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-checkpoint {
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+  overflow: hidden;
+}
+
+.sial-checkpoint-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--sial-surface-raised);
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.sial-checkpoint-header strong {
+  font-size: 13px;
+  color: var(--sial-text);
+}
+
+.sial-checkpoint-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.sial-cp-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sial-cp-option {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-surface);
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  transition:
+    background-color var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease),
+    color var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-cp-option.active {
+  border-color: var(--sial-primary-500);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+.sial-cp-option.selected-novedad {
+  border-color: var(--sial-warning);
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+}
+
+.sial-cp-option.selected-blocking {
+  border-color: var(--sial-error);
+  background: var(--sial-error-bg);
+  color: var(--sial-error);
+}
+
+.sial-cp-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sial-novelty-form {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--sial-warning) 34%, var(--sial-border));
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-warning-bg);
+}
+
+.sial-novelty-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sial-text);
+}
+
+.sial-novelty-form select,
+.sial-novelty-form input,
+.sial-novelty-form textarea {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.sial-novelty-form textarea {
+  min-height: 60px;
+  padding-top: 8px;
+  resize: vertical;
+}
+
+.sial-novelty-form .sial-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.sial-novelty-form .sial-checkbox-row input {
+  width: auto;
+  min-height: auto;
+}
+
+.sial-reason-form {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--sial-info) 28%, var(--sial-border));
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-info-bg);
+}
+
+.sial-reason-form textarea {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 8px 10px;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.sial-signature-section {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+}
+
+.sial-signature-section h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sial-text);
+}
+
+.sial-signature-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.sial-signature-row strong {
+  font-size: 13px;
+  color: var(--sial-text);
+}
+
+.sial-signature-row span {
+  font-size: 12px;
+  color: var(--sial-text-2);
+}
+
+.sial-confirm-summary {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+}
+
+.sial-confirm-summary h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sial-text);
+}
+
+.sial-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--sial-border-subtle);
+  font-size: 13px;
+}
+
+.sial-confirm-row:last-child {
+  border-bottom: 0;
+}
+
+.sial-confirm-row span:first-child {
+  color: var(--sial-text-2);
+}
+
+.sial-confirm-row span:last-child {
+  color: var(--sial-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+.sial-seal-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 400px) {
+  .sial-seal-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sial-farm-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-farm-entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.sial-farm-entry input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 0 12px;
+  font-size: 13px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

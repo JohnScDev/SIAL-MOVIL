@@ -35,8 +35,8 @@
   const requirements = {
     zeReception: [],
     portExternalInspection: ["zeReception"],
-    portInternalInspection: ["zeReception"],
-    zeDispatch: ["zeReception"],
+    portInternalInspection: ["zeReception", "portExternalInspection"],
+    zeDispatch: ["zeReception", "portExternalInspection", "portInternalInspection"],
     farmReception: ["zeDispatch"],
     farmExternalInspection: ["farmReception"],
     farmInternalInspection: ["farmReception"],
@@ -52,9 +52,9 @@
   };
 
   const labels = {
-    zeReception: "Recepcion en ZE",
-    portExternalInspection: "Inspeccion externa en ZE",
-    portInternalInspection: "Inspeccion interna en ZE",
+    zeReception: "Recepcion vehiculo en ZE",
+    portExternalInspection: "Inspeccion externa ZE",
+    portInternalInspection: "Inspeccion interna ZE",
     zeDispatch: "Despacho a finca",
     farmReception: "Recepcion en finca",
     farmExternalInspection: "Inspeccion externa en finca",
@@ -123,6 +123,14 @@
     document.querySelectorAll("[data-flow-vehicle-status]").forEach((node) => { node.textContent = state.vehicleStatus; });
     document.querySelectorAll("[data-flow-location]").forEach((node) => { node.textContent = locationLabels[state.containerLocation] || state.containerLocation; });
     document.querySelectorAll("[data-flow-sync]").forEach((node) => { node.textContent = navigator.onLine ? "Online" : "Offline"; });
+    document.querySelectorAll("[data-flow-sync-status]").forEach((node) => {
+      var eventName = node.dataset.flowSyncStatus || "";
+      var syncStatus = eventName && state.eventSyncStatus ? (state.eventSyncStatus[eventName] || "") : "";
+      node.textContent = syncStatus || (navigator.onLine ? "Sincronizado" : "Pendiente de sincronizar");
+      if (node.dataset.syncPill) {
+        node.className = "sial-pill" + (syncStatus === "SYNCED" ? " success" : syncStatus === "LOCAL_PENDING_SYNC" ? " warning" : "");
+      }
+    });
     document.querySelectorAll("[data-flow-pallets]").forEach((node) => { node.textContent = String(state.pallets || 0); });
     document.querySelectorAll("[data-flow-loaded-pallets]").forEach((node) => { node.textContent = String(state.loadedPallets || 0); });
     document.querySelectorAll("[data-flow-boxes]").forEach((node) => { node.textContent = String(state.boxes || 0); });
@@ -153,10 +161,10 @@
 
   function getNextAction(state) {
     const sequence = [
-      ["zeReception", "../puerto-ze/recepcion-ze.html", "Registrar recepcion ZE", "Iniciar trazabilidad del vehiculo en zona externa."],
-      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html", "Inspeccion externa ZE", "Completar evidencia externa del contenedor."],
-      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html", "Inspeccion interna ZE", "Validar interior con rango de fotos requerido."],
-      ["zeDispatch", "../puerto-ze/despacho-finca.html", "Despachar a finca", "Registrar salida desde ZE hacia finca."],
+      ["zeReception", "../puerto-ze/recepcion-ze.html", "Registrar recepcion en ZE", "Iniciar trazabilidad del vehiculo en zona externa."],
+      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html", "Inspeccion externa ZE", "Checklist de 14 puntos con evidencia fotografica."],
+      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html", "Inspeccion interna ZE", "15 a 23 fotos obligatorias por punto de control."],
+      ["zeDispatch", "../puerto-ze/despacho-finca.html", "Despachar a finca", "Registrar salida con sellos, firmas y responsabilidad."],
       ["farmReception", "../finca/recepcion-finca.html", "Recibir en finca", "Confirmar llegada e iniciar operacion de finca."],
       ["farmExternalInspection", "../finca/inspeccion-externa.html", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
       ["farmInternalInspection", "../finca/inspeccion-interna.html", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
@@ -205,7 +213,7 @@
         '<article class="sial-timeline-item">',
         `<strong>${event.label}</strong>`,
         `<span>${event.detail || "Evento registrado"}</span>`,
-        `<span>${event.timestamp} - ${event.sync}</span>`,
+        `<span>${event.timestamp} - <span class="sial-pill${event.sync === "Sincronizado" ? " success" : " warning"}">${event.sync}</span></span>`,
         "</article>"
       ].join("")).join("");
     });
@@ -262,6 +270,21 @@
     return keys.reduce((total, key) => total + (state.photos[key] || 0), 0);
   }
 
+  function countControlPointPhotos(form) {
+    var count = 0;
+    form.querySelectorAll("[data-control-point]").forEach(function(cp) {
+      if (cp.querySelector("[data-cp-add-photo].done")) count += 1;
+    });
+    return count;
+  }
+
+  function hasAnyControlPointNoveltyBlocking(form) {
+    return Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
+      return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD"
+        && cp.querySelector("[data-cp-blocking]") && cp.querySelector("[data-cp-blocking]").checked;
+    });
+  }
+
   function validateFormRules(form, state, eventName) {
     if (form.dataset.preventDuplicate === "true" && state.flags[eventName]) {
       return "Este evento ya fue registrado para la operacion activa.";
@@ -273,16 +296,41 @@
       return "El contenedor ya tiene un despacho activo.";
     }
     if (form.dataset.assertContainerLocation && !hasAny(state.containerLocation, form.dataset.assertContainerLocation)) {
-      return `El contenedor no esta en la ubicacion requerida: ${form.dataset.assertContainerLocation}.`;
+      return "El contenedor no se encuentra ubicado en ZE.";
     }
     if (form.dataset.assertContainerStatusAny && !hasAny(state.containerStatus, form.dataset.assertContainerStatusAny)) {
-      return `El estado actual del contenedor no permite este registro: ${state.containerStatus}.`;
+      return "El estado actual del contenedor no permite este registro.";
     }
     if (form.dataset.assertVehicleAssociated === "true" && !state.hasVehicleAssociation) {
       return "El contenedor no tiene vehiculo asociado.";
     }
     if (form.dataset.assertNotExported === "true" && state.containerExported) {
       return "El contenedor ya fue exportado.";
+    }
+    if (form.dataset.assertNoFutureDate) {
+      var dateField = form.querySelector(form.dataset.assertNoFutureDate);
+      if (dateField && dateField.value) {
+        var inputDate = new Date(dateField.value);
+        if (inputDate > new Date()) {
+          return "La fecha y hora de llegada no puede ser futura.";
+        }
+      }
+    }
+    if (form.dataset.event === "zeDispatch") {
+      var extResult = state.inspectionResults ? state.inspectionResults["portExternalInspection"] : "";
+      var intResult = state.inspectionResults ? state.inspectionResults["portInternalInspection"] : "";
+      if (extResult === "NO_APTO" || intResult === "NO_APTO") {
+        return "No se puede despachar porque el contenedor tiene una inspeccion NO_APTA. Requiere autorizacion de supervisor.";
+      }
+    }
+    if (form.dataset.event === "portInternalInspection") {
+      var formPhotos = countControlPointPhotos(form);
+      if (formPhotos < 15) {
+        return "La inspeccion interna requiere minimo 15 fotografias. Actualmente hay " + formPhotos + ".";
+      }
+      if (formPhotos > 23 && !form.dataset.authorizedExcess) {
+        return "Se alcanzo el maximo de 23 fotografias. Solicita autorizacion de excepcion para continuar.";
+      }
     }
     if (form.dataset.assertBoxesMin && (state.boxes || 0) < Number(form.dataset.assertBoxesMin)) {
       return `Debes registrar al menos ${form.dataset.assertBoxesMin} caja(s).`;
@@ -300,6 +348,42 @@
     const referenceField = form.querySelector("[name='referencia']");
     if (referenceField && referenceField.value && referenceField.value !== state.reference) {
       return "La referencia no corresponde a la operacion activa.";
+    }
+    const inspResult = form.querySelector("select[name='resultado_inspeccion']");
+    if (inspResult && inspResult.value === "APTO") {
+      const hasNovelty = Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
+        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD";
+      });
+      if (hasNovelty) {
+        return "No se puede seleccionar APTO porque existen novedades registradas. Usa APTO_CON_NOVEDAD.";
+      }
+    }
+    if (inspResult && inspResult.value === "APTO_CON_NOVEDAD") {
+      const hasNoNovelty = !Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
+        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD";
+      });
+      if (hasNoNovelty) {
+        return "APTO_CON_NOVEDAD requiere al menos una novedad registrada. Usa APTO si no hay novedades.";
+      }
+    }
+    if (inspResult && inspResult.value === "NO_APTO") {
+      const hasBlocking = Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
+        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD"
+          && cp.querySelector("[data-cp-blocking]") && cp.querySelector("[data-cp-blocking]").checked;
+      });
+      if (!hasBlocking) {
+        return "NO_APTO requiere al menos una novedad bloqueante.";
+      }
+    }
+    if (form.dataset.event === "zeDispatch") {
+      var driverSigned = form.querySelector("[data-signature-driver]");
+      var dispatcherSigned = form.querySelector("[data-signature-dispatcher]");
+      if (driverSigned && driverSigned.dataset.signatureDriver !== "confirmed") {
+        return "La firma del conductor es obligatoria para confirmar el despacho.";
+      }
+      if (dispatcherSigned && dispatcherSigned.dataset.signatureDispatcher !== "confirmed") {
+        return "La firma del radicador es obligatoria para confirmar el despacho.";
+      }
     }
     const requiredPhotos = (form.dataset.requiredPhotos || "").split(",").map((x) => x.trim()).filter(Boolean);
     const missingPhotos = requiredPhotos.filter((key) => !state.photos[key]);
@@ -331,11 +415,16 @@
     }
   }
 
+  function generateId() {
+    return "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  }
+
   function applyEvent(state, eventName, form) {
     const checkedResult = form.querySelector("input[name='resultado']:checked");
     const selectResult = form.querySelector("select[name='resultado']");
     const result = checkedResult?.value || selectResult?.value || "";
     state.flags[eventName] = true;
+
     if (form.dataset.status) {
       state.status = form.dataset.status;
       state.containerStatus = form.dataset.status;
@@ -347,16 +436,19 @@
     if (form.dataset.hasActiveDispatch) state.hasActiveDispatch = form.dataset.hasActiveDispatch === "true";
     if (form.dataset.vehicleAssociated) state.hasVehicleAssociation = form.dataset.vehicleAssociated === "true";
     if (form.dataset.exported) state.containerExported = form.dataset.exported === "true";
+
     const deliveryResult = form.querySelector("[name='resultadoEntrega']")?.value;
     if (deliveryResult) {
       state.status = deliveryResult;
       state.containerStatus = deliveryResult;
     }
+
     if (eventName === "palletBuilt") {
       state.pallets = Math.max(1, state.pallets || 0);
     }
     if (eventName === "palletsLoaded") state.loadedPallets = (state.loadedPallets || 0) + 1;
     if (eventName === "portDelivery") state.vehicleStatus = "DISPONIBLE";
+
     if (String(result).toLowerCase() === "rechazado") {
       state.alerts = state.alerts || [];
       state.alerts = [{
@@ -366,11 +458,71 @@
         status: "ALERTA_AUTOMATICA"
       }, ...state.alerts];
     }
+
     const detailParts = [form.dataset.detail || ""];
     if (result) detailParts.push(`Resultado: ${result}`);
     detailParts.push(`Usuario: ${state.user}`);
     detailParts.push(`Ubicacion: ${locationLabels[state.containerLocation] || state.containerLocation}`);
     addEvent(state, eventName, detailParts.filter(Boolean).join(" | "));
+
+    state.eventSyncStatus = state.eventSyncStatus || {};
+    state.eventSyncStatus[eventName] = "LOCAL_PENDING_SYNC";
+    state.eventLocalIds = state.eventLocalIds || {};
+    state.eventLocalIds[eventName] = state.eventLocalIds[eventName] || generateId();
+    state.eventIdempotencyKeys = state.eventIdempotencyKeys || {};
+    state.eventIdempotencyKeys[eventName] = state.eventIdempotencyKeys[eventName] || (
+      state.operation + "_" + eventName + "_" + (state.eventLocalIds[eventName] || generateId())
+    );
+
+    const inspectionSelect = form.querySelector("select[name='resultado_inspeccion']");
+    if (inspectionSelect && inspectionSelect.value) {
+      state.inspectionResults = state.inspectionResults || {};
+      state.inspectionResults[eventName] = inspectionSelect.value;
+      const isBlocking = inspectionSelect.value === "NO_APTO";
+      if (isBlocking) {
+        state.blockedEvents = state.blockedEvents || {};
+        state.blockedEvents[eventName] = "Inspeccion con resultado NO_APTO.";
+      }
+    }
+
+    const signatureData = form.querySelector("[data-signature-driver]");
+    if (signatureData && signatureData.dataset.signatureDriver === "confirmed") {
+      state.signatures = state.signatures || {};
+      state.signatures[eventName] = state.signatures[eventName] || {};
+      if (signatureData.dataset.signerName) {
+        state.signatures[eventName].driver = {
+          name: signatureData.dataset.signerName,
+          document: signatureData.dataset.signerDocument || "",
+          actorType: "CONDUCTOR",
+          signedAt: new Date().toISOString(),
+          method: signatureData.dataset.signatureMethod || "CONFIRMACION"
+        };
+      }
+      if (signatureData.dataset.dispatcherName) {
+        state.signatures[eventName].dispatcher = {
+          name: signatureData.dataset.dispatcherName,
+          document: signatureData.dataset.dispatcherDocument || "",
+          actorType: "RADICADOR",
+          signedAt: new Date().toISOString(),
+          method: "CONFIRMACION"
+        };
+      }
+    }
+
+    const responsibilityField = form.querySelector("[data-responsibility-status]");
+    if (responsibilityField) {
+      state.responsibilitySessions = state.responsibilitySessions || {};
+      state.responsibilitySessions[eventName] = {
+        status: responsibilityField.dataset.responsibilityStatus || "RESPONSABILIDAD_ACEPTADA",
+        driverName: form.querySelector("[name='conductor']")?.value || "",
+        driverDocument: form.querySelector("[name='documentoConductor']")?.value || "",
+        truckPlate: form.querySelector("[name='placaCabezote']")?.value || form.querySelector("[name='placa']")?.value || "",
+        trailerPlate: form.querySelector("[name='placaRemolque']")?.value || "",
+        dispatcherUserId: state.user,
+        deliveredAt: new Date().toLocaleString("es-CO"),
+        dispatchDatetime: form.querySelector("[name='fechaDespacho']")?.value || ""
+      };
+    }
   }
 
   const showToast = (options) => {
@@ -379,6 +531,48 @@
     }
   };
 
+  function hydrateControlPoints(state) {
+    document.querySelectorAll("[data-control-point]").forEach((node) => {
+      const eventName = node.dataset.controlPointEvent || "";
+      const pointKey = node.dataset.controlPoint;
+      if (!eventName || !pointKey) return;
+      const points = (state.controlPoints || {})[eventName] || [];
+      const pointData = points.find(function(p) { return p.code === pointKey; });
+      if (!pointData) return;
+      const valueInput = node.querySelector("[data-cp-value]");
+      if (valueInput) valueInput.value = pointData.value || "";
+      const obsInput = node.querySelector("[data-cp-observation]");
+      if (obsInput) obsInput.value = pointData.observation || "";
+      const statusEl = node.querySelector("[data-cp-status]");
+      if (statusEl) {
+        statusEl.textContent = pointData.value || "Pendiente";
+        statusEl.className = "sial-pill" + (pointData.value === "SIN_NOVEDAD" ? " success" : pointData.value === "CON_NOVEDAD" ? " warning" : pointData.value === "NO_INSPECCIONABLE" ? " info" : "");
+      }
+      const photoSlot = node.querySelector("[data-cp-photo]");
+      if (photoSlot && pointData.hasPhoto) {
+        photoSlot.classList.add("done");
+        photoSlot.textContent = "Foto OK";
+      }
+    });
+  }
+
+  function hydrateSignatures(state) {
+    document.querySelectorAll("[data-signature-status]").forEach((node) => {
+      const eventName = node.dataset.signatureStatus || "";
+      if (!eventName) return;
+      const sigs = (state.signatures || {})[eventName];
+      if (!sigs) return;
+      if (sigs.driver && node.dataset.signatureActor === "driver") {
+        node.textContent = "Firmado por " + (sigs.driver.name || "conductor");
+        node.className = "sial-pill success";
+      }
+      if (sigs.dispatcher && node.dataset.signatureActor === "dispatcher") {
+        node.textContent = "Firmado por " + (sigs.dispatcher.name || "radicador");
+        node.className = "sial-pill success";
+      }
+    });
+  }
+
   function boot() {
     const state = readState();
     hydrateSummary(state);
@@ -386,6 +580,101 @@
     hydrateTimeline(state);
     hydrateLists(state);
     hydrateAlerts(state);
+    hydrateControlPoints(state);
+    hydrateSignatures(state);
+
+    document.addEventListener("click", (event) => {
+      const cpOption = event.target.closest("[data-cp-option]");
+      if (cpOption) {
+        const container = cpOption.closest("[data-control-point]");
+        if (!container) return;
+        const value = cpOption.dataset.cpOption;
+        const eventName = container.dataset.controlPointEvent || "";
+        const pointKey = container.dataset.controlPoint;
+        if (!eventName || !pointKey) return;
+        const currentState = readState();
+        currentState.controlPoints = currentState.controlPoints || {};
+        currentState.controlPoints[eventName] = currentState.controlPoints[eventName] || [];
+        const existing = currentState.controlPoints[eventName].find(function(p) { return p.code === pointKey; });
+        if (existing) {
+          existing.value = value;
+        } else {
+          currentState.controlPoints[eventName].push({ code: pointKey, name: container.dataset.controlPointName || pointKey, value: value, observation: "", hasPhoto: false });
+        }
+        writeState(currentState);
+        container.querySelectorAll("[data-cp-option]").forEach(function(b) { b.classList.remove("active"); });
+        cpOption.classList.add("active");
+        const statusEl = container.querySelector("[data-cp-status]");
+        if (statusEl) {
+          statusEl.textContent = value;
+          statusEl.className = "sial-pill" + (value === "SIN_NOVEDAD" ? " success" : value === "CON_NOVEDAD" ? " warning" : value === "NO_INSPECCIONABLE" ? " info" : "");
+        }
+        var needsNovelty = value === "CON_NOVEDAD";
+        var needsReason = value === "NO_INSPECCIONABLE";
+        var noveltyArea = container.querySelector("[data-cp-novelty-area]");
+        if (noveltyArea) noveltyArea.hidden = !needsNovelty;
+        var reasonArea = container.querySelector("[data-cp-reason-area]");
+        if (reasonArea) reasonArea.hidden = !needsReason;
+      }
+
+      const cpPhoto = event.target.closest("[data-cp-add-photo]");
+      if (cpPhoto) {
+        const container = cpPhoto.closest("[data-control-point]");
+        if (!container) return;
+        const eventName = container.dataset.controlPointEvent || "";
+        const pointKey = container.dataset.controlPoint;
+        if (!eventName || !pointKey) return;
+        if (eventName === "portInternalInspection") {
+          var allPhotos = document.querySelectorAll("#internal-checklist [data-cp-add-photo].done").length;
+          if (!cpPhoto.classList.contains("done") && allPhotos >= 23) {
+            showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias. Solicita autorizacion para exceder." });
+            return;
+          }
+        }
+        const currentState = readState();
+        currentState.controlPoints = currentState.controlPoints || {};
+        currentState.controlPoints[eventName] = currentState.controlPoints[eventName] || [];
+        const existing = currentState.controlPoints[eventName].find(function(p) { return p.code === pointKey; });
+        if (existing) {
+          existing.hasPhoto = true;
+        } else {
+          currentState.controlPoints[eventName].push({ code: pointKey, name: container.dataset.controlPointName || pointKey, value: "", observation: "", hasPhoto: true });
+        }
+        writeState(currentState);
+        cpPhoto.classList.add("done");
+        cpPhoto.textContent = "Foto OK";
+        showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al punto de control." });
+      }
+
+      const dispatchSignature = event.target.closest("[data-confirm-signature]");
+      if (dispatchSignature) {
+        const target = dispatchSignature.dataset.confirmSignature;
+        const nameInput = document.querySelector("[data-signature-name-input]");
+        const docInput = document.querySelector("[data-signature-doc-input]");
+        if (target === "driver") {
+          const driverBtn = document.querySelector("[data-signature-driver]");
+          if (driverBtn && nameInput) {
+            driverBtn.dataset.signatureDriver = "confirmed";
+            driverBtn.dataset.signerName = nameInput.value || "Conductor";
+            driverBtn.dataset.signerDocument = docInput ? docInput.value : "";
+            driverBtn.dataset.signatureMethod = "CONFIRMACION";
+            driverBtn.textContent = "Firmado: " + (nameInput.value || "Conductor");
+            driverBtn.className = "sial-btn sial-btn-primary sial-btn-full";
+          }
+        }
+        if (target === "dispatcher") {
+          const dispatcherBtn = document.querySelector("[data-signature-dispatcher]");
+          if (dispatcherBtn && nameInput) {
+            dispatcherBtn.dataset.signatureDispatcher = "confirmed";
+            dispatcherBtn.dataset.dispatcherName = nameInput.value || "Radicador";
+            dispatcherBtn.dataset.dispatcherDocument = docInput ? docInput.value : "";
+            dispatcherBtn.textContent = "Firmado: " + (nameInput.value || "Radicador");
+            dispatcherBtn.className = "sial-btn sial-btn-primary sial-btn-full";
+          }
+        }
+        showToast({ type: "success", title: "Firma registrada", message: "La confirmacion ha sido guardada." });
+      }
+    });
 
     document.addEventListener("submit", (event) => {
       const form = event.target.closest("[data-flow-form]");
@@ -412,6 +701,39 @@
         showInline(form, "Completa los campos obligatorios antes de registrar.");
         return;
       }
+
+      var cpNovelties = [];
+      form.querySelectorAll("[data-control-point]").forEach(function(container) {
+        var valueInput = container.querySelector("[data-cp-value]");
+        if (!valueInput) return;
+        var val = valueInput.value;
+        var obs = (container.querySelector("[data-cp-observation]") || {}).value || "";
+        var hasPhoto = Boolean(container.querySelector("[data-cp-add-photo].done"));
+        var pointKey = container.dataset.controlPoint;
+        var pointName = container.dataset.controlPointName || pointKey;
+        if (val === "CON_NOVEDAD") {
+          var novType = (container.querySelector("[data-cp-novelty-type]") || {}).value || "OTRO";
+          var severity = (container.querySelector("[data-cp-severity]") || {}).value || "MEDIA";
+          var blocking = container.querySelector("[data-cp-blocking]") ? container.querySelector("[data-cp-blocking]").checked : false;
+          cpNovelties.push({ controlPoint: pointKey, controlPointName: pointName, type: novType, severity: severity, isBlocking: blocking, description: obs, hasPhoto: hasPhoto });
+        }
+        state.controlPoints = state.controlPoints || {};
+        state.controlPoints[eventName] = state.controlPoints[eventName] || [];
+        var existing = state.controlPoints[eventName].find(function(p) { return p.code === pointKey; });
+        if (existing) {
+          existing.value = val;
+          existing.observation = obs;
+          existing.hasPhoto = hasPhoto;
+        } else {
+          state.controlPoints[eventName].push({ code: pointKey, name: pointName, value: val, observation: obs, hasPhoto: hasPhoto });
+        }
+      });
+
+      if (cpNovelties.length) {
+        state.novelties = state.novelties || {};
+        state.novelties[eventName] = (state.novelties[eventName] || []).concat(cpNovelties);
+      }
+
       applyEvent(state, eventName, form);
       writeState(state);
       hydrateSummary(state);
@@ -419,14 +741,89 @@
       hydrateTimeline(state);
       hydrateLists(state);
       hydrateAlerts(state);
-      const selectResult = form.querySelector("select[name='resultado']");
-      if (String(selectResult?.value || "").toLowerCase() === "rechazado") {
-        showToast({ type: "warning", title: "Alerta generada", message: "La inspeccion rechazada queda marcada para gestion." });
+      hydrateControlPoints(state);
+      hydrateSignatures(state);
+
+      const inspResult = form.querySelector("select[name='resultado_inspeccion']");
+      if (inspResult && inspResult.value) {
+        var inspMsg = "Inspeccion registrada: " + inspResult.value;
+        showToast({ type: "success", title: "Evento registrado", message: inspMsg });
       } else {
-        showToast({ type: "success", title: "Evento registrado", message: labels[eventName] || "Registro completado." });
+        var selectResult = form.querySelector("select[name='resultado']");
+        if (String(selectResult?.value || "").toLowerCase() === "rechazado") {
+          showToast({ type: "warning", title: "Alerta generada", message: "La inspeccion rechazada queda marcada para gestion." });
+        } else {
+          showToast({ type: "success", title: "Evento registrado", message: labels[eventName] || "Registro completado." });
+        }
       }
       if (form.dataset.next) {
-        window.setTimeout(() => { window.location.href = form.dataset.next; }, 650);
+        window.setTimeout(function() { window.location.href = form.dataset.next; }, 650);
+      }
+    });
+
+    document.addEventListener("change", (event) => {
+      const field = event.target.closest("[data-flow-form] input, [data-flow-form] select, [data-flow-form] textarea");
+      if (!field) return;
+      const form = field.closest("[data-flow-form]");
+      if (!form) return;
+      const state = readState();
+      const eventName = form.dataset.event;
+      if (!eventName || state.flags[eventName]) return;
+      state.eventSyncStatus = state.eventSyncStatus || {};
+      if (!state.eventSyncStatus[eventName]) {
+        state.eventSyncStatus[eventName] = "LOCAL_DRAFT";
+        state.eventLocalIds = state.eventLocalIds || {};
+        state.eventLocalIds[eventName] = state.eventLocalIds[eventName] || generateId();
+        state.eventIdempotencyKeys = state.eventIdempotencyKeys || {};
+        state.eventIdempotencyKeys[eventName] = state.eventIdempotencyKeys[eventName] || (
+          state.operation + "_" + eventName + "_" + (state.eventLocalIds[eventName] || generateId())
+        );
+        writeState(state);
+        hydrateSummary(state);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const retryBtn = event.target.closest("[data-retry-sync]");
+      if (retryBtn) {
+        const eventName = retryBtn.dataset.retrySync;
+        if (!eventName) return;
+        const state = readState();
+        var offlineAvailable = navigator.onLine;
+        if (!offlineAvailable) {
+          showToast({ type: "warning", title: "Sin conexion", message: "Conectate a internet para reintentar la sincronizacion." });
+          return;
+        }
+        state.eventSyncStatus = state.eventSyncStatus || {};
+        state.eventSyncStatus[eventName] = "SYNCING";
+        writeState(state);
+        hydrateSummary(state);
+        showToast({ type: "info", title: "Sincronizando...", message: "Enviando evento a servidor." });
+        window.setTimeout(function() {
+          var fresh = readState();
+          fresh.eventSyncStatus = fresh.eventSyncStatus || {};
+          var success = Math.random() > 0.2;
+          fresh.eventSyncStatus[eventName] = success ? "SYNCED" : "SYNC_FAILED";
+          writeState(fresh);
+          hydrateSummary(fresh);
+          if (success) {
+            showToast({ type: "success", title: "Sincronizado", message: "El evento fue confirmado por el servidor." });
+          } else {
+            showToast({ type: "error", title: "Error de sincronizacion", message: "El servidor no pudo procesar el evento. Reintenta." });
+          }
+        }, 1200);
+        return;
+      }
+
+      const conflictBtn = event.target.closest("[data-resolve-conflict]");
+      if (conflictBtn) {
+        var cName = conflictBtn.dataset.resolveConflict;
+        showToast({ type: "info", title: "Conflicto resuelto", message: "Se descarta la version local y se usa la del servidor." });
+        var st = readState();
+        st.eventSyncStatus = st.eventSyncStatus || {};
+        st.eventSyncStatus[cName] = "SYNCED";
+        writeState(st);
+        hydrateSummary(st);
       }
     });
 

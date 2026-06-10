@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="manifest" href="../manifest.webmanifest">
   <meta name="theme-color" content="#005CA8">
-  <title>SIAL Movil - Recepcion en ZE</title>
+  <title>SIAL Movil - Recepcion vehiculo en ZE</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
   <link rel="stylesheet" href="../shared/sial-mobile-core.css">
 </head>
@@ -14,35 +14,51 @@
     <header class="sial-page-header">
       <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
       <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
-      <div class="sial-page-title"><h1>Recepcion en ZE</h1><p>Ingreso operativo y trazabilidad inicial</p></div>
+      <div class="sial-page-title"><h1>Recepcion en ZE</h1><p>HU758 - Registrar llegada vehiculo</p></div>
       <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
     </header>
 
     <section class="sial-page-body">
       <div class="sial-flow-banner">
         <strong>Operacion <span data-flow-operation></span></strong>
-        <span>Contenedor <span data-flow-container></span> - Vehiculo <span data-flow-vehicle></span> - <span data-flow-sync></span></span>
+        <span>Contenedor <span data-flow-container></span> - Sync: <span class="sial-pill" data-flow-sync-status="zeReception" data-sync-pill></span></span>
       </div>
 
-      <section class="sial-card sial-card-pad sial-form">
+      <section class="sial-card sial-card-pad sial-form" aria-label="Resumen operacion">
         <div class="sial-list-row"><strong>Transportista</strong><span data-flow-carrier></span></div>
         <div class="sial-list-row"><strong>Orden / viaje</strong><span><span data-flow-order></span> / <span data-flow-journey></span></span></div>
         <div class="sial-list-row"><strong>Usuario</strong><span data-flow-user></span></div>
       </section>
 
-      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="zeReception" data-operation-status="RECIBIDO_EN_ZE" data-container-status="DISPONIBLE" data-location="ZE" data-detail="Vehiculo recibido en Zona Externa" data-next="inspeccion-externa.html" data-prevent-duplicate="true">
+      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="zeReception" data-operation-status="RECIBIDO_EN_ZE" data-container-status="RECIBIDO_EN_ZE" data-location="ZE" data-detail="Vehiculo recibido en Zona Externa" data-next="inspeccion-externa.html" data-prevent-duplicate="true" data-assert-no-future-date="[name='fechaLlegada']">
+        <h2 class="sial-section-title">Datos del vehiculo y operacion</h2>
         <div class="sial-form-grid">
-          <div class="sial-field"><label class="sial-label">Placa del vehiculo</label><input class="sial-input-wrap sial-input" name="placa" required value="TUL458"></div>
-          <div class="sial-field"><label class="sial-label">Conductor</label><input class="sial-input-wrap sial-input" name="conductor" required value="Carlos Mendoza"></div>
-          <div class="sial-field"><label class="sial-label">Numero de contenedor</label><input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567"></div>
-          <div class="sial-field"><label class="sial-label">Operacion asociada</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>
-          <div class="sial-field"><label class="sial-label">Orden o viaje</label><input class="sial-input-wrap sial-input" name="viaje" required value="VIAJE-7751"></div>
-          <div class="sial-field"><label class="sial-label">Transportista</label><input class="sial-input-wrap sial-input" name="transportista" required value="Transbanasan"></div>
-          <div class="sial-field"><label class="sial-label">Fecha y hora llegada ZE</label><input class="sial-input-wrap sial-input" name="fechaLlegada" type="datetime-local" required value="2026-05-05T08:15"></div>
-          <div class="sial-field"><label class="sial-label">ZE correspondiente</label><select class="sial-select" name="ze" required><option>ZE Puerto Norte</option><option>ZE Terminal Sur</option></select></div>
-          <div class="sial-field"><label class="sial-label">Usuario que registra</label><input class="sial-input-wrap sial-input" name="usuario" required value="Maria Operadora"></div>
-          <div class="sial-field"><label class="sial-label">Observaciones iniciales</label><textarea class="sial-textarea" name="observaciones" placeholder="Retrasos, novedades o inconsistencias"></textarea></div>
+          <div class="sial-field"><label class="sial-label">Placa cabezote *</label><input class="sial-input-wrap sial-input" name="placa" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" required value="TUL458"></div>
+          <div class="sial-field"><label class="sial-label">Placa remolque</label><input class="sial-input-wrap sial-input" name="placaRemolque" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" value="RML789"></div>
+          <div class="sial-field"><label class="sial-label">Conductor *</label><input class="sial-input-wrap sial-input" name="conductor" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="next" required value="Carlos Mendoza"></div>
+          <div class="sial-field"><label class="sial-label">Documento conductor *</label><input class="sial-input-wrap sial-input" name="documentoConductor" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="next" required value="1012345678"></div>
+          <div class="sial-field"><label class="sial-label">Transportista *</label><input class="sial-input-wrap sial-input" name="transportista" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="next" required value="Transbanasan"></div>
+          <div class="sial-field"><label class="sial-label">Numero contenedor</label><input class="sial-input-wrap sial-input" name="contenedor" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" value="SIALU1234567"></div>
+          <div class="sial-field"><label class="sial-label">Operacion *</label><input class="sial-input-wrap sial-input" name="operacion" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" required value="EXP-2026-0418"></div>
+          <div class="sial-field"><label class="sial-label">Orden / viaje *</label><input class="sial-input-wrap sial-input" name="viaje" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" required value="VIAJE-7751"></div>
+          <div class="sial-field"><label class="sial-label">Zona Externa *</label><select class="sial-select" name="ze" required><option>ZE Puerto Norte</option><option>ZE Terminal Sur</option><option>ZE Bananera</option></select></div>
+          <div class="sial-field"><label class="sial-label">Fecha/hora llegada *</label><input class="sial-input-wrap sial-input" name="fechaLlegada" type="datetime-local" required value="2026-05-05T08:15"></div>
+          <div class="sial-field"><label class="sial-label">Usuario que registra *</label><input class="sial-input-wrap sial-input" name="usuario" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="done" required value="Maria Operadora"></div>
         </div>
+
+        <div class="sial-field"><label class="sial-label">Observaciones iniciales</label><textarea class="sial-textarea" name="observaciones" inputmode="text" enterkeyhint="done" placeholder="Retrasos, novedades o inconsistencias en la llegada"></textarea></div>
+
+        <div class="sial-field"><label class="sial-label">Novedad inicial</label><select class="sial-select" name="novedadInicial"><option value="">Sin novedad</option><option value="RETRASO">Retraso en llegada</option><option value="DOCUMENTACION">Documentacion incompleta</option><option value="ESTADO_VEHICULO">Estado del vehiculo</option><option value="OTRO">Otra novedad</option></select></div>
+
+        <div class="sial-section">
+          <h3 class="sial-section-title">Evidencia inicial</h3>
+          <div class="sial-evidence-grid">
+            <button class="sial-evidence-slot" type="button" data-add-photo="ze-rec-documentos">Documentos</button>
+            <button class="sial-evidence-slot" type="button" data-add-photo="ze-rec-vehiculo">Vehiculo</button>
+            <button class="sial-evidence-slot" type="button" data-add-photo="ze-rec-contenedor">Contenedor</button>
+          </div>
+        </div>
+
         <p class="sial-inline-error" data-flow-error hidden></p>
         <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Registrar recepcion</button>
       </form>
