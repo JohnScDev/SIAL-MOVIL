@@ -2890,6 +2890,208 @@ body.drawer-open .sial-drawer .sial-btn-full {
   font-size: 13px;
 }
 
+.sial-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sial-search-row .sial-input-wrap {
+  flex: 1;
+}
+
+.sial-search-row .sial-btn {
+  min-height: 48px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.sial-evidence-section {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-evidence-section h3,
+.sial-evidence-section .sial-section-title {
+  margin: 0;
+}
+
+.sial-evidence-trigger {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px dashed var(--sial-border);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+  color: var(--sial-primary-500);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--sial-motion-fast) var(--sial-motion-ease),
+    transform var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-evidence-trigger:active {
+  background: var(--sial-primary-100);
+  transform: scale(.985);
+}
+
+.sial-evidence-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(106px, 1fr));
+  gap: 10px;
+}
+
+.sial-evidence-card {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease),
+    box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+  animation: sial-evidence-in var(--sial-motion-base) var(--sial-motion-ease) both;
+}
+
+.sial-evidence-card:nth-child(1) { animation-delay: 0ms; }
+.sial-evidence-card:nth-child(2) { animation-delay: 40ms; }
+.sial-evidence-card:nth-child(3) { animation-delay: 80ms; }
+.sial-evidence-card:nth-child(4) { animation-delay: 120ms; }
+.sial-evidence-card:nth-child(5) { animation-delay: 160ms; }
+.sial-evidence-card:nth-child(n+6) { animation-delay: 200ms; }
+
+@keyframes sial-evidence-in {
+  from { opacity: 0; transform: translateY(6px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.sial-evidence-card:active {
+  transform: scale(.97);
+}
+
+.sial-evidence-card.has-novelty {
+  border-color: color-mix(in srgb, var(--sial-warning) 42%, var(--sial-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sial-warning) 14%, transparent);
+}
+
+.sial-evidence-card.has-blocking-novelty {
+  border-color: color-mix(in srgb, var(--sial-error) 42%, var(--sial-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sial-error) 14%, transparent);
+}
+
+.sial-evidence-card .sial-novelty-form {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 2px;
+  padding: 10px;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-warning-bg);
+  border: 1px solid color-mix(in srgb, var(--sial-warning) 30%, var(--sial-border));
+}
+
+.sial-evidence-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+  border: 1px solid var(--sial-border-subtle);
+  color: var(--sial-text-3);
+  overflow: hidden;
+}
+
+.sial-evidence-thumb svg {
+  width: 26px;
+  height: 26px;
+  opacity: .55;
+}
+
+.sial-evidence-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sial-text);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+
+.sial-evidence-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sial-evidence-card.has-blocking-novelty .sial-evidence-badge {
+  background: var(--sial-error-bg);
+  color: var(--sial-error);
+}
+
+.sial-evidence-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.sial-evidence-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sial-text-2);
+}
+
+.sial-evidence-progress-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-border-subtle);
+  overflow: hidden;
+}
+
+.sial-evidence-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sial-primary-500);
+  transition: width var(--sial-motion-base) var(--sial-motion-ease);
+}
+
+.sial-evidence-progress-fill.warning {
+  background: var(--sial-warning);
+}
+
+.sial-evidence-progress-fill.danger {
+  background: var(--sial-error);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

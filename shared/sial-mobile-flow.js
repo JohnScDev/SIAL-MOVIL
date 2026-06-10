@@ -4,7 +4,9 @@
   const defaults = {
     container: "SIALU1234567",
     vehicle: "TUL458",
+    trailer: "RML789",
     driver: "Carlos Mendoza",
+    driverDocument: "1012345678",
     operation: "EXP-2026-0418",
     reference: "BAN-REF-001",
     finca: "Finca Santa Isabel",
@@ -13,6 +15,7 @@
     carrier: "Transbanasan",
     order: "ORD-ZE-2041",
     journey: "VIAJE-7751",
+    ze: "ZE Puerto Norte",
     status: "PENDIENTE_RECEPCION_ZE",
     operationStatus: "PENDIENTE_RECEPCION_ZE",
     containerStatus: "DISPONIBLE",
@@ -29,7 +32,15 @@
     photos: {},
     alerts: [],
     flags: {},
-    events: []
+    events: [],
+    selectedVehicleId: null,
+    evidence: {},
+    availableVehicles: [
+      { id: "V-001", truckPlate: "TUL458", trailerPlate: "RML789", driverName: "Carlos Mendoza", driverDoc: "1012345678", carrier: "Transbanasan", container: "SIALU1234567", active: true },
+      { id: "V-002", truckPlate: "ABC123", trailerPlate: "DEF456", driverName: "Ana Ramirez", driverDoc: "1023456789", carrier: "Logistica Sur", container: "", active: true },
+      { id: "V-003", truckPlate: "XYZ789", trailerPlate: "LMN012", driverName: "Pedro Gutierrez", driverDoc: "1034567890", carrier: "Transbanasan", container: "SIALB7654321", active: true },
+      { id: "V-004", truckPlate: "QWE555", trailerPlate: "", driverName: "Luis Velasquez", driverDoc: "1045678901", carrier: "Transportes Norte", container: "", active: false }
+    ]
   };
 
   const requirements = {
@@ -110,7 +121,10 @@
   function hydrateSummary(state) {
     document.querySelectorAll("[data-flow-container]").forEach((node) => { node.textContent = state.container; });
     document.querySelectorAll("[data-flow-vehicle]").forEach((node) => { node.textContent = state.vehicle; });
+    document.querySelectorAll("[data-flow-trailer]").forEach((node) => { node.textContent = state.trailer || ""; });
     document.querySelectorAll("[data-flow-driver]").forEach((node) => { node.textContent = state.driver; });
+    document.querySelectorAll("[data-flow-driver-document]").forEach((node) => { node.textContent = state.driverDocument || ""; });
+    document.querySelectorAll("[data-flow-ze]").forEach((node) => { node.textContent = state.ze || ""; });
     document.querySelectorAll("[data-flow-operation]").forEach((node) => { node.textContent = state.operation; });
     document.querySelectorAll("[data-flow-user]").forEach((node) => { node.textContent = state.user; });
     document.querySelectorAll("[data-flow-supervisor]").forEach((node) => { node.textContent = state.supervisor; });
@@ -271,11 +285,10 @@
   }
 
   function countControlPointPhotos(form) {
-    var count = 0;
-    form.querySelectorAll("[data-control-point]").forEach(function(cp) {
-      if (cp.querySelector("[data-cp-add-photo].done")) count += 1;
-    });
-    return count;
+    var eventName = form.dataset.event;
+    if (!eventName) return 0;
+    var st = readState();
+    return (st.evidence || {})[eventName] ? (st.evidence[eventName] || []).length : 0;
   }
 
   function hasAnyControlPointNoveltyBlocking(form) {
@@ -351,28 +364,24 @@
     }
     const inspResult = form.querySelector("select[name='resultado_inspeccion']");
     if (inspResult && inspResult.value === "APTO") {
-      const hasNovelty = Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
-        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD";
-      });
+      const evItems = (state.evidence || {})[eventName] || [];
+      const hasNovelty = evItems.some(function(e) { return e.hasNovelty; });
       if (hasNovelty) {
-        return "No se puede seleccionar APTO porque existen novedades registradas. Usa APTO_CON_NOVEDAD.";
+        return "No se puede seleccionar APTO porque existen novedades en la evidencia. Usa APTO_CON_NOVEDAD.";
       }
     }
     if (inspResult && inspResult.value === "APTO_CON_NOVEDAD") {
-      const hasNoNovelty = !Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
-        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD";
-      });
-      if (hasNoNovelty) {
-        return "APTO_CON_NOVEDAD requiere al menos una novedad registrada. Usa APTO si no hay novedades.";
+      const ev2 = (state.evidence || {})[eventName] || [];
+      const hasNov = ev2.some(function(e) { return e.hasNovelty; });
+      if (!hasNov) {
+        return "APTO_CON_NOVEDAD requiere al menos una novedad en la evidencia. Usa APTO si no hay novedades.";
       }
     }
     if (inspResult && inspResult.value === "NO_APTO") {
-      const hasBlocking = Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
-        return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD"
-          && cp.querySelector("[data-cp-blocking]") && cp.querySelector("[data-cp-blocking]").checked;
-      });
+      const ev3 = (state.evidence || {})[eventName] || [];
+      const hasBlocking = ev3.some(function(e) { return e.hasNovelty && e.blocking; });
       if (!hasBlocking) {
-        return "NO_APTO requiere al menos una novedad bloqueante.";
+        return "NO_APTO requiere al menos una novedad bloqueante en la evidencia.";
       }
     }
     if (form.dataset.event === "zeDispatch") {
@@ -417,6 +426,35 @@
 
   function generateId() {
     return "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function addEvidenceItem(eventName, controlPoint, label, dataUrl) {
+    var fresh = readState();
+    fresh.evidence = fresh.evidence || {};
+    fresh.evidence[eventName] = fresh.evidence[eventName] || [];
+    fresh.evidence[eventName].push({
+      id: generateId(),
+      controlPoint: controlPoint,
+      label: label,
+      dataUrl: dataUrl,
+      hasNovelty: false,
+      noveltyType: "",
+      severity: "MEDIA",
+      blocking: false,
+      noveltyDesc: ""
+    });
+    writeState(fresh);
+    renderEvidenceGallery(fresh, eventName);
+    updateEvidenceStatRow(eventName);
+    showToast({ type: "success", title: "Evidencia capturada", message: label });
+  }
+
+  function updateEvidenceStatRow(eventName) {
+    var st = readState();
+    var count = (st.evidence || {})[eventName] ? (st.evidence[eventName] || []).length : 0;
+    document.querySelectorAll("[data-evidence-count='" + eventName + "']").forEach(function(el) {
+      el.textContent = String(count);
+    });
   }
 
   function applyEvent(state, eventName, form) {
@@ -573,6 +611,58 @@
     });
   }
 
+  function renderEvidenceGallery(state, eventName) {
+    var gallery = document.querySelector("[data-evidence-gallery='" + eventName + "']");
+    if (!gallery) return;
+    var items = (state.evidence || {})[eventName] || [];
+    var countEl = document.querySelector("[data-evidence-count='" + eventName + "']");
+    var barEl = document.querySelector("[data-evidence-progress-bar='" + eventName + "']");
+
+    gallery.innerHTML = items.map(function(item) {
+      var noveltyBadge = item.hasNovelty ? '<span class="sial-evidence-badge">' + (item.blocking ? '!! ' : '') + 'Novedad</span>' : '';
+      var cardClass = 'sial-evidence-card' + (item.hasNovelty ? (item.blocking ? ' has-blocking-novelty' : ' has-novelty') : '');
+      var thumbContent = item.dataUrl
+        ? '<img src="' + item.dataUrl + '" alt="' + item.label + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" loading="lazy">'
+        : '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+      return [
+        '<button class="' + cardClass + '" data-evidence-card data-evidence-id="' + item.id + '" type="button" aria-label="' + item.label + (item.hasNovelty ? ', con novedad' : '') + '">',
+        noveltyBadge,
+        '<div class="sial-evidence-thumb">' + thumbContent + '</div>',
+        '<div class="sial-evidence-label">' + item.label + '</div>',
+        '<div class="sial-evidence-actions" style="display:flex;gap:4px;margin-top:2px">',
+        '<span class="sial-chip-action" type="button" data-toggle-novelty="' + eventName + '" data-evidence-id="' + item.id + '">' + (item.hasNovelty ? 'Editar' : 'Novedad') + '</span>',
+        '<span class="sial-chip-action" type="button" data-remove-evidence="' + eventName + '" data-evidence-id="' + item.id + '" style="color:var(--sial-error)">Quitar</span>',
+        '</div>',
+        '<div class="sial-novelty-form" data-novelty-form-inline hidden style="margin-top:6px">',
+        '<label>Tipo <select data-novelty-type><option value="CONTAMINANTE"' + (item.noveltyType === 'CONTAMINANTE' ? ' selected' : '') + '>Contaminante</option><option value="OBJETO_EXTRANO"' + (item.noveltyType === 'OBJETO_EXTRANO' ? ' selected' : '') + '>Objeto extrano</option><option value="DANO_ESTRUCTURAL"' + (item.noveltyType === 'DANO_ESTRUCTURAL' ? ' selected' : '') + '>Dano estructural</option><option value="MODIFICACION"' + (item.noveltyType === 'MODIFICACION' ? ' selected' : '') + '>Modificacion</option><option value="CORROSION"' + (item.noveltyType === 'CORROSION' ? ' selected' : '') + '>Corrosion</option><option value="OTRO"' + (item.noveltyType === 'OTRO' ? ' selected' : '') + '>Otro</option></select></label>',
+        '<label>Severidad <select data-novelty-severity><option value="BAJA"' + (item.severity === 'BAJA' ? ' selected' : '') + '>Baja</option><option value="MEDIA"' + (item.severity === 'MEDIA' ? ' selected' : '') + '>Media</option><option value="ALTA"' + (item.severity === 'ALTA' ? ' selected' : '') + '>Alta</option><option value="CRITICA"' + (item.severity === 'CRITICA' ? ' selected' : '') + '>Critica</option></select></label>',
+        '<label class="sial-checkbox-row"><input type="checkbox" data-novelty-blocking' + (item.blocking ? ' checked' : '') + '> Bloqueante</label>',
+        '<label>Descripcion <textarea data-novelty-desc placeholder="Describe la novedad">' + (item.noveltyDesc || '') + '</textarea></label>',
+        '<button class="sial-btn sial-btn-secondary" type="button" data-save-evidence-novelty="' + eventName + '" data-evidence-id="' + item.id + '" style="min-height:36px;font-size:12px;width:100%">Guardar novedad</button>',
+        '</div>',
+        '</button>'
+      ].join("");
+    }).join("");
+
+    if (countEl) countEl.textContent = String(items.length);
+    if (barEl) {
+      var percentage = eventName === "portInternalInspection" ? Math.min(100, (items.length / 23) * 100) : Math.min(100, (items.length / 14) * 100);
+      barEl.style.width = percentage + "%";
+      if (eventName === "portInternalInspection") {
+        if (items.length < 8) barEl.className = "sial-evidence-progress-fill danger";
+        else if (items.length < 15) barEl.className = "sial-evidence-progress-fill warning";
+        else barEl.className = "sial-evidence-progress-fill";
+      }
+    }
+  }
+
+  function hydrateEvidence(state) {
+    document.querySelectorAll("[data-evidence-gallery]").forEach(function(g) {
+      var eventName = g.dataset.evidenceGallery;
+      if (eventName) renderEvidenceGallery(state, eventName);
+    });
+  }
+
   function boot() {
     const state = readState();
     hydrateSummary(state);
@@ -582,9 +672,84 @@
     hydrateAlerts(state);
     hydrateControlPoints(state);
     hydrateSignatures(state);
+    hydrateEvidence(state);
+
+    document.addEventListener("change", (event) => {
+      const cameraInput = event.target.closest("[data-camera-input]");
+      if (cameraInput && cameraInput.files && cameraInput.files.length) {
+        var pending = window._sialPendingCapture;
+        if (!pending) return;
+        var file = cameraInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function() {
+          addEvidenceItem(pending.eventName, pending.controlPoint, pending.label, reader.result);
+          window._sialPendingCapture = null;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     document.addEventListener("click", (event) => {
-      const cpOption = event.target.closest("[data-cp-option]");
+      const vehicleOption = event.target.closest("[data-vehicle-option]");
+      if (vehicleOption) {
+        var vid = vehicleOption.dataset.vehicleOption;
+        var st = readState();
+        var vehicles = st.availableVehicles || [];
+        var selected = vehicles.find(function(v) { return v.id === vid; });
+        if (!selected) return;
+        st.vehicle = selected.truckPlate;
+        st.trailer = selected.trailerPlate || "";
+        st.driver = selected.driverName;
+        st.driverDocument = selected.driverDoc;
+        st.carrier = selected.carrier;
+        st.selectedVehicleId = vid;
+        if (selected.container) st.container = selected.container;
+        writeState(st);
+        hydrateSummary(st);
+        document.querySelectorAll("[data-vehicle-option]").forEach(function(o) {
+          o.setAttribute("aria-pressed", String(o.dataset.vehicleOption === vid));
+          o.classList.toggle("is-continuing", o.dataset.vehicleOption === vid);
+        });
+        showToast({ type: "success", title: "Vehiculo seleccionado", message: selected.truckPlate + " - " + selected.driverName });
+        return;
+      }
+
+      const searchVehicle = event.target.closest("[data-search-vehicle]");
+      if (searchVehicle) {
+        var field = searchVehicle.dataset.searchVehicle;
+        var input = document.querySelector(field);
+        if (!input || !input.value.trim()) {
+          showToast({ type: "warning", title: "Placa requerida", message: "Ingresa una placa de cabezote para buscar." });
+          return;
+        }
+        var query = input.value.trim().toUpperCase();
+        var st = readState();
+        var vehicles = st.availableVehicles || [];
+        var found = vehicles.find(function(v) { return v.truckPlate.toUpperCase() === query; });
+        var statusEl = document.querySelector("[data-search-status]");
+        if (!found) {
+          if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "error", title: "No encontrado", message: "El vehiculo " + query + " no esta registrado en el sistema." });
+          showToast({ type: "error", title: "No encontrado", message: "Vehiculo no registrado." });
+          return;
+        }
+        if (!found.active) {
+          if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "warning", title: "Vehiculo inactivo", message: found.truckPlate + " esta inactivo. Contacte al administrador." });
+          showToast({ type: "warning", title: "Vehiculo inactivo", message: found.truckPlate + " no puede operar." });
+          return;
+        }
+        st.vehicle = found.truckPlate;
+        st.trailer = found.trailerPlate || "";
+        st.driver = found.driverName;
+        st.driverDocument = found.driverDoc;
+        st.carrier = found.carrier;
+        st.selectedVehicleId = found.id;
+        if (found.container) st.container = found.container;
+        writeState(st);
+        hydrateSummary(st);
+        if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "success", title: "Vehiculo encontrado", message: found.truckPlate + " - " + found.driverName + ". Datos autocompletados." });
+        showToast({ type: "success", title: "Vehiculo encontrado", message: found.driverName + " - " + (found.container ? found.container : "Sin contenedor asociado.") });
+        return;
+      }
       if (cpOption) {
         const container = cpOption.closest("[data-control-point]");
         if (!container) return;
@@ -617,33 +782,96 @@
         if (reasonArea) reasonArea.hidden = !needsReason;
       }
 
-      const cpPhoto = event.target.closest("[data-cp-add-photo]");
-      if (cpPhoto) {
-        const container = cpPhoto.closest("[data-control-point]");
-        if (!container) return;
-        const eventName = container.dataset.controlPointEvent || "";
-        const pointKey = container.dataset.controlPoint;
-        if (!eventName || !pointKey) return;
-        if (eventName === "portInternalInspection") {
-          var allPhotos = document.querySelectorAll("#internal-checklist [data-cp-add-photo].done").length;
-          if (!cpPhoto.classList.contains("done") && allPhotos >= 23) {
-            showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias. Solicita autorizacion para exceder." });
+      const captureEvidence = event.target.closest("[data-capture-evidence]");
+      if (captureEvidence) {
+        var evEventName = captureEvidence.dataset.captureEvidence || captureEvidence.dataset.evidenceEvent;
+        if (!evEventName) return;
+        var st = readState();
+        if (evEventName === "portInternalInspection") {
+          var currentCount = (st.evidence || {})[evEventName] ? (st.evidence[evEventName] || []).length : 0;
+          if (currentCount >= 23) {
+            showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
             return;
           }
         }
-        const currentState = readState();
-        currentState.controlPoints = currentState.controlPoints || {};
-        currentState.controlPoints[eventName] = currentState.controlPoints[eventName] || [];
-        const existing = currentState.controlPoints[eventName].find(function(p) { return p.code === pointKey; });
-        if (existing) {
-          existing.hasPhoto = true;
+        var pointList = [];
+        document.querySelectorAll("[data-control-point][data-control-point-event='" + evEventName + "']").forEach(function(cp) {
+          pointList.push({ label: cp.dataset.controlPointName || cp.dataset.controlPoint, value: cp.dataset.controlPoint });
+        });
+        if (!pointList.length) { showToast({ type: "warning", title: "Sin puntos", message: "No hay puntos de control disponibles." }); return; }
+        if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
+          window.SialMobileUI.openMobilePicker({
+            title: "Seleccionar punto de control",
+            message: "Elige el punto al que pertenece esta evidencia.",
+            items: pointList,
+            onSelect: function(item) {
+              window._sialPendingCapture = { eventName: evEventName, controlPoint: item.value, label: item.label };
+              var camInput = document.querySelector("[data-camera-input='" + evEventName + "']");
+              if (camInput) { camInput.value = ""; camInput.click(); }
+              else {
+                addEvidenceItem(evEventName, item.value, item.label, "");
+              }
+            }
+          });
         } else {
-          currentState.controlPoints[eventName].push({ code: pointKey, name: container.dataset.controlPointName || pointKey, value: "", observation: "", hasPhoto: true });
+          addEvidenceItem(evEventName, pointList[0].value, pointList[0].label, "");
         }
-        writeState(currentState);
-        cpPhoto.classList.add("done");
-        cpPhoto.textContent = "Foto OK";
-        showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al punto de control." });
+        return;
+      }
+
+      const removeEvidence = event.target.closest("[data-remove-evidence]");
+      if (removeEvidence) {
+        var rmEvent = removeEvidence.dataset.removeEvidence;
+        var rmId = removeEvidence.dataset.evidenceId;
+        if (!rmEvent || !rmId) return;
+        var st = readState();
+        st.evidence = st.evidence || {};
+        st.evidence[rmEvent] = (st.evidence[rmEvent] || []).filter(function(e) { return e.id !== rmId; });
+        writeState(st);
+        renderEvidenceGallery(st, rmEvent);
+        showToast({ type: "info", title: "Evidencia eliminada", message: "La foto fue retirada del registro." });
+        return;
+      }
+
+      const saveNovelty = event.target.closest("[data-save-evidence-novelty]");
+      if (saveNovelty) {
+        var svEvent = saveNovelty.dataset.saveEvidenceNovelty;
+        var svId = saveNovelty.dataset.evidenceId;
+        if (!svEvent || !svId) return;
+        var card = saveNovelty.closest("[data-evidence-card]");
+        if (!card) return;
+        var novType = (card.querySelector("[data-novelty-type]") || {}).value || "OTRO";
+        var severity = (card.querySelector("[data-novelty-severity]") || {}).value || "MEDIA";
+        var blocking = card.querySelector("[data-novelty-blocking]") ? card.querySelector("[data-novelty-blocking]").checked : false;
+        var desc = (card.querySelector("[data-novelty-desc]") || {}).value || "";
+        var st = readState();
+        st.evidence = st.evidence || {};
+        st.evidence[svEvent] = st.evidence[svEvent] || [];
+        var entry = st.evidence[svEvent].find(function(e) { return e.id === svId; });
+        if (entry) {
+          entry.hasNovelty = true;
+          entry.noveltyType = novType;
+          entry.severity = severity;
+          entry.blocking = blocking;
+          entry.noveltyDesc = desc;
+        }
+        writeState(st);
+        card.querySelector("[data-novelty-form-inline]").hidden = true;
+        renderEvidenceGallery(st, svEvent);
+        showToast({ type: "success", title: "Novedad asignada", message: "La evidencia quedo marcada con novedad." });
+        return;
+      }
+
+      const toggleNovelty = event.target.closest("[data-toggle-novelty]");
+      if (toggleNovelty) {
+        var tgEvent = toggleNovelty.dataset.toggleNovelty;
+        var tgId = toggleNovelty.dataset.evidenceId;
+        if (!tgEvent || !tgId) return;
+        var card = toggleNovelty.closest("[data-evidence-card]");
+        if (!card) return;
+        var formEl = card.querySelector("[data-novelty-form-inline]");
+        if (formEl) formEl.hidden = !formEl.hidden;
+        return;
       }
 
       const dispatchSignature = event.target.closest("[data-confirm-signature]");
@@ -702,37 +930,40 @@
         return;
       }
 
-      var cpNovelties = [];
       form.querySelectorAll("[data-control-point]").forEach(function(container) {
         var valueInput = container.querySelector("[data-cp-value]");
         if (!valueInput) return;
         var val = valueInput.value;
-        var obs = (container.querySelector("[data-cp-observation]") || {}).value || "";
-        var hasPhoto = Boolean(container.querySelector("[data-cp-add-photo].done"));
         var pointKey = container.dataset.controlPoint;
         var pointName = container.dataset.controlPointName || pointKey;
-        if (val === "CON_NOVEDAD") {
-          var novType = (container.querySelector("[data-cp-novelty-type]") || {}).value || "OTRO";
-          var severity = (container.querySelector("[data-cp-severity]") || {}).value || "MEDIA";
-          var blocking = container.querySelector("[data-cp-blocking]") ? container.querySelector("[data-cp-blocking]").checked : false;
-          cpNovelties.push({ controlPoint: pointKey, controlPointName: pointName, type: novType, severity: severity, isBlocking: blocking, description: obs, hasPhoto: hasPhoto });
-        }
         state.controlPoints = state.controlPoints || {};
         state.controlPoints[eventName] = state.controlPoints[eventName] || [];
         var existing = state.controlPoints[eventName].find(function(p) { return p.code === pointKey; });
         if (existing) {
           existing.value = val;
-          existing.observation = obs;
-          existing.hasPhoto = hasPhoto;
         } else {
-          state.controlPoints[eventName].push({ code: pointKey, name: pointName, value: val, observation: obs, hasPhoto: hasPhoto });
+          state.controlPoints[eventName].push({ code: pointKey, name: pointName, value: val, observation: "", hasPhoto: false });
         }
       });
 
-      if (cpNovelties.length) {
-        state.novelties = state.novelties || {};
-        state.novelties[eventName] = (state.novelties[eventName] || []).concat(cpNovelties);
-      }
+      var evItems = (state.evidence || {})[eventName] || [];
+      evItems.forEach(function(ev) {
+        if (ev.hasNovelty) {
+          state.novelties = state.novelties || {};
+          state.novelties[eventName] = state.novelties[eventName] || [];
+          if (!state.novelties[eventName].some(function(n) { return n.evidenceId === ev.id; })) {
+            state.novelties[eventName].push({
+              evidenceId: ev.id,
+              controlPoint: ev.controlPoint,
+              controlPointName: ev.label,
+              type: ev.noveltyType,
+              severity: ev.severity,
+              isBlocking: ev.blocking,
+              description: ev.noveltyDesc
+            });
+          }
+        }
+      });
 
       applyEvent(state, eventName, form);
       writeState(state);
@@ -743,6 +974,7 @@
       hydrateAlerts(state);
       hydrateControlPoints(state);
       hydrateSignatures(state);
+      hydrateEvidence(state);
 
       const inspResult = form.querySelector("select[name='resultado_inspeccion']");
       if (inspResult && inspResult.value) {

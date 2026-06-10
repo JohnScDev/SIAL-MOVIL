@@ -33,7 +33,13 @@
       <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="zeReception" data-operation-status="RECIBIDO_EN_ZE" data-container-status="RECIBIDO_EN_ZE" data-location="ZE" data-detail="Vehiculo recibido en Zona Externa" data-next="inspeccion-externa.html" data-prevent-duplicate="true" data-assert-no-future-date="[name='fechaLlegada']">
         <h2 class="sial-section-title">Datos del vehiculo y operacion</h2>
         <div class="sial-form-grid">
-          <div class="sial-field"><label class="sial-label">Placa cabezote *</label><input class="sial-input-wrap sial-input" name="placa" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" required value="TUL458"></div>
+          <div class="sial-field"><label class="sial-label">Placa cabezote *</label>
+            <div class="sial-search-row">
+              <input class="sial-input-wrap sial-input" name="placa" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" required value="TUL458" style="flex:1">
+              <button class="sial-btn sial-btn-secondary" type="button" data-search-vehicle="[name='placa']">Buscar</button>
+            </div>
+            <div class="sial-status success" data-search-status hidden></div>
+          </div>
           <div class="sial-field"><label class="sial-label">Placa remolque</label><input class="sial-input-wrap sial-input" name="placaRemolque" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" value="RML789"></div>
           <div class="sial-field"><label class="sial-label">Conductor *</label><input class="sial-input-wrap sial-input" name="conductor" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="next" required value="Carlos Mendoza"></div>
           <div class="sial-field"><label class="sial-label">Documento conductor *</label><input class="sial-input-wrap sial-input" name="documentoConductor" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="next" required value="1012345678"></div>

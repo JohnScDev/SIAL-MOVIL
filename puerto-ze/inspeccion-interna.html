@@ -21,8 +21,8 @@
       <div class="sial-status warning" data-requires="zeReception,portExternalInspection"><span><strong>Evento requerido</strong>Falta: <span data-missing-list></span>.</span></div>
       <div class="sial-flow-banner"><strong>Contenedor <span data-flow-container></span></strong><span>Sync: <span class="sial-pill" data-flow-sync-status="portInternalInspection" data-sync-pill></span></span></div>
 
-      <section class="sial-stat-row">
-        <div class="sial-stat"><strong id="cp-photo-count">0</strong><span>Fotos registradas</span></div>
+      <section class="sial-stat-row" aria-label="Contador de evidencia">
+        <div class="sial-stat"><strong data-evidence-count="portInternalInspection">0</strong><span>Fotos registradas</span></div>
         <div class="sial-stat"><strong>15-23</strong><span>Rango requerido</span></div>
       </section>
 
@@ -30,376 +30,172 @@
         <div class="sial-list-row"><strong>Operacion</strong><span data-flow-operation></span></div>
         <div class="sial-list-row"><strong>Orden / viaje</strong><span><span data-flow-order></span> / <span data-flow-journey></span></span></div>
         <div class="sial-list-row"><strong>Vehiculo</strong><span data-flow-vehicle></span></div>
+        <div class="sial-list-row"><strong>Placa remolque</strong><span data-flow-trailer></span></div>
         <div class="sial-list-row"><strong>Estado contenedor</strong><span data-flow-container-status></span></div>
       </section>
 
       <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="portInternalInspection" data-detail="Inspeccion interna ZE" data-next="despacho-finca.html" data-prevent-duplicate="true">
-        <h2 class="sial-section-title">Checklist fotografico interno</h2>
-        <p class="sial-field-note">Minimo 15 fotos, maximo 23. Cada foto debe asociarse a un punto de control. Las novedades requieren foto obligatoria.</p>
+        <input type="file" accept="image/*" capture="environment" data-camera-input="portInternalInspection" hidden>
+        <section class="sial-evidence-section" data-evidence-event="portInternalInspection">
+          <h2 class="sial-section-title">Evidencia fotografica interna</h2>
+          <button class="sial-evidence-trigger" type="button" data-capture-evidence="portInternalInspection">
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Agregar evidencia
+          </button>
+          <div class="sial-evidence-gallery" data-evidence-gallery="portInternalInspection" role="region" aria-label="Galeria de evidencia interna"></div>
+          <div class="sial-evidence-progress">
+            <div class="sial-evidence-progress-bar"><div class="sial-evidence-progress-fill" data-evidence-progress-bar="portInternalInspection" style="width:0"></div></div>
+            <span data-evidence-count="portInternalInspection">0</span><span>de 15-23 fotos</span>
+          </div>
+        </section>
 
-        <div class="sial-checklist" id="internal-checklist">
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-vista-puerta" data-control-point-name="Vista general desde la puerta">
+        <h2 class="sial-section-title">Puntos de control internos</h2>
+        <p class="sial-field-note">Evalua cada punto: SIN_NOVEDAD, CON_NOVEDAD o NO_INSPECCIONABLE.</p>
+
+        <div class="sial-checklist">
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-vista-puerta" data-control-point-name="Vista general desde puerta">
             <header class="sial-checkpoint-header"><strong>Vista general desde puerta</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta">
-                <button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button>
-              </div>
-              <div class="sial-reason-form" data-cp-reason-area hidden>
-                <label>Motivo <textarea data-cp-observation></textarea></label>
-              </div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CONTAMINANTE">Contaminante</option><option value="OBJETO_EXTRANO">Objeto extrano</option><option value="DANO_ESTRUCTURAL">Dano estructural</option><option value="HUMEDAD">Humedad</option><option value="CONDICION_SANITARIA">Condicion sanitaria</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-pared-izq" data-control-point-name="Pared interna izquierda">
             <header class="sial-checkpoint-header"><strong>Pared interna izquierda</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="CORROSION">Corrosion</option><option value="HUMEDAD">Humedad</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-pared-der" data-control-point-name="Pared interna derecha">
             <header class="sial-checkpoint-header"><strong>Pared interna derecha</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="CORROSION">Corrosion</option><option value="HUMEDAD">Humedad</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-pared-frontal" data-control-point-name="Pared frontal interna">
             <header class="sial-checkpoint-header"><strong>Pared frontal interna</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-piso-inicial" data-control-point-name="Piso zona inicial">
             <header class="sial-checkpoint-header"><strong>Piso - zona inicial</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CONTAMINANTE">Contaminante</option><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-piso-medio" data-control-point-name="Piso zona media">
             <header class="sial-checkpoint-header"><strong>Piso - zona media</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CONTAMINANTE">Contaminante</option><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-piso-final" data-control-point-name="Piso zona final">
             <header class="sial-checkpoint-header"><strong>Piso - zona final</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CONTAMINANTE">Contaminante</option><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-techo-inicial" data-control-point-name="Techo zona inicial">
             <header class="sial-checkpoint-header"><strong>Techo - zona inicial</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="CORROSION">Corrosion</option><option value="MODIFICACION">Modificacion</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-techo-medio" data-control-point-name="Techo zona media">
             <header class="sial-checkpoint-header"><strong>Techo - zona media</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="CORROSION">Corrosion</option><option value="MODIFICACION">Modificacion</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-techo-final" data-control-point-name="Techo zona final">
             <header class="sial-checkpoint-header"><strong>Techo - zona final</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="CORROSION">Corrosion</option><option value="MODIFICACION">Modificacion</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-puerta-izq" data-control-point-name="Puerta interna izquierda">
             <header class="sial-checkpoint-header"><strong>Puerta interna izquierda</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="SENAL_MANIPULACION">Manipulacion</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
           <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-puerta-der" data-control-point-name="Puerta interna derecha">
             <header class="sial-checkpoint-header"><strong>Puerta interna derecha</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="SENAL_MANIPULACION">Manipulacion</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-si" data-control-point-name="Esquina interna superior izquierda">
-            <header class="sial-checkpoint-header"><strong>Esq. int. sup. izquierda</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-si" data-control-point-name="Esquina int. sup. izquierda">
+            <header class="sial-checkpoint-header"><strong>Esq. int. sup. izq.</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-sd" data-control-point-name="Esquina interna superior derecha">
-            <header class="sial-checkpoint-header"><strong>Esq. int. sup. derecha</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="MODIFICACION">Modificacion</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-sd" data-control-point-name="Esquina int. sup. derecha">
+            <header class="sial-checkpoint-header"><strong>Esq. int. sup. der.</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-ii" data-control-point-name="Esquina interna inferior izquierda">
-            <header class="sial-checkpoint-header"><strong>Esq. int. inf. izquierda</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-ii" data-control-point-name="Esquina int. inf. izquierda">
+            <header class="sial-checkpoint-header"><strong>Esq. int. inf. izq.</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-id" data-control-point-name="Esquina interna inferior derecha">
-            <header class="sial-checkpoint-header"><strong>Esq. int. inf. derecha</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="DANO_ESTRUCTURAL">Dano</option><option value="HUMEDAD">Humedad</option><option value="DOBLE_FONDO">Doble fondo</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-esquina-id" data-control-point-name="Esquina int. inf. derecha">
+            <header class="sial-checkpoint-header"><strong>Esq. int. inf. der.</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-cableado" data-control-point-name="Cableado, ductos o elementos visibles">
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-cableado" data-control-point-name="Cableado / ductos visibles">
             <header class="sial-checkpoint-header"><strong>Cableado / ductos</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CABLEADO_NO_ESPERADO">Cableado no esperado</option><option value="MODIFICACION">Modificacion</option><option value="DUCTO_ABIERTO">Ducto abierto</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
-
-          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-novedad-adicional" data-control-point-name="Evidencia de novedad adicional">
+          <article class="sial-checkpoint" data-control-point data-control-point-event="portInternalInspection" data-control-point="int-novedad-adicional" data-control-point-name="Evidencia novedad adicional">
             <header class="sial-checkpoint-header"><strong>Evidencia novedad adicional</strong><span class="sial-pill" data-cp-status>Pendiente</span></header>
-            <div class="sial-checkpoint-body">
-              <div class="sial-cp-options">
-                <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
-                <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No aplica</button>
-              </div>
-              <input type="hidden" data-cp-value>
-              <div class="sial-cp-meta"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Foto</button></div>
-              <div class="sial-reason-form" data-cp-reason-area hidden><label>Motivo <textarea data-cp-observation></textarea></label><div class="sial-cp-meta" style="margin-top:6px"><button class="sial-evidence-slot" type="button" data-cp-add-photo>Evidencia alt.</button></div></div>
-              <div class="sial-novelty-form" data-cp-novelty-area hidden>
-                <label>Tipo <select data-cp-novelty-type><option value="CONTAMINANTE">Contaminante</option><option value="OBJETO_EXTRANO">Objeto extrano</option><option value="REPARACION_SOSPECHOSA">Reparacion sospechosa</option><option value="CONDICION_SANITARIA">Condicion sanitaria</option><option value="OTRO">Otro</option></select></label>
-                <label>Severidad <select data-cp-severity><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-                <label class="sial-checkbox-row"><input type="checkbox" data-cp-blocking> Bloqueante</label>
-                <label>Descripcion <textarea data-cp-observation></textarea></label>
-              </div>
-            </div>
+            <div class="sial-checkpoint-body"><div class="sial-cp-options">
+              <button class="sial-cp-option" type="button" data-cp-option="SIN_NOVEDAD">Sin novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="CON_NOVEDAD">Con novedad</button>
+              <button class="sial-cp-option" type="button" data-cp-option="NO_INSPECCIONABLE">No inspeccionable</button>
+            </div><input type="hidden" data-cp-value></div>
           </article>
         </div>
 
@@ -426,18 +222,5 @@
   </main>
   <script src="../shared/sial-mobile-core.js"></script>
   <script src="../shared/sial-mobile-flow.js"></script>
-  <script>
-    (function () {
-      function updatePhotoCount() {
-        var count = document.querySelectorAll("#internal-checklist [data-cp-add-photo].done").length;
-        var el = document.getElementById("cp-photo-count");
-        if (el) el.textContent = String(count);
-      }
-      document.getElementById("internal-checklist").addEventListener("click", function () {
-        window.setTimeout(updatePhotoCount, 50);
-      });
-      updatePhotoCount();
-    })();
-  </script>
 </body>
 </html>
