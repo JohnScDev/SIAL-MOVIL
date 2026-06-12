@@ -106,6 +106,14 @@
     return (requirements[eventName] || []).filter((key) => !state.flags[key]);
   }
 
+  function isPrototypeReviewPage() {
+    return Boolean(document.querySelector("[data-flow-form][data-flow-mode='prototype']"));
+  }
+
+  function isPrototypeReviewForm(form) {
+    return form && form.dataset.flowMode === "prototype";
+  }
+
   function addEvent(state, eventName, detail) {
     const item = {
       event: eventName,
@@ -205,6 +213,10 @@
 
   function hydrateGuard(state) {
     document.querySelectorAll("[data-requires]").forEach((node) => {
+      if (isPrototypeReviewPage()) {
+        node.hidden = true;
+        return;
+      }
       const needs = node.dataset.requires.split(",").map((x) => x.trim()).filter(Boolean);
       const missing = needs.filter((key) => !state.flags[key]);
       if (!missing.length) {
@@ -410,6 +422,7 @@
   }
 
   function pageHasBlockingRequirement() {
+    if (isPrototypeReviewPage()) return false;
     return Array.from(document.querySelectorAll("[data-requires]")).some((node) => !node.hidden);
   }
 
@@ -429,6 +442,21 @@
   }
 
   function addEvidenceItem(eventName, controlPoint, label, dataUrl) {
+    if (isPrototypeReviewPage()) {
+      window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
+      window._sialPrototypeEvidence[eventName] = window._sialPrototypeEvidence[eventName] || [];
+      window._sialPrototypeEvidence[eventName].push({
+        id: generateId(),
+        controlPoint: controlPoint,
+        label: label,
+        dataUrl: dataUrl,
+        hasNovelty: false,
+        timestamp: new Date().toLocaleString("es-CO")
+      });
+      renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, eventName);
+      showToast({ type: "success", title: "Evidencia agregada", message: "La foto queda asociada a esta vista." });
+      return;
+    }
     var fresh = readState();
     fresh.evidence = fresh.evidence || {};
     fresh.evidence[eventName] = fresh.evidence[eventName] || [];
@@ -757,6 +785,22 @@
         const eventName = container.dataset.controlPointEvent || "";
         const pointKey = container.dataset.controlPoint;
         if (!eventName || !pointKey) return;
+        if (isPrototypeReviewPage()) {
+          container.querySelectorAll("[data-cp-option]").forEach(function(b) { b.classList.remove("active"); });
+          cpOption.classList.add("active");
+          const statusEl = container.querySelector("[data-cp-status]");
+          if (statusEl) {
+            statusEl.textContent = value;
+            statusEl.className = "sial-pill" + (value === "SIN_NOVEDAD" ? " success" : value === "CON_NOVEDAD" ? " warning" : value === "NO_INSPECCIONABLE" ? " info" : "");
+          }
+          var needsNovelty = value === "CON_NOVEDAD";
+          var needsReason = value === "NO_INSPECCIONABLE";
+          var noveltyArea = container.querySelector("[data-cp-novelty-area]");
+          if (noveltyArea) noveltyArea.hidden = !needsNovelty;
+          var reasonArea = container.querySelector("[data-cp-reason-area]");
+          if (reasonArea) reasonArea.hidden = !needsReason;
+          return;
+        }
         const currentState = readState();
         currentState.controlPoints = currentState.controlPoints || {};
         currentState.controlPoints[eventName] = currentState.controlPoints[eventName] || [];
@@ -787,6 +831,9 @@
         var evEventName = captureEvidence.dataset.captureEvidence || captureEvidence.dataset.evidenceEvent;
         if (!evEventName) return;
         var st = readState();
+        if (isPrototypeReviewPage()) {
+          st = { ...st, evidence: window._sialPrototypeEvidence || {} };
+        }
         if (evEventName === "portInternalInspection") {
           var currentCount = (st.evidence || {})[evEventName] ? (st.evidence[evEventName] || []).length : 0;
           if (currentCount >= 23) {
@@ -824,6 +871,13 @@
         var rmEvent = removeEvidence.dataset.removeEvidence;
         var rmId = removeEvidence.dataset.evidenceId;
         if (!rmEvent || !rmId) return;
+        if (isPrototypeReviewPage()) {
+          window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
+          window._sialPrototypeEvidence[rmEvent] = (window._sialPrototypeEvidence[rmEvent] || []).filter(function(e) { return e.id !== rmId; });
+          renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, rmEvent);
+          showToast({ type: "info", title: "Evidencia eliminada", message: "La foto fue retirada de la vista." });
+          return;
+        }
         var st = readState();
         st.evidence = st.evidence || {};
         st.evidence[rmEvent] = (st.evidence[rmEvent] || []).filter(function(e) { return e.id !== rmId; });
@@ -844,6 +898,22 @@
         var severity = (card.querySelector("[data-novelty-severity]") || {}).value || "MEDIA";
         var blocking = card.querySelector("[data-novelty-blocking]") ? card.querySelector("[data-novelty-blocking]").checked : false;
         var desc = (card.querySelector("[data-novelty-desc]") || {}).value || "";
+        if (isPrototypeReviewPage()) {
+          window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
+          window._sialPrototypeEvidence[svEvent] = window._sialPrototypeEvidence[svEvent] || [];
+          var prototypeEntry = window._sialPrototypeEvidence[svEvent].find(function(e) { return e.id === svId; });
+          if (prototypeEntry) {
+            prototypeEntry.hasNovelty = true;
+            prototypeEntry.noveltyType = novType;
+            prototypeEntry.severity = severity;
+            prototypeEntry.blocking = blocking;
+            prototypeEntry.noveltyDesc = desc;
+          }
+          card.querySelector("[data-novelty-form-inline]").hidden = true;
+          renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, svEvent);
+          showToast({ type: "success", title: "Novedad asignada", message: "La evidencia queda marcada en esta vista." });
+          return;
+        }
         var st = readState();
         st.evidence = st.evidence || {};
         st.evidence[svEvent] = st.evidence[svEvent] || [];
@@ -909,6 +979,14 @@
       if (!form) return;
       event.preventDefault();
       clearInline(form);
+      if (isPrototypeReviewForm(form)) {
+        showToast({
+          type: "success",
+          title: "Vista validada",
+          message: "La propuesta queda en esta pantalla para revision."
+        });
+        return;
+      }
       const state = readState();
       const eventName = form.dataset.event;
       const missing = missingRequirements(eventName, state);
@@ -998,6 +1076,7 @@
       if (!field) return;
       const form = field.closest("[data-flow-form]");
       if (!form) return;
+      if (isPrototypeReviewForm(form)) return;
       const state = readState();
       const eventName = form.dataset.event;
       if (!eventName || state.flags[eventName]) return;
@@ -1066,6 +1145,15 @@
           showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
           return;
         }
+        if (isPrototypeReviewPage()) {
+          const slot = photo.closest(".sial-evidence-slot");
+          if (slot) {
+            slot.classList.add("done");
+            slot.textContent = "Foto OK";
+          }
+          showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada a la vista." });
+          return;
+        }
         const state = readState();
         const key = photo.dataset.addPhoto;
         state.photos[key] = (state.photos[key] || 0) + 1;
@@ -1083,6 +1171,10 @@
       if (photoSet) {
         if (pageHasBlockingRequirement()) {
           showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          return;
+        }
+        if (isPrototypeReviewPage()) {
+          showToast({ type: "success", title: "Evidencia completada", message: "Fotos asociadas a la vista." });
           return;
         }
         const state = readState();

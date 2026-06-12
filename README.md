@@ -106,7 +106,8 @@ Regla: la marca SIAL identifica el producto/app. Login y recuperacion usan isoti
 - La vista principal posterior a seleccion de empresa se maneja como torre de control: inspecciones rechazadas, contenedores en transito, pendientes de sincronizacion, vehiculos disponibles y siguiente evento.
 - Lenguaje operativo sin limitar la app a una vertical visual literal.
 - Los eventos se relacionan mediante `shared/sial-mobile-flow.js` y se conservan en `localStorage` con estado de operacion, contenedor, vehiculo, ubicacion, flags, timeline, cajas, pallets, fotos y alertas de propuesta.
-- Cada vista incorpora los campos minimos de su HU, validaciones de propuesta, bloqueo por prerrequisitos, usuario, fecha/hora, observaciones y evento de trazabilidad.
+- Cada vista incorpora los campos minimos de su HU, validaciones de propuesta, usuario, fecha/hora, observaciones y evento de trazabilidad.
+- Las HUs ZE principales (`HU758`, `HU557`, `HU558`, `HU303`) se revisan como pantallas independientes: sus formularios usan `data-flow-mode="prototype"`, no avanzan automaticamente al guardar y no bloquean la apertura por prerrequisitos.
 - El cargue de pallets se habilita despues de la recepcion en finca.
 - La entrega final en puerto exige despacho finca, recepcion retorno ZE, despacho puerto y recepcion previa en puerto.
 - Las inspecciones rechazadas generan alerta automatica.
