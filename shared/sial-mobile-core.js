@@ -50,7 +50,198 @@
     return true;
   }
 
-  function preferredTheme() {
+  
+﻿
+  /* ============================================
+     SIAL Camera Overlay (getUserMedia)
+     ============================================ */
+  var cameraStream = null;
+  var cameraFacingMode = "environment";
+  var capturedPhotos = [];
+
+  function renderCameraPreviewRow() {
+    var row = document.querySelector(".sial-camera-preview-row");
+    if (!row) return;
+    row.innerHTML = capturedPhotos.map(function(photo, index) {
+      return '<div class="sial-camera-preview-thumb"><img src="' + photo.dataUrl + '" alt="Foto ' + (index + 1) + '" loading="lazy"></div>';
+    }).join("");
+    row.scrollLeft = row.scrollWidth;
+  }
+
+  function createCameraShutter() {
+    var shutter = document.createElement("div");
+    shutter.className = "sial-camera-shutter";
+    document.body.appendChild(shutter);
+    window.setTimeout(function() { shutter.remove(); }, 260);
+  }
+
+  function captureCameraFrame(video, canvas) {
+    createCameraShutter();
+    var captureBtn = document.querySelector(".sial-camera-capture-btn");
+    if (captureBtn) { captureBtn.classList.add("is-capturing"); window.setTimeout(function() { captureBtn.classList.remove("is-capturing"); }, 260); }
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+    return canvas.toDataURL("image/jpeg", 0.85);
+  }
+
+  function stopCameraStream() {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(function(track) { track.stop(); });
+      cameraStream = null;
+    }
+  }
+
+  function closeCameraOverlay() {
+    stopCameraStream();
+    capturedPhotos = [];
+    var overlay = document.querySelector(".sial-camera-overlay");
+    if (overlay) overlay.remove();
+    document.body.style.overflow = "";
+  }
+
+  function getCameraCanvas() {
+    return document.createElement("canvas");
+  }
+
+  function buildCameraOverlay(config) {
+    config = config || {};
+    var allowMultiple = config.allowMultiple !== false;
+    var maxPhotos = config.maxPhotos || 99;
+    var onComplete = config.onComplete || function() {};
+    var onCancel = config.onCancel || function() {};
+
+    capturedPhotos = [];
+    stopCameraStream();
+
+    var overlay = document.createElement("div");
+    overlay.className = "sial-camera-overlay";
+    overlay.innerHTML = [
+      '<div class="sial-camera-header">',
+      '<button type="button" data-camera-cancel aria-label="Cancelar">Cancelar</button>',
+      '<div class="sial-camera-btn-group">',
+      '<button type="button" data-camera-flash aria-label="Encender linterna" style="opacity:.5">&#9889;</button>',
+      '<button type="button" data-camera-flip aria-label="Cambiar camara">&#8644;</button>',
+      '</div>',
+      '</div>',
+      '<div class="sial-camera-viewfinder">',
+      '<video autoplay playsinline muted></video>',
+      '<div class="sial-camera-grid"></div>',
+      '<div class="sial-camera-corner-tl"></div><div class="sial-camera-corner-tr"></div>',
+      '<div class="sial-camera-corner-bl"></div><div class="sial-camera-corner-br"></div>',
+      '<div class="sial-camera-permission-denied" hidden>',
+      '<strong>Permiso de camara requerido</strong>',
+      '<p>Para simular la captura, presiona "Capturar sin camara" y se generara una imagen de prueba.</p>',
+      '<button class="sial-btn sial-btn-primary" type="button" data-camera-fallback>Capturar sin camara</button>',
+      '</div>',
+      '</div>',
+      '<div class="sial-camera-footer">',
+      '<div class="sial-camera-preview-row" data-camera-preview-row></div>',
+      '<div class="sial-camera-capture-area">',
+      '<div class="sial-camera-empty-state" data-camera-count>0 foto(s)</div>',
+      '<button class="sial-camera-capture-btn" type="button" aria-label="Capturar foto"></button>',
+      '<div style="width:60px"></div>',
+      '</div>',
+      '</div>'
+    ].join("");
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = "hidden";
+
+    var video = overlay.querySelector("video");
+    var canvas = getCameraCanvas();
+    var permissionDenied = overlay.querySelector(".sial-camera-permission-denied");
+    var countEl = overlay.querySelector("[data-camera-count]");
+
+    function startCamera() {
+      stopCameraStream();
+      permissionDenied.hidden = true;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        permissionDenied.hidden = false;
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: cameraFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      }).then(function(stream) {
+        cameraStream = stream;
+        video.srcObject = stream;
+        video.play();
+      }).catch(function() {
+        permissionDenied.hidden = false;
+      });
+    }
+
+    startCamera();
+
+    overlay.querySelector("[data-camera-flip]").addEventListener("click", function() {
+      cameraFacingMode = cameraFacingMode === "environment" ? "user" : "environment";
+      startCamera();
+    });
+
+    overlay.querySelector("[data-camera-flash]").addEventListener("click", function() {
+      try {
+        var track = cameraStream ? cameraStream.getVideoTracks()[0] : null;
+        if (track && track.getCapabilities && track.getCapabilities().torch) {
+          var torch = !(track.getConstraints().torch || false);
+          track.applyConstraints({ advanced: [{ torch: torch }] });
+        }
+      } catch(e) {}
+    });
+
+    overlay.querySelector("[data-camera-cancel]").addEventListener("click", function() {
+      var count = capturedPhotos.length;
+      closeCameraOverlay();
+      if (count > 0 && allowMultiple) {
+        onComplete(capturedPhotos);
+      } else {
+        onCancel();
+      }
+    });
+
+    overlay.querySelector(".sial-camera-capture-btn").addEventListener("click", function() {
+      if (capturedPhotos.length >= maxPhotos) {
+        if (window.SialMobileUI && window.SialMobileUI.showToast) {
+          window.SialMobileUI.showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de " + maxPhotos + " fotos." });
+        }
+        return;
+      }
+      var dataUrl = captureCameraFrame(video, canvas);
+      capturedPhotos.push({ dataUrl: dataUrl, timestamp: Date.now() });
+      renderCameraPreviewRow();
+      if (countEl) countEl.textContent = capturedPhotos.length + " foto(s)";
+      if (!allowMultiple) {
+        closeCameraOverlay();
+        onComplete(capturedPhotos);
+      }
+    });
+
+    overlay.querySelector("[data-camera-fallback]").addEventListener("click", function() {
+      canvas.width = 320;
+      canvas.height = 240;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#1a3a5c";
+      ctx.fillRect(0, 0, 320, 240);
+      ctx.fillStyle = "#fff";
+      ctx.font = "20px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("SIAL", 160, 100);
+      ctx.font = "12px sans-serif";
+      ctx.fillText("Foto de prueba (propuesta)", 160, 140);
+      ctx.fillText(new Date().toLocaleTimeString("es-CO"), 160, 170);
+      var dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      capturedPhotos.push({ dataUrl: dataUrl, timestamp: Date.now() });
+      renderCameraPreviewRow();
+      if (countEl) countEl.textContent = capturedPhotos.length + " foto(s)";
+      if (!allowMultiple) {
+        closeCameraOverlay();
+        onComplete(capturedPhotos);
+      }
+    });
+  }
+
+﻿function preferredTheme() {
     const saved = localStorage.getItem(storageThemeKey);
     if (saved === "light" || saved === "dark") return saved;
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -745,7 +936,8 @@
   hydrateCompanyContext();
   refreshSelectionViews();
 
-  window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
+  window.SialMobileUI = Object.assign(window.SialMobileUI || {
+    openCamera: function(config) { buildCameraOverlay(config); },}, {
     setTheme,
     showToast,
     setInlineStatus,
@@ -991,4 +1183,3 @@
     }, 900);
   });
 })();
-

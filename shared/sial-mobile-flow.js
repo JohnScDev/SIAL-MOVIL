@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const stateKey = "sial-mobile-workflow";
 
   const defaults = {
@@ -834,34 +834,62 @@
         if (isPrototypeReviewPage()) {
           st = { ...st, evidence: window._sialPrototypeEvidence || {} };
         }
-        if (evEventName === "portInternalInspection") {
-          var currentCount = (st.evidence || {})[evEventName] ? (st.evidence[evEventName] || []).length : 0;
-          if (currentCount >= 23) {
-            showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
-            return;
-          }
+        var currentCount = (st.evidence || {})[evEventName] ? (st.evidence[evEventName] || []).length : 0;
+        if (evEventName === "portInternalInspection" && currentCount >= 23) {
+          showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
+          return;
         }
         var pointList = [];
         document.querySelectorAll("[data-control-point][data-control-point-event='" + evEventName + "']").forEach(function(cp) {
           pointList.push({ label: cp.dataset.controlPointName || cp.dataset.controlPoint, value: cp.dataset.controlPoint });
         });
         if (!pointList.length) { showToast({ type: "warning", title: "Sin puntos", message: "No hay puntos de control disponibles." }); return; }
-        if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
+
+        function captureForPoint(point) {
+          if (window.SialMobileUI && window.SialMobileUI.openCamera) {
+            window.SialMobileUI.openCamera({
+              allowMultiple: true,
+              maxPhotos: Math.max(1, evEventName === "portInternalInspection" ? 23 - currentCount : 99),
+              onComplete: function(photos) {
+                photos.forEach(function(photo) {
+                  addEvidenceItem(evEventName, point.value, point.label, photo.dataUrl);
+                });
+                showToast({ type: "success", title: "Evidencia capturada", message: photos.length + " foto(s) para " + point.label });
+              },
+              onCancel: function() {
+                showToast({ type: "info", title: "Captura cancelada", message: "No se tomaron fotos." });
+              }
+            });
+          } else {
+            if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
+              window.SialMobileUI.openMobilePicker({
+                title: "Seleccionar punto de control",
+                message: "Elige el punto al que pertenece esta evidencia.",
+                items: pointList,
+                onSelect: function(item) {
+                  window._sialPendingCapture = { eventName: evEventName, controlPoint: item.value, label: item.label };
+                  var camInput = document.querySelector("[data-camera-input='" + evEventName + "']");
+                  if (camInput) { camInput.value = ""; camInput.click(); }
+                  else { addEvidenceItem(evEventName, item.value, item.label, ""); }
+                }
+              });
+            } else {
+              addEvidenceItem(evEventName, pointList[0].value, pointList[0].label, "");
+            }
+          }
+        }
+
+        if (pointList.length === 1) {
+          captureForPoint(pointList[0]);
+        } else if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
           window.SialMobileUI.openMobilePicker({
             title: "Seleccionar punto de control",
             message: "Elige el punto al que pertenece esta evidencia.",
             items: pointList,
-            onSelect: function(item) {
-              window._sialPendingCapture = { eventName: evEventName, controlPoint: item.value, label: item.label };
-              var camInput = document.querySelector("[data-camera-input='" + evEventName + "']");
-              if (camInput) { camInput.value = ""; camInput.click(); }
-              else {
-                addEvidenceItem(evEventName, item.value, item.label, "");
-              }
-            }
+            onSelect: function(item) { captureForPoint(item); }
           });
         } else {
-          addEvidenceItem(evEventName, pointList[0].value, pointList[0].label, "");
+          captureForPoint(pointList[0]);
         }
         return;
       }

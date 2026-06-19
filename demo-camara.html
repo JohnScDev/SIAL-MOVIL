@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIAL Movil - Demo Camara</title>
+  <link rel="stylesheet" href="sial-mobile-core.css">
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; margin: 0; padding: 16px; display: grid; gap: 16px; }
+    .demo-header { background: #005CA8; color: #fff; padding: 20px; border-radius: 16px; }
+    .demo-header h1 { margin: 0 0 4px; font-size: 20px; }
+    .demo-header p { margin: 0; opacity: .8; font-size: 13px; }
+    .demo-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: grid; gap: 16px; }
+    .demo-card h2 { margin: 0; font-size: 17px; color: #111; }
+    .demo-card p { margin: 0; font-size: 13px; color: #555; line-height: 1.45; }
+    .btn-demo { min-height: 48px; padding: 0 24px; border: 0; border-radius: 12px; background: #005CA8; color: #fff; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-demo:active { transform: scale(.97); opacity: .9; }
+    .btn-secondary { background: #eef2f6; color: #1a2a3a; }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .demo-gallery { display: flex; flex-wrap: wrap; gap: 10px; }
+    .demo-gallery img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #e0e0e0; }
+    .demo-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; background: #e8f5e9; color: #2e7d32; font-size: 12px; font-weight: 600; }
+    .demo-slot { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border: 2px dashed #ccc; border-radius: 12px; background: #fafafa; min-width: 120px; justify-content: center; font-size: 13px; color: #666; cursor: pointer; transition: all .2s; }
+    .demo-slot.done { border-style: solid; border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
+    .demo-slot.has-thumb { padding: 4px; min-height: 60px; background-size: cover; background-position: center; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); border-color: #005CA8; }
+    .camera-test-area { display: grid; gap: 12px; padding: 16px; border: 1px solid #e0e0e0; border-radius: 12px; background: #fafafa; }
+    .instructions { font-size: 12px; color: #888; line-height: 1.5; padding: 12px; border-left: 3px solid #005CA8; background: #f0f4ff; border-radius: 0 8px 8px 0; }
+    code { font-size: 12px; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="demo-header">
+  <h1>SIAL Movil — Demo de Camara</h1>
+  <p>Prueba el overlay de cámara con getUserMedia real o con fallback simulado</p>
+</div>
+
+<div class="demo-card">
+  <h2>Camara individual (evidence-slot)</h2>
+  <p>Haz clic en un slot para abrir la cámara, capturar una foto y verla en el slot.</p>
+  <div class="demo-row">
+    <button class="demo-slot" type="button" id="demoSlot1" data-demo-slot>Paredes</button>
+    <button class="demo-slot" type="button" id="demoSlot2" data-demo-slot>Puertas</button>
+    <button class="demo-slot" type="button" id="demoSlot3" data-demo-slot>Piso</button>
+  </div>
+</div>
+
+<div class="demo-card">
+  <h2>Camara multiple (evidence-trigger)</h2>
+  <p>Captura varias fotos secuencialmente. Aparecen como miniaturas abajo.</p>
+  <button class="btn-demo" type="button" id="demoTrigger">Abrir camara</button>
+  <div class="demo-gallery" id="demoGallery"></div>
+  <div id="demoCount" style="font-size:13px;color:#888">0 fotos capturadas</div>
+</div>
+
+<div class="demo-card">
+  <h2>Modo inspeccion interna ZE (15-23 fotos)</h2>
+  <p>Simula el flujo HU558: captura múltiples fotos con límite de 23.</p>
+  <button class="btn-demo" type="button" id="demoInspection">Iniciar captura (max 23)</button>
+  <div class="demo-gallery" id="inspectionGallery"></div>
+  <div id="inspectionCount" style="font-size:13px;color:#888">0 / 23 fotos</div>
+  <div style="height:6px;border-radius:4px;background:#e0e0e0;overflow:hidden"><div id="inspectionBar" style="height:100%;width:0%;background:#005CA8;transition:width .3s"></div></div>
+</div>
+
+<div class="demo-card">
+  <h2>Resultados de captura</h2>
+  <div id="captureResult" class="instructions">Presiona cualquier boton de camara para comenzar.</div>
+  <div class="demo-row">
+    <button class="btn-demo btn-secondary" type="button" id="clearAll">Limpiar todo</button>
+    <button class="btn-demo" type="button" id="testFallback">Probar fallback sin camara</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var capturedPhotos = [];
+    var inspectionPhotos = [];
+
+    function updateGallery(gallery, countEl, barEl, photos, max) {
+      gallery.innerHTML = photos.map(function(p, i) {
+        return '<img src="' + p.dataUrl + '" alt="Foto ' + (i + 1) + '">';
+      }).join('');
+      if (countEl) countEl.textContent = photos.length + (max ? ' / ' + max + ' fotos' : ' fotos capturadas');
+      if (barEl && max) barEl.style.width = Math.min(100, (photos.length / max) * 100) + '%';
+    }
+
+    function logResult(msg) { document.getElementById('captureResult').textContent = msg; }
+
+    document.querySelectorAll('[data-demo-slot]').forEach(function(slot) {
+      slot.addEventListener('click', function() {
+        if (window.SialMobileUI && window.SialMobileUI.openCamera) {
+          SialMobileUI.openCamera({
+            allowMultiple: false,
+            onComplete: function(photos) {
+              if (photos.length > 0) {
+                slot.classList.add('done', 'has-thumb');
+                slot.style.backgroundImage = 'url(' + photos[0].dataUrl + ')';
+                slot.textContent = 'Foto OK';
+                logResult('Slot "' + slot.id + '": Foto capturada correctamente.');
+              }
+            },
+            onCancel: function() { logResult('Slot "' + slot.id + '": Captura cancelada.'); }
+          });
+        } else {
+          alert('Cargar sial-mobile-core.js primero');
+        }
+      });
+    });
+
+    document.getElementById('demoTrigger').addEventListener('click', function() {
+      if (window.SialMobileUI && window.SialMobileUI.openCamera) {
+        SialMobileUI.openCamera({
+          allowMultiple: true,
+          maxPhotos: 99,
+          onComplete: function(photos) {
+            capturedPhotos = photos;
+            updateGallery(document.getElementById('demoGallery'), document.getElementById('demoCount'), null, photos);
+            logResult('Multi-captura: ' + photos.length + ' foto(s) tomadas.');
+          },
+          onCancel: function() { logResult('Multi-captura cancelada.'); }
+        });
+      }
+    });
+
+    document.getElementById('demoInspection').addEventListener('click', function() {
+      if (window.SialMobileUI && window.SialMobileUI.openCamera) {
+        SialMobileUI.openCamera({
+          allowMultiple: true,
+          maxPhotos: 23,
+          onComplete: function(photos) {
+            inspectionPhotos = photos;
+            updateGallery(document.getElementById('inspectionGallery'), document.getElementById('inspectionCount'), document.getElementById('inspectionBar'), photos, 23);
+            logResult('Inspeccion: ' + photos.length + '/' + 23 + ' fotos capturadas.');
+          },
+          onCancel: function() { logResult('Inspeccion cancelada.'); }
+        });
+      }
+    });
+
+    document.getElementById('clearAll').addEventListener('click', function() {
+      capturedPhotos = [];
+      inspectionPhotos = [];
+      document.querySelectorAll('[data-demo-slot]').forEach(function(s) { s.className = 'demo-slot'; s.style.backgroundImage = ''; s.textContent = s.id.replace('demoSlot', 'Slot '); });
+      document.getElementById('demoGallery').innerHTML = '';
+      document.getElementById('inspectionGallery').innerHTML = '';
+      document.getElementById('demoCount').textContent = '0 fotos capturadas';
+      document.getElementById('inspectionCount').textContent = '0 / 23 fotos';
+      document.getElementById('inspectionBar').style.width = '0%';
+      logResult('Todo limpio. Listo para nueva captura.');
+    });
+
+    document.getElementById('testFallback').addEventListener('click', function() {
+      var canvas = document.createElement('canvas');
+      canvas.width = 320; canvas.height = 240;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1a3a5c'; ctx.fillRect(0, 0, 320, 240);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('SIAL', 160, 90);
+      ctx.font = '13px sans-serif';
+      ctx.fillText('Foto de prueba', 160, 130);
+      ctx.fillText('(fallback sin camara)', 160, 155);
+      ctx.fillText(new Date().toLocaleTimeString('es-CO'), 160, 190);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      capturedPhotos.push({ dataUrl: dataUrl, timestamp: Date.now() });
+      updateGallery(document.getElementById('demoGallery'), document.getElementById('demoCount'), null, capturedPhotos);
+      logResult('Fallback: foto de prueba generada correctamente.');
+    });
+  })();
+</script>
+</body>
+</html>
