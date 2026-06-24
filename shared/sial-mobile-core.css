@@ -2326,6 +2326,59 @@ body.dialog-open {
   color: var(--sial-success);
 }
 
+.sial-evidence-slot.has-photo {
+  position: relative;
+  min-height: 112px;
+  align-content: end;
+  gap: 6px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.sial-evidence-slot-thumb {
+  position: absolute;
+  inset: 6px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--sial-surface);
+}
+
+.sial-evidence-slot-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.58));
+}
+
+.sial-evidence-slot-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sial-evidence-slot-label,
+.sial-evidence-slot-count {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.72);
+}
+
+.sial-evidence-slot-label {
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-evidence-slot-count {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: .88;
+}
+
 .sial-list {
   display: grid;
   gap: 8px;
@@ -3154,33 +3207,117 @@ body.drawer-open .sial-drawer .sial-btn-full {
    SIAL Camera Overlay
    ======================================== */
 .sial-camera-overlay {
-  position: fixed; inset: 0; z-index: 999;
-  display: grid; grid-template-rows: auto 1fr auto;
-  background: #000; color: #fff;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  touch-action: manipulation;
   animation: sial-camera-in var(--sial-motion-slow) var(--sial-motion-ease) both;
 }
 @keyframes sial-camera-in {
   from { opacity: 0; transform: scale(1.04); }
   to   { opacity: 1; transform: scale(1); }
 }
-.sial-camera-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: max(12px, env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));
-  background: linear-gradient(180deg, rgba(0,0,0,.6) 0%, transparent 100%);
+.sial-camera-topline {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
 }
-.sial-camera-header button {
-  min-height: 44px; min-width: 44px;
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 0 12px; border: 0; border-radius: var(--sial-radius-pill);
-  background: rgba(255,255,255,.18); color: #fff;
-  font: inherit; font-size: 14px; font-weight: 600;
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+.sial-camera-title-stack {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  pointer-events: none;
 }
-.sial-camera-header button:active { background: rgba(255,255,255,.32); transform: scale(.96); }
-.sial-camera-header .sial-camera-btn-group { display: flex; gap: 8px; }
-.sial-camera-header .sial-camera-btn-group button { width: 44px; padding: 0; }
-.sial-camera-viewfinder { position: relative; overflow: hidden; display: grid; place-items: center; background: #000; }
-.sial-camera-viewfinder video { width: 100%; height: 100%; object-fit: cover; }
+.sial-camera-title {
+  margin: 0;
+  min-width: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,.8), 0 1px 2px rgba(0,0,0,.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.sial-camera-step {
+  color: rgba(255,255,255,.84);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+  pointer-events: none;
+}
+.sial-camera-icon-btn,
+.sial-camera-secondary-action {
+  min-width: 48px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,.74);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.sial-camera-icon-btn {
+  border-radius: 50%;
+}
+.sial-camera-icon-btn .sial-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.3;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.72));
+}
+.sial-camera-icon-btn:focus-visible,
+.sial-camera-secondary-action:focus-visible,
+.sial-camera-capture-btn:focus-visible {
+  outline: 2px solid rgba(255,255,255,.9);
+  outline-offset: 3px;
+}
+.sial-camera-icon-btn:active,
+.sial-camera-secondary-action:active {
+  transform: scale(.94);
+  background: rgba(255,255,255,.12);
+}
+.sial-camera-btn-group {
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+}
+.sial-camera-viewfinder {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+.sial-camera-viewfinder video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .sial-camera-viewfinder .sial-camera-grid { position: absolute; inset: 0; pointer-events: none; }
 .sial-camera-viewfinder .sial-camera-grid::before,
 .sial-camera-viewfinder .sial-camera-grid::after {
@@ -3203,24 +3340,77 @@ body.drawer-open .sial-drawer .sial-btn-full {
 .sial-camera-corner-bl { bottom: 20px; left: 20px; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 4px; }
 .sial-camera-corner-br { bottom: 20px; right: 20px; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 4px 0; }
 .sial-camera-footer {
-  display: grid; gap: 12px;
-  padding: 12px max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
-  background: linear-gradient(0deg, rgba(0,0,0,.6) 0%, transparent 100%);
+  position: absolute;
+  left: max(14px, env(safe-area-inset-left));
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 3;
+  display: grid;
+  gap: 10px;
+  pointer-events: none;
 }
 .sial-camera-preview-row { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0; scrollbar-width: none; }
 .sial-camera-preview-row::-webkit-scrollbar { display: none; }
 .sial-camera-preview-row .sial-camera-preview-thumb {
-  flex: 0 0 auto; width: 48px; height: 48px; border-radius: 8px;
-  border: 2px solid rgba(255,255,255,.35); overflow: hidden; background: rgba(255,255,255,.08);
+  position: relative;
+  flex: 0 0 auto; width: 62px; height: 62px; border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.72); overflow: hidden; background: rgba(255,255,255,.08);
+  box-shadow: 0 8px 22px rgba(0,0,0,.32);
+}
+.sial-camera-preview-row .sial-camera-preview-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 34% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.72));
+  pointer-events: none;
 }
 .sial-camera-preview-row .sial-camera-preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.sial-camera-capture-area { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.sial-camera-preview-row .sial-camera-preview-thumb span {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  z-index: 1;
+  overflow: hidden;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 5px rgba(0,0,0,.8);
+  white-space: nowrap;
+}
+.sial-camera-capture-area {
+  display: grid;
+  grid-template-columns: minmax(70px, 1fr) auto minmax(70px, 1fr);
+  align-items: center;
+  gap: 18px;
+  pointer-events: none;
+}
+.sial-camera-control-spacer {
+  min-width: 70px;
+  min-height: 48px;
+}
+.sial-camera-secondary-action {
+  justify-self: center;
+  min-width: 70px;
+  padding: 0 8px;
+  border-radius: var(--sial-radius-pill);
+  font-size: 13px;
+  pointer-events: auto;
+}
+.sial-camera-secondary-action:disabled {
+  opacity: .42;
+  cursor: default;
+}
 .sial-camera-capture-btn {
   position: relative; width: 72px; height: 72px;
   border: 4px solid rgba(255,255,255,.8); border-radius: 50%;
   background: rgba(255,255,255,.2); cursor: pointer;
   transition: transform var(--sial-motion-fast) var(--sial-motion-ease);
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 8px 28px rgba(0,0,0,.42);
+  pointer-events: auto;
 }
 .sial-camera-capture-btn::after {
   content: ""; position: absolute; inset: 4px; border-radius: 50%; background: #fff;
@@ -3242,13 +3432,45 @@ body.drawer-open .sial-drawer .sial-btn-full {
   0%   { opacity: .8; }
   100% { opacity: 0; }
 }
-.sial-camera-empty-state { width: 100%; display: grid; place-items: center; color: rgba(255,255,255,.4); font-size: 12px; text-align: center; }
-.sial-camera-permission-denied {
-  position: absolute; inset: 0; display: grid; place-items: center; gap: 12px;
-  padding: 32px; background: rgba(0,0,0,.7); color: #fff; text-align: center;
+.sial-camera-empty-state {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,.7);
 }
-.sial-camera-permission-denied strong { font-size: 18px; }
-.sial-camera-permission-denied p { max-width: 280px; font-size: 13px; opacity: .7; line-height: 1.45; }
+.sial-camera-permission-denied {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 32px;
+  background: rgba(0,0,0,.58);
+  color: #fff;
+  text-align: center;
+}
+.sial-camera-permission-denied[hidden] { display: none; }
+.sial-camera-permission-denied strong {
+  font-size: 18px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.72);
+}
+.sial-camera-permission-denied p {
+  max-width: 316px;
+  margin: 0;
+  font-size: 13px;
+  opacity: .86;
+  line-height: 1.45;
+}
+.sial-camera-fallback-actions {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 280px);
+}
 html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
 @media (prefers-reduced-motion: reduce) {
   .sial-camera-overlay, .sial-camera-capture-btn::after, .sial-camera-shutter { animation: none; }

@@ -59,13 +59,65 @@
   var cameraFacingMode = "environment";
   var capturedPhotos = [];
 
+  function escapeCameraText(value) {
+    return String(value || "").replace(/[&<>"']/g, function(char) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char];
+    });
+  }
+
+  function normalizeCaptureSteps(config, fallbackTitle) {
+    var rawSteps = Array.isArray(config.steps) ? config.steps : (Array.isArray(config.sequence) ? config.sequence : []);
+    return rawSteps.map(function(step, index) {
+      var source = step && typeof step === "object" ? step : { title: step };
+      var title = String(source.title || source.label || fallbackTitle || "Captura fotografica").replace(/\s+/g, " ").trim();
+      var pointKey = String(source.pointKey || source.value || source.key || source.controlPoint || "").trim();
+      var eventName = String(source.eventName || config.eventName || "").trim();
+      return {
+        title: title || fallbackTitle || "Captura fotografica",
+        label: String(source.label || title || fallbackTitle || "Captura fotografica").replace(/\s+/g, " ").trim(),
+        pointKey: pointKey || String(config.pointKey || "").trim(),
+        eventName: eventName,
+        index: index
+      };
+    }).filter(function(step) {
+      return Boolean(step.title || step.pointKey);
+    });
+  }
+
   function renderCameraPreviewRow() {
     var row = document.querySelector(".sial-camera-preview-row");
     if (!row) return;
+    row.hidden = capturedPhotos.length === 0;
     row.innerHTML = capturedPhotos.map(function(photo, index) {
-      return '<div class="sial-camera-preview-thumb"><img src="' + photo.dataUrl + '" alt="Foto ' + (index + 1) + '" loading="lazy"></div>';
+      var label = photo.title || photo.label || "Foto " + (index + 1);
+      return [
+        '<div class="sial-camera-preview-thumb">',
+        '<img src="' + photo.dataUrl + '" alt="' + escapeCameraText(label) + '" loading="lazy">',
+        '<span>' + escapeCameraText(label) + '</span>',
+        '</div>'
+      ].join("");
     }).join("");
     row.scrollLeft = row.scrollWidth;
+  }
+
+  function updateCameraProgress(countEl, doneBtn, allowMultiple, isSequence, maxPhotos) {
+    if (countEl) {
+      if (isSequence) {
+        countEl.textContent = capturedPhotos.length + " de " + maxPhotos + " foto(s)";
+      } else {
+        countEl.textContent = capturedPhotos.length ? capturedPhotos.length + " foto(s)" : "Sin fotos";
+      }
+    }
+    if (doneBtn) {
+      doneBtn.style.visibility = allowMultiple && !isSequence && capturedPhotos.length ? "visible" : "hidden";
+      doneBtn.disabled = !(allowMultiple && !isSequence && capturedPhotos.length);
+    }
   }
 
   function createCameraShutter() {
@@ -75,10 +127,51 @@
     window.setTimeout(function() { shutter.remove(); }, 260);
   }
 
+  function createPhotoPayload(dataUrl, config, source, step) {
+    var title = step ? (step.title || step.label) : (config.title || config.label);
+    return {
+      dataUrl: dataUrl,
+      timestamp: Date.now(),
+      title: title || "Captura fotografica",
+      label: step ? (step.label || step.title || title) : (config.label || title || "Captura fotografica"),
+      eventName: step ? (step.eventName || config.eventName || "") : (config.eventName || ""),
+      pointKey: step ? (step.pointKey || config.pointKey || "") : (config.pointKey || ""),
+      source: source || "camera",
+      sequenceIndex: step ? step.index : null
+    };
+  }
+
+  function createGeneratedPhoto(config) {
+    var canvas = getCameraCanvas();
+    canvas.width = 960;
+    canvas.height = 720;
+    var ctx = canvas.getContext("2d");
+    var gradient = ctx.createLinearGradient(0, 0, 960, 720);
+    gradient.addColorStop(0, "#003b72");
+    gradient.addColorStop(1, "#0b7f86");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 960, 720);
+    ctx.fillStyle = "rgba(255,255,255,.12)";
+    ctx.fillRect(60, 60, 840, 600);
+    ctx.strokeStyle = "rgba(255,255,255,.5)";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(92, 92, 776, 536);
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.font = "700 46px sans-serif";
+    ctx.fillText(config.title || "Captura fotografica", 480, 312);
+    ctx.font = "500 24px sans-serif";
+    ctx.fillText("Evidencia de prueba", 480, 366);
+    ctx.font = "400 20px sans-serif";
+    ctx.fillText(new Date().toLocaleString("es-CO"), 480, 420);
+    return canvas.toDataURL("image/jpeg", 0.85);
+  }
+
   function captureCameraFrame(video, canvas) {
     createCameraShutter();
     var captureBtn = document.querySelector(".sial-camera-capture-btn");
     if (captureBtn) { captureBtn.classList.add("is-capturing"); window.setTimeout(function() { captureBtn.classList.remove("is-capturing"); }, 260); }
+    if (!video || !video.videoWidth || !video.videoHeight) return "";
     canvas.width = video.videoWidth || 1280;
     canvas.height = video.videoHeight || 720;
     var ctx = canvas.getContext("2d");
@@ -105,12 +198,20 @@
     return document.createElement("canvas");
   }
 
-  function buildCameraOverlay(config) {
+  function buildPhotoCaptureOverlay(config) {
     config = config || {};
-    var allowMultiple = config.allowMultiple !== false;
-    var maxPhotos = config.maxPhotos || 99;
+    var title = String(config.title || config.label || "Captura fotografica").trim() || "Captura fotografica";
+    var steps = normalizeCaptureSteps(config, title);
+    var isSequence = steps.length > 0;
+    var allowMultiple = isSequence ? true : config.allowMultiple !== false;
+    var maxPhotos = Math.max(1, Number(config.maxPhotos || (isSequence ? steps.length : (allowMultiple ? 99 : 1))));
+    if (isSequence) maxPhotos = Math.min(maxPhotos, steps.length);
+    var currentStepIndex = 0;
+    var onPhoto = config.onPhoto || function() {};
     var onComplete = config.onComplete || function() {};
     var onCancel = config.onCancel || function() {};
+    var escapeHandler = null;
+    var isSettled = false;
 
     capturedPhotos = [];
     stopCameraStream();
@@ -118,31 +219,38 @@
     var overlay = document.createElement("div");
     overlay.className = "sial-camera-overlay";
     overlay.innerHTML = [
-      '<div class="sial-camera-header">',
-      '<button type="button" data-camera-cancel aria-label="Cancelar">Cancelar</button>',
+      '<div class="sial-camera-topline">',
+      '<button class="sial-camera-icon-btn" type="button" data-camera-cancel aria-label="Cerrar camara"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
+      '<div class="sial-camera-title-stack">',
+      '<h2 class="sial-camera-title" data-camera-title>' + escapeCameraText(title) + '</h2>',
+      '<span class="sial-camera-step" data-camera-step hidden></span>',
+      '</div>',
       '<div class="sial-camera-btn-group">',
-      '<button type="button" data-camera-flash aria-label="Encender linterna" style="opacity:.5">&#9889;</button>',
-      '<button type="button" data-camera-flip aria-label="Cambiar camara">&#8644;</button>',
+      '<button class="sial-camera-icon-btn" type="button" data-camera-flash aria-label="Encender linterna"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z"/></svg></button>',
+      '<button class="sial-camera-icon-btn" type="button" data-camera-flip aria-label="Cambiar camara"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5"/><path d="M21 3 14 10"/><path d="M8 21H3v-5"/><path d="m3 21 7-7"/></svg></button>',
       '</div>',
       '</div>',
       '<div class="sial-camera-viewfinder">',
       '<video autoplay playsinline muted></video>',
-      '<div class="sial-camera-grid"></div>',
+      '<div class="sial-camera-grid" aria-hidden="true"></div>',
       '<div class="sial-camera-corner-tl"></div><div class="sial-camera-corner-tr"></div>',
       '<div class="sial-camera-corner-bl"></div><div class="sial-camera-corner-br"></div>',
       '<div class="sial-camera-permission-denied" hidden>',
       '<strong>Permiso de camara requerido</strong>',
-      '<p>Para simular la captura, presiona "Capturar sin camara" y se generara una imagen de prueba.</p>',
-      '<button class="sial-btn sial-btn-primary" type="button" data-camera-fallback>Capturar sin camara</button>',
+      '<p>Permite la camara para tomar la evidencia en vivo. En esta propuesta puedes generar una evidencia de prueba si el navegador bloquea el permiso.</p>',
+      '<div class="sial-camera-fallback-actions">',
+      '<button class="sial-btn sial-btn-primary" type="button" data-camera-fallback>Generar evidencia de prueba</button>',
+      '</div>',
       '</div>',
       '</div>',
       '<div class="sial-camera-footer">',
-      '<div class="sial-camera-preview-row" data-camera-preview-row></div>',
+      '<div class="sial-camera-preview-row" data-camera-preview-row hidden></div>',
       '<div class="sial-camera-capture-area">',
-      '<div class="sial-camera-empty-state" data-camera-count>0 foto(s)</div>',
+      '<span class="sial-camera-control-spacer" aria-hidden="true"></span>',
       '<button class="sial-camera-capture-btn" type="button" aria-label="Capturar foto"></button>',
-      '<div style="width:60px"></div>',
+      '<button class="sial-camera-secondary-action" type="button" data-camera-done>Usar</button>',
       '</div>',
+      '<div class="sial-camera-empty-state" data-camera-count>Sin fotos</div>',
       '</div>'
     ].join("");
 
@@ -153,6 +261,64 @@
     var canvas = getCameraCanvas();
     var permissionDenied = overlay.querySelector(".sial-camera-permission-denied");
     var countEl = overlay.querySelector("[data-camera-count]");
+    var doneBtn = overlay.querySelector("[data-camera-done]");
+
+    function currentCaptureStep() {
+      return isSequence ? steps[Math.min(currentStepIndex, maxPhotos - 1)] : null;
+    }
+
+    function currentCaptureTitle() {
+      var step = currentCaptureStep();
+      return step ? (step.title || step.label || title) : title;
+    }
+
+    function updateCameraTitle() {
+      var titleEl = overlay.querySelector("[data-camera-title]");
+      var stepEl = overlay.querySelector("[data-camera-step]");
+      if (titleEl) titleEl.textContent = currentCaptureTitle();
+      if (!stepEl) return;
+      stepEl.hidden = !isSequence;
+      if (isSequence) stepEl.textContent = Math.min(currentStepIndex + 1, maxPhotos) + " de " + maxPhotos;
+    }
+
+    function hasRoom() {
+      if (capturedPhotos.length < maxPhotos) return true;
+      if (window.SialMobileUI && window.SialMobileUI.showToast) {
+        window.SialMobileUI.showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de " + maxPhotos + " fotos." });
+      }
+      return false;
+    }
+
+    function finishWithPhotos() {
+      if (isSettled) return;
+      isSettled = true;
+      var result = capturedPhotos.slice();
+      if (escapeHandler) document.removeEventListener("keydown", escapeHandler);
+      closeCameraOverlay();
+      onComplete(result);
+    }
+
+    function addCapturedPhoto(dataUrl, source) {
+      if (!dataUrl || !hasRoom()) return;
+      var step = currentCaptureStep();
+      var payload = createPhotoPayload(dataUrl, config, source, step);
+      capturedPhotos.push(payload);
+      renderCameraPreviewRow();
+      updateCameraProgress(countEl, doneBtn, allowMultiple, isSequence, maxPhotos);
+      if (navigator.vibrate) navigator.vibrate(10);
+      if (isSequence) {
+        onPhoto(payload, step, currentStepIndex, capturedPhotos.slice());
+        if (capturedPhotos.length >= maxPhotos || currentStepIndex >= maxPhotos - 1) {
+          window.setTimeout(finishWithPhotos, 180);
+          return;
+        }
+        currentStepIndex += 1;
+        updateCameraTitle();
+        updateCameraProgress(countEl, doneBtn, allowMultiple, isSequence, maxPhotos);
+        return;
+      }
+      if (!allowMultiple) finishWithPhotos();
+    }
 
     function startCamera() {
       stopCameraStream();
@@ -174,6 +340,20 @@
     }
 
     startCamera();
+    updateCameraTitle();
+    updateCameraProgress(countEl, doneBtn, allowMultiple, isSequence, maxPhotos);
+
+    escapeHandler = function(event) {
+      if (event.key !== "Escape") return;
+      if (isSettled) return;
+      isSettled = true;
+      var result = capturedPhotos.slice();
+      closeCameraOverlay();
+      if (result.length && allowMultiple && !isSequence) onComplete(result);
+      else onCancel(result);
+      document.removeEventListener("keydown", escapeHandler);
+    };
+    document.addEventListener("keydown", escapeHandler);
 
     overlay.querySelector("[data-camera-flip]").addEventListener("click", function() {
       cameraFacingMode = cameraFacingMode === "environment" ? "user" : "environment";
@@ -191,54 +371,45 @@
     });
 
     overlay.querySelector("[data-camera-cancel]").addEventListener("click", function() {
-      var count = capturedPhotos.length;
+      if (isSettled) return;
+      isSettled = true;
+      var result = capturedPhotos.slice();
       closeCameraOverlay();
-      if (count > 0 && allowMultiple) {
-        onComplete(capturedPhotos);
+      document.removeEventListener("keydown", escapeHandler);
+      if (result.length > 0 && allowMultiple && !isSequence) {
+        onComplete(result);
       } else {
-        onCancel();
+        onCancel(result);
       }
     });
 
     overlay.querySelector(".sial-camera-capture-btn").addEventListener("click", function() {
-      if (capturedPhotos.length >= maxPhotos) {
-        if (window.SialMobileUI && window.SialMobileUI.showToast) {
-          window.SialMobileUI.showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de " + maxPhotos + " fotos." });
-        }
+      if (!hasRoom()) return;
+      if (!cameraStream) {
+        permissionDenied.hidden = false;
         return;
       }
       var dataUrl = captureCameraFrame(video, canvas);
-      capturedPhotos.push({ dataUrl: dataUrl, timestamp: Date.now() });
-      renderCameraPreviewRow();
-      if (countEl) countEl.textContent = capturedPhotos.length + " foto(s)";
-      if (!allowMultiple) {
-        closeCameraOverlay();
-        onComplete(capturedPhotos);
-      }
+      addCapturedPhoto(dataUrl, "camera");
     });
 
     overlay.querySelector("[data-camera-fallback]").addEventListener("click", function() {
-      canvas.width = 320;
-      canvas.height = 240;
-      var ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#1a3a5c";
-      ctx.fillRect(0, 0, 320, 240);
-      ctx.fillStyle = "#fff";
-      ctx.font = "20px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("SIAL", 160, 100);
-      ctx.font = "12px sans-serif";
-      ctx.fillText("Foto de prueba (propuesta)", 160, 140);
-      ctx.fillText(new Date().toLocaleTimeString("es-CO"), 160, 170);
-      var dataUrl = canvas.toDataURL("image/jpeg", 0.8);
-      capturedPhotos.push({ dataUrl: dataUrl, timestamp: Date.now() });
-      renderCameraPreviewRow();
-      if (countEl) countEl.textContent = capturedPhotos.length + " foto(s)";
-      if (!allowMultiple) {
-        closeCameraOverlay();
-        onComplete(capturedPhotos);
-      }
+      addCapturedPhoto(createGeneratedPhoto({ title: currentCaptureTitle() }), "generated");
     });
+
+    if (doneBtn) {
+      doneBtn.addEventListener("click", function() {
+        if (!capturedPhotos.length) return;
+        document.removeEventListener("keydown", escapeHandler);
+        finishWithPhotos();
+      });
+      doneBtn.style.visibility = "hidden";
+      doneBtn.disabled = true;
+    }
+  }
+
+  function buildCameraOverlay(config) {
+    buildPhotoCaptureOverlay(config);
   }
 
 ﻿function preferredTheme() {
@@ -936,8 +1107,9 @@
   hydrateCompanyContext();
   refreshSelectionViews();
 
-  window.SialMobileUI = Object.assign(window.SialMobileUI || {
-    openCamera: function(config) { buildCameraOverlay(config); },}, {
+  window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
+    openPhotoCapture: function(config) { buildPhotoCaptureOverlay(config); },
+    openCamera: function(config) { buildCameraOverlay(config); },
     setTheme,
     showToast,
     setInlineStatus,

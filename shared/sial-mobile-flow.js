@@ -30,6 +30,7 @@
     loadedPallets: 0,
     boxCodes: [],
     photos: {},
+    photoData: {},
     alerts: [],
     flags: {},
     events: [],
@@ -441,7 +442,51 @@
     return "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
   }
 
-  function addEvidenceItem(eventName, controlPoint, label, dataUrl) {
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, function(char) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char];
+    });
+  }
+
+  function photoCaptureApi() {
+    if (!window.SialMobileUI) return null;
+    return window.SialMobileUI.openPhotoCapture || window.SialMobileUI.openCamera || null;
+  }
+
+  function photoSlotTitle(slot) {
+    if (!slot) return "Captura fotografica";
+    var title = slot.dataset.photoTitle || slot.getAttribute("aria-label") || slot.textContent || "Captura fotografica";
+    title = String(title).replace(/\s+/g, " ").trim() || "Captura fotografica";
+    slot.dataset.photoTitle = title;
+    return title;
+  }
+
+  function markPhotoSlotCaptured(slot, title, photos, count) {
+    if (!slot) return;
+    var total = Math.max(1, Number(count || (photos || []).length || 1));
+    var latest = (photos || []).filter(function(photo) { return photo && photo.dataUrl; }).slice(-1)[0];
+    slot.classList.add("done", "has-photo");
+    slot.dataset.photoTitle = title;
+    slot.dataset.photoCount = String(total);
+    if (latest && latest.dataUrl) {
+      slot.innerHTML = [
+        '<span class="sial-evidence-slot-thumb"><img src="' + latest.dataUrl + '" alt="' + escapeHtml(title) + '" loading="lazy"></span>',
+        '<span class="sial-evidence-slot-label">' + escapeHtml(title) + '</span>',
+        '<span class="sial-evidence-slot-count">' + total + ' foto(s)</span>'
+      ].join("");
+      return;
+    }
+    slot.textContent = total > 1 ? total + " fotos" : "Foto capturada";
+  }
+
+  function addEvidenceItem(eventName, controlPoint, label, dataUrl, options) {
+    options = options || {};
     if (isPrototypeReviewPage()) {
       window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
       window._sialPrototypeEvidence[eventName] = window._sialPrototypeEvidence[eventName] || [];
@@ -454,7 +499,9 @@
         timestamp: new Date().toLocaleString("es-CO")
       });
       renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, eventName);
-      showToast({ type: "success", title: "Evidencia agregada", message: "La foto queda asociada a esta vista." });
+      if (!options.silent) {
+        showToast({ type: "success", title: "Evidencia agregada", message: "La foto queda asociada a esta vista." });
+      }
       return;
     }
     var fresh = readState();
@@ -474,7 +521,9 @@
     writeState(fresh);
     renderEvidenceGallery(fresh, eventName);
     updateEvidenceStatRow(eventName);
-    showToast({ type: "success", title: "Evidencia capturada", message: label });
+    if (!options.silent) {
+      showToast({ type: "success", title: "Evidencia capturada", message: label });
+    }
   }
 
   function updateEvidenceStatRow(eventName) {
@@ -617,7 +666,7 @@
       const photoSlot = node.querySelector("[data-cp-photo]");
       if (photoSlot && pointData.hasPhoto) {
         photoSlot.classList.add("done");
-        photoSlot.textContent = "Foto OK";
+        photoSlot.textContent = "Foto capturada";
       }
     });
   }
@@ -691,6 +740,16 @@
     });
   }
 
+  function hydratePhotoSlots(state) {
+    document.querySelectorAll("[data-add-photo]").forEach(function(slot) {
+      var key = slot.dataset.addPhoto;
+      if (!key || !(state.photos || {})[key]) return;
+      var title = photoSlotTitle(slot);
+      var dataUrl = (state.photoData || {})[key] || "";
+      markPhotoSlotCaptured(slot, title, dataUrl ? [{ dataUrl: dataUrl }] : [], state.photos[key]);
+    });
+  }
+
   function boot() {
     const state = readState();
     hydrateSummary(state);
@@ -701,21 +760,7 @@
     hydrateControlPoints(state);
     hydrateSignatures(state);
     hydrateEvidence(state);
-
-    document.addEventListener("change", (event) => {
-      const cameraInput = event.target.closest("[data-camera-input]");
-      if (cameraInput && cameraInput.files && cameraInput.files.length) {
-        var pending = window._sialPendingCapture;
-        if (!pending) return;
-        var file = cameraInput.files[0];
-        var reader = new FileReader();
-        reader.onload = function() {
-          addEvidenceItem(pending.eventName, pending.controlPoint, pending.label, reader.result);
-          window._sialPendingCapture = null;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    hydratePhotoSlots(state);
 
     document.addEventListener("click", (event) => {
       const vehicleOption = event.target.closest("[data-vehicle-option]");
@@ -778,6 +823,7 @@
         showToast({ type: "success", title: "Vehiculo encontrado", message: found.driverName + " - " + (found.container ? found.container : "Sin contenedor asociado.") });
         return;
       }
+      const cpOption = event.target.closest("[data-cp-option]");
       if (cpOption) {
         const container = cpOption.closest("[data-control-point]");
         if (!container) return;
@@ -845,51 +891,98 @@
         });
         if (!pointList.length) { showToast({ type: "warning", title: "Sin puntos", message: "No hay puntos de control disponibles." }); return; }
 
+        function pendingPoints(points) {
+          var capturedKeys = {};
+          ((st.evidence || {})[evEventName] || []).forEach(function(item) {
+            if (item.controlPoint) capturedKeys[item.controlPoint] = true;
+          });
+          var pending = points.filter(function(point) { return !capturedKeys[point.value]; });
+          return pending.length ? pending : points;
+        }
+
+        function maxCaptureSlots() {
+          if (evEventName === "portInternalInspection") return Math.max(0, 23 - currentCount);
+          return pointList.length;
+        }
+
         function captureForPoint(point) {
-          if (window.SialMobileUI && window.SialMobileUI.openCamera) {
-            window.SialMobileUI.openCamera({
-              allowMultiple: true,
-              maxPhotos: Math.max(1, evEventName === "portInternalInspection" ? 23 - currentCount : 99),
+          var captureApi = photoCaptureApi();
+          if (captureApi) {
+            captureApi({
+              title: point.label,
+              eventName: evEventName,
+              pointKey: point.value,
+              allowMultiple: false,
+              maxPhotos: 1,
               onComplete: function(photos) {
                 photos.forEach(function(photo) {
                   addEvidenceItem(evEventName, point.value, point.label, photo.dataUrl);
                 });
-                showToast({ type: "success", title: "Evidencia capturada", message: photos.length + " foto(s) para " + point.label });
               },
               onCancel: function() {
                 showToast({ type: "info", title: "Captura cancelada", message: "No se tomaron fotos." });
               }
             });
           } else {
-            if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
-              window.SialMobileUI.openMobilePicker({
-                title: "Seleccionar punto de control",
-                message: "Elige el punto al que pertenece esta evidencia.",
-                items: pointList,
-                onSelect: function(item) {
-                  window._sialPendingCapture = { eventName: evEventName, controlPoint: item.value, label: item.label };
-                  var camInput = document.querySelector("[data-camera-input='" + evEventName + "']");
-                  if (camInput) { camInput.value = ""; camInput.click(); }
-                  else { addEvidenceItem(evEventName, item.value, item.label, ""); }
-                }
-              });
-            } else {
-              addEvidenceItem(evEventName, pointList[0].value, pointList[0].label, "");
-            }
+            addEvidenceItem(evEventName, point.value, point.label, "");
           }
         }
 
-        if (pointList.length === 1) {
-          captureForPoint(pointList[0]);
-        } else if (window.SialMobileUI && typeof window.SialMobileUI.openMobilePicker === "function") {
-          window.SialMobileUI.openMobilePicker({
-            title: "Seleccionar punto de control",
-            message: "Elige el punto al que pertenece esta evidencia.",
-            items: pointList,
-            onSelect: function(item) { captureForPoint(item); }
+        function captureSequence(points) {
+          var slots = maxCaptureSlots();
+          var sequence = points.slice(0, slots || points.length);
+          if (!sequence.length) {
+            showToast({ type: "warning", title: "Maximo alcanzado", message: "No hay cupos disponibles para nuevas fotografias." });
+            return;
+          }
+          var captureApi = photoCaptureApi();
+          if (!captureApi) {
+            sequence.forEach(function(point) {
+              addEvidenceItem(evEventName, point.value, point.label, "", { silent: true });
+            });
+            showToast({ type: "success", title: "Evidencia marcada", message: sequence.length + " punto(s) quedaron asociados a esta vista." });
+            return;
+          }
+          captureApi({
+            title: sequence[0].label,
+            eventName: evEventName,
+            allowMultiple: true,
+            maxPhotos: sequence.length,
+            steps: sequence.map(function(point) {
+              return {
+                title: point.label,
+                label: point.label,
+                eventName: evEventName,
+                pointKey: point.value
+              };
+            }),
+            onPhoto: function(photo, step) {
+              var pointKey = step ? step.pointKey : "";
+              var pointLabel = step ? (step.label || step.title) : (photo.label || photo.title || "Evidencia");
+              addEvidenceItem(evEventName, pointKey, pointLabel, photo.dataUrl, { silent: true });
+            },
+            onComplete: function(photos) {
+              showToast({ type: "success", title: "Evidencia capturada", message: photos.length + " foto(s) guardada(s)." });
+            },
+            onCancel: function(photos) {
+              var count = (photos || []).length;
+              if (count) {
+                showToast({ type: "info", title: "Captura pausada", message: count + " foto(s) quedaron guardada(s)." });
+              } else {
+                showToast({ type: "info", title: "Captura cancelada", message: "No se tomaron fotos." });
+              }
+            }
           });
-        } else {
+        }
+
+        var presetPointKey = captureEvidence.dataset.pointKey || captureEvidence.dataset.controlPoint || "";
+        var presetPoint = presetPointKey ? pointList.find(function(point) { return point.value === presetPointKey; }) : null;
+        if (presetPoint) {
+          captureForPoint(presetPoint);
+        } else if (pointList.length === 1) {
           captureForPoint(pointList[0]);
+        } else {
+          captureSequence(pendingPoints(pointList));
         }
         return;
       }
@@ -1173,25 +1266,46 @@
           showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
           return;
         }
-        if (isPrototypeReviewPage()) {
-          const slot = photo.closest(".sial-evidence-slot");
-          if (slot) {
-            slot.classList.add("done");
-            slot.textContent = "Foto OK";
-          }
-          showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada a la vista." });
+        const key = photo.dataset.addPhoto;
+        if (!key) return;
+        const slot = photo.closest(".sial-evidence-slot") || photo;
+        const title = photoSlotTitle(slot);
+        const captureApi = photoCaptureApi();
+        if (captureApi) {
+          const form = photo.closest("[data-flow-form]");
+          captureApi({
+            title: title,
+            eventName: form ? (form.dataset.event || "") : "",
+            pointKey: key,
+            allowMultiple: false,
+            maxPhotos: 1,
+            onComplete: function(photos) {
+              if (!photos || !photos.length) return;
+              if (isPrototypeReviewPage()) {
+                markPhotoSlotCaptured(slot, title, photos, photos.length);
+                showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada a la vista." });
+                return;
+              }
+              const state = readState();
+              state.photos[key] = (state.photos[key] || 0) + photos.length;
+              state.photoData = state.photoData || {};
+              state.photoData[key] = photos[photos.length - 1].dataUrl || "";
+              writeState(state);
+              hydrateSummary(state);
+              markPhotoSlotCaptured(slot, title, photos, state.photos[key]);
+              showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al registro." });
+            },
+            onCancel: function() {
+              showToast({ type: "info", title: "Captura cancelada", message: "No se tomaron fotos." });
+            }
+          });
           return;
         }
         const state = readState();
-        const key = photo.dataset.addPhoto;
         state.photos[key] = (state.photos[key] || 0) + 1;
         writeState(state);
         hydrateSummary(state);
-        const slot = photo.closest(".sial-evidence-slot");
-        if (slot) {
-          slot.classList.add("done");
-          slot.textContent = `Foto ${state.photos[key]}`;
-        }
+        markPhotoSlotCaptured(slot, title, [], state.photos[key]);
         showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al registro." });
       }
 
@@ -1201,13 +1315,41 @@
           showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
           return;
         }
-        if (isPrototypeReviewPage()) {
-          showToast({ type: "success", title: "Evidencia completada", message: "Fotos asociadas a la vista." });
+        const keys = photoSet.dataset.addPhotoSet.split(",").map((key) => key.trim()).filter(Boolean);
+        const count = Number(photoSet.dataset.photoSetCount || 1);
+        const setTitle = photoSet.dataset.photoTitle || photoSet.textContent.trim() || "Evidencia fotografica";
+        const captureApi = photoCaptureApi();
+        if (captureApi) {
+          const form = photoSet.closest("[data-flow-form]");
+          captureApi({
+            title: setTitle,
+            eventName: form ? (form.dataset.event || "") : "",
+            pointKey: keys.join(","),
+            allowMultiple: true,
+            maxPhotos: Math.max(1, count),
+            onComplete: function(photos) {
+              if (!photos || !photos.length) return;
+              if (isPrototypeReviewPage()) {
+                showToast({ type: "success", title: "Evidencia completada", message: "Fotos asociadas a la vista." });
+                return;
+              }
+              const state = readState();
+              state.photoData = state.photoData || {};
+              keys.forEach((key) => {
+                state.photos[key] = Math.max(state.photos[key] || 0, photos.length);
+                state.photoData[key] = photos[Math.min(photos.length - 1, state.photos[key] - 1)]?.dataUrl || photos[photos.length - 1].dataUrl || "";
+              });
+              writeState(state);
+              hydrateSummary(state);
+              showToast({ type: "success", title: "Evidencia completada", message: `${photos.length} foto(s) asociada(s).` });
+            },
+            onCancel: function() {
+              showToast({ type: "info", title: "Captura cancelada", message: "No se tomaron fotos." });
+            }
+          });
           return;
         }
         const state = readState();
-        const keys = photoSet.dataset.addPhotoSet.split(",").map((key) => key.trim()).filter(Boolean);
-        const count = Number(photoSet.dataset.photoSetCount || 1);
         keys.forEach((key) => {
           state.photos[key] = Math.max(state.photos[key] || 0, count);
         });
