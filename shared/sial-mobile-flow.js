@@ -1,5 +1,7 @@
 ﻿(function () {
   const stateKey = "sial-mobile-workflow";
+  const zeReceptionEvidenceKey = "ze-rec-evidencia-inicial";
+  const zeReceptionEvidenceMax = 6;
 
   const defaults = {
     container: "SIALU1234567",
@@ -31,6 +33,7 @@
     boxCodes: [],
     photos: {},
     photoData: {},
+    photoCollections: {},
     alerts: [],
     flags: {},
     events: [],
@@ -467,6 +470,110 @@
     return title;
   }
 
+  function normalizePhotoCollection(photos) {
+    return (photos || []).filter(function(photo) {
+      return photo && photo.dataUrl;
+    }).slice(0, zeReceptionEvidenceMax).map(function(photo, index) {
+      return {
+        id: photo.id || generateId(),
+        dataUrl: photo.dataUrl,
+        title: photo.title || photo.label || "Foto " + (index + 1),
+        timestamp: photo.timestamp || Date.now(),
+        source: photo.source || "camera"
+      };
+    });
+  }
+
+  function readZeReceptionEvidencePhotos(form, state) {
+    if (form && isPrototypeReviewForm(form)) {
+      window._sialPrototypePhotoCollections = window._sialPrototypePhotoCollections || {};
+      window._sialPrototypePhotoCollections[zeReceptionEvidenceKey] = window._sialPrototypePhotoCollections[zeReceptionEvidenceKey] || [];
+      return window._sialPrototypePhotoCollections[zeReceptionEvidenceKey];
+    }
+    var currentState = state || readState();
+    currentState.photoCollections = currentState.photoCollections || {};
+    return currentState.photoCollections[zeReceptionEvidenceKey] || [];
+  }
+
+  function writeZeReceptionEvidencePhotos(form, photos) {
+    var normalized = normalizePhotoCollection(photos);
+    if (form && isPrototypeReviewForm(form)) {
+      window._sialPrototypePhotoCollections = window._sialPrototypePhotoCollections || {};
+      window._sialPrototypePhotoCollections[zeReceptionEvidenceKey] = normalized;
+      renderZeReceptionEvidenceGallery(form, normalized);
+      return normalized;
+    }
+    var state = readState();
+    state.photoCollections = state.photoCollections || {};
+    state.photoCollections[zeReceptionEvidenceKey] = normalized;
+    writeState(state);
+    hydrateSummary(state);
+    renderZeReceptionEvidenceGallery(form, normalized);
+    return normalized;
+  }
+
+  function renderZeReceptionEvidenceGallery(form, photos) {
+    if (!form) return;
+    var items = normalizePhotoCollection(photos || readZeReceptionEvidencePhotos(form));
+    var gallery = form.querySelector("[data-ze-reception-photo-gallery]");
+    var countEl = form.querySelector("[data-ze-reception-photo-count]");
+    var trigger = form.querySelector("[data-ze-reception-photo-trigger]");
+    if (countEl) countEl.textContent = items.length + " de " + zeReceptionEvidenceMax + " fotos";
+    if (trigger) {
+      var isMaxed = items.length >= zeReceptionEvidenceMax;
+      trigger.classList.toggle("is-maxed", isMaxed);
+      trigger.dataset.maxed = String(isMaxed);
+      trigger.title = isMaxed ? "Maximo de 6 fotos alcanzado" : "";
+    }
+    if (!gallery) return;
+    gallery.innerHTML = items.map(function(photo, index) {
+      var label = "Foto " + (index + 1);
+      return [
+        '<article class="sial-ze-evidence-card" data-ze-reception-photo-card role="listitem">',
+        '<img src="' + photo.dataUrl + '" alt="' + escapeHtml(label) + '" loading="lazy">',
+        '<div class="sial-ze-evidence-card-meta">',
+        '<strong>' + escapeHtml(label) + '</strong>',
+        '<button class="sial-chip-action danger" type="button" data-ze-reception-photo-remove="' + index + '">Quitar</button>',
+        '</div>',
+        '</article>'
+      ].join("");
+    }).join("");
+  }
+
+  function hydrateZeReceptionEvidenceGalleries(state) {
+    document.querySelectorAll("[data-flow-form][data-event='zeReception']").forEach(function(form) {
+      renderZeReceptionEvidenceGallery(form, readZeReceptionEvidencePhotos(form, state));
+    });
+  }
+
+  function openZeReceptionEvidenceCapture(form) {
+    if (!form) return;
+    var existing = readZeReceptionEvidencePhotos(form);
+    if (existing.length >= zeReceptionEvidenceMax) {
+      showToast({ type: "warning", title: "Maximo alcanzado", message: "La evidencia inicial permite maximo " + zeReceptionEvidenceMax + " fotos." });
+      return;
+    }
+    var captureApi = photoCaptureApi();
+    if (!captureApi) {
+      showToast({ type: "warning", title: "Camara no disponible", message: "No se pudo abrir la captura fotografica." });
+      return;
+    }
+    captureApi({
+      title: "Evidencia inicial",
+      eventName: "zeReception",
+      pointKey: zeReceptionEvidenceKey,
+      allowMultiple: true,
+      maxPhotos: zeReceptionEvidenceMax - existing.length,
+      onComplete: function(photos) {
+        if (!photos || !photos.length) return;
+        var merged = existing.concat(photos).slice(0, zeReceptionEvidenceMax);
+        writeZeReceptionEvidencePhotos(form, merged);
+        showToast({ type: "success", title: "Evidencia agregada", message: photos.length + " foto(s) asociada(s)." });
+      },
+      onCancel: function() {}
+    });
+  }
+
   function markPhotoSlotCaptured(slot, title, photos, count) {
     if (!slot) return;
     var total = Math.max(1, Number(count || (photos || []).length || 1));
@@ -496,6 +603,10 @@
         label: label,
         dataUrl: dataUrl,
         hasNovelty: false,
+        noveltyType: "",
+        severity: "MEDIA",
+        blocking: false,
+        noveltyDesc: "",
         timestamp: new Date().toLocaleString("es-CO")
       });
       renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, eventName);
@@ -531,6 +642,130 @@
     var count = (st.evidence || {})[eventName] ? (st.evidence[eventName] || []).length : 0;
     document.querySelectorAll("[data-evidence-count='" + eventName + "']").forEach(function(el) {
       el.textContent = String(count);
+    });
+  }
+
+  function getEvidenceContext(eventName) {
+    if (isPrototypeReviewPage()) {
+      window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
+      window._sialPrototypeEvidence[eventName] = window._sialPrototypeEvidence[eventName] || [];
+      return {
+        isPrototype: true,
+        state: { evidence: window._sialPrototypeEvidence },
+        items: window._sialPrototypeEvidence[eventName]
+      };
+    }
+    var state = readState();
+    state.evidence = state.evidence || {};
+    state.evidence[eventName] = state.evidence[eventName] || [];
+    return {
+      isPrototype: false,
+      state: state,
+      items: state.evidence[eventName]
+    };
+  }
+
+  function getEvidenceEntry(eventName, evidenceId) {
+    var context = getEvidenceContext(eventName);
+    return {
+      context: context,
+      entry: context.items.find(function(item) { return item.id === evidenceId; }) || null
+    };
+  }
+
+  function renderSelectOptions(options, selectedValue) {
+    return options.map(function(option) {
+      return '<option value="' + escapeHtml(option.value) + '"' + (option.value === selectedValue ? " selected" : "") + ">" + escapeHtml(option.label) + "</option>";
+    }).join("");
+  }
+
+  function createEvidenceNoveltyForm(item) {
+    var form = document.createElement("form");
+    var selectedType = item.noveltyType || "OTRO";
+    var selectedSeverity = item.severity || "MEDIA";
+    form.className = "sial-novelty-form";
+    form.dataset.evidenceNoveltyForm = "";
+    form.innerHTML = [
+      '<label>Tipo <select data-novelty-type>',
+      renderSelectOptions([
+        { value: "CONTAMINANTE", label: "Contaminante" },
+        { value: "OBJETO_EXTRANO", label: "Objeto extrano" },
+        { value: "DANO_ESTRUCTURAL", label: "Dano estructural" },
+        { value: "MODIFICACION", label: "Modificacion" },
+        { value: "CORROSION", label: "Corrosion" },
+        { value: "OTRO", label: "Otro" }
+      ], selectedType),
+      '</select></label>',
+      '<label>Severidad <select data-novelty-severity>',
+      renderSelectOptions([
+        { value: "BAJA", label: "Baja" },
+        { value: "MEDIA", label: "Media" },
+        { value: "ALTA", label: "Alta" },
+        { value: "CRITICA", label: "Critica" }
+      ], selectedSeverity),
+      '</select></label>',
+      '<label class="sial-checkbox-row"><input type="checkbox" data-novelty-blocking' + (item.blocking ? " checked" : "") + "> Bloqueante</label>",
+      '<label>Descripcion <textarea data-novelty-desc placeholder="Describe la novedad">' + escapeHtml(item.noveltyDesc || "") + "</textarea></label>"
+    ].join("");
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+    });
+    return form;
+  }
+
+  function readEvidenceNoveltyForm(form) {
+    return {
+      noveltyType: (form.querySelector("[data-novelty-type]") || {}).value || "OTRO",
+      severity: (form.querySelector("[data-novelty-severity]") || {}).value || "MEDIA",
+      blocking: form.querySelector("[data-novelty-blocking]") ? form.querySelector("[data-novelty-blocking]").checked : false,
+      noveltyDesc: (form.querySelector("[data-novelty-desc]") || {}).value || ""
+    };
+  }
+
+  function saveEvidenceNovelty(eventName, evidenceId, values) {
+    var result = getEvidenceEntry(eventName, evidenceId);
+    if (!result.entry) return false;
+    result.entry.hasNovelty = true;
+    result.entry.noveltyType = values.noveltyType;
+    result.entry.severity = values.severity;
+    result.entry.blocking = values.blocking;
+    result.entry.noveltyDesc = values.noveltyDesc;
+
+    if (!result.context.isPrototype) {
+      writeState(result.context.state);
+    }
+    renderEvidenceGallery(result.context.state, eventName);
+    showToast({
+      type: "success",
+      title: "Novedad asignada",
+      message: result.context.isPrototype ? "La evidencia queda marcada en esta vista." : "La evidencia quedo marcada con novedad."
+    });
+    return true;
+  }
+
+  function openEvidenceNoveltySheet(eventName, evidenceId) {
+    var result = getEvidenceEntry(eventName, evidenceId);
+    if (!result.entry) return;
+    if (!window.SialMobileUI || typeof window.SialMobileUI.openDialog !== "function") {
+      showToast({ type: "warning", title: "Editor no disponible", message: "No se pudo abrir el editor de novedad." });
+      return;
+    }
+    var form = createEvidenceNoveltyForm(result.entry);
+    window.SialMobileUI.openDialog({
+      id: "evidence-novelty-" + evidenceId,
+      variant: "sheet",
+      title: "Guardar novedad",
+      message: result.entry.label || "Evidencia fotografica",
+      content: form,
+      actions: [
+        { label: "Cancelar", variant: "secondary" },
+        {
+          label: "Guardar novedad",
+          onClick: function() {
+            saveEvidenceNovelty(eventName, evidenceId, readEvidenceNoveltyForm(form));
+          }
+        }
+      ]
     });
   }
 
@@ -696,28 +931,24 @@
     var barEl = document.querySelector("[data-evidence-progress-bar='" + eventName + "']");
 
     gallery.innerHTML = items.map(function(item) {
+      var safeId = escapeHtml(item.id || "");
+      var safeLabel = escapeHtml(item.label || "Evidencia");
+      var safeEventName = escapeHtml(eventName || "");
       var noveltyBadge = item.hasNovelty ? '<span class="sial-evidence-badge">' + (item.blocking ? '!! ' : '') + 'Novedad</span>' : '';
       var cardClass = 'sial-evidence-card' + (item.hasNovelty ? (item.blocking ? ' has-blocking-novelty' : ' has-novelty') : '');
       var thumbContent = item.dataUrl
-        ? '<img src="' + item.dataUrl + '" alt="' + item.label + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" loading="lazy">'
+        ? '<img src="' + item.dataUrl + '" alt="' + safeLabel + '" loading="lazy">'
         : '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
       return [
-        '<button class="' + cardClass + '" data-evidence-card data-evidence-id="' + item.id + '" type="button" aria-label="' + item.label + (item.hasNovelty ? ', con novedad' : '') + '">',
+        '<article class="' + cardClass + '" data-evidence-card data-evidence-id="' + safeId + '" aria-label="' + safeLabel + (item.hasNovelty ? ', con novedad' : '') + '">',
         noveltyBadge,
         '<div class="sial-evidence-thumb">' + thumbContent + '</div>',
-        '<div class="sial-evidence-label">' + item.label + '</div>',
-        '<div class="sial-evidence-actions" style="display:flex;gap:4px;margin-top:2px">',
-        '<span class="sial-chip-action" type="button" data-toggle-novelty="' + eventName + '" data-evidence-id="' + item.id + '">' + (item.hasNovelty ? 'Editar' : 'Novedad') + '</span>',
-        '<span class="sial-chip-action" type="button" data-remove-evidence="' + eventName + '" data-evidence-id="' + item.id + '" style="color:var(--sial-error)">Quitar</span>',
+        '<div class="sial-evidence-label">' + safeLabel + '</div>',
+        '<div class="sial-evidence-actions">',
+        '<button class="sial-chip-action" type="button" data-toggle-novelty="' + safeEventName + '" data-evidence-id="' + safeId + '">' + (item.hasNovelty ? 'Editar' : 'Novedad') + '</button>',
+        '<button class="sial-chip-action danger" type="button" data-remove-evidence="' + safeEventName + '" data-evidence-id="' + safeId + '">Quitar</button>',
         '</div>',
-        '<div class="sial-novelty-form" data-novelty-form-inline hidden style="margin-top:6px">',
-        '<label>Tipo <select data-novelty-type><option value="CONTAMINANTE"' + (item.noveltyType === 'CONTAMINANTE' ? ' selected' : '') + '>Contaminante</option><option value="OBJETO_EXTRANO"' + (item.noveltyType === 'OBJETO_EXTRANO' ? ' selected' : '') + '>Objeto extrano</option><option value="DANO_ESTRUCTURAL"' + (item.noveltyType === 'DANO_ESTRUCTURAL' ? ' selected' : '') + '>Dano estructural</option><option value="MODIFICACION"' + (item.noveltyType === 'MODIFICACION' ? ' selected' : '') + '>Modificacion</option><option value="CORROSION"' + (item.noveltyType === 'CORROSION' ? ' selected' : '') + '>Corrosion</option><option value="OTRO"' + (item.noveltyType === 'OTRO' ? ' selected' : '') + '>Otro</option></select></label>',
-        '<label>Severidad <select data-novelty-severity><option value="BAJA"' + (item.severity === 'BAJA' ? ' selected' : '') + '>Baja</option><option value="MEDIA"' + (item.severity === 'MEDIA' ? ' selected' : '') + '>Media</option><option value="ALTA"' + (item.severity === 'ALTA' ? ' selected' : '') + '>Alta</option><option value="CRITICA"' + (item.severity === 'CRITICA' ? ' selected' : '') + '>Critica</option></select></label>',
-        '<label class="sial-checkbox-row"><input type="checkbox" data-novelty-blocking' + (item.blocking ? ' checked' : '') + '> Bloqueante</label>',
-        '<label>Descripcion <textarea data-novelty-desc placeholder="Describe la novedad">' + (item.noveltyDesc || '') + '</textarea></label>',
-        '<button class="sial-btn sial-btn-secondary" type="button" data-save-evidence-novelty="' + eventName + '" data-evidence-id="' + item.id + '" style="min-height:36px;font-size:12px;width:100%">Guardar novedad</button>',
-        '</div>',
-        '</button>'
+        '</article>'
       ].join("");
     }).join("");
 
@@ -761,6 +992,7 @@
     hydrateSignatures(state);
     hydrateEvidence(state);
     hydratePhotoSlots(state);
+    hydrateZeReceptionEvidenceGalleries(state);
 
     document.addEventListener("click", (event) => {
       const vehicleOption = event.target.closest("[data-vehicle-option]");
@@ -1008,60 +1240,12 @@
         return;
       }
 
-      const saveNovelty = event.target.closest("[data-save-evidence-novelty]");
-      if (saveNovelty) {
-        var svEvent = saveNovelty.dataset.saveEvidenceNovelty;
-        var svId = saveNovelty.dataset.evidenceId;
-        if (!svEvent || !svId) return;
-        var card = saveNovelty.closest("[data-evidence-card]");
-        if (!card) return;
-        var novType = (card.querySelector("[data-novelty-type]") || {}).value || "OTRO";
-        var severity = (card.querySelector("[data-novelty-severity]") || {}).value || "MEDIA";
-        var blocking = card.querySelector("[data-novelty-blocking]") ? card.querySelector("[data-novelty-blocking]").checked : false;
-        var desc = (card.querySelector("[data-novelty-desc]") || {}).value || "";
-        if (isPrototypeReviewPage()) {
-          window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
-          window._sialPrototypeEvidence[svEvent] = window._sialPrototypeEvidence[svEvent] || [];
-          var prototypeEntry = window._sialPrototypeEvidence[svEvent].find(function(e) { return e.id === svId; });
-          if (prototypeEntry) {
-            prototypeEntry.hasNovelty = true;
-            prototypeEntry.noveltyType = novType;
-            prototypeEntry.severity = severity;
-            prototypeEntry.blocking = blocking;
-            prototypeEntry.noveltyDesc = desc;
-          }
-          card.querySelector("[data-novelty-form-inline]").hidden = true;
-          renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, svEvent);
-          showToast({ type: "success", title: "Novedad asignada", message: "La evidencia queda marcada en esta vista." });
-          return;
-        }
-        var st = readState();
-        st.evidence = st.evidence || {};
-        st.evidence[svEvent] = st.evidence[svEvent] || [];
-        var entry = st.evidence[svEvent].find(function(e) { return e.id === svId; });
-        if (entry) {
-          entry.hasNovelty = true;
-          entry.noveltyType = novType;
-          entry.severity = severity;
-          entry.blocking = blocking;
-          entry.noveltyDesc = desc;
-        }
-        writeState(st);
-        card.querySelector("[data-novelty-form-inline]").hidden = true;
-        renderEvidenceGallery(st, svEvent);
-        showToast({ type: "success", title: "Novedad asignada", message: "La evidencia quedo marcada con novedad." });
-        return;
-      }
-
       const toggleNovelty = event.target.closest("[data-toggle-novelty]");
       if (toggleNovelty) {
         var tgEvent = toggleNovelty.dataset.toggleNovelty;
         var tgId = toggleNovelty.dataset.evidenceId;
         if (!tgEvent || !tgId) return;
-        var card = toggleNovelty.closest("[data-evidence-card]");
-        if (!card) return;
-        var formEl = card.querySelector("[data-novelty-form-inline]");
-        if (formEl) formEl.hidden = !formEl.hidden;
+        openEvidenceNoveltySheet(tgEvent, tgId);
         return;
       }
 
@@ -1260,6 +1444,26 @@
     });
 
     document.addEventListener("click", (event) => {
+      const zeReceptionTrigger = event.target.closest("[data-ze-reception-photo-trigger]");
+      if (zeReceptionTrigger) {
+        if (pageHasBlockingRequirement()) {
+          showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          return;
+        }
+        openZeReceptionEvidenceCapture(zeReceptionTrigger.closest("[data-flow-form]"));
+        return;
+      }
+
+      const zeReceptionRemove = event.target.closest("[data-ze-reception-photo-remove]");
+      if (zeReceptionRemove) {
+        var zeForm = zeReceptionRemove.closest("[data-flow-form]");
+        var removeIndex = Number(zeReceptionRemove.dataset.zeReceptionPhotoRemove);
+        var zePhotos = readZeReceptionEvidencePhotos(zeForm).filter(function(_, index) { return index !== removeIndex; });
+        writeZeReceptionEvidencePhotos(zeForm, zePhotos);
+        showToast({ type: "info", title: "Evidencia retirada", message: "La foto fue retirada de la recepcion." });
+        return;
+      }
+
       const photo = event.target.closest("[data-add-photo]");
       if (photo) {
         if (pageHasBlockingRequirement()) {
