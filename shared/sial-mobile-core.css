@@ -160,6 +160,32 @@ button {
   animation: sial-screen-enter var(--sial-motion-slow) var(--sial-motion-ease) both;
 }
 
+html[data-sial-intro="pending"] body {
+  overflow: hidden;
+  background: #ffffff;
+}
+
+html[data-sial-intro="pending"] .login-screen {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  animation: none;
+}
+
+html[data-sial-intro="pending"] .login-top,
+html[data-sial-intro="pending"] .login-main,
+html[data-sial-intro="pending"] .login-panel {
+  animation: none;
+}
+
+html[data-sial-intro="revealed"] .login-screen {
+  animation: sial-login-after-intro var(--sial-motion-slow) var(--sial-motion-ease) both;
+}
+
+html[data-sial-intro="revealed"] .login-panel {
+  animation: sial-view-motion-item var(--sial-motion-slow) var(--sial-motion-ease) 70ms both;
+}
+
 body.sial-screen-exiting .sial-page,
 body.sial-screen-exiting .login-screen,
 body.sial-screen-exiting .library-shell {
@@ -228,6 +254,17 @@ body.sial-screen-exiting .library-section {
   from {
     opacity: 0;
     transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sial-login-after-intro {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -385,6 +422,303 @@ body.sial-screen-exiting .library-section {
   width: min(220px, 100%);
   height: auto;
   display: block;
+}
+
+body.sial-logo-intro-active {
+  overflow: hidden;
+}
+
+.sial-logo-intro {
+  --sial-logo-intro-bg: #ffffff;
+  --sial-logo-intro-name: #005ca8;
+  --sial-logo-intro-caption: rgba(71, 85, 105, .8);
+  --sial-logo-intro-impact: rgba(0, 92, 168, .18);
+  --sial-logo-intro-icon-size: 104px;
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding:
+    max(28px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(28px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  overflow: hidden;
+  background: var(--sial-logo-intro-bg);
+  color: var(--sial-logo-intro-name);
+  isolation: isolate;
+  pointer-events: auto;
+  animation: sial-logo-intro-shell 90ms linear both;
+}
+
+.sial-logo-intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: #ffffff;
+}
+
+.sial-logo-intro::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 1px;
+  height: 1px;
+  border-radius: 999px;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 0 var(--sial-logo-intro-impact);
+}
+
+.sial-logo-intro.is-running::after {
+  animation: sial-logo-intro-impact-ring 420ms var(--sial-motion-emphasis) 660ms both;
+}
+
+.sial-logo-intro.is-resolving {
+  animation: sial-logo-intro-out 240ms var(--sial-motion-exit) both;
+}
+
+.sial-logo-intro-lockup {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100vw - 40px);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: saturate(1);
+}
+
+.sial-logo-intro.is-running .sial-logo-intro-lockup {
+  animation: sial-logo-intro-lockup 940ms var(--sial-motion-emphasis) 120ms both;
+}
+
+.sial-logo-intro-emblem {
+  width: var(--sial-logo-intro-icon-size);
+  height: var(--sial-logo-intro-icon-size);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  opacity: 0;
+  transform: translate3d(0, -54vh, 0) scale(1.02);
+}
+
+.sial-logo-intro.is-running .sial-logo-intro-emblem {
+  animation: sial-logo-intro-mark 760ms cubic-bezier(.2, 1.08, .24, 1) 120ms both;
+}
+
+.sial-logo-intro-emblem img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 32px rgba(0, 92, 168, .22));
+}
+
+.sial-logo-intro-wordmark {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  color: var(--sial-logo-intro-name);
+}
+
+.sial-logo-intro-wordmark strong {
+  color: var(--sial-logo-intro-name);
+  font-size: 54px;
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: 0;
+  opacity: 0;
+  transform: translate3d(0, 54vh, 0) scale(1.02);
+}
+
+.sial-logo-intro.is-running .sial-logo-intro-wordmark strong {
+  animation: sial-logo-intro-word 760ms cubic-bezier(.2, 1.08, .24, 1) 120ms both;
+}
+
+.sial-logo-intro-wordmark span {
+  color: var(--sial-logo-intro-caption);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(8px);
+}
+
+.sial-logo-intro.is-running .sial-logo-intro-wordmark span {
+  animation: sial-logo-intro-caption 520ms var(--sial-motion-ease) 860ms both;
+}
+
+.sial-logo-intro-trace {
+  position: absolute;
+  left: calc(var(--sial-logo-intro-icon-size) + 3px);
+  top: 50%;
+  width: 3px;
+  height: 74px;
+  border-radius: 999px;
+  opacity: 0;
+  background: linear-gradient(180deg, transparent, var(--sial-primary-500), var(--sial-yellow), transparent);
+  transform: translateY(-50%) scaleY(.18);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.sial-logo-intro.is-running .sial-logo-intro-trace {
+  animation: sial-logo-intro-impact 320ms var(--sial-motion-emphasis) 650ms both;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sial-logo-intro {
+    --sial-logo-intro-bg: #ffffff;
+    --sial-logo-intro-name: #005ca8;
+    --sial-logo-intro-caption: rgba(71, 85, 105, .8);
+  }
+}
+
+@keyframes sial-logo-intro-shell {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sial-logo-intro-out {
+  to {
+    opacity: 0;
+    transform: scale(.985);
+  }
+}
+
+@keyframes sial-logo-intro-lockup {
+  0%, 56% {
+    transform: translate3d(0, 0, 0);
+  }
+  64% {
+    transform: translate3d(-6px, 0, 0);
+  }
+  72% {
+    transform: translate3d(5px, 0, 0);
+  }
+  82% {
+    transform: translate3d(-2px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sial-logo-intro-mark {
+  0%, 10% {
+    opacity: 0;
+    transform: translate3d(0, -54vh, 0) scale(1.02);
+  }
+  11% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(0, 12px, 0) scale(1.025);
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(0, -5px, 0) scale(.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes sial-logo-intro-word {
+  0%, 10% {
+    opacity: 0;
+    transform: translate3d(0, 54vh, 0) scale(1.02);
+  }
+  11% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(0, -12px, 0) scale(1.025);
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(0, 5px, 0) scale(.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes sial-logo-intro-caption {
+  0% {
+    opacity: 0;
+    filter: blur(7px);
+    transform: translateY(8px);
+  }
+  42% {
+    opacity: .34;
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes sial-logo-intro-impact {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scaleY(.18);
+  }
+  28% {
+    opacity: .86;
+    transform: translateY(-50%) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) scaleY(.52);
+  }
+}
+
+@keyframes sial-logo-intro-impact-ring {
+  0% {
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(0, 92, 168, .18);
+  }
+  35% {
+    opacity: .32;
+    box-shadow: 0 0 0 26px rgba(0, 92, 168, .12);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 0 56px rgba(0, 92, 168, 0);
+  }
+}
+
+@media (max-width: 380px) {
+  .sial-logo-intro {
+    --sial-logo-intro-icon-size: 90px;
+  }
+
+  .sial-logo-intro-lockup {
+    gap: 11px;
+  }
+
+  .sial-logo-intro-wordmark strong {
+    font-size: 48px;
+  }
+
+  .sial-logo-intro-wordmark span {
+    font-size: 9px;
+  }
 }
 
 .sial-auth-logo {

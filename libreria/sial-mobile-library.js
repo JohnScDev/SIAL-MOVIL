@@ -46,6 +46,17 @@
       });
     }
 
+    if (event.target.closest("[data-library-logo-intro]") && uiReady()) {
+      window.SialMobileUI.playLogoIntro({
+        logoSrc: "../assets/brand/isotipo-sial.svg",
+        title: "SIAL",
+        caption: "Sistema de Informacion Agrologistico",
+        duration: 2200,
+        reducedDuration: 980
+      });
+      return;
+    }
+
     const photoCapture = event.target.closest("[data-library-photo-capture]");
     if (photoCapture && uiReady()) {
       const capture = window.SialMobileUI.openPhotoCapture || window.SialMobileUI.openCamera;

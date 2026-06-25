@@ -5,6 +5,8 @@
   const root = document.documentElement;
   const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   const dialogExitDelay = 220;
+  let activeLogoIntroPromise = null;
+  let logoIntroQueued = false;
 
   function prefersReducedMotion() {
     return Boolean(motionQuery && motionQuery.matches);
@@ -34,6 +36,112 @@
     window.setTimeout(() => {
       window.location.href = href;
     }, options.delay || 150);
+  }
+
+  function playLogoIntro(config = {}) {
+    if (!document.body) return Promise.resolve();
+    if (activeLogoIntroPromise) return activeLogoIntroPromise;
+
+    const reduceMotion = prefersReducedMotion();
+    const duration = reduceMotion ? config.reducedDuration || 980 : config.duration || 2200;
+    const exitDelay = reduceMotion ? 80 : 220;
+    const logoSrc = config.logoSrc || "assets/brand/isotipo-sial.svg";
+    const title = config.title || "SIAL";
+    const caption = config.caption || "Sistema de Informacion Agrologistico";
+    const overlay = document.createElement("div");
+    const lockup = document.createElement("div");
+    const emblem = document.createElement("span");
+    const image = document.createElement("img");
+    const wordmark = document.createElement("span");
+    const name = document.createElement("strong");
+    const captionNode = document.createElement("span");
+    const trace = document.createElement("span");
+
+    overlay.className = "sial-logo-intro";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+    overlay.setAttribute("aria-label", config.ariaLabel || "Iniciando SIAL Movil");
+    if (reduceMotion) overlay.dataset.motion = "reduced";
+
+    lockup.className = "sial-logo-intro-lockup";
+    emblem.className = "sial-logo-intro-emblem";
+    image.src = logoSrc;
+    image.alt = "";
+    image.decoding = "async";
+    image.loading = "eager";
+    image.fetchPriority = "high";
+    image.setAttribute("aria-hidden", "true");
+
+    wordmark.className = "sial-logo-intro-wordmark";
+    name.textContent = title;
+    captionNode.textContent = caption;
+    trace.className = "sial-logo-intro-trace";
+    trace.setAttribute("aria-hidden", "true");
+
+    emblem.append(image);
+    wordmark.append(name, captionNode);
+    lockup.append(emblem, wordmark, trace);
+    overlay.append(lockup);
+    document.body.append(overlay);
+    document.body.classList.add("sial-logo-intro-active");
+
+    window.requestAnimationFrame(() => {
+      overlay.classList.add("is-running");
+    });
+
+    activeLogoIntroPromise = new Promise((resolve) => {
+      window.setTimeout(() => {
+        overlay.classList.add("is-resolving");
+        window.setTimeout(() => {
+          overlay.remove();
+          document.body.classList.remove("sial-logo-intro-active");
+          activeLogoIntroPromise = null;
+          resolve();
+        }, exitDelay);
+      }, Math.max(0, duration));
+    });
+
+    return activeLogoIntroPromise;
+  }
+
+  function resolveBrandAssetUrl(fileName) {
+    const normalizedPath = window.location.pathname.replace(/\\/g, "/");
+    const isNestedLogin = /\/login\/[^/]*$/i.test(normalizedPath);
+    const basePath = isNestedLogin ? "../assets/brand/" : "assets/brand/";
+    return new URL(basePath + fileName, window.location.href).href;
+  }
+
+  function revealLoginAfterIntro() {
+    if (root.dataset.sialIntro === "pending") {
+      root.dataset.sialIntro = "revealed";
+    }
+    document.body?.classList.add("sial-login-intro-revealed");
+  }
+
+  function startLogoIntroIfNeeded() {
+    if (!document.querySelector(".login-screen")) {
+      revealLoginAfterIntro();
+      return;
+    }
+    if (document.body.hasAttribute("data-no-logo-intro")) {
+      revealLoginAfterIntro();
+      return;
+    }
+    if (logoIntroQueued) return;
+    logoIntroQueued = true;
+    const config = {
+      logoSrc: resolveBrandAssetUrl("isotipo-sial.svg"),
+      title: "SIAL",
+      caption: "Sistema de Informacion Agrologistico",
+      duration: 2200,
+      reducedDuration: 980
+    };
+    const fallbackDelay = (prefersReducedMotion() ? config.reducedDuration : config.duration) + 900;
+    const fallback = window.setTimeout(revealLoginAfterIntro, fallbackDelay);
+    playLogoIntro(config).finally(() => {
+      window.clearTimeout(fallback);
+      revealLoginAfterIntro();
+    });
   }
 
   function shouldAnimateAnchor(anchor, event) {
@@ -1116,6 +1224,7 @@
     clearInlineStatus,
     showBanner,
     hideBanner,
+    playLogoIntro,
     openDialog,
     openMobilePicker,
     closeDialog,
@@ -1128,6 +1237,8 @@
     clearSelectedCompany,
     clearSelectedContext
   });
+
+  startLogoIntroIfNeeded();
 
   document.addEventListener("click", (event) => {
     const anchor = event.target.closest("a[href]");

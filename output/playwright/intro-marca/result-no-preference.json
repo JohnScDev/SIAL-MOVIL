@@ -1,0 +1,81 @@
+{
+  "ok": false,
+  "failed": [
+    "overlay missing during checkpoints",
+    "is-running was never applied",
+    "intro background is not white",
+    "SIAL title missing",
+    "caption missing",
+    "caption does not appear progressively"
+  ],
+  "states": [
+    {
+      "name": "no-preference-000-blank",
+      "reduceMotion": false,
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0,
+      "titleOpacity": 0,
+      "titleTransform": "matrix(1.02, 0, 0, 1.02, 0, 438.48)",
+      "markTransform": "matrix(1.02, 0, 0, 1.02, 0, -438.48)"
+    },
+    {
+      "name": "no-preference-240-entry",
+      "reduceMotion": false,
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0,
+      "titleOpacity": 1,
+      "titleTransform": "matrix(1.02501, 0, 0, 1.02501, 0, -12.546)",
+      "markTransform": "matrix(1.02501, 0, 0, 1.02501, 0, 12.546)"
+    },
+    {
+      "name": "no-preference-760-collision",
+      "reduceMotion": false,
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0.881167,
+      "titleOpacity": 1,
+      "titleTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "markTransform": "matrix(1, 0, 0, 1, 0, 0)"
+    },
+    {
+      "name": "no-preference-1120-caption",
+      "reduceMotion": false,
+      "overlayExists": false,
+      "isRunning": false,
+      "bg": null,
+      "title": null,
+      "caption": null,
+      "imageComplete": false,
+      "imageWidth": 0,
+      "captionOpacity": null,
+      "titleOpacity": null,
+      "titleTransform": null,
+      "markTransform": null
+    }
+  ],
+  "finalState": {
+    "overlayExists": false,
+    "loginVisible": true,
+    "formVisible": true,
+    "brandMounted": true,
+    "activeClass": false
+  },
+  "out": "G:\\.shortcut-targets-by-id\\1HSC-GQqxWBxpLFDvI4sjbNE7cmrWAAYu\\TIN_ANALISTA_DEV\\0. John\\2. UI\\Catalogos de Vistas\\SIAL Movil - Propuesta\\output\\playwright\\intro-marca"
+}

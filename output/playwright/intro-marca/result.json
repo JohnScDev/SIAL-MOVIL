@@ -1,0 +1,67 @@
+{
+  "ok": false,
+  "failed": [
+    "overlay missing during checkpoints",
+    "intro background is not white",
+    "SIAL title missing",
+    "caption missing"
+  ],
+  "states": [
+    {
+      "name": "000-blank",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": "0",
+      "titleOpacity": "1"
+    },
+    {
+      "name": "240-entry",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": "0.327674",
+      "titleOpacity": "1"
+    },
+    {
+      "name": "760-collision",
+      "overlayExists": false,
+      "isRunning": false,
+      "bg": null,
+      "title": null,
+      "caption": null,
+      "imageComplete": false,
+      "imageWidth": 0,
+      "captionOpacity": null,
+      "titleOpacity": null
+    },
+    {
+      "name": "1120-caption",
+      "overlayExists": false,
+      "isRunning": false,
+      "bg": null,
+      "title": null,
+      "caption": null,
+      "imageComplete": false,
+      "imageWidth": 0,
+      "captionOpacity": null,
+      "titleOpacity": null
+    }
+  ],
+  "finalState": {
+    "overlayExists": false,
+    "loginVisible": true,
+    "formVisible": true,
+    "brandMounted": true,
+    "activeClass": false
+  },
+  "out": "G:\\.shortcut-targets-by-id\\1HSC-GQqxWBxpLFDvI4sjbNE7cmrWAAYu\\TIN_ANALISTA_DEV\\0. John\\2. UI\\Catalogos de Vistas\\SIAL Movil - Propuesta\\output\\playwright\\intro-marca"
+}

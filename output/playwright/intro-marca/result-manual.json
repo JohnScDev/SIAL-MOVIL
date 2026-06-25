@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "failed": [],
+  "states": [
+    {
+      "name": "manual-000-start",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0,
+      "titleOpacity": 0,
+      "titleTransform": "matrix(1.02, 0, 0, 1.02, 0, 438.48)",
+      "markTransform": "matrix(1.02, 0, 0, 1.02, 0, -438.48)"
+    },
+    {
+      "name": "manual-240-entry",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0,
+      "titleOpacity": 1,
+      "titleTransform": "matrix(1.025, 0, 0, 1.025, 0, -12.3426)",
+      "markTransform": "matrix(1.025, 0, 0, 1.025, 0, 12.3426)"
+    },
+    {
+      "name": "manual-760-ghost",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 0.91401,
+      "titleOpacity": 1,
+      "titleTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "markTransform": "matrix(1, 0, 0, 1, 0, 0)"
+    },
+    {
+      "name": "manual-1120-readable",
+      "overlayExists": true,
+      "isRunning": true,
+      "bg": "rgb(255, 255, 255)",
+      "title": "SIAL",
+      "caption": "Sistema de Informacion Agrologistico",
+      "imageComplete": true,
+      "imageWidth": 150,
+      "captionOpacity": 1,
+      "titleOpacity": 1,
+      "titleTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "markTransform": "matrix(1, 0, 0, 1, 0, 0)"
+    }
+  ],
+  "finalState": {
+    "overlayExists": false,
+    "loginVisible": true,
+    "formVisible": true,
+    "activeClass": false
+  },
+  "out": "G:\\.shortcut-targets-by-id\\1HSC-GQqxWBxpLFDvI4sjbNE7cmrWAAYu\\TIN_ANALISTA_DEV\\0. John\\2. UI\\Catalogos de Vistas\\SIAL Movil - Propuesta\\output\\playwright\\intro-marca"
+}
