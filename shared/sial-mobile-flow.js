@@ -2,6 +2,7 @@
   const stateKey = "sial-mobile-workflow";
   const zeReceptionEvidenceKey = "ze-rec-evidencia-inicial";
   const zeReceptionEvidenceMax = 6;
+  var activePhotoViewerKeydown = null;
 
   const defaults = {
     container: "SIALU1234567",
@@ -83,6 +84,47 @@
     portDispatch: "Despacho a puerto",
     portReception: "Recepcion en puerto",
     portDelivery: "Entrega final en puerto"
+  };
+
+  const evidencePointCatalog = {
+    portExternalInspection: [
+      { value: "ext-vista-frontal", label: "Vista general frontal" },
+      { value: "ext-vista-posterior", label: "Vista general posterior" },
+      { value: "ext-pared-izq", label: "Pared lateral izquierda" },
+      { value: "ext-pared-der", label: "Pared lateral derecha" },
+      { value: "ext-pared-frontal", label: "Pared frontal" },
+      { value: "ext-techo", label: "Techo exterior" },
+      { value: "ext-puertas", label: "Puertas exteriores" },
+      { value: "ext-piso", label: "Piso/base externa visible" },
+      { value: "ext-esquina-si", label: "Esquina sup. izq." },
+      { value: "ext-esquina-sd", label: "Esquina superior derecha" },
+      { value: "ext-esquina-ii", label: "Esquina inferior izquierda" },
+      { value: "ext-esquina-id", label: "Esquina inferior derecha" },
+      { value: "ext-bisagras", label: "Bisagras" },
+      { value: "ext-barras-cierre", label: "Barras de cierre" },
+      { value: "ext-sellos", label: "Sellos / aseguramiento" },
+      { value: "ext-estado-general", label: "Estado general estructura" }
+    ],
+    portInternalInspection: [
+      { value: "int-vista-puerta", label: "Vista general desde puerta" },
+      { value: "int-pared-izq", label: "Pared interna izquierda" },
+      { value: "int-pared-der", label: "Pared interna derecha" },
+      { value: "int-pared-frontal", label: "Pared frontal interna" },
+      { value: "int-piso-inicial", label: "Piso zona inicial" },
+      { value: "int-piso-medio", label: "Piso zona media" },
+      { value: "int-piso-final", label: "Piso zona final" },
+      { value: "int-techo-inicial", label: "Techo zona inicial" },
+      { value: "int-techo-medio", label: "Techo zona media" },
+      { value: "int-techo-final", label: "Techo zona final" },
+      { value: "int-puerta-izq", label: "Puerta interna izquierda" },
+      { value: "int-puerta-der", label: "Puerta interna derecha" },
+      { value: "int-esquina-si", label: "Esq. int. sup. izq." },
+      { value: "int-esquina-sd", label: "Esq. int. sup. der." },
+      { value: "int-esquina-ii", label: "Esq. int. inf. izq." },
+      { value: "int-esquina-id", label: "Esq. int. inf. der." },
+      { value: "int-cableado", label: "Cableado / ductos visibles" },
+      { value: "int-novedad-adicional", label: "Evidencia novedad adicional" }
+    ]
   };
 
   const locationLabels = {
@@ -188,8 +230,8 @@
   function getNextAction(state) {
     const sequence = [
       ["zeReception", "../puerto-ze/recepcion-ze.html", "Registrar recepcion en ZE", "Iniciar trazabilidad del vehiculo en zona externa."],
-      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html", "Inspeccion externa ZE", "Checklist de 14 puntos con evidencia fotografica."],
-      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html", "Inspeccion interna ZE", "15 a 23 fotos obligatorias por punto de control."],
+      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html", "Inspeccion externa ZE", "Evidencia fotografica externa estructural."],
+      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html", "Inspeccion interna ZE", "Evidencia fotografica interna de 15 a 23 fotos."],
       ["zeDispatch", "../puerto-ze/despacho-finca.html", "Despachar a finca", "Registrar salida con sellos, firmas y responsabilidad."],
       ["farmReception", "../finca/recepcion-finca.html", "Recibir en finca", "Confirmar llegada e iniciar operacion de finca."],
       ["farmExternalInspection", "../finca/inspeccion-externa.html", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
@@ -530,7 +572,9 @@
       var label = "Foto " + (index + 1);
       return [
         '<article class="sial-ze-evidence-card" data-ze-reception-photo-card role="listitem">',
+        '<button class="sial-ze-evidence-photo-button" type="button" data-ze-reception-photo-open="' + index + '" aria-label="Abrir ' + escapeHtml(label) + '">',
         '<img src="' + photo.dataUrl + '" alt="' + escapeHtml(label) + '" loading="lazy">',
+        '</button>',
         '<div class="sial-ze-evidence-card-meta">',
         '<strong>' + escapeHtml(label) + '</strong>',
         '<button class="sial-chip-action danger" type="button" data-ze-reception-photo-remove="' + index + '">Quitar</button>',
@@ -571,6 +615,256 @@
         showToast({ type: "success", title: "Evidencia agregada", message: photos.length + " foto(s) asociada(s)." });
       },
       onCancel: function() {}
+    });
+  }
+
+  function closePhotoViewer() {
+    var viewer = document.querySelector("[data-photo-viewer]");
+    if (activePhotoViewerKeydown) {
+      document.removeEventListener("keydown", activePhotoViewerKeydown);
+      activePhotoViewerKeydown = null;
+    }
+    if (viewer) viewer.remove();
+    document.body.classList.remove("photo-viewer-open");
+    if (document.body.hasAttribute("data-photo-viewer-overflow")) {
+      document.body.style.overflow = document.body.getAttribute("data-photo-viewer-overflow") || "";
+      document.body.removeAttribute("data-photo-viewer-overflow");
+    }
+  }
+
+  function openPhotoViewer(options) {
+    options = options || {};
+    var getItems = typeof options.getItems === "function" ? options.getItems : function() { return []; };
+    var onRetake = typeof options.onRetake === "function" ? options.onRetake : null;
+    var currentIndex = Math.max(0, Number(options.initialIndex || 0));
+
+    closePhotoViewer();
+
+    var viewer = document.createElement("div");
+    viewer.className = "sial-photo-viewer";
+    viewer.dataset.photoViewer = "";
+    viewer.setAttribute("role", "dialog");
+    viewer.setAttribute("aria-modal", "true");
+    viewer.setAttribute("aria-label", "Vista de evidencia fotografica");
+    viewer.innerHTML = [
+      '<header class="sial-photo-viewer-header">',
+      '<button class="sial-photo-viewer-icon" type="button" data-photo-viewer-close aria-label="Cerrar visor"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
+      '<div class="sial-photo-viewer-title-stack">',
+      '<h2 data-photo-viewer-title>Foto</h2>',
+      '<span data-photo-viewer-counter>1 de 1</span>',
+      '</div>',
+      '<span class="sial-photo-viewer-spacer" aria-hidden="true"></span>',
+      '</header>',
+      '<div class="sial-photo-viewer-stage">',
+      '<button class="sial-photo-viewer-nav" type="button" data-photo-viewer-prev aria-label="Foto anterior"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>',
+      '<figure class="sial-photo-viewer-frame">',
+      '<img data-photo-viewer-image alt="">',
+      '</figure>',
+      '<button class="sial-photo-viewer-nav" type="button" data-photo-viewer-next aria-label="Foto siguiente"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>',
+      '</div>',
+      '<footer class="sial-photo-viewer-actions">',
+      '<button class="sial-photo-viewer-retake" type="button" data-photo-viewer-retake><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Retomar</button>',
+      '</footer>'
+    ].join("");
+
+    document.body.appendChild(viewer);
+    document.body.setAttribute("data-photo-viewer-overflow", document.body.style.overflow || "");
+    document.body.style.overflow = "hidden";
+    document.body.classList.add("photo-viewer-open");
+
+    var titleEl = viewer.querySelector("[data-photo-viewer-title]");
+    var counterEl = viewer.querySelector("[data-photo-viewer-counter]");
+    var imageEl = viewer.querySelector("[data-photo-viewer-image]");
+    var prevBtn = viewer.querySelector("[data-photo-viewer-prev]");
+    var nextBtn = viewer.querySelector("[data-photo-viewer-next]");
+    var retakeBtn = viewer.querySelector("[data-photo-viewer-retake]");
+
+    function currentItems() {
+      return (getItems() || []).filter(function(item) { return item && item.dataUrl; });
+    }
+
+    function itemLabel(item, index) {
+      return String(item.label || item.title || ("Foto " + (index + 1))).replace(/\s+/g, " ").trim() || "Foto";
+    }
+
+    function render() {
+      var items = currentItems();
+      if (!items.length) {
+        closePhotoViewer();
+        return;
+      }
+      currentIndex = Math.min(Math.max(currentIndex, 0), items.length - 1);
+      var item = items[currentIndex];
+      var label = itemLabel(item, currentIndex);
+      if (titleEl) titleEl.textContent = label;
+      if (counterEl) counterEl.textContent = (currentIndex + 1) + " de " + items.length;
+      if (imageEl) {
+        imageEl.src = item.dataUrl;
+        imageEl.alt = label;
+      }
+      if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+      if (nextBtn) nextBtn.disabled = currentIndex >= items.length - 1;
+    }
+
+    function move(delta) {
+      currentIndex += delta;
+      render();
+    }
+
+    viewer.querySelector("[data-photo-viewer-close]").addEventListener("click", closePhotoViewer);
+    prevBtn.addEventListener("click", function() { move(-1); });
+    nextBtn.addEventListener("click", function() { move(1); });
+    if (retakeBtn) {
+      retakeBtn.hidden = !onRetake;
+      retakeBtn.addEventListener("click", function() {
+        var items = currentItems();
+        var item = items[currentIndex];
+        if (item && onRetake) onRetake(item, currentIndex);
+      });
+    }
+    viewer.addEventListener("click", function(event) {
+      if (event.target === viewer) closePhotoViewer();
+    });
+    activePhotoViewerKeydown = function(event) {
+      if (event.key === "Escape") closePhotoViewer();
+      if (event.key === "ArrowLeft") move(-1);
+      if (event.key === "ArrowRight") move(1);
+    };
+    document.addEventListener("keydown", activePhotoViewerKeydown);
+    render();
+  }
+
+  function evidenceStateContext(eventName) {
+    if (isPrototypeReviewPage()) {
+      window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
+      window._sialPrototypeEvidence[eventName] = window._sialPrototypeEvidence[eventName] || [];
+      return {
+        items: window._sialPrototypeEvidence[eventName],
+        write: function(items) {
+          window._sialPrototypeEvidence[eventName] = items;
+          renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, eventName);
+        }
+      };
+    }
+    var state = readState();
+    state.evidence = state.evidence || {};
+    state.evidence[eventName] = state.evidence[eventName] || [];
+    return {
+      items: state.evidence[eventName],
+      write: function(items) {
+        state.evidence[eventName] = items;
+        writeState(state);
+        renderEvidenceGallery(state, eventName);
+      }
+    };
+  }
+
+  function retakeEvidencePhoto(eventName, evidenceId) {
+    var context = evidenceStateContext(eventName);
+    var item = context.items.find(function(entry) { return entry.id === evidenceId; });
+    if (!item) return;
+    var captureApi = photoCaptureApi();
+    if (!captureApi) {
+      showToast({ type: "warning", title: "Camara no disponible", message: "No se pudo retomar la evidencia." });
+      return;
+    }
+    closePhotoViewer();
+    captureApi({
+      title: item.label || item.title || "Evidencia",
+      eventName: eventName,
+      pointKey: item.controlPoint || "",
+      allowMultiple: false,
+      maxPhotos: 1,
+      onComplete: function(photos) {
+        var photo = photos && photos[0];
+        if (photo && photo.dataUrl) {
+          var fresh = evidenceStateContext(eventName);
+          var updated = fresh.items.map(function(entry) {
+            if (entry.id !== evidenceId) return entry;
+            return {
+              ...entry,
+              dataUrl: photo.dataUrl,
+              timestamp: photo.timestamp || Date.now(),
+              source: photo.source || "camera"
+            };
+          });
+          fresh.write(updated);
+          showToast({ type: "success", title: "Foto actualizada", message: "La evidencia fue retomada." });
+        }
+        openEvidencePhotoViewer(eventName, evidenceId);
+      },
+      onCancel: function() {
+        openEvidencePhotoViewer(eventName, evidenceId);
+      }
+    });
+  }
+
+  function openEvidencePhotoViewer(eventName, evidenceId) {
+    var visibleItems = evidenceStateContext(eventName).items.filter(function(item) { return item && item.dataUrl; });
+    var initialIndex = visibleItems.findIndex(function(item) { return item.id === evidenceId; });
+    if (initialIndex < 0) return;
+    openPhotoViewer({
+      initialIndex: initialIndex,
+      getItems: function() {
+        return evidenceStateContext(eventName).items.filter(function(item) { return item && item.dataUrl; });
+      },
+      onRetake: function(item) {
+        retakeEvidencePhoto(eventName, item.id);
+      }
+    });
+  }
+
+  function retakeZeReceptionPhoto(form, index) {
+    var items = readZeReceptionEvidencePhotos(form);
+    var current = items[index];
+    if (!current) return;
+    var label = "Foto " + (index + 1);
+    var captureApi = photoCaptureApi();
+    if (!captureApi) {
+      showToast({ type: "warning", title: "Camara no disponible", message: "No se pudo retomar la evidencia." });
+      return;
+    }
+    closePhotoViewer();
+    captureApi({
+      title: label,
+      eventName: "zeReception",
+      pointKey: zeReceptionEvidenceKey,
+      allowMultiple: false,
+      maxPhotos: 1,
+      onComplete: function(photos) {
+        var photo = photos && photos[0];
+        if (photo && photo.dataUrl) {
+          var fresh = readZeReceptionEvidencePhotos(form).slice();
+          fresh[index] = {
+            ...fresh[index],
+            dataUrl: photo.dataUrl,
+            title: label,
+            timestamp: photo.timestamp || Date.now(),
+            source: photo.source || "camera"
+          };
+          writeZeReceptionEvidencePhotos(form, fresh);
+          showToast({ type: "success", title: "Foto actualizada", message: "La evidencia inicial fue retomada." });
+        }
+        openZeReceptionPhotoViewer(form, index);
+      },
+      onCancel: function() {
+        openZeReceptionPhotoViewer(form, index);
+      }
+    });
+  }
+
+  function openZeReceptionPhotoViewer(form, index) {
+    openPhotoViewer({
+      initialIndex: index,
+      getItems: function() {
+        return readZeReceptionEvidencePhotos(form).map(function(photo, photoIndex) {
+          var label = "Foto " + (photoIndex + 1);
+          return { ...photo, title: label, label: label };
+        });
+      },
+      onRetake: function(_, currentIndex) {
+        retakeZeReceptionPhoto(form, currentIndex);
+      }
     });
   }
 
@@ -939,10 +1233,13 @@
       var thumbContent = item.dataUrl
         ? '<img src="' + item.dataUrl + '" alt="' + safeLabel + '" loading="lazy">'
         : '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+      var thumbNode = item.dataUrl
+        ? '<button class="sial-evidence-thumb sial-photo-open-button" type="button" data-view-evidence-photo="' + safeEventName + '" data-evidence-id="' + safeId + '" aria-label="Abrir ' + safeLabel + '">' + thumbContent + '</button>'
+        : '<div class="sial-evidence-thumb">' + thumbContent + '</div>';
       return [
         '<article class="' + cardClass + '" data-evidence-card data-evidence-id="' + safeId + '" aria-label="' + safeLabel + (item.hasNovelty ? ', con novedad' : '') + '">',
         noveltyBadge,
-        '<div class="sial-evidence-thumb">' + thumbContent + '</div>',
+        thumbNode,
         '<div class="sial-evidence-label">' + safeLabel + '</div>',
         '<div class="sial-evidence-actions">',
         '<button class="sial-chip-action" type="button" data-toggle-novelty="' + safeEventName + '" data-evidence-id="' + safeId + '">' + (item.hasNovelty ? 'Editar' : 'Novedad') + '</button>',
@@ -1117,11 +1414,13 @@
           showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
           return;
         }
-        var pointList = [];
-        document.querySelectorAll("[data-control-point][data-control-point-event='" + evEventName + "']").forEach(function(cp) {
-          pointList.push({ label: cp.dataset.controlPointName || cp.dataset.controlPoint, value: cp.dataset.controlPoint });
-        });
-        if (!pointList.length) { showToast({ type: "warning", title: "Sin puntos", message: "No hay puntos de control disponibles." }); return; }
+        var pointList = (evidencePointCatalog[evEventName] || []).slice();
+        if (!pointList.length) {
+          document.querySelectorAll("[data-control-point][data-control-point-event='" + evEventName + "']").forEach(function(cp) {
+            pointList.push({ label: cp.dataset.controlPointName || cp.dataset.controlPoint, value: cp.dataset.controlPoint });
+          });
+        }
+        if (!pointList.length) { showToast({ type: "warning", title: "Sin evidencias", message: "No hay evidencias configuradas para esta vista." }); return; }
 
         function pendingPoints(points) {
           var capturedKeys = {};
@@ -1216,6 +1515,14 @@
         } else {
           captureSequence(pendingPoints(pointList));
         }
+        return;
+      }
+
+      const viewEvidencePhoto = event.target.closest("[data-view-evidence-photo]");
+      if (viewEvidencePhoto) {
+        var viewEvent = viewEvidencePhoto.dataset.viewEvidencePhoto;
+        var viewId = viewEvidencePhoto.dataset.evidenceId;
+        if (viewEvent && viewId) openEvidencePhotoViewer(viewEvent, viewId);
         return;
       }
 
@@ -1451,6 +1758,14 @@
           return;
         }
         openZeReceptionEvidenceCapture(zeReceptionTrigger.closest("[data-flow-form]"));
+        return;
+      }
+
+      const zeReceptionOpen = event.target.closest("[data-ze-reception-photo-open]");
+      if (zeReceptionOpen) {
+        var zeOpenForm = zeReceptionOpen.closest("[data-flow-form]");
+        var openIndex = Number(zeReceptionOpen.dataset.zeReceptionPhotoOpen);
+        openZeReceptionPhotoViewer(zeOpenForm, openIndex);
         return;
       }
 
