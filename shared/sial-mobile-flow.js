@@ -667,6 +667,7 @@
       window._sialPrototypePhotoCollections = window._sialPrototypePhotoCollections || {};
       window._sialPrototypePhotoCollections[zeReceptionEvidenceKey] = normalized;
       renderZeReceptionEvidenceGallery(form, normalized);
+      markUnsaved("photo");
       return normalized;
     }
     var state = readState();
@@ -675,6 +676,7 @@
     writeState(state);
     hydrateSummary(state);
     renderZeReceptionEvidenceGallery(form, normalized);
+    markUnsaved("photo");
     return normalized;
   }
 
@@ -913,6 +915,7 @@
             };
           });
           fresh.write(updated);
+          markUnsaved("evidence");
           showToast({ type: "success", title: "Foto actualizada", message: "La evidencia fue retomada." });
         }
         openEvidencePhotoViewer(eventName, evidenceId);
@@ -1028,6 +1031,7 @@
         timestamp: new Date().toLocaleString("es-CO")
       });
       renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, eventName);
+      markUnsaved("evidence");
       if (!options.silent) {
         showToast({ type: "success", title: "Evidencia agregada", message: "La foto queda asociada a esta vista." });
       }
@@ -1050,6 +1054,7 @@
     writeState(fresh);
     renderEvidenceGallery(fresh, eventName);
     updateEvidenceStatRow(eventName);
+    markUnsaved("evidence");
     if (!options.silent) {
       showToast({ type: "success", title: "Evidencia capturada", message: label });
     }
@@ -1153,6 +1158,7 @@
       writeState(result.context.state);
     }
     renderEvidenceGallery(result.context.state, eventName);
+    markUnsaved("novelty");
     showToast({
       type: "success",
       title: "Novedad asignada",
@@ -1298,6 +1304,18 @@
       window.SialMobileUI.showToast(options);
     }
   };
+
+  function markUnsaved(reason) {
+    if (window.SialMobileUI && typeof window.SialMobileUI.markUnsavedChanges === "function") {
+      window.SialMobileUI.markUnsavedChanges(reason || "flow");
+    }
+  }
+
+  function clearUnsaved() {
+    if (window.SialMobileUI && typeof window.SialMobileUI.clearUnsavedChanges === "function") {
+      window.SialMobileUI.clearUnsavedChanges();
+    }
+  }
 
   function isInspectionEvent(eventName) {
     return inspectionEvents.includes(eventName);
@@ -1684,6 +1702,7 @@
           o.setAttribute("aria-pressed", String(o.dataset.vehicleOption === vid));
           o.classList.toggle("is-continuing", o.dataset.vehicleOption === vid);
         });
+        markUnsaved("field");
         showToast({ type: "success", title: "Vehiculo seleccionado", message: selected.truckPlate + " - " + selected.driverName });
         return;
       }
@@ -1721,6 +1740,7 @@
         writeState(st);
         hydrateSummary(st);
         if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "success", title: "Vehiculo encontrado", message: found.truckPlate + " - " + found.driverName + ". Datos autocompletados." });
+        markUnsaved("field");
         showToast({ type: "success", title: "Vehiculo encontrado", message: found.driverName + " - " + (found.container ? found.container : "Sin contenedor asociado.") });
         return;
       }
@@ -1746,6 +1766,7 @@
           if (noveltyArea) noveltyArea.hidden = !needsNovelty;
           var reasonArea = container.querySelector("[data-cp-reason-area]");
           if (reasonArea) reasonArea.hidden = !needsReason;
+          markUnsaved("control-point");
           return;
         }
         const currentState = readState();
@@ -1771,6 +1792,7 @@
         if (noveltyArea) noveltyArea.hidden = !needsNovelty;
         var reasonArea = container.querySelector("[data-cp-reason-area]");
         if (reasonArea) reasonArea.hidden = !needsReason;
+        markUnsaved("control-point");
       }
 
       const captureEvidence = event.target.closest("[data-capture-evidence]");
@@ -1907,6 +1929,7 @@
           window._sialPrototypeEvidence = window._sialPrototypeEvidence || {};
           window._sialPrototypeEvidence[rmEvent] = (window._sialPrototypeEvidence[rmEvent] || []).filter(function(e) { return e.id !== rmId; });
           renderEvidenceGallery({ evidence: window._sialPrototypeEvidence }, rmEvent);
+          markUnsaved("evidence");
           showToast({ type: "info", title: "Evidencia eliminada", message: "La foto fue retirada de la vista." });
           return;
         }
@@ -1915,6 +1938,7 @@
         st.evidence[rmEvent] = (st.evidence[rmEvent] || []).filter(function(e) { return e.id !== rmId; });
         writeState(st);
         renderEvidenceGallery(st, rmEvent);
+        markUnsaved("evidence");
         showToast({ type: "info", title: "Evidencia eliminada", message: "La foto fue retirada del registro." });
         return;
       }
@@ -1942,6 +1966,7 @@
             driverBtn.dataset.signatureMethod = "CONFIRMACION";
             driverBtn.textContent = "Firmado: " + (nameInput.value || "Conductor");
             driverBtn.className = "sial-btn sial-btn-primary sial-btn-full";
+            markUnsaved("signature");
           }
         }
         if (target === "dispatcher") {
@@ -1952,6 +1977,7 @@
             dispatcherBtn.dataset.dispatcherDocument = docInput ? docInput.value : "";
             dispatcherBtn.textContent = "Firmado: " + (nameInput.value || "Radicador");
             dispatcherBtn.className = "sial-btn sial-btn-primary sial-btn-full";
+            markUnsaved("signature");
           }
         }
         showToast({ type: "success", title: "Firma registrada", message: "La confirmacion ha sido guardada." });
@@ -1964,6 +1990,7 @@
       event.preventDefault();
       clearInline(form);
       if (isPrototypeReviewForm(form)) {
+        clearUnsaved();
         showToast({
           type: "success",
           title: "Vista validada",
@@ -2037,6 +2064,7 @@
       hydrateControlPoints(state);
       hydrateSignatures(state);
       hydrateEvidence(state);
+      clearUnsaved();
 
       const inspResult = form.querySelector("select[name='resultado_inspeccion']");
       if (inspResult && inspResult.value) {
@@ -2051,7 +2079,13 @@
         }
       }
       if (form.dataset.next) {
-        window.setTimeout(function() { window.location.href = form.dataset.next; }, 650);
+        window.setTimeout(function() {
+          if (window.SialMobileUI && typeof window.SialMobileUI.navigateTo === "function") {
+            window.SialMobileUI.navigateTo(form.dataset.next, { force: true });
+          } else {
+            window.location.href = form.dataset.next;
+          }
+        }, 650);
       }
     });
 
@@ -2174,6 +2208,7 @@
               if (!photos || !photos.length) return;
               if (isPrototypeReviewPage()) {
                 markPhotoSlotCaptured(slot, title, photos, photos.length);
+                markUnsaved("photo");
                 showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada a la vista." });
                 return;
               }
@@ -2184,6 +2219,7 @@
               writeState(state);
               hydrateSummary(state);
               markPhotoSlotCaptured(slot, title, photos, state.photos[key]);
+              markUnsaved("photo");
               showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al registro." });
             },
             onCancel: function() {
@@ -2197,6 +2233,7 @@
         writeState(state);
         hydrateSummary(state);
         markPhotoSlotCaptured(slot, title, [], state.photos[key]);
+        markUnsaved("photo");
         showToast({ type: "success", title: "Foto agregada", message: "Evidencia asociada al registro." });
       }
 
@@ -2221,6 +2258,7 @@
             onComplete: function(photos) {
               if (!photos || !photos.length) return;
               if (isPrototypeReviewPage()) {
+                markUnsaved("photo");
                 showToast({ type: "success", title: "Evidencia completada", message: "Fotos asociadas a la vista." });
                 return;
               }
@@ -2232,6 +2270,7 @@
               });
               writeState(state);
               hydrateSummary(state);
+              markUnsaved("photo");
               showToast({ type: "success", title: "Evidencia completada", message: `${photos.length} foto(s) asociada(s).` });
             },
             onCancel: function() {
@@ -2246,6 +2285,7 @@
         });
         writeState(state);
         hydrateSummary(state);
+        markUnsaved("photo");
         showToast({ type: "success", title: "Evidencia completada", message: `${count} foto(s) por punto obligatorio.` });
       }
 
@@ -2272,6 +2312,7 @@
         hydrateSummary(state);
         hydrateLists(state);
         if (input) input.value = "";
+        markUnsaved("box");
         showToast({ type: "success", title: "Caja registrada", message: `Total cajas: ${state.boxes}.` });
       }
 
@@ -2284,6 +2325,7 @@
         writeState(state);
         hydrateSummary(state);
         hydrateLists(state);
+        markUnsaved("box");
         showToast({ type: "info", title: "Caja eliminada", message: "La caja fue retirada del pallet." });
       }
 
@@ -2298,11 +2340,13 @@
         writeState(state);
         hydrateSummary(state);
         hydrateLists(state);
+        markUnsaved("box");
         showToast({ type: "info", title: "Caja lista para editar", message: "Ajusta el codigo y vuelve a registrarla." });
       }
 
       const reset = event.target.closest("[data-reset-flow]");
       if (reset) {
+        clearUnsaved();
         localStorage.removeItem(stateKey);
         showToast({ type: "info", title: "Flujo reiniciado", message: "Datos restaurados." });
         window.setTimeout(() => window.location.reload(), 450);

@@ -7,6 +7,9 @@
   const dialogExitDelay = 220;
   let activeLogoIntroPromise = null;
   let logoIntroQueued = false;
+  let hasPendingUnsavedChanges = false;
+  let pendingNavigationTarget = "";
+  let edgeGesture = null;
 
   function prefersReducedMotion() {
     return Boolean(motionQuery && motionQuery.matches);
@@ -24,8 +27,65 @@
     }, duration);
   }
 
+  function shouldTrackUnsavedChanges() {
+    return Boolean(document.querySelector("[data-flow-form]"));
+  }
+
+  function markUnsavedChanges(reason = "") {
+    if (!shouldTrackUnsavedChanges()) return;
+    hasPendingUnsavedChanges = true;
+    root.dataset.unsavedChanges = "true";
+    if (reason && document.body) document.body.dataset.unsavedReason = reason;
+  }
+
+  function clearUnsavedChanges() {
+    hasPendingUnsavedChanges = false;
+    pendingNavigationTarget = "";
+    delete root.dataset.unsavedChanges;
+    if (document.body) delete document.body.dataset.unsavedReason;
+  }
+
+  function hasUnsavedChanges() {
+    return Boolean(hasPendingUnsavedChanges && shouldTrackUnsavedChanges());
+  }
+
+  function showUnsavedNavigationDialog(href, options = {}) {
+    if (!href) return;
+    pendingNavigationTarget = href;
+    document.body.classList.remove("drawer-open");
+    openDialog({
+      id: "unsaved-navigation",
+      variant: "modal",
+      title: "Cambios sin guardar",
+      message: "Hay cambios en esta vista que aun no se han guardado.",
+      dismissible: false,
+      actions: [
+        {
+          label: "Permanecer",
+          variant: "primary",
+          onClick: function() {
+            pendingNavigationTarget = "";
+          }
+        },
+        {
+          label: "Salir sin guardar",
+          variant: "secondary",
+          onClick: function() {
+            var target = pendingNavigationTarget;
+            clearUnsavedChanges();
+            navigateTo(target, { ...options, force: true });
+          }
+        }
+      ]
+    });
+  }
+
   function navigateTo(href, options = {}) {
     if (!href) return;
+    if (!options.force && hasUnsavedChanges()) {
+      showUnsavedNavigationDialog(href, options);
+      return;
+    }
     if (prefersReducedMotion()) {
       window.location.href = href;
       return;
@@ -1212,10 +1272,203 @@
     return false;
   }
 
+  function drawerIcon(path) {
+    return '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true">' + path + '</svg>';
+  }
+
+  const drawerMenuGroups = [
+    {
+      label: "ZE Puerto / Control de contenedores",
+      aria: "Navegacion ZE Puerto",
+      items: [
+        { href: "../puerto-ze/index.html", label: "Dashboard ZE Puerto", icon: drawerIcon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>') },
+        { href: "../puerto-ze/recepcion-ze.html", label: "HU758 - Recepcion vehiculo ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
+        { href: "../puerto-ze/inspeccion-externa.html", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
+        { href: "../puerto-ze/inspeccion-interna.html", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
+        { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
+      ]
+    },
+    {
+      label: "Retorno ZE / Puerto",
+      aria: "Navegacion ciclo retorno",
+      items: [
+        { href: "../puerto-ze/recepcion-ze-retorno.html", label: "Recepcion ZE retorno", icon: drawerIcon('<path d="M19 12H5"/><path d="m11 18-6-6 6-6"/>') },
+        { href: "../puerto-ze/despacho-puerto.html", label: "Despacho puerto", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/><path d="M4 18h16"/>') },
+        { href: "../puerto-ze/recepcion-puerto.html", label: "Recepcion puerto", icon: drawerIcon('<path d="M4 8h16"/><path d="M6 8v9h12V8"/><path d="M8 17h8"/>') },
+        { href: "../puerto-ze/entrega-puerto.html", label: "Entrega en puerto", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M7 20h10"/><path d="M9 17v3"/><path d="M15 17v3"/>') }
+      ]
+    },
+    {
+      label: "Finca",
+      aria: "Navegacion finca",
+      items: [
+        { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
+        { href: "../finca/inspeccion-externa.html", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
+        { href: "../finca/inspeccion-interna.html", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
+        { href: "../finca/sesion-responsabilidad.html", label: "Sesion responsabilidad", icon: drawerIcon('<path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/>') },
+        { href: "../finca/cierre-contenedor.html", label: "Cierre de contenedor", icon: drawerIcon('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>') },
+        { href: "../finca/despacho-ze.html", label: "Despacho a ZE", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
+      ]
+    },
+    {
+      label: "Pallets",
+      aria: "Navegacion pallets",
+      items: [
+        { href: "../pallets/armar-pallet.html", label: "Armar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
+        { href: "../pallets/armar-pallet.html", label: "Registrar cajas", icon: drawerIcon('<path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>') },
+        { href: "../pallets/cargar-pallets.html", label: "Cargar pallets", icon: drawerIcon('<path d="M12 5v14"/><path d="M5 12h14"/>') }
+      ]
+    },
+    {
+      label: "Trazabilidad",
+      aria: "Navegacion trazabilidad",
+      items: [
+        { href: "../trazabilidad/consultar-contenedor.html", label: "Consultar contenedor", icon: drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>') },
+        { href: "../trazabilidad/consultar-operacion.html", label: "Consultar operacion", icon: drawerIcon('<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/>') }
+      ]
+    }
+  ];
+
+  function shouldMountGlobalDrawer() {
+    const path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
+    if (!document.querySelector(".sial-page")) return false;
+    if (document.querySelector(".login-screen, .library-shell")) return false;
+    if (path.includes("/login/") || path.includes("/libreria/")) return false;
+    if (path.endsWith("/index.html") && !path.includes("/app/") && !path.includes("/puerto-ze/")) return false;
+    if (path.includes("/app/seleccion-empresa.html") || path.includes("/app/seleccion-finca.html")) return false;
+    if (path.includes("/demo-camara.html")) return false;
+    return true;
+  }
+
+  function linkMatchesCurrentPage(href) {
+    try {
+      const target = new URL(href, window.location.href);
+      const current = new URL(window.location.href);
+      return target.pathname.replace(/\/+$/, "") === current.pathname.replace(/\/+$/, "");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function renderDrawerMenuGroups() {
+    return drawerMenuGroups.map((group) => [
+      '<nav class="sial-menu-group" aria-label="' + group.aria + '">',
+      '<p class="sial-menu-label">' + group.label + '</p>',
+      group.items.map((item) => {
+        const href = resolveRelativeUrl(item.href);
+        const active = linkMatchesCurrentPage(href) ? " active" : "";
+        return '<a class="sial-menu-link' + active + '" href="' + href + '">' + item.icon + item.label + '</a>';
+      }).join(""),
+      "</nav>"
+    ].join("")).join("");
+  }
+
+  function ensureGlobalDrawer() {
+    if (!shouldMountGlobalDrawer()) return;
+    if (document.querySelector(".sial-drawer")) return;
+    const brandSrc = resolveRelativeUrl("../assets/brand/isotipo-sial.svg");
+    const backdrop = document.createElement("div");
+    backdrop.className = "sial-drawer-backdrop";
+    backdrop.dataset.drawerClose = "";
+    const drawer = document.createElement("aside");
+    drawer.className = "sial-drawer";
+    drawer.setAttribute("aria-label", "Menu principal");
+    drawer.innerHTML = [
+      '<header class="sial-drawer-head">',
+      '<div class="sial-drawer-user">',
+      '<span class="sial-app-isotype" aria-hidden="true"><img src="' + brandSrc + '" alt=""></span>',
+      '<div class="sial-context-text"><strong data-context-name>Finca Santa Isabel</strong><span>operador.sial</span></div>',
+      '</div>',
+      '<button class="sial-btn sial-btn-icon" type="button" data-drawer-close aria-label="Cerrar menu">',
+      drawerIcon('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+      '</button>',
+      '</header>',
+      '<div class="sial-drawer-content">',
+      renderDrawerMenuGroups(),
+      '</div>',
+      '<a class="sial-btn sial-btn-secondary sial-btn-full" href="' + resolveRelativeUrl("../app/seleccion-empresa.html") + '">Cambiar finca</a>'
+    ].join("");
+    document.body.append(backdrop, drawer);
+    hydrateContext();
+  }
+
+  function openDrawer() {
+    if (!document.querySelector(".sial-drawer")) ensureGlobalDrawer();
+    if (!document.querySelector(".sial-drawer")) return;
+    document.body.classList.add("drawer-open");
+  }
+
+  function closeDrawer() {
+    document.body.classList.remove("drawer-open");
+    document.body.classList.remove("sial-edge-swipe-active");
+  }
+
+  function activeBlockingOverlay() {
+    return Boolean(document.querySelector(".sial-modal-backdrop, .sial-camera-overlay, .sial-photo-viewer, .sial-logo-intro"));
+  }
+
+  function gestureShouldIgnoreTarget(target) {
+    if (!target) return false;
+    if (document.body.classList.contains("drawer-open")) {
+      return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+    }
+    if (target.closest("input, textarea, select, button, a, [contenteditable='true']")) return true;
+    if (document.activeElement && document.activeElement.matches("input, textarea, select, [contenteditable='true']")) return true;
+    return false;
+  }
+
+  function startDrawerGesture(event) {
+    if (!shouldMountGlobalDrawer()) return;
+    if (event.pointerType && event.pointerType !== "touch") return;
+    if (activeBlockingOverlay()) return;
+    if (gestureShouldIgnoreTarget(event.target)) return;
+    const drawerOpen = document.body.classList.contains("drawer-open");
+    if (!drawerOpen && event.clientX > 28) return;
+    edgeGesture = {
+      mode: drawerOpen ? "close" : "open",
+      startX: event.clientX,
+      startY: event.clientY,
+      active: true,
+      committed: false
+    };
+  }
+
+  function moveDrawerGesture(event) {
+    if (!edgeGesture || !edgeGesture.active) return;
+    const dx = event.clientX - edgeGesture.startX;
+    const dy = event.clientY - edgeGesture.startY;
+    if (Math.abs(dy) > 42 && Math.abs(dy) > Math.abs(dx)) {
+      document.body.classList.remove("sial-edge-swipe-active");
+      edgeGesture = null;
+      return;
+    }
+    if (Math.abs(dx) > 16 && Math.abs(dx) > Math.abs(dy)) {
+      event.preventDefault();
+      document.body.classList.add("sial-edge-swipe-active");
+    }
+    if (edgeGesture.mode === "open" && dx >= 64) {
+      edgeGesture.committed = true;
+      openDrawer();
+      document.body.classList.remove("sial-edge-swipe-active");
+      edgeGesture = null;
+    }
+    if (edgeGesture && edgeGesture.mode === "close" && dx <= -64) {
+      edgeGesture.committed = true;
+      closeDrawer();
+      edgeGesture = null;
+    }
+  }
+
+  function endDrawerGesture() {
+    document.body.classList.remove("sial-edge-swipe-active");
+    edgeGesture = null;
+  }
+
   setTheme(preferredTheme());
   hydrateContext();
   hydrateCompanyContext();
   refreshSelectionViews();
+  ensureGlobalDrawer();
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
     openPhotoCapture: function(config) { buildPhotoCaptureOverlay(config); },
@@ -1232,6 +1485,12 @@
     closeDialog,
     replayMotionState,
     navigateTo,
+    markUnsavedChanges,
+    clearUnsavedChanges,
+    hasUnsavedChanges,
+    openDrawer,
+    closeDrawer,
+    ensureGlobalDrawer,
     selectedContext,
     setSelectedContext,
     selectedCompany,
@@ -1270,18 +1529,18 @@
   document.addEventListener("click", (event) => {
     const open = event.target.closest("[data-drawer-open]");
     if (open) {
-      document.body.classList.add("drawer-open");
+      openDrawer();
       return;
     }
     const close = event.target.closest("[data-drawer-close]");
     if (close) {
-      document.body.classList.remove("drawer-open");
+      closeDrawer();
     }
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      document.body.classList.remove("drawer-open");
+      closeDrawer();
       closeDialog();
     }
   });
@@ -1299,6 +1558,11 @@
   });
 
   document.addEventListener("input", (event) => {
+    const flowField = event.target.closest("[data-flow-form] input, [data-flow-form] select, [data-flow-form] textarea");
+    if (flowField && !flowField.matches("[type='hidden'], [data-unsaved-ignore]")) {
+      markUnsavedChanges("field");
+    }
+
     const fincaSearch = event.target.closest("[data-finca-search]");
     if (fincaSearch) {
       updateFincaSelectionScope();
@@ -1317,6 +1581,24 @@
     const form = field.closest("[data-login-form]");
     const hasPendingRequired = Array.from(form.querySelectorAll("input[required]")).some((input) => !input.value.trim());
     if (!hasPendingRequired) clearInlineStatus(form.querySelector("[data-login-status]"));
+  });
+
+  document.addEventListener("change", (event) => {
+    const flowField = event.target.closest("[data-flow-form] input, [data-flow-form] select, [data-flow-form] textarea");
+    if (flowField && !flowField.matches("[type='hidden'], [data-unsaved-ignore]")) {
+      markUnsavedChanges("field");
+    }
+  });
+
+  document.addEventListener("pointerdown", startDrawerGesture, { passive: true });
+  document.addEventListener("pointermove", moveDrawerGesture, { passive: false });
+  document.addEventListener("pointerup", endDrawerGesture, { passive: true });
+  document.addEventListener("pointercancel", endDrawerGesture, { passive: true });
+
+  window.addEventListener("beforeunload", (event) => {
+    if (!hasUnsavedChanges()) return;
+    event.preventDefault();
+    event.returnValue = "";
   });
 
   window.addEventListener("pageshow", () => {

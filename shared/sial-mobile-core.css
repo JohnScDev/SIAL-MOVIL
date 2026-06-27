@@ -1392,6 +1392,17 @@ html[data-theme="dark"] .sial-auth-logo {
   border-bottom-left-radius: 0;
 }
 
+.sial-modal-backdrop[data-dialog-id="unsaved-navigation"] {
+  background: color-mix(in srgb, var(--sial-backdrop) 82%, transparent);
+}
+
+.sial-modal-backdrop[data-dialog-id="unsaved-navigation"] .sial-modal {
+  width: min(calc(100vw - 32px), 360px);
+  gap: 14px;
+  padding: 18px;
+  border-color: color-mix(in srgb, var(--sial-warning) 34%, var(--sial-border));
+}
+
 .sial-modal-backdrop[data-dialog-id="access-recovery"] {
   animation: sial-recovery-backdrop-in var(--sial-motion-base) var(--sial-motion-ease) both;
 }
@@ -3076,6 +3087,21 @@ body.dialog-open {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--sial-motion-base) var(--sial-motion-ease);
+}
+
+body.sial-edge-swipe-active::before {
+  content: "";
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 68;
+  width: 6px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--sial-primary-500) 70%, transparent),
+    transparent
+  );
+  opacity: .9;
 }
 
 .sial-drawer {
