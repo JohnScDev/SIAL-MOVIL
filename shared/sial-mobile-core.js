@@ -10,6 +10,10 @@
   let hasPendingUnsavedChanges = false;
   let pendingNavigationTarget = "";
   let edgeGesture = null;
+  let suppressNextEdgeClick = false;
+  const drawerEdgeStartWidth = 40;
+  const drawerGestureOpenThreshold = 64;
+  const drawerGestureVerticalCancel = 42;
 
   function prefersReducedMotion() {
     return Boolean(motionQuery && motionQuery.matches);
@@ -1407,9 +1411,19 @@
     return Boolean(document.querySelector(".sial-modal-backdrop, .sial-camera-overlay, .sial-photo-viewer, .sial-logo-intro"));
   }
 
-  function gestureShouldIgnoreTarget(target) {
+  function suppressCommittedGestureClick() {
+    suppressNextEdgeClick = true;
+    window.setTimeout(() => {
+      suppressNextEdgeClick = false;
+    }, 420);
+  }
+
+  function gestureShouldIgnoreTarget(target, options = {}) {
     if (!target) return false;
     if (document.body.classList.contains("drawer-open")) {
+      return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+    }
+    if (options.fromEdge) {
       return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
     }
     if (target.closest("input, textarea, select, button, a, [contenteditable='true']")) return true;
@@ -1419,11 +1433,12 @@
 
   function startDrawerGesture(event) {
     if (!shouldMountGlobalDrawer()) return;
-    if (event.pointerType && event.pointerType !== "touch") return;
+    if (event.pointerType && !["touch", "pen", "mouse"].includes(event.pointerType)) return;
     if (activeBlockingOverlay()) return;
-    if (gestureShouldIgnoreTarget(event.target)) return;
     const drawerOpen = document.body.classList.contains("drawer-open");
-    if (!drawerOpen && event.clientX > 28) return;
+    const startsAtEdge = event.clientX <= drawerEdgeStartWidth;
+    if (!drawerOpen && !startsAtEdge) return;
+    if (gestureShouldIgnoreTarget(event.target, { fromEdge: startsAtEdge })) return;
     edgeGesture = {
       mode: drawerOpen ? "close" : "open",
       startX: event.clientX,
@@ -1437,7 +1452,7 @@
     if (!edgeGesture || !edgeGesture.active) return;
     const dx = event.clientX - edgeGesture.startX;
     const dy = event.clientY - edgeGesture.startY;
-    if (Math.abs(dy) > 42 && Math.abs(dy) > Math.abs(dx)) {
+    if (Math.abs(dy) > drawerGestureVerticalCancel && Math.abs(dy) > Math.abs(dx)) {
       document.body.classList.remove("sial-edge-swipe-active");
       edgeGesture = null;
       return;
@@ -1446,15 +1461,17 @@
       event.preventDefault();
       document.body.classList.add("sial-edge-swipe-active");
     }
-    if (edgeGesture.mode === "open" && dx >= 64) {
+    if (edgeGesture.mode === "open" && dx >= drawerGestureOpenThreshold) {
       edgeGesture.committed = true;
       openDrawer();
+      suppressCommittedGestureClick();
       document.body.classList.remove("sial-edge-swipe-active");
       edgeGesture = null;
     }
-    if (edgeGesture && edgeGesture.mode === "close" && dx <= -64) {
+    if (edgeGesture && edgeGesture.mode === "close" && dx <= -drawerGestureOpenThreshold) {
       edgeGesture.committed = true;
       closeDrawer();
+      suppressCommittedGestureClick();
       edgeGesture = null;
     }
   }
@@ -1500,6 +1517,13 @@
   });
 
   startLogoIntroIfNeeded();
+
+  document.addEventListener("click", (event) => {
+    if (!suppressNextEdgeClick) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    suppressNextEdgeClick = false;
+  }, true);
 
   document.addEventListener("click", (event) => {
     const anchor = event.target.closest("a[href]");
