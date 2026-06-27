@@ -45,6 +45,97 @@
       { id: "V-002", truckPlate: "ABC123", trailerPlate: "DEF456", driverName: "Ana Ramirez", driverDoc: "1023456789", carrier: "Logistica Sur", container: "", active: true },
       { id: "V-003", truckPlate: "XYZ789", trailerPlate: "LMN012", driverName: "Pedro Gutierrez", driverDoc: "1034567890", carrier: "Transbanasan", container: "SIALB7654321", active: true },
       { id: "V-004", truckPlate: "QWE555", trailerPlate: "", driverName: "Luis Velasquez", driverDoc: "1045678901", carrier: "Transportes Norte", container: "", active: false }
+    ],
+    selectedInspectionContainers: {},
+    availableContainers: [
+      {
+        id: "C-ZE-EXT-001",
+        container: "SIALU1234567",
+        operation: "EXP-2026-0418",
+        reference: "BAN-REF-001",
+        order: "ORD-ZE-2041",
+        journey: "VIAJE-7751",
+        vehicle: "TUL458",
+        trailer: "RML789",
+        driver: "Carlos Mendoza",
+        driverDocument: "1012345678",
+        carrier: "Transbanasan",
+        ze: "ZE Puerto Norte",
+        finca: "Finca Santa Isabel",
+        containerStatus: "RECIBIDO_EN_ZE",
+        operationStatus: "RECIBIDO_EN_ZE",
+        containerLocation: "ZE",
+        vehicleStatus: "RECIBIDO_ZE",
+        active: true,
+        nextInspectionEvent: "portExternalInspection",
+        flags: { zeReception: true }
+      },
+      {
+        id: "C-ZE-INT-001",
+        container: "SIALB7654321",
+        operation: "EXP-2026-0422",
+        reference: "BAN-REF-004",
+        order: "ORD-ZE-2048",
+        journey: "VIAJE-7764",
+        vehicle: "XYZ789",
+        trailer: "LMN012",
+        driver: "Pedro Gutierrez",
+        driverDocument: "1034567890",
+        carrier: "Transbanasan",
+        ze: "ZE Puerto Norte",
+        finca: "Finca Santa Isabel",
+        containerStatus: "INSPECCION_EXTERNA_APTA",
+        operationStatus: "INSPECCION_EXTERNA_APTA",
+        containerLocation: "ZE",
+        vehicleStatus: "EN_ZE",
+        active: true,
+        nextInspectionEvent: "portInternalInspection",
+        flags: { zeReception: true, portExternalInspection: true }
+      },
+      {
+        id: "C-FINCA-EXT-001",
+        container: "SIALF4455667",
+        operation: "EXP-2026-0430",
+        reference: "BAN-REF-011",
+        order: "ORD-FIN-1182",
+        journey: "VIAJE-7801",
+        vehicle: "MNO456",
+        trailer: "TRF221",
+        driver: "Diana Torres",
+        driverDocument: "1056789012",
+        carrier: "Logistica Sur",
+        ze: "ZE Puerto Norte",
+        finca: "Finca El Retiro",
+        containerStatus: "RECIBIDO_EN_FINCA",
+        operationStatus: "RECIBIDO_EN_FINCA",
+        containerLocation: "FINCA",
+        vehicleStatus: "EN_FINCA",
+        active: true,
+        nextInspectionEvent: "farmExternalInspection",
+        flags: { zeDispatch: true, farmReception: true }
+      },
+      {
+        id: "C-FINCA-INT-001",
+        container: "SIALF9988776",
+        operation: "EXP-2026-0437",
+        reference: "BAN-REF-014",
+        order: "ORD-FIN-1190",
+        journey: "VIAJE-7812",
+        vehicle: "JKL321",
+        trailer: "TRF544",
+        driver: "Hector Ruiz",
+        driverDocument: "1067890123",
+        carrier: "Transportes Norte",
+        ze: "ZE Puerto Norte",
+        finca: "Finca Las Palmas",
+        containerStatus: "INSPECCION_EXTERNA_FINCA_APTA",
+        operationStatus: "INSPECCION_EXTERNA_FINCA_APTA",
+        containerLocation: "FINCA",
+        vehicleStatus: "EN_FINCA",
+        active: true,
+        nextInspectionEvent: "farmInternalInspection",
+        flags: { zeDispatch: true, farmReception: true, farmExternalInspection: true }
+      }
     ]
   };
 
@@ -85,6 +176,13 @@
     portReception: "Recepcion en puerto",
     portDelivery: "Entrega final en puerto"
   };
+
+  const inspectionEvents = [
+    "portExternalInspection",
+    "portInternalInspection",
+    "farmExternalInspection",
+    "farmInternalInspection"
+  ];
 
   const evidencePointCatalog = {
     portExternalInspection: [
@@ -148,6 +246,30 @@
     localStorage.setItem(stateKey, JSON.stringify(state));
   }
 
+  function setNamedFieldValue(names, value) {
+    names.forEach(function(name) {
+      document.querySelectorAll("[data-flow-form] [name='" + name + "']").forEach(function(field) {
+        if (field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) {
+          field.value = value || "";
+        }
+      });
+    });
+  }
+
+  function hydrateFlowFormFields(state) {
+    setNamedFieldValue(["contenedor", "numeroContenedor"], state.container);
+    setNamedFieldValue(["operacion", "operacionLogistica"], state.operation);
+    setNamedFieldValue(["orden", "ordenViaje"], state.order);
+    setNamedFieldValue(["viaje"], state.journey);
+    setNamedFieldValue(["placa", "placaCabezote"], state.vehicle);
+    setNamedFieldValue(["placaRemolque"], state.trailer || "");
+    setNamedFieldValue(["conductor"], state.driver);
+    setNamedFieldValue(["documentoConductor"], state.driverDocument || "");
+    setNamedFieldValue(["transportista"], state.carrier);
+    setNamedFieldValue(["finca"], state.finca || "");
+    setNamedFieldValue(["zonaExterna", "ze"], state.ze || "");
+  }
+
   function missingRequirements(eventName, state) {
     return (requirements[eventName] || []).filter((key) => !state.flags[key]);
   }
@@ -180,6 +302,7 @@
     document.querySelectorAll("[data-flow-driver-document]").forEach((node) => { node.textContent = state.driverDocument || ""; });
     document.querySelectorAll("[data-flow-ze]").forEach((node) => { node.textContent = state.ze || ""; });
     document.querySelectorAll("[data-flow-operation]").forEach((node) => { node.textContent = state.operation; });
+    document.querySelectorAll("[data-flow-finca]").forEach((node) => { node.textContent = state.finca || ""; });
     document.querySelectorAll("[data-flow-user]").forEach((node) => { node.textContent = state.user; });
     document.querySelectorAll("[data-flow-supervisor]").forEach((node) => { node.textContent = state.supervisor; });
     document.querySelectorAll("[data-flow-carrier]").forEach((node) => { node.textContent = state.carrier; });
@@ -225,6 +348,7 @@
         : Object.values(state.photos || {}).reduce((total, item) => total + item, 0);
       node.textContent = String(count);
     });
+    hydrateFlowFormFields(state);
   }
 
   function getNextAction(state) {
@@ -1175,6 +1299,212 @@
     }
   };
 
+  function isInspectionEvent(eventName) {
+    return inspectionEvents.includes(eventName);
+  }
+
+  function currentInspectionForm() {
+    var form = document.querySelector("[data-flow-form]");
+    if (!form || !isInspectionEvent(form.dataset.event || "")) return null;
+    return form;
+  }
+
+  function availableInspectionContainers(state) {
+    var containers = Array.isArray(state.availableContainers) && state.availableContainers.length
+      ? state.availableContainers
+      : defaults.availableContainers;
+    return (containers || []).filter(function(item) {
+      return item && item.container && item.active !== false && item.nextInspectionEvent;
+    });
+  }
+
+  function inspectionAvailabilityLabel(item) {
+    return labels[item.nextInspectionEvent] || "otra inspeccion";
+  }
+
+  function compactInspectionAvailabilityLabel(item) {
+    var eventName = item.nextInspectionEvent || "";
+    if (eventName === "portExternalInspection") return "Ext. ZE";
+    if (eventName === "portInternalInspection") return "Int. ZE";
+    if (eventName === "farmExternalInspection") return "Ext. finca";
+    if (eventName === "farmInternalInspection") return "Int. finca";
+    return "Otra";
+  }
+
+  function normalizeContainerSearch(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  }
+
+  function filterInspectionContainerOptions(input) {
+    var selector = input.closest(".sial-container-selector");
+    if (!selector) return;
+    var query = normalizeContainerSearch(input.value);
+    var visible = 0;
+    selector.querySelectorAll("[data-inspection-container-option]").forEach(function(option) {
+      var haystack = option.dataset.inspectionContainerSearch || "";
+      var matches = !query || haystack.includes(query);
+      option.hidden = !matches;
+      if (matches) visible += 1;
+    });
+    var empty = selector.querySelector("[data-inspection-container-empty]");
+    if (empty) empty.hidden = visible > 0;
+  }
+
+  function applyInspectionContainerToState(state, item, eventName) {
+    var previousId = state.selectedInspectionContainers ? state.selectedInspectionContainers[eventName] : "";
+    state.container = item.container || state.container;
+    state.operation = item.operation || state.operation;
+    state.reference = item.reference || state.reference;
+    state.order = item.order || state.order;
+    state.journey = item.journey || state.journey;
+    state.vehicle = item.vehicle || state.vehicle;
+    state.trailer = item.trailer || "";
+    state.driver = item.driver || state.driver;
+    state.driverDocument = item.driverDocument || "";
+    state.carrier = item.carrier || state.carrier;
+    state.ze = item.ze || state.ze;
+    state.finca = item.finca || state.finca;
+    state.containerStatus = item.containerStatus || state.containerStatus;
+    state.operationStatus = item.operationStatus || state.operationStatus;
+    state.containerLocation = item.containerLocation || state.containerLocation;
+    state.vehicleStatus = item.vehicleStatus || state.vehicleStatus;
+    state.containerExists = true;
+    state.hasActiveDispatch = false;
+    state.hasVehicleAssociation = true;
+    state.containerExported = false;
+    state.flags = { ...(state.flags || {}), ...(item.flags || {}) };
+    state.selectedInspectionContainers = { ...(state.selectedInspectionContainers || {}), [eventName]: item.id };
+
+    if (previousId && previousId !== item.id) {
+      if (state.evidence && state.evidence[eventName]) state.evidence[eventName] = [];
+      if (state.controlPoints && state.controlPoints[eventName]) state.controlPoints[eventName] = [];
+      if (window._sialPrototypeEvidence && window._sialPrototypeEvidence[eventName]) {
+        window._sialPrototypeEvidence[eventName] = [];
+      }
+    }
+  }
+
+  function ensureInspectionContextSummary(state) {
+    var form = currentInspectionForm();
+    if (!form || document.querySelector("[data-flow-container]") || document.querySelector("[data-inspection-context-summary]")) return;
+
+    var banner = document.createElement("div");
+    banner.className = "sial-flow-banner";
+    banner.dataset.inspectionContextSummary = "true";
+    banner.innerHTML = '<strong>Contenedor <span data-flow-container></span></strong><span><span data-flow-location></span></span>';
+
+    var card = document.createElement("section");
+    card.className = "sial-card sial-card-pad sial-form";
+    card.dataset.inspectionContextSummary = "true";
+    card.innerHTML = [
+      '<div class="sial-list-row"><strong>Operacion</strong><span data-flow-operation></span></div>',
+      '<div class="sial-list-row"><strong>Orden / viaje</strong><span><span data-flow-order></span> / <span data-flow-journey></span></span></div>',
+      '<div class="sial-list-row"><strong>Vehiculo</strong><span data-flow-vehicle></span></div>',
+      '<div class="sial-list-row"><strong>Transportista</strong><span data-flow-carrier></span></div>',
+      '<div class="sial-list-row"><strong>Finca</strong><span data-flow-finca></span></div>',
+      '<div class="sial-list-row"><strong>Estado contenedor</strong><span data-flow-container-status></span></div>'
+    ].join("");
+
+    form.parentNode.insertBefore(banner, form);
+    form.parentNode.insertBefore(card, form);
+    hydrateSummary(state);
+  }
+
+  function createInspectionContainerSelectorContent(eventName, state) {
+    var activeContainers = availableInspectionContainers(state);
+    var content = document.createElement("div");
+    content.className = "sial-container-selector";
+
+    var copy = document.createElement("p");
+    copy.className = "sial-container-selector-copy";
+    copy.textContent = "Busca por contenedor, viaje o placa.";
+    content.appendChild(copy);
+
+    if (!activeContainers.length) {
+      var empty = document.createElement("div");
+      empty.className = "sial-status warning";
+      empty.innerHTML = "<span><strong>Sin contenedores activos</strong>No hay contenedores disponibles para inspeccion.</span>";
+      content.appendChild(empty);
+      return content;
+    }
+
+    var search = document.createElement("input");
+    search.className = "sial-container-search";
+    search.type = "search";
+    search.placeholder = "Buscar contenedor";
+    search.autocomplete = "off";
+    search.dataset.inspectionContainerSearchInput = "true";
+    search.setAttribute("aria-label", "Buscar contenedor");
+    content.appendChild(search);
+
+    var list = document.createElement("div");
+    list.className = "sial-container-selector-list";
+    activeContainers.forEach(function(item) {
+      var isAvailable = item.nextInspectionEvent === eventName;
+      var option = document.createElement("button");
+      option.type = "button";
+      option.className = "sial-container-option" + (isAvailable ? " is-available" : " is-locked");
+      option.dataset.inspectionContainerOption = item.id;
+      option.dataset.inspectionTargetEvent = eventName;
+      option.dataset.inspectionContainerSearch = normalizeContainerSearch([
+        item.container,
+        item.operation,
+        item.order,
+        item.journey,
+        item.vehicle,
+        item.trailer,
+        item.driver,
+        item.carrier,
+        item.finca,
+        inspectionAvailabilityLabel(item)
+      ].join(" "));
+      option.setAttribute("aria-pressed", String((state.selectedInspectionContainers || {})[eventName] === item.id));
+      option.innerHTML = [
+        '<span class="sial-container-option-main">',
+        '<span class="sial-container-option-head">',
+        '<strong class="sial-container-option-title">' + escapeHtml(item.container) + '</strong>',
+        '<span class="sial-pill ' + (isAvailable ? 'success' : 'warning') + '">' + escapeHtml(isAvailable ? "Disponible" : "Para " + compactInspectionAvailabilityLabel(item)) + '</span>',
+        '</span>',
+        '<span class="sial-container-option-meta">' + escapeHtml(item.operation || "") + ' - ' + escapeHtml(item.journey || "") + ' - ' + escapeHtml(item.vehicle || "") + '</span>',
+        '</span>'
+      ].join("");
+      list.appendChild(option);
+    });
+    content.appendChild(list);
+
+    var emptySearch = document.createElement("p");
+    emptySearch.className = "sial-container-selector-empty";
+    emptySearch.dataset.inspectionContainerEmpty = "true";
+    emptySearch.hidden = true;
+    emptySearch.textContent = "Sin resultados para la busqueda.";
+    content.appendChild(emptySearch);
+    return content;
+  }
+
+  function openInspectionContainerSelector() {
+    var form = currentInspectionForm();
+    if (!form || !window.SialMobileUI || typeof window.SialMobileUI.openDialog !== "function") return;
+    var eventName = form.dataset.event || "";
+    window.setTimeout(function() {
+      var latest = readState();
+      var hasAvailableForEvent = availableInspectionContainers(latest).some(function(item) {
+        return item.nextInspectionEvent === eventName;
+      });
+      window.SialMobileUI.openDialog({
+        id: "inspection-container-selector",
+        variant: "modal",
+        title: "Selecciona un contenedor",
+        content: createInspectionContainerSelectorContent(eventName, latest),
+        dismissible: !hasAvailableForEvent,
+        actions: []
+      });
+    }, 0);
+  }
+
   function hydrateControlPoints(state) {
     document.querySelectorAll("[data-control-point]").forEach((node) => {
       const eventName = node.dataset.controlPointEvent || "";
@@ -1280,6 +1610,7 @@
 
   function boot() {
     const state = readState();
+    ensureInspectionContextSummary(state);
     hydrateSummary(state);
     hydrateGuard(state);
     hydrateTimeline(state);
@@ -1290,8 +1621,49 @@
     hydrateEvidence(state);
     hydratePhotoSlots(state);
     hydrateZeReceptionEvidenceGalleries(state);
+    openInspectionContainerSelector();
+
+    document.addEventListener("input", (event) => {
+      const inspectionContainerSearch = event.target.closest("[data-inspection-container-search-input]");
+      if (!inspectionContainerSearch) return;
+      filterInspectionContainerOptions(inspectionContainerSearch);
+    });
 
     document.addEventListener("click", (event) => {
+      const inspectionContainerOption = event.target.closest("[data-inspection-container-option]");
+      if (inspectionContainerOption) {
+        var targetEvent = inspectionContainerOption.dataset.inspectionTargetEvent || "";
+        var containerId = inspectionContainerOption.dataset.inspectionContainerOption || "";
+        var stContainer = readState();
+        var selectedContainer = availableInspectionContainers(stContainer).find(function(item) { return item.id === containerId; });
+        if (!selectedContainer || !targetEvent) return;
+        if (selectedContainer.nextInspectionEvent !== targetEvent) {
+          showToast({
+            type: "warning",
+            title: "Contenedor no disponible",
+            message: "Este contenedor esta disponible para " + inspectionAvailabilityLabel(selectedContainer) + "."
+          });
+          return;
+        }
+        applyInspectionContainerToState(stContainer, selectedContainer, targetEvent);
+        writeState(stContainer);
+        ensureInspectionContextSummary(stContainer);
+        hydrateSummary(stContainer);
+        hydrateGuard(stContainer);
+        hydrateAlerts(stContainer);
+        hydrateControlPoints(stContainer);
+        hydrateEvidence(stContainer);
+        if (window.SialMobileUI && typeof window.SialMobileUI.closeDialog === "function") {
+          window.SialMobileUI.closeDialog("inspection-container-selector", { immediate: true });
+        }
+        showToast({
+          type: "success",
+          title: "Contenedor seleccionado",
+          message: selectedContainer.container + " cargado para " + (labels[targetEvent] || "inspeccion") + "."
+        });
+        return;
+      }
+
       const vehicleOption = event.target.closest("[data-vehicle-option]");
       if (vehicleOption) {
         var vid = vehicleOption.dataset.vehicleOption;

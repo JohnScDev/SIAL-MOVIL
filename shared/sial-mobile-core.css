@@ -286,6 +286,7 @@ body.sial-screen-exiting .library-section {
 .sial-priority-item,
 .sial-evidence-slot,
 .sial-list-row,
+.sial-container-option,
 .sial-chip-action,
 .sial-picker-trigger,
 .sial-picker-option,
@@ -307,6 +308,7 @@ body.sial-screen-exiting .library-section {
 .sial-control-card,
 .sial-priority-item,
 .sial-evidence-slot,
+.sial-container-option,
 .sial-picker-trigger,
 .sial-picker-option,
 .sial-menu-link {
@@ -319,6 +321,7 @@ body.sial-screen-exiting .library-section {
   .sial-control-card:hover,
   .sial-priority-item:hover,
   .sial-evidence-slot:hover,
+  .sial-container-option:hover,
   .sial-picker-trigger:hover,
   .sial-picker-option:hover,
   .sial-menu-link:hover {
@@ -333,6 +336,7 @@ body.sial-screen-exiting .library-section {
 .sial-priority-item:active,
 .sial-evidence-slot:active,
 .sial-list-row:active,
+.sial-container-option:active,
 .sial-chip-action:active,
 .sial-picker-trigger:active,
 .sial-picker-option:active,
@@ -1501,6 +1505,152 @@ html[data-theme="dark"] .sial-auth-logo {
   gap: 10px;
 }
 
+.sial-container-selector {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-container-selector-copy {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.sial-container-search {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sial-container-search:focus {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 14%, transparent);
+}
+
+.sial-container-selector-list {
+  display: grid;
+  gap: 7px;
+  max-height: min(50svh, 420px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.sial-container-option {
+  width: 100%;
+  min-height: 62px;
+  display: grid;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 11px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text);
+  text-align: left;
+}
+
+.sial-container-option.is-available {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 34%, var(--sial-border));
+  box-shadow: inset 3px 0 0 var(--sial-primary-500);
+}
+
+.sial-container-option.is-locked {
+  opacity: .86;
+}
+
+.sial-container-option[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--sial-success) 48%, var(--sial-border));
+  background: color-mix(in srgb, var(--sial-success-bg) 42%, var(--sial-surface-raised));
+}
+
+.sial-container-option-main {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.sial-container-option-head {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.sial-container-option-title {
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-container-option-meta {
+  overflow: hidden;
+  color: var(--sial-text-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-container-option .sial-pill {
+  justify-self: end;
+  min-height: 22px;
+  max-width: 104px;
+  padding: 0 8px;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+
+.sial-container-selector-empty {
+  margin: 2px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  text-align: center;
+}
+
+.sial-modal-backdrop[data-dialog-id="inspection-container-selector"] {
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+}
+
+.sial-modal-backdrop[data-dialog-id="inspection-container-selector"] .sial-modal {
+  width: min(100%, 390px);
+  max-height: min(78svh, 560px);
+  gap: 10px;
+  padding: 14px;
+  overflow: hidden;
+  border-radius: var(--sial-radius-large);
+}
+
+.sial-modal-backdrop[data-dialog-id="inspection-container-selector"] .sial-dialog-header h2 {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.sial-modal-backdrop[data-dialog-id="inspection-container-selector"] .sial-dialog-copy {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.sial-modal-backdrop[data-dialog-id="inspection-container-selector"] .sial-dialog-body {
+  gap: 10px;
+}
+
 .sial-dialog-actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -1918,6 +2068,30 @@ body.dialog-open {
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.sial-pill.success {
+  border-color: color-mix(in srgb, var(--sial-success) 34%, var(--sial-border));
+  background: var(--sial-success-bg);
+  color: var(--sial-success);
+}
+
+.sial-pill.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 38%, var(--sial-border));
+  background: var(--sial-warning-bg);
+  color: var(--sial-warning-text);
+}
+
+.sial-pill.info {
+  border-color: color-mix(in srgb, var(--sial-info) 34%, var(--sial-border));
+  background: var(--sial-info-bg);
+  color: var(--sial-info);
+}
+
+.sial-pill.error {
+  border-color: color-mix(in srgb, var(--sial-error) 38%, var(--sial-border));
+  background: var(--sial-error-bg);
+  color: var(--sial-error);
 }
 
 .sial-segmented {

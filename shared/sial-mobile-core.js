@@ -811,13 +811,15 @@
     const title = document.createElement("h2");
     title.textContent = options.title || "Confirmar accion";
     header.appendChild(title);
-    const close = document.createElement("button");
-    close.className = "sial-btn sial-btn-icon";
-    close.type = "button";
-    close.dataset.dialogClose = id;
-    close.setAttribute("aria-label", "Cerrar dialogo");
-    close.textContent = "x";
-    header.appendChild(close);
+    if (options.dismissible !== false) {
+      const close = document.createElement("button");
+      close.className = "sial-btn sial-btn-icon";
+      close.type = "button";
+      close.dataset.dialogClose = id;
+      close.setAttribute("aria-label", "Cerrar dialogo");
+      close.textContent = "x";
+      header.appendChild(close);
+    }
     panel.appendChild(header);
 
     if (options.message) {
