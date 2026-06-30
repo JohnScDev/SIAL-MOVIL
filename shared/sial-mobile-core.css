@@ -1550,7 +1550,7 @@ html[data-theme="dark"] .sial-auth-logo {
 .sial-container-selector-list {
   display: grid;
   gap: 7px;
-  max-height: min(50svh, 420px);
+  max-height: min(44svh, 360px);
   overflow-y: auto;
   padding-right: 2px;
 }
@@ -1632,6 +1632,47 @@ html[data-theme="dark"] .sial-auth-logo {
   color: var(--sial-text-2);
   font-size: 12px;
   text-align: center;
+}
+
+.sial-container-pagination {
+  display: grid;
+  grid-template-columns: minmax(0, 96px) minmax(0, 1fr) minmax(0, 96px);
+  gap: 8px;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.sial-container-pagination[hidden] {
+  display: none;
+}
+
+.sial-container-pagination .sial-btn {
+  min-height: 38px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.sial-container-pagination .sial-btn:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+  transform: none;
+}
+
+.sial-container-page-status {
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.sial-container-change-action {
+  margin-top: 2px;
+}
+
+.sial-flow-banner .sial-container-change-action {
+  justify-self: stretch;
+  min-height: 40px;
 }
 
 .sial-modal-backdrop[data-dialog-id="inspection-container-selector"] {

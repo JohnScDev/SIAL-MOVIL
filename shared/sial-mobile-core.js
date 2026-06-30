@@ -1287,8 +1287,8 @@
       items: [
         { href: "../puerto-ze/index.html", label: "Dashboard ZE Puerto", icon: drawerIcon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>') },
         { href: "../puerto-ze/recepcion-ze.html", label: "HU758 - Recepcion vehiculo ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
-        { href: "../puerto-ze/inspeccion-externa.html", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
-        { href: "../puerto-ze/inspeccion-interna.html", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
+        { href: "../puerto-ze/inspeccion-externa.html?selectContainer=1", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
+        { href: "../puerto-ze/inspeccion-interna.html?selectContainer=1", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
       ]
     },
@@ -1307,8 +1307,8 @@
       aria: "Navegacion finca",
       items: [
         { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
-        { href: "../finca/inspeccion-externa.html", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
-        { href: "../finca/inspeccion-interna.html", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
+        { href: "../finca/inspeccion-externa.html?selectContainer=1", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
+        { href: "../finca/inspeccion-interna.html?selectContainer=1", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../finca/sesion-responsabilidad.html", label: "Sesion responsabilidad", icon: drawerIcon('<path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/>') },
         { href: "../finca/cierre-contenedor.html", label: "Cierre de contenedor", icon: drawerIcon('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>') },
         { href: "../finca/despacho-ze.html", label: "Despacho a ZE", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }

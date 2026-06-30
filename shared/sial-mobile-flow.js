@@ -135,9 +135,165 @@
         active: true,
         nextInspectionEvent: "farmInternalInspection",
         flags: { zeDispatch: true, farmReception: true, farmExternalInspection: true }
+      },
+      {
+        id: "C-ZE-EXT-002",
+        container: "SIALU7788990",
+        operation: "EXP-2026-0444",
+        reference: "BAN-REF-018",
+        order: "ORD-ZE-2059",
+        journey: "VIAJE-7830",
+        vehicle: "BNX234",
+        trailer: "TRL118",
+        driver: "Nicolas Mejia",
+        driverDocument: "1078901234",
+        carrier: "Transbanasan",
+        ze: "ZE Terminal Sur",
+        finca: "Finca Santa Isabel",
+        containerStatus: "RECIBIDO_EN_ZE",
+        operationStatus: "RECIBIDO_EN_ZE",
+        containerLocation: "ZE",
+        vehicleStatus: "RECIBIDO_ZE",
+        active: true,
+        nextInspectionEvent: "portExternalInspection",
+        flags: { zeReception: true }
+      },
+      {
+        id: "C-ZE-EXT-003",
+        container: "SIALU6677881",
+        operation: "EXP-2026-0445",
+        reference: "BAN-REF-019",
+        order: "ORD-ZE-2060",
+        journey: "VIAJE-7831",
+        vehicle: "CTG908",
+        trailer: "TRL442",
+        driver: "Paola Rivas",
+        driverDocument: "1089012345",
+        carrier: "Logistica Sur",
+        ze: "ZE Puerto Norte",
+        finca: "Finca El Retiro",
+        containerStatus: "RECIBIDO_EN_ZE",
+        operationStatus: "RECIBIDO_EN_ZE",
+        containerLocation: "ZE",
+        vehicleStatus: "RECIBIDO_ZE",
+        active: true,
+        nextInspectionEvent: "portExternalInspection",
+        flags: { zeReception: true }
+      },
+      {
+        id: "C-ZE-INT-002",
+        container: "SIALB2244668",
+        operation: "EXP-2026-0450",
+        reference: "BAN-REF-022",
+        order: "ORD-ZE-2064",
+        journey: "VIAJE-7838",
+        vehicle: "BGA551",
+        trailer: "TRL774",
+        driver: "Andres Molina",
+        driverDocument: "1090123456",
+        carrier: "Transportes Norte",
+        ze: "ZE Bananera",
+        finca: "Finca Las Palmas",
+        containerStatus: "INSPECCION_EXTERNA_APTA",
+        operationStatus: "INSPECCION_EXTERNA_APTA",
+        containerLocation: "ZE",
+        vehicleStatus: "EN_ZE",
+        active: true,
+        nextInspectionEvent: "portInternalInspection",
+        flags: { zeReception: true, portExternalInspection: true }
+      },
+      {
+        id: "C-FINCA-EXT-002",
+        container: "SIALF1122334",
+        operation: "EXP-2026-0457",
+        reference: "BAN-REF-027",
+        order: "ORD-FIN-1201",
+        journey: "VIAJE-7845",
+        vehicle: "SMR782",
+        trailer: "TRF661",
+        driver: "Julian Mora",
+        driverDocument: "1101234567",
+        carrier: "Transbanasan",
+        ze: "ZE Puerto Norte",
+        finca: "Finca Santa Isabel",
+        containerStatus: "RECIBIDO_EN_FINCA",
+        operationStatus: "RECIBIDO_EN_FINCA",
+        containerLocation: "FINCA",
+        vehicleStatus: "EN_FINCA",
+        active: true,
+        nextInspectionEvent: "farmExternalInspection",
+        flags: { zeDispatch: true, farmReception: true }
+      },
+      {
+        id: "C-FINCA-EXT-003",
+        container: "SIALF5566778",
+        operation: "EXP-2026-0461",
+        reference: "BAN-REF-030",
+        order: "ORD-FIN-1208",
+        journey: "VIAJE-7851",
+        vehicle: "VUP315",
+        trailer: "TRF902",
+        driver: "Martha Leon",
+        driverDocument: "1112345678",
+        carrier: "Logistica Sur",
+        ze: "ZE Terminal Sur",
+        finca: "Finca El Retiro",
+        containerStatus: "RECIBIDO_EN_FINCA",
+        operationStatus: "RECIBIDO_EN_FINCA",
+        containerLocation: "FINCA",
+        vehicleStatus: "EN_FINCA",
+        active: true,
+        nextInspectionEvent: "farmExternalInspection",
+        flags: { zeDispatch: true, farmReception: true }
+      },
+      {
+        id: "C-FINCA-INT-002",
+        container: "SIALF8899001",
+        operation: "EXP-2026-0468",
+        reference: "BAN-REF-035",
+        order: "ORD-FIN-1215",
+        journey: "VIAJE-7859",
+        vehicle: "RIO620",
+        trailer: "TRF120",
+        driver: "Sergio Paez",
+        driverDocument: "1123456789",
+        carrier: "Transportes Norte",
+        ze: "ZE Bananera",
+        finca: "Finca Las Palmas",
+        containerStatus: "INSPECCION_EXTERNA_FINCA_APTA",
+        operationStatus: "INSPECCION_EXTERNA_FINCA_APTA",
+        containerLocation: "FINCA",
+        vehicleStatus: "EN_FINCA",
+        active: true,
+        nextInspectionEvent: "farmInternalInspection",
+        flags: { zeDispatch: true, farmReception: true, farmExternalInspection: true }
+      },
+      {
+        id: "C-ZE-INT-003",
+        container: "SIALB3344559",
+        operation: "EXP-2026-0472",
+        reference: "BAN-REF-038",
+        order: "ORD-ZE-2072",
+        journey: "VIAJE-7864",
+        vehicle: "MTR417",
+        trailer: "TRL335",
+        driver: "Camila Suarez",
+        driverDocument: "1134567890",
+        carrier: "Transbanasan",
+        ze: "ZE Puerto Norte",
+        finca: "Finca Santa Isabel",
+        containerStatus: "INSPECCION_EXTERNA_APTA",
+        operationStatus: "INSPECCION_EXTERNA_APTA",
+        containerLocation: "ZE",
+        vehicleStatus: "EN_ZE",
+        active: true,
+        nextInspectionEvent: "portInternalInspection",
+        flags: { zeReception: true, portExternalInspection: true }
       }
     ]
   };
+
+  const inspectionContainerPageSize = 4;
 
   const requirements = {
     zeReception: [],
@@ -354,12 +510,12 @@
   function getNextAction(state) {
     const sequence = [
       ["zeReception", "../puerto-ze/recepcion-ze.html", "Registrar recepcion en ZE", "Iniciar trazabilidad del vehiculo en zona externa."],
-      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html", "Inspeccion externa ZE", "Evidencia fotografica externa estructural."],
-      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html", "Inspeccion interna ZE", "Evidencia fotografica interna de 15 a 23 fotos."],
+      ["portExternalInspection", "../puerto-ze/inspeccion-externa.html?selectContainer=1", "Inspeccion externa ZE", "Evidencia fotografica externa estructural."],
+      ["portInternalInspection", "../puerto-ze/inspeccion-interna.html?selectContainer=1", "Inspeccion interna ZE", "Evidencia fotografica interna de 15 a 23 fotos."],
       ["zeDispatch", "../puerto-ze/despacho-finca.html", "Despachar a finca", "Registrar salida con sellos, firmas y responsabilidad."],
       ["farmReception", "../finca/recepcion-finca.html", "Recibir en finca", "Confirmar llegada e iniciar operacion de finca."],
-      ["farmExternalInspection", "../finca/inspeccion-externa.html", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
-      ["farmInternalInspection", "../finca/inspeccion-interna.html", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
+      ["farmExternalInspection", "../finca/inspeccion-externa.html?selectContainer=1", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
+      ["farmInternalInspection", "../finca/inspeccion-interna.html?selectContainer=1", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
       ["responsibility", "../finca/sesion-responsabilidad.html", "Sesion responsabilidad", "Capturar responsables y firmas."],
       ["palletBuilt", "../pallets/armar-pallet.html", "Armar pallet", "Registrar cajas por escaneo o digitacion."],
       ["palletsLoaded", "../pallets/cargar-pallets.html", "Cargar pallets", "Asociar pallets al contenedor."],
@@ -1357,19 +1513,61 @@
       .trim();
   }
 
+  function updateInspectionContainerPagination(selector, requestedPage) {
+    if (!selector) return;
+    var input = selector.querySelector("[data-inspection-container-search-input]");
+    var query = normalizeContainerSearch(input ? input.value : "");
+    var matches = [];
+    var options = Array.from(selector.querySelectorAll("[data-inspection-container-option]"));
+    options.forEach(function(option) {
+      var haystack = option.dataset.inspectionContainerSearch || "";
+      var isMatch = !query || haystack.includes(query);
+      option.dataset.inspectionContainerMatch = String(isMatch);
+      option.hidden = true;
+      if (isMatch) matches.push(option);
+    });
+
+    var totalPages = Math.max(1, Math.ceil(matches.length / inspectionContainerPageSize));
+    var requested = Number(requestedPage || selector.dataset.inspectionContainerCurrentPage || 1);
+    var currentPage = Math.min(Math.max(1, requested || 1), totalPages);
+    var start = (currentPage - 1) * inspectionContainerPageSize;
+    var end = start + inspectionContainerPageSize;
+    selector.dataset.inspectionContainerCurrentPage = String(currentPage);
+
+    matches.slice(start, end).forEach(function(option) {
+      option.hidden = false;
+    });
+
+    var empty = selector.querySelector("[data-inspection-container-empty]");
+    if (empty) empty.hidden = matches.length > 0;
+
+    var pagination = selector.querySelector("[data-inspection-container-pagination]");
+    var status = selector.querySelector("[data-inspection-container-page-status]");
+    var prev = selector.querySelector("[data-inspection-container-page='prev']");
+    var next = selector.querySelector("[data-inspection-container-page='next']");
+    var shouldShowPagination = matches.length > inspectionContainerPageSize;
+
+    if (pagination) pagination.hidden = !shouldShowPagination;
+    if (status) {
+      status.textContent = matches.length
+        ? "Pagina " + currentPage + " de " + totalPages + " - " + matches.length + " contenedores"
+        : "Sin contenedores para mostrar";
+    }
+    if (prev) {
+      prev.disabled = currentPage <= 1;
+      prev.setAttribute("aria-disabled", String(prev.disabled));
+    }
+    if (next) {
+      next.disabled = currentPage >= totalPages;
+      next.setAttribute("aria-disabled", String(next.disabled));
+    }
+  }
+
   function filterInspectionContainerOptions(input) {
     var selector = input.closest(".sial-container-selector");
     if (!selector) return;
-    var query = normalizeContainerSearch(input.value);
-    var visible = 0;
-    selector.querySelectorAll("[data-inspection-container-option]").forEach(function(option) {
-      var haystack = option.dataset.inspectionContainerSearch || "";
-      var matches = !query || haystack.includes(query);
-      option.hidden = !matches;
-      if (matches) visible += 1;
-    });
-    var empty = selector.querySelector("[data-inspection-container-empty]");
-    if (empty) empty.hidden = visible > 0;
+    selector.dataset.inspectionContainerCurrentPage = "1";
+    updateInspectionContainerPagination(selector, 1);
   }
 
   function applyInspectionContainerToState(state, item, eventName) {
@@ -1408,7 +1606,11 @@
 
   function ensureInspectionContextSummary(state) {
     var form = currentInspectionForm();
-    if (!form || document.querySelector("[data-flow-container]") || document.querySelector("[data-inspection-context-summary]")) return;
+    if (!form) return;
+    if (document.querySelector("[data-flow-container]") || document.querySelector("[data-inspection-context-summary]")) {
+      ensureInspectionContainerChangeAction(form);
+      return;
+    }
 
     var banner = document.createElement("div");
     banner.className = "sial-flow-banner";
@@ -1429,7 +1631,34 @@
 
     form.parentNode.insertBefore(banner, form);
     form.parentNode.insertBefore(card, form);
+    ensureInspectionContainerChangeAction(form);
     hydrateSummary(state);
+  }
+
+  function ensureInspectionContainerChangeAction(form) {
+    if (!form || document.querySelector("[data-change-inspection-container]")) return;
+    var button = document.createElement("button");
+    button.className = "sial-btn sial-btn-secondary sial-btn-full sial-container-change-action";
+    button.type = "button";
+    button.dataset.changeInspectionContainer = form.dataset.event || "";
+    button.innerHTML = [
+      '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>',
+      "<span>Cambiar contenedor</span>"
+    ].join("");
+
+    var summaryCard = document.querySelector("[data-inspection-context-summary].sial-card");
+    if (summaryCard) {
+      summaryCard.appendChild(button);
+      return;
+    }
+
+    var flowBanner = document.querySelector(".sial-flow-banner");
+    if (flowBanner) {
+      flowBanner.appendChild(button);
+      return;
+    }
+
+    form.parentNode.insertBefore(button, form);
   }
 
   function createInspectionContainerSelectorContent(eventName, state) {
@@ -1494,21 +1723,47 @@
     });
     content.appendChild(list);
 
+    var pagination = document.createElement("div");
+    pagination.className = "sial-container-pagination";
+    pagination.dataset.inspectionContainerPagination = "true";
+    pagination.innerHTML = [
+      '<button class="sial-btn sial-btn-secondary" type="button" data-inspection-container-page="prev">Anterior</button>',
+      '<span class="sial-container-page-status" data-inspection-container-page-status aria-live="polite"></span>',
+      '<button class="sial-btn sial-btn-secondary" type="button" data-inspection-container-page="next">Siguiente</button>'
+    ].join("");
+    content.appendChild(pagination);
+
     var emptySearch = document.createElement("p");
     emptySearch.className = "sial-container-selector-empty";
     emptySearch.dataset.inspectionContainerEmpty = "true";
     emptySearch.hidden = true;
     emptySearch.textContent = "Sin resultados para la busqueda.";
     content.appendChild(emptySearch);
+    updateInspectionContainerPagination(content, 1);
     return content;
   }
 
-  function openInspectionContainerSelector() {
+  function selectedInspectionContainerId(state, eventName) {
+    return (state.selectedInspectionContainers || {})[eventName] || "";
+  }
+
+  function shouldForceInspectionContainerSelector() {
+    try {
+      return new URLSearchParams(window.location.search || "").get("selectContainer") === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function openInspectionContainerSelector(options) {
+    options = options || {};
     var form = currentInspectionForm();
     if (!form || !window.SialMobileUI || typeof window.SialMobileUI.openDialog !== "function") return;
     var eventName = form.dataset.event || "";
+    var shouldForce = options.force || shouldForceInspectionContainerSelector();
     window.setTimeout(function() {
       var latest = readState();
+      if (!shouldForce && selectedInspectionContainerId(latest, eventName)) return;
       var hasAvailableForEvent = availableInspectionContainers(latest).some(function(item) {
         return item.nextInspectionEvent === eventName;
       });
@@ -1648,6 +1903,22 @@
     });
 
     document.addEventListener("click", (event) => {
+      const changeInspectionContainer = event.target.closest("[data-change-inspection-container]");
+      if (changeInspectionContainer) {
+        openInspectionContainerSelector({ force: true });
+        return;
+      }
+
+      const inspectionContainerPage = event.target.closest("[data-inspection-container-page]");
+      if (inspectionContainerPage) {
+        var selector = inspectionContainerPage.closest(".sial-container-selector");
+        if (!selector) return;
+        var currentPage = Number(selector.dataset.inspectionContainerCurrentPage || 1);
+        var direction = inspectionContainerPage.dataset.inspectionContainerPage;
+        updateInspectionContainerPagination(selector, direction === "next" ? currentPage + 1 : currentPage - 1);
+        return;
+      }
+
       const inspectionContainerOption = event.target.closest("[data-inspection-container-option]");
       if (inspectionContainerOption) {
         var targetEvent = inspectionContainerOption.dataset.inspectionTargetEvent || "";
