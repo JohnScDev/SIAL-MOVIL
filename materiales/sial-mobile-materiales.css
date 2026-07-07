@@ -1,0 +1,145 @@
+.sial-material-summary {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-material-order-card {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-material-order-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.sial-material-order-head strong {
+  display: block;
+  color: var(--sial-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sial-material-order-head span {
+  display: block;
+  margin-top: 3px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-material-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sial-material-mini {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.sial-material-mini span {
+  display: block;
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.sial-material-mini strong {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-material-pod-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-material-pod-box {
+  width: 100%;
+  min-height: 128px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 18px;
+  border: 1px dashed var(--sial-border);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+}
+
+.sial-material-pod-box.done {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--sial-success) 45%, var(--sial-border));
+  color: var(--sial-success);
+}
+
+.sial-material-pod-box .sial-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.sial-material-route {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-material-route-step {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.sial-material-route-step i {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-pill);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sial-chip-action.success {
+  border-color: color-mix(in srgb, var(--sial-success) 34%, var(--sial-border));
+  background: color-mix(in srgb, var(--sial-success) 14%, var(--sial-surface));
+  color: var(--sial-success);
+}
+
+.sial-chip-action.warning {
+  border-color: color-mix(in srgb, var(--sial-warning) 38%, var(--sial-border));
+  background: color-mix(in srgb, var(--sial-warning) 14%, var(--sial-surface));
+  color: var(--sial-warning);
+}
+
+.sial-chip-action.info {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 26%, var(--sial-border));
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+@media (max-width: 390px) {
+  .sial-material-matrix {
+    grid-template-columns: 1fr;
+  }
+}

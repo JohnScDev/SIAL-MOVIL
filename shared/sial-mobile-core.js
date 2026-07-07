@@ -1289,7 +1289,8 @@
         { href: "../puerto-ze/recepcion-ze.html", label: "HU758 - Recepcion vehiculo ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
         { href: "../puerto-ze/inspeccion-externa.html?selectContainer=1", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
         { href: "../puerto-ze/inspeccion-interna.html?selectContainer=1", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
-        { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
+        { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') },
+        { href: "../puerto-ze/hu1431-despacho-contenedor-finca.html", label: "HU1431 - Despacho contenedor a finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="m13 6 6 6-6 6"/>') }
       ]
     },
     {
@@ -1324,6 +1325,18 @@
       ]
     },
     {
+      label: "Materiales y suministros",
+      aria: "Navegacion materiales y suministros",
+      items: [
+        { href: "../materiales/index.html", label: "Materiales", icon: drawerIcon('<path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/>') },
+        { href: "../materiales/pedido-sugerido.html", label: "Pedido sugerido", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') },
+        { href: "../materiales/inventario-finca.html", label: "Inventario finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/>') },
+        { href: "../materiales/ordenes-asignadas.html", label: "Ordenes asignadas", icon: drawerIcon('<path d="M3 7h11v10H3z"/><path d="M14 11h4l3 3v3h-7z"/>') },
+        { href: "../materiales/registrar-entrega.html", label: "Registrar entrega", icon: drawerIcon('<path d="M20 6 9 17l-5-5"/><path d="M4 20h16"/>') },
+        { href: "../materiales/pallets.html", label: "Pallets materiales", icon: drawerIcon('<path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>') }
+      ]
+    },
+    {
       label: "Trazabilidad",
       aria: "Navegacion trazabilidad",
       items: [
@@ -1338,7 +1351,7 @@
     if (!document.querySelector(".sial-page")) return false;
     if (document.querySelector(".login-screen, .library-shell")) return false;
     if (path.includes("/login/") || path.includes("/libreria/")) return false;
-    if (path.endsWith("/index.html") && !path.includes("/app/") && !path.includes("/puerto-ze/")) return false;
+    if (path.endsWith("/index.html") && !path.includes("/app/") && !path.includes("/puerto-ze/") && !path.includes("/materiales/")) return false;
     if (path.includes("/app/seleccion-empresa.html") || path.includes("/app/seleccion-finca.html")) return false;
     if (path.includes("/demo-camara.html")) return false;
     return true;
@@ -1354,8 +1367,8 @@
     }
   }
 
-  function renderDrawerMenuGroups() {
-    return drawerMenuGroups.map((group) => [
+  function renderDrawerMenuGroup(group) {
+    return [
       '<nav class="sial-menu-group" aria-label="' + group.aria + '">',
       '<p class="sial-menu-label">' + group.label + '</p>',
       group.items.map((item) => {
@@ -1364,12 +1377,23 @@
         return '<a class="sial-menu-link' + active + '" href="' + href + '">' + item.icon + item.label + '</a>';
       }).join(""),
       "</nav>"
-    ].join("")).join("");
+    ].join("");
+  }
+
+  function renderDrawerMenuGroups() {
+    return drawerMenuGroups.map(renderDrawerMenuGroup).join("");
   }
 
   function ensureGlobalDrawer() {
     if (!shouldMountGlobalDrawer()) return;
-    if (document.querySelector(".sial-drawer")) return;
+    const existingDrawer = document.querySelector(".sial-drawer");
+    if (existingDrawer) {
+      const content = existingDrawer.querySelector(".sial-drawer-content");
+      const hasMaterials = content?.querySelector('[aria-label="Navegacion materiales y suministros"]');
+      const materialsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion materiales y suministros");
+      if (content && !hasMaterials && materialsGroup) content.insertAdjacentHTML("beforeend", renderDrawerMenuGroup(materialsGroup));
+      return;
+    }
     const brandSrc = resolveRelativeUrl("../assets/brand/isotipo-sial.svg");
     const backdrop = document.createElement("div");
     backdrop.className = "sial-drawer-backdrop";

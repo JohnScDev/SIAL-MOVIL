@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - HU1431 Despacho contenedor a finca</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("sial-mobile-theme");
+      document.documentElement.dataset.theme = saved || "light";
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Despacho contenedor a finca</h1>
+        <p>HU1431 - ZE Puerto</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body">
+      <div class="sial-status info">
+        <span>
+          <strong>Vista de catalogo</strong>
+          Esta propuesta no reemplaza HU303 ni altera el flujo automatico. Queda enlazada como vista de catalogo para modelar DESPACHO_A_FINCA en HU1431.
+        </span>
+      </div>
+
+      <section class="sial-card sial-card-pad sial-form" aria-label="Contexto de despacho">
+        <h2 class="sial-section-title">Contexto operativo</h2>
+        <div class="sial-list-row"><strong>Operacion</strong><span>EXP-2026-0418</span></div>
+        <div class="sial-list-row"><strong>Orden / viaje</strong><span>ORD-ZE-2041 / VIAJE-7751</span></div>
+        <div class="sial-list-row"><strong>Contenedor</strong><span>SIALU1234567</span></div>
+        <div class="sial-list-row"><strong>Estado requerido</strong><span>DISPONIBLE / LISTO_PARA_DESPACHO / INSPECCIONADO_APTO</span></div>
+        <div class="sial-list-row"><strong>Origen</strong><span>ZE Puerto Norte</span></div>
+        <div class="sial-list-row"><strong>Destino</strong><span>FINCA</span></div>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-form" aria-label="Precondiciones">
+        <h2 class="sial-section-title">Precondiciones</h2>
+        <label class="sial-checkbox-row"><input type="checkbox" checked> Contenedor existe y pertenece a la operacion</label>
+        <label class="sial-checkbox-row"><input type="checkbox" checked> Contenedor ubicado en ZE</label>
+        <label class="sial-checkbox-row"><input type="checkbox" checked> Sin despacho activo ni transito incompatible</label>
+        <label class="sial-checkbox-row"><input type="checkbox" checked> Vehiculo, conductor y finca asociados a la programacion</label>
+        <label class="sial-checkbox-row"><input type="checkbox" checked> Controles previos requeridos completados</label>
+      </section>
+
+      <form
+        class="sial-card sial-card-pad sial-form"
+        data-flow-form
+        data-flow-mode="prototype"
+        data-event="zeDispatchHu1431"
+        data-detail="DESPACHO_A_FINCA"
+        data-container-status="EN_TRANSITO_A_FINCA"
+        data-location="TRANSITO_FINCA"
+        data-has-active-dispatch="true"
+        data-prevent-duplicate="true"
+        data-assert-no-future-date="[name='fechaDespacho']">
+        <p class="sial-inline-error" data-flow-error data-hu1431-error hidden></p>
+
+        <h2 class="sial-section-title">Datos generales de la operacion</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Semana de operacion *</label>
+            <input class="sial-input-wrap sial-input" name="semanaOperacion" type="text" required value="2026-W19" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Fecha de operacion *</label>
+            <input class="sial-input-wrap sial-input" name="fechaOperacion" type="date" required value="2026-05-05">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Operacion logistica *</label>
+            <input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418" autocomplete="off" autocapitalize="characters">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Orden / viaje asociado *</label>
+            <input class="sial-input-wrap sial-input" name="viaje" required value="VIAJE-7751" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Ubicacion origen *</label>
+            <input class="sial-input-wrap sial-input" name="origen" required value="ZE Puerto Norte" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Ubicacion destino *</label>
+            <input class="sial-input-wrap sial-input" name="destino" required value="FINCA" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Usuario que registra *</label>
+            <input class="sial-input-wrap sial-input" name="usuario" required value="Maria Operadora" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Creacion del registro</label>
+            <input class="sial-input-wrap sial-input" name="fechaCreacion" readonly data-hu1431-created-at value="">
+          </div>
+        </div>
+
+        <h2 class="sial-section-title">Contenedor y vehiculo</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Numero de contenedor *</label>
+            <input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567" autocomplete="off" autocapitalize="characters">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Placa del remolque *</label>
+            <input class="sial-input-wrap sial-input" name="placaRemolque" required value="RML789" autocomplete="off" autocapitalize="characters">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Placa del cabezote *</label>
+            <input class="sial-input-wrap sial-input" name="placaCabezote" required value="TUL458" autocomplete="off" autocapitalize="characters">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Tipo de contenedor *</label>
+            <select class="sial-select" name="tipoContenedor" required>
+              <option value="SIN_STATUS">SIN STATUS</option>
+              <option value="COCO">COCO</option>
+              <option value="COMA">COMA</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="sial-section-title">Fincas destino</h2>
+        <p class="sial-field-note">Finca 1 es obligatoria. Finca 2 y Finca 3 aplican para operaciones con destino multiple.</p>
+        <div class="sial-farm-list">
+          <div class="sial-farm-entry">
+            <input name="finca1" required placeholder="Finca destino 1 *" value="Finca Santa Isabel">
+            <span class="sial-pill">Obligatorio</span>
+          </div>
+          <div class="sial-farm-entry">
+            <input name="finca2" placeholder="Finca destino 2" value="Finca La Esperanza">
+            <span class="sial-pill">Opcional</span>
+          </div>
+          <div class="sial-farm-entry">
+            <input name="finca3" placeholder="Finca destino 3" value="">
+            <span class="sial-pill">Opcional</span>
+          </div>
+        </div>
+
+        <h2 class="sial-section-title">Conductor que recibe</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Nombre del conductor *</label>
+            <input class="sial-input-wrap sial-input" name="conductor" required value="Carlos Mendoza" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Cedula del conductor *</label>
+            <input class="sial-input-wrap sial-input" name="documentoConductor" type="text" inputmode="numeric" required value="1012345678" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Empresa transportadora</label>
+            <input class="sial-input-wrap sial-input" name="transportista" value="Transbanasan" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Telefono / contacto</label>
+            <input class="sial-input-wrap sial-input" name="telefonoConductor" type="tel" inputmode="tel" value="3001234567" autocomplete="tel">
+          </div>
+        </div>
+
+        <h2 class="sial-section-title">Sellos y documentacion de seguridad</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Sello guaya instalada *</label>
+            <input class="sial-input-wrap sial-input" name="selloGuayaInstalada" required value="GY-2026-001" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Bolsa de seguridad entregada</label>
+            <select class="sial-select" name="bolsaSeguridad">
+              <option value="SI">Si</option>
+              <option value="NO">No</option>
+              <option value="NO_APLICA">No aplica</option>
+            </select>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Numero bolsa de seguridad</label>
+            <input class="sial-input-wrap sial-input" name="numeroBolsa" value="BS-558901" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Sellos guaya entregados en mano</label>
+            <input class="sial-input-wrap sial-input" name="sellosEntregados" value="GY-2026-002, GY-2026-003" autocomplete="off">
+          </div>
+        </div>
+        <div class="sial-seal-inputs">
+          <label class="sial-checkbox-row"><input type="checkbox" name="docSeguridad" required checked> Documentacion de seguridad entregada *</label>
+          <label class="sial-checkbox-row"><input type="checkbox" name="reciboContenedor" required checked> Conductor recibe el contenedor *</label>
+          <label class="sial-checkbox-row"><input type="checkbox" name="reciboSellos" required checked> Conductor recibe sellos *</label>
+        </div>
+        <div class="sial-field">
+          <label class="sial-label">Observaciones sobre sellos o documentos</label>
+          <textarea class="sial-textarea" name="observacionesSeguridad" placeholder="Registra novedades de sellos, bolsa, documentos o seguridad"></textarea>
+        </div>
+
+        <h2 class="sial-section-title">Hora de despacho</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Fecha y hora exacta de despacho *</label>
+            <input class="sial-input-wrap sial-input" name="fechaDespacho" type="datetime-local" required value="2026-05-05T09:20">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Fecha/hora real capturada</label>
+            <input class="sial-input-wrap sial-input" name="fechaRealDispositivo" readonly data-hu1431-device-time value="">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Estado generado</label>
+            <input class="sial-input-wrap sial-input" readonly value="EN_TRANSITO_A_FINCA">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Ubicacion generada</label>
+            <input class="sial-input-wrap sial-input" readonly value="TRANSITO_FINCA">
+          </div>
+        </div>
+
+        <h2 class="sial-section-title">Radicador que despacha</h2>
+        <div class="sial-form-grid">
+          <div class="sial-field">
+            <label class="sial-label">Nombre radicador *</label>
+            <input class="sial-input-wrap sial-input" name="radicadorNombre" required value="Maria Operadora" autocomplete="off">
+          </div>
+          <div class="sial-field">
+            <label class="sial-label">Usuario sistema *</label>
+            <input class="sial-input-wrap sial-input" name="radicadorUsuario" required value="maria.operadora" autocomplete="off">
+          </div>
+        </div>
+        <div class="sial-field">
+          <label class="sial-label">Observaciones del radicador</label>
+          <textarea class="sial-textarea" name="observacionesRadicador" placeholder="Observaciones logisticas del despacho"></textarea>
+        </div>
+
+        <h2 class="sial-section-title">Sesion de responsabilidad</h2>
+        <div class="sial-status warning">
+          <span>
+            <strong>Responsabilidad del conductor</strong>
+            El despacho solo puede quedar confirmado cuando el conductor acepta contenedor, sellos, bolsa/documentacion e instruccion de destino.
+          </span>
+        </div>
+        <div class="sial-seal-inputs">
+          <label class="sial-checkbox-row"><input type="checkbox" name="responsabilidadContenedor" required checked> Acepta responsabilidad sobre el contenedor *</label>
+          <label class="sial-checkbox-row"><input type="checkbox" name="responsabilidadSellos" required checked> Acepta responsabilidad sobre sellos y bolsa *</label>
+          <label class="sial-checkbox-row"><input type="checkbox" name="responsabilidadDocumentos" required checked> Recibe documentacion de seguridad *</label>
+          <label class="sial-checkbox-row"><input type="checkbox" name="responsabilidadDestino" required checked> Recibe instruccion de destino a finca *</label>
+        </div>
+        <div class="sial-list-row"><strong>Estado sesion</strong><span class="sial-pill success" data-hu1431-responsibility-status>RESPONSABILIDAD_ACEPTADA</span></div>
+
+        <h2 class="sial-section-title">Firmas y autorizaciones</h2>
+        <div class="sial-signature-section" data-hu1431-signature-section="driver">
+          <h3>Firma del conductor *</h3>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label">Nombre firmante</label>
+              <input class="sial-input-wrap sial-input" name="firmaConductorNombre" value="Carlos Mendoza" autocomplete="off">
+            </div>
+            <div class="sial-field">
+              <label class="sial-label">Documento</label>
+              <input class="sial-input-wrap sial-input" name="firmaConductorDoc" value="1012345678" autocomplete="off">
+            </div>
+          </div>
+          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu1431-signature="driver">Confirmar firma conductor</button>
+          <span class="sial-pill warning" data-hu1431-signature-status="driver">Pendiente de firma</span>
+        </div>
+
+        <div class="sial-signature-section" data-hu1431-signature-section="dispatcher">
+          <h3>Firma del radicador *</h3>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label">Nombre firmante</label>
+              <input class="sial-input-wrap sial-input" name="firmaRadicadorNombre" value="Maria Operadora" autocomplete="off">
+            </div>
+            <div class="sial-field">
+              <label class="sial-label">Usuario / documento</label>
+              <input class="sial-input-wrap sial-input" name="firmaRadicadorDoc" value="maria.operadora" autocomplete="off">
+            </div>
+          </div>
+          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu1431-signature="dispatcher">Confirmar firma radicador</button>
+          <span class="sial-pill warning" data-hu1431-signature-status="dispatcher">Pendiente de firma</span>
+        </div>
+
+        <div class="sial-signature-section" data-hu1431-signature-section="supervisor">
+          <h3>Autorizacion supervisor</h3>
+          <p class="sial-field-note">Solo aplica si falta firma del conductor o existe una excepcion operativa.</p>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label">Supervisor autorizado</label>
+              <input class="sial-input-wrap sial-input" name="firmaSupervisorNombre" value="Laura Supervisora" autocomplete="off">
+            </div>
+            <div class="sial-field">
+              <label class="sial-label">Motivo autorizacion</label>
+              <input class="sial-input-wrap sial-input" name="motivoAutorizacion" placeholder="Motivo de excepcion">
+            </div>
+          </div>
+          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu1431-signature="supervisor">Registrar autorizacion supervisor</button>
+          <span class="sial-pill" data-hu1431-signature-status="supervisor">Opcional</span>
+        </div>
+
+        <h2 class="sial-section-title">Novedades y evidencia</h2>
+        <p class="sial-field-note">Si hay novedad en sellos, documentacion, placa, conductor o seguridad, registra observacion y evidencia fotografica.</p>
+        <div class="sial-seal-inputs">
+          <label class="sial-checkbox-row"><input type="checkbox" data-hu1431-novelty name="novedadSellos"> Novedad en sellos</label>
+          <label class="sial-checkbox-row"><input type="checkbox" data-hu1431-novelty name="novedadDocumentacion"> Novedad documental</label>
+          <label class="sial-checkbox-row"><input type="checkbox" data-hu1431-novelty name="novedadVehiculo"> Novedad en placa o conductor</label>
+          <label class="sial-checkbox-row"><input type="checkbox" data-hu1431-novelty name="novedadSeguridad"> Novedad de seguridad</label>
+        </div>
+        <div class="sial-field">
+          <label class="sial-label">Descripcion de novedad</label>
+          <textarea class="sial-textarea" name="descripcionNovedad" data-hu1431-novelty-desc placeholder="Describe la novedad cuando aplique"></textarea>
+        </div>
+        <div class="sial-ze-evidence-actions">
+          <button class="sial-evidence-trigger" type="button" data-hu1431-photo-trigger>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Agregar evidencia
+          </button>
+          <span class="sial-ze-evidence-counter" data-hu1431-photo-count>0 de 6 fotos</span>
+        </div>
+        <div class="sial-ze-evidence-gallery" data-hu1431-photo-gallery role="list" aria-label="Evidencia fotografica por novedad"></div>
+
+        <div class="sial-confirm-summary" data-confirm-summary>
+          <h3>Resumen de confirmacion</h3>
+          <div class="sial-confirm-row"><span>Evento generado</span><span>DESPACHO_A_FINCA</span></div>
+          <div class="sial-confirm-row"><span>Estado contenedor</span><span>EN_TRANSITO_A_FINCA</span></div>
+          <div class="sial-confirm-row"><span>Ubicacion</span><span>TRANSITO_FINCA</span></div>
+          <div class="sial-confirm-row"><span>Despacho activo</span><span>Si, hasta recepcion en finca o anulacion</span></div>
+          <div class="sial-confirm-row"><span>Offline</span><span>Genera identificador local y sincroniza despues</span></div>
+          <p class="sial-field-note">Esta vista es prototipo: valida criterios visuales y funcionales sin reemplazar la HU303 existente.</p>
+        </div>
+
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Validar despacho HU1431</button>
+      </form>
+
+      <section class="sial-section">
+        <h2 class="sial-section-title">Trazabilidad esperada</h2>
+        <div class="sial-timeline">
+          <article class="sial-timeline-item">
+            <strong>Recepcion en ZE</strong>
+            <span>Vehiculo y contenedor recibidos en Zona Externa.</span>
+          </article>
+          <article class="sial-timeline-item">
+            <strong>Inspecciones ZE</strong>
+            <span>Controles previos requeridos por la operacion.</span>
+          </article>
+          <article class="sial-timeline-item">
+            <strong>DESPACHO_A_FINCA</strong>
+            <span>Entrega formal de contenedor, sellos y documentacion al conductor.</span>
+          </article>
+          <article class="sial-timeline-item">
+            <strong>Recepcion futura en finca</strong>
+            <span>Solo permitida si existe despacho activo hacia la finca.</span>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script>
+    (function () {
+      var maxPhotos = 6;
+      var photos = [];
+      var signed = { driver: false, dispatcher: false, supervisor: false };
+      var form = document.querySelector("[data-flow-form][data-event='zeDispatchHu1431']");
+      var errorNode = document.querySelector("[data-hu1431-error]");
+      var countNode = document.querySelector("[data-hu1431-photo-count]");
+      var gallery = document.querySelector("[data-hu1431-photo-gallery]");
+      var trigger = document.querySelector("[data-hu1431-photo-trigger]");
+      var createdAt = document.querySelector("[data-hu1431-created-at]");
+      var deviceTime = document.querySelector("[data-hu1431-device-time]");
+
+      function nowLabel() {
+        return new Date().toLocaleString("es-CO");
+      }
+
+      function escapeHtml(value) {
+        return String(value || "").replace(/[&<>"']/g, function (char) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+        });
+      }
+
+      function showError(message) {
+        if (!errorNode) return;
+        errorNode.textContent = message;
+        errorNode.hidden = false;
+      }
+
+      function clearError() {
+        if (!errorNode) return;
+        errorNode.textContent = "";
+        errorNode.hidden = true;
+      }
+
+      function renderPhotos() {
+        if (countNode) countNode.textContent = photos.length + " de " + maxPhotos + " fotos";
+        if (trigger) {
+          trigger.classList.toggle("is-maxed", photos.length >= maxPhotos);
+          trigger.disabled = photos.length >= maxPhotos;
+        }
+        if (!gallery) return;
+        gallery.innerHTML = photos.map(function (photo, index) {
+          var label = "Foto " + (index + 1);
+          return [
+            '<article class="sial-ze-evidence-card" role="listitem">',
+            '<button class="sial-ze-evidence-photo-button" type="button" data-hu1431-photo-open="' + index + '" aria-label="Abrir ' + label + '">',
+            '<img src="' + photo.dataUrl + '" alt="' + label + '">',
+            '</button>',
+            '<div class="sial-ze-evidence-card-meta">',
+            '<strong>' + label + '</strong>',
+            '<button class="sial-chip-action danger" type="button" data-hu1431-photo-remove="' + index + '">Quitar</button>',
+            '</div>',
+            '</article>'
+          ].join("");
+        }).join("");
+      }
+
+      function noveltyActive() {
+        return Array.from(document.querySelectorAll("[data-hu1431-novelty]")).some(function (node) {
+          return node.checked;
+        });
+      }
+
+      if (createdAt) createdAt.value = nowLabel();
+      if (deviceTime) deviceTime.value = nowLabel();
+
+      document.addEventListener("click", function (event) {
+        var signatureButton = event.target.closest("[data-hu1431-signature]");
+        if (signatureButton) {
+          var actor = signatureButton.dataset.hu1431Signature;
+          signed[actor] = true;
+          signatureButton.textContent = actor === "supervisor" ? "Autorizacion registrada" : "Firma confirmada";
+          signatureButton.className = "sial-btn sial-btn-primary sial-btn-full";
+          var status = document.querySelector("[data-hu1431-signature-status='" + actor + "']");
+          if (status) {
+            status.textContent = actor === "supervisor" ? "Autorizado" : "Firmado";
+            status.className = "sial-pill success";
+          }
+          clearError();
+          return;
+        }
+
+        if (event.target.closest("[data-hu1431-photo-trigger]")) {
+          if (photos.length >= maxPhotos) {
+            if (window.SialMobileUI) {
+              window.SialMobileUI.showToast({ type: "warning", title: "Maximo alcanzado", message: "La evidencia permite maximo 6 fotos." });
+            }
+            return;
+          }
+          var capture = window.SialMobileUI && (window.SialMobileUI.openPhotoCapture || window.SialMobileUI.openCamera);
+          if (!capture) {
+            showError("Camara no disponible en este entorno.");
+            return;
+          }
+          capture({
+            title: "Evidencia por novedad",
+            eventName: "zeDispatchHu1431",
+            pointKey: "hu1431-evidencia-novedad",
+            allowMultiple: true,
+            maxPhotos: maxPhotos - photos.length,
+            onComplete: function (items) {
+              (items || []).forEach(function (item) {
+                if (item && item.dataUrl && photos.length < maxPhotos) {
+                  photos.push({ dataUrl: item.dataUrl, timestamp: item.timestamp || Date.now() });
+                }
+              });
+              renderPhotos();
+              clearError();
+            },
+            onCancel: function () {}
+          });
+          return;
+        }
+
+        var remove = event.target.closest("[data-hu1431-photo-remove]");
+        if (remove) {
+          photos.splice(Number(remove.dataset.hu1431PhotoRemove), 1);
+          renderPhotos();
+          return;
+        }
+
+        var open = event.target.closest("[data-hu1431-photo-open]");
+        if (open) {
+          var photo = photos[Number(open.dataset.hu1431PhotoOpen)];
+          if (photo) {
+            window.open(photo.dataUrl, "_blank", "noopener,noreferrer");
+          }
+        }
+      });
+
+      if (form) {
+        form.addEventListener("submit", function (event) {
+          var noveltyDesc = document.querySelector("[data-hu1431-novelty-desc]");
+          if (!signed.driver) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            showError("La firma del conductor es obligatoria para validar la vista.");
+            return;
+          }
+          if (!signed.dispatcher) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            showError("La firma del radicador es obligatoria para validar la vista.");
+            return;
+          }
+          if (noveltyActive() && (!noveltyDesc || !noveltyDesc.value.trim() || photos.length === 0)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            showError("Toda novedad requiere descripcion y al menos una evidencia fotografica.");
+            return;
+          }
+          clearError();
+        }, true);
+      }
+    })();
+  </script>
+</body>
+</html>
