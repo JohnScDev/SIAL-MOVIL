@@ -40,12 +40,12 @@
 
       <section class="sial-card sial-card-pad sial-form" aria-label="Contexto de despacho">
         <h2 class="sial-section-title">Contexto operativo</h2>
-        <div class="sial-list-row"><strong>Operacion</strong><span>EXP-2026-0418</span></div>
-        <div class="sial-list-row"><strong>Orden / viaje</strong><span>ORD-ZE-2041 / VIAJE-7751</span></div>
-        <div class="sial-list-row"><strong>Contenedor</strong><span>SIALU1234567</span></div>
-        <div class="sial-list-row"><strong>Estado requerido</strong><span>DISPONIBLE / LISTO_PARA_DESPACHO / INSPECCIONADO_APTO</span></div>
-        <div class="sial-list-row"><strong>Origen</strong><span>ZE Puerto Norte</span></div>
-        <div class="sial-list-row"><strong>Destino</strong><span>FINCA</span></div>
+        <div class="sial-list-row"><strong>Operacion</strong><span data-hu1431-summary="operation">EXP-2026-0418</span></div>
+        <div class="sial-list-row"><strong>Orden / viaje</strong><span data-hu1431-summary="orderJourney">ORD-ZE-2041 / VIAJE-7751</span></div>
+        <div class="sial-list-row"><strong>Contenedor</strong><span data-hu1431-summary="container">SIALU1234567</span></div>
+        <div class="sial-list-row"><strong>Estado requerido</strong><span data-hu1431-summary="status">DISPONIBLE / LISTO_PARA_DESPACHO / INSPECCIONADO_APTO</span></div>
+        <div class="sial-list-row"><strong>Origen</strong><span data-hu1431-summary="origin">ZE Puerto Norte</span></div>
+        <div class="sial-list-row"><strong>Destino</strong><span data-hu1431-summary="destination">FINCA</span></div>
       </section>
 
       <section class="sial-card sial-card-pad sial-form" aria-label="Precondiciones">
@@ -107,6 +107,15 @@
         </div>
 
         <h2 class="sial-section-title">Contenedor y vehiculo</h2>
+        <div class="sial-status info" data-hu1431-container-status>
+          <span>
+            <strong data-hu1431-selected-container-title>Contenedor seleccionado</strong>
+            <span data-hu1431-selected-container-copy>SIALU1234567 - TUL458 - Carlos Mendoza</span>
+          </span>
+        </div>
+        <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu1431-open-container-selector>
+          Buscar contenedor disponible
+        </button>
         <div class="sial-form-grid">
           <div class="sial-field">
             <label class="sial-label">Numero de contenedor *</label>
@@ -373,6 +382,87 @@
       var trigger = document.querySelector("[data-hu1431-photo-trigger]");
       var createdAt = document.querySelector("[data-hu1431-created-at]");
       var deviceTime = document.querySelector("[data-hu1431-device-time]");
+      var dispatchContainers = [
+        {
+          id: "HU1431-DISP-001",
+          container: "SIALU1234567",
+          operation: "EXP-2026-0418",
+          order: "ORD-ZE-2041",
+          journey: "VIAJE-7751",
+          vehicle: "TUL458",
+          trailer: "RML789",
+          driver: "Carlos Mendoza",
+          driverDocument: "1012345678",
+          carrier: "Transbanasan",
+          ze: "ZE Puerto Norte",
+          finca1: "Finca Santa Isabel",
+          finca2: "Finca La Esperanza",
+          finca3: "",
+          type: "SIN_STATUS",
+          status: "LISTO_PARA_DESPACHO",
+          available: true
+        },
+        {
+          id: "HU1431-DISP-002",
+          container: "SIALB3344559",
+          operation: "EXP-2026-0472",
+          order: "ORD-ZE-2072",
+          journey: "VIAJE-7864",
+          vehicle: "MTR417",
+          trailer: "TRL335",
+          driver: "Camila Suarez",
+          driverDocument: "1134567890",
+          carrier: "Transbanasan",
+          ze: "ZE Puerto Norte",
+          finca1: "Finca Santa Isabel",
+          finca2: "",
+          finca3: "",
+          type: "COCO",
+          status: "INSPECCION_INTERNA_APTA",
+          available: true
+        },
+        {
+          id: "HU1431-LOCK-001",
+          container: "SIALB7654321",
+          operation: "EXP-2026-0422",
+          order: "ORD-ZE-2048",
+          journey: "VIAJE-7764",
+          vehicle: "XYZ789",
+          trailer: "LMN012",
+          driver: "Pedro Gutierrez",
+          driverDocument: "1034567890",
+          carrier: "Transbanasan",
+          ze: "ZE Puerto Norte",
+          finca1: "Finca Santa Isabel",
+          finca2: "",
+          finca3: "",
+          type: "COMA",
+          status: "PENDIENTE_INSPECCION_INTERNA",
+          available: false,
+          nextStep: "inspeccion interna ZE"
+        },
+        {
+          id: "HU1431-LOCK-002",
+          container: "SIALF1122334",
+          operation: "EXP-2026-0457",
+          order: "ORD-FIN-1201",
+          journey: "VIAJE-7845",
+          vehicle: "SMR782",
+          trailer: "TRF661",
+          driver: "Julian Mora",
+          driverDocument: "1101234567",
+          carrier: "Transbanasan",
+          ze: "ZE Puerto Norte",
+          finca1: "Finca Santa Isabel",
+          finca2: "",
+          finca3: "",
+          type: "SIN_STATUS",
+          status: "EN_TRANSITO_A_FINCA",
+          available: false,
+          nextStep: "recepcion en finca"
+        }
+      ];
+      var selectedDispatchContainer = dispatchContainers[0];
 
       function nowLabel() {
         return new Date().toLocaleString("es-CO");
@@ -381,6 +471,148 @@
       function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function (char) {
           return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+        });
+      }
+
+      function normalizeSearch(value) {
+        return String(value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim();
+      }
+
+      function setField(name, value) {
+        if (!form) return;
+        var field = form.querySelector("[name='" + name + "']");
+        if (!field) return;
+        field.value = value || "";
+      }
+
+      function setSummary(key, value) {
+        var node = document.querySelector("[data-hu1431-summary='" + key + "']");
+        if (node) node.textContent = value || "";
+      }
+
+      function statusLabel(item) {
+        if (item.available) return "Disponible";
+        return item.nextStep ? "Para " + item.nextStep : "No disponible";
+      }
+
+      function hydrateSelectedContainer(item) {
+        if (!item) return;
+        selectedDispatchContainer = item;
+        setSummary("operation", item.operation);
+        setSummary("orderJourney", item.order + " / " + item.journey);
+        setSummary("container", item.container);
+        setSummary("status", item.status);
+        setSummary("origin", item.ze);
+        setSummary("destination", "FINCA");
+        setField("operacion", item.operation);
+        setField("viaje", item.journey);
+        setField("origen", item.ze);
+        setField("destino", "FINCA");
+        setField("contenedor", item.container);
+        setField("placaRemolque", item.trailer);
+        setField("placaCabezote", item.vehicle);
+        setField("tipoContenedor", item.type);
+        setField("finca1", item.finca1);
+        setField("finca2", item.finca2);
+        setField("finca3", item.finca3);
+        setField("conductor", item.driver);
+        setField("documentoConductor", item.driverDocument);
+        setField("transportista", item.carrier);
+        var title = document.querySelector("[data-hu1431-selected-container-title]");
+        var copy = document.querySelector("[data-hu1431-selected-container-copy]");
+        if (title) title.textContent = "Contenedor seleccionado";
+        if (copy) copy.textContent = item.container + " - " + item.vehicle + " - " + item.driver;
+      }
+
+      function filterHu1431ContainerOptions(input) {
+        var selector = input.closest(".sial-container-selector");
+        if (!selector) return;
+        var query = normalizeSearch(input.value);
+        var visible = 0;
+        selector.querySelectorAll("[data-hu1431-container-option]").forEach(function (option) {
+          var matches = !query || String(option.dataset.hu1431ContainerSearch || "").indexOf(query) !== -1;
+          option.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        var empty = selector.querySelector("[data-hu1431-container-empty]");
+        if (empty) empty.hidden = visible > 0;
+      }
+
+      function createHu1431ContainerSelectorContent() {
+        var content = document.createElement("div");
+        content.className = "sial-container-selector";
+
+        var copy = document.createElement("p");
+        copy.className = "sial-container-selector-copy";
+        copy.textContent = "Busca por contenedor, placa, viaje o conductor.";
+        content.appendChild(copy);
+
+        var search = document.createElement("input");
+        search.className = "sial-container-search";
+        search.type = "search";
+        search.placeholder = "Buscar contenedor o placa";
+        search.autocomplete = "off";
+        search.dataset.hu1431ContainerSearchInput = "true";
+        search.setAttribute("aria-label", "Buscar contenedor disponible");
+        content.appendChild(search);
+
+        var list = document.createElement("div");
+        list.className = "sial-container-selector-list";
+        dispatchContainers.forEach(function (item) {
+          var option = document.createElement("button");
+          option.type = "button";
+          option.className = "sial-container-option" + (item.available ? " is-available" : " is-locked");
+          option.dataset.hu1431ContainerOption = item.id;
+          option.dataset.hu1431ContainerSearch = normalizeSearch([
+            item.container,
+            item.operation,
+            item.order,
+            item.journey,
+            item.vehicle,
+            item.trailer,
+            item.driver,
+            item.driverDocument,
+            item.carrier,
+            item.finca1,
+            item.status,
+            item.nextStep
+          ].join(" "));
+          option.setAttribute("aria-pressed", String(selectedDispatchContainer && selectedDispatchContainer.id === item.id));
+          option.innerHTML = [
+            '<span class="sial-container-option-main">',
+            '<span class="sial-container-option-head">',
+            '<strong class="sial-container-option-title">' + escapeHtml(item.container) + '</strong>',
+            '<span class="sial-pill ' + (item.available ? 'success' : 'warning') + '">' + escapeHtml(statusLabel(item)) + '</span>',
+            '</span>',
+            '<span class="sial-container-option-meta">' + escapeHtml(item.operation) + ' - ' + escapeHtml(item.journey) + ' - ' + escapeHtml(item.vehicle) + '</span>',
+            '</span>'
+          ].join("");
+          list.appendChild(option);
+        });
+        content.appendChild(list);
+
+        var empty = document.createElement("p");
+        empty.className = "sial-container-selector-empty";
+        empty.dataset.hu1431ContainerEmpty = "true";
+        empty.hidden = true;
+        empty.textContent = "Sin resultados para la busqueda.";
+        content.appendChild(empty);
+        return content;
+      }
+
+      function openHu1431ContainerSelector() {
+        if (!window.SialMobileUI || typeof window.SialMobileUI.openDialog !== "function") return;
+        window.SialMobileUI.openDialog({
+          id: "hu1431-container-selector",
+          variant: "modal",
+          title: "Selecciona un contenedor",
+          message: "Selecciona un contenedor disponible para HU303 / DESPACHO_A_FINCA.",
+          content: createHu1431ContainerSelectorContent(),
+          actions: []
         });
       }
 
@@ -427,8 +659,47 @@
 
       if (createdAt) createdAt.value = nowLabel();
       if (deviceTime) deviceTime.value = nowLabel();
+      hydrateSelectedContainer(selectedDispatchContainer);
 
       document.addEventListener("click", function (event) {
+        if (event.target.closest("[data-hu1431-open-container-selector]")) {
+          openHu1431ContainerSelector();
+          return;
+        }
+
+        var containerOption = event.target.closest("[data-hu1431-container-option]");
+        if (containerOption) {
+          var containerId = containerOption.dataset.hu1431ContainerOption;
+          var selected = dispatchContainers.find(function (item) { return item.id === containerId; });
+          if (!selected) return;
+          if (!selected.available) {
+            if (window.SialMobileUI) {
+              window.SialMobileUI.showToast({
+                type: "warning",
+                title: "Contenedor no disponible",
+                message: "Este contenedor esta disponible para " + (selected.nextStep || "otro proceso") + "."
+              });
+            }
+            return;
+          }
+          hydrateSelectedContainer(selected);
+          clearError();
+          if (window.SialMobileUI) {
+            if (typeof window.SialMobileUI.closeDialog === "function") {
+              window.SialMobileUI.closeDialog("hu1431-container-selector");
+            }
+            if (typeof window.SialMobileUI.markUnsavedChanges === "function") {
+              window.SialMobileUI.markUnsavedChanges("field");
+            }
+            window.SialMobileUI.showToast({
+              type: "success",
+              title: "Contenedor seleccionado",
+              message: selected.container + " cargado para despacho a finca."
+            });
+          }
+          return;
+        }
+
         var signatureButton = event.target.closest("[data-hu1431-signature]");
         if (signatureButton) {
           var actor = signatureButton.dataset.hu1431Signature;
@@ -490,6 +761,11 @@
             window.open(photo.dataUrl, "_blank", "noopener,noreferrer");
           }
         }
+      });
+
+      document.addEventListener("input", function (event) {
+        var search = event.target.closest("[data-hu1431-container-search-input]");
+        if (search) filterHu1431ContainerOptions(search);
       });
 
       if (form) {
