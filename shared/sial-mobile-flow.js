@@ -324,7 +324,7 @@
     farmInternalInspection: "Inspeccion interna en finca",
     responsibility: "Sesion de responsabilidad",
     palletBuilt: "HU591 - Armado de pallet",
-    palletsLoaded: "Cargue de pallets",
+    palletsLoaded: "HU332 - Cargue contenedor",
     containerClosed: "Cierre de contenedor",
     farmDispatch: "Despacho desde finca a ZE",
     zeReturnReception: "Recepcion en ZE desde finca",
@@ -518,7 +518,7 @@
       ["farmInternalInspection", "../finca/inspeccion-interna.html?selectContainer=1", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
       ["responsibility", "../finca/sesion-responsabilidad.html", "Sesion responsabilidad", "Capturar responsables y firmas."],
       ["palletBuilt", "../pallets/armar-pallet.html", "HU591 - Armar pallet", "Registrar SSCC, referencia, finca y cajas reales."],
-      ["palletsLoaded", "../pallets/cargar-pallets.html", "Cargar pallets", "Asociar pallets al contenedor."],
+      ["palletsLoaded", "../pallets/cargar-pallets.html", "HU332 - Cargue contenedor", "Registrar cargue scan-to-load del contenedor."]
       ["containerClosed", "../finca/cierre-contenedor.html", "Cerrar contenedor", "Validar sellos, cantidades y evidencia."],
       ["farmDispatch", "../finca/despacho-ze.html", "Despachar a ZE", "Enviar contenedor cerrado hacia zona externa."],
       ["zeReturnReception", "../puerto-ze/recepcion-ze-retorno.html", "Recibir retorno ZE", "Confirmar llegada desde finca."],

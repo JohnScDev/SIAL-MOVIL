@@ -1,1 +1,949 @@
-﻿<!doctype html><html lang="es" data-theme="light"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <link rel="manifest" href="../manifest.webmanifest">  <meta name="theme-color" content="#005CA8">  <title>SIAL Movil - Cargar pallets</title>  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>  <link rel="stylesheet" href="../shared/sial-mobile-core.css"></head><body>  <main class="sial-page">    <header class="sial-page-header">      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>      <div class="sial-page-title"><h1>Cargar pallets</h1><p>Asociacion al contenedor</p></div>      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>    </header>    <section class="sial-page-body">      <div class="sial-status warning" data-requires="farmReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>      <section class="sial-stat-row">        <div class="sial-stat"><strong data-flow-loaded-pallets>0</strong><span>Pallets cargados</span></div>        <div class="sial-stat"><strong data-flow-container>SIALU1234567</strong><span>Contenedor</span></div>      </section>      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="palletsLoaded" data-detail="Pallet cargado al contenedor">        <div class="sial-field"><label class="sial-label">Pallet a cargar</label><input class="sial-input-wrap sial-input" name="pallet" required value="PALLET-001"></div>        <div class="sial-field"><label class="sial-label">Operacion asociada</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>        <div class="sial-field"><label class="sial-label">Contenedor asociado</label><input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567"></div>        <div class="sial-field"><label class="sial-label">Fecha y hora de registro</label><input class="sial-input-wrap sial-input" name="fechaCarga" type="datetime-local" required value="2026-05-05T12:25"></div>        <div class="sial-field"><label class="sial-label">Observaciones del cargue</label><textarea class="sial-textarea" name="observaciones" placeholder="Novedades del pallet, posicion o manipulacion"></textarea></div>        <p class="sial-inline-error" data-flow-error hidden></p>        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Registrar pallet cargado</button>        <a class="sial-btn sial-btn-secondary sial-btn-full" href="../finca/cierre-contenedor.html">Continuar a cierre</a>      </form>    </section>  </main>  <script src="../shared/sial-mobile-core.js"></script>  <script src="../shared/sial-mobile-flow.js"></script></body></html>
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - HU332 Cargue de contenedor</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <style>
+    .hu332-page { gap: 12px; }
+    .hu332-card-title {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .hu332-card-title .sial-section-title { margin: 0; }
+    .hu332-scan-row {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end;
+    }
+    .hu332-scan-row .sial-btn { min-height: 48px; padding-inline: 14px; white-space: nowrap; }
+    .hu332-scan-actions {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 8px;
+    }
+    .hu332-position-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .hu332-position {
+      min-height: 76px;
+      display: grid;
+      gap: 5px;
+      align-content: center;
+      padding: 10px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface);
+      color: var(--sial-text-2);
+      text-align: left;
+    }
+    .hu332-position strong {
+      color: var(--sial-text);
+      font-size: 13px;
+      line-height: 1.15;
+    }
+    .hu332-position span {
+      overflow: hidden;
+      font-size: 11px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hu332-position.is-loaded {
+      border-color: color-mix(in srgb, var(--sial-success) 34%, var(--sial-border));
+      background: var(--sial-success-bg);
+    }
+    .hu332-position.needs-photo {
+      border-color: color-mix(in srgb, var(--sial-warning) 42%, var(--sial-border));
+      background: var(--sial-warning-bg);
+    }
+    .hu332-position.is-selected {
+      border-color: var(--sial-primary-500);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--sial-primary-500) 18%, transparent);
+    }
+    .hu332-position[disabled] { opacity: .72; }
+    .hu332-loaded-list { display: grid; gap: 8px; }
+    .hu332-loaded-item {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface);
+    }
+    .hu332-loaded-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+    }
+    .hu332-loaded-head strong {
+      min-width: 0;
+      color: var(--sial-text);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .hu332-loaded-meta {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;
+      color: var(--sial-text-2); font-size: 11px; font-weight: 600;
+    }
+    .hu332-actions {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .hu332-doc-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+    }
+    .hu332-doc-card {
+      display: grid; gap: 6px;
+      padding: 12px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface);
+    }
+    .hu332-doc-card strong { color: var(--sial-text); font-size: 13px; }
+    .hu332-doc-card span { color: var(--sial-text-2); font-size: 11px; font-weight: 600; }
+    .hu332-seal-evidence {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+    }
+    .hu332-photo-thumb {
+      position: relative;
+      min-height: 92px;
+      overflow: hidden;
+      border: 1px solid var(--sial-border);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface-raised);
+    }
+    .hu332-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .hu332-photo-thumb span {
+      position: absolute; left: 6px; right: 6px; bottom: 6px;
+      color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.82);
+    }
+    .hu332-scanner-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      overflow: hidden;
+      background: #020617;
+      color: #fff;
+    }
+    .hu332-scanner-video,
+    .hu332-scanner-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hu332-scanner-fallback {
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(0,92,168,.46), rgba(15,23,36,.92)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 24px);
+      text-align: center;
+    }
+    .hu332-scanner-fallback[hidden] { display: none; }
+    .hu332-scanner-top {
+      position: absolute;
+      top: max(14px, env(safe-area-inset-top));
+      left: 14px;
+      right: 14px;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) 48px;
+      align-items: center;
+      gap: 10px;
+    }
+    .hu332-scanner-title {
+      min-width: 0;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      text-align: center;
+      text-shadow: 0 2px 12px rgba(0,0,0,.82);
+    }
+    .hu332-scanner-icon {
+      width: 48px;
+      height: 48px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      color: #fff;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hu332-scanner-frame {
+      position: absolute;
+      top: 28%;
+      left: 10%;
+      right: 10%;
+      z-index: 2;
+      aspect-ratio: 1.7;
+      border: 2px solid rgba(255,255,255,.86);
+      border-radius: 18px;
+      box-shadow: 0 0 0 999px rgba(0,0,0,.34), 0 0 28px rgba(0,92,168,.42);
+      pointer-events: none;
+    }
+    .hu332-scanner-frame::after {
+      content: "";
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 2px;
+      background: #20a7ff;
+      box-shadow: 0 0 16px rgba(32,167,255,.9);
+      transform: translateY(-50%);
+    }
+    .hu332-scanner-bottom {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 3;
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      background: rgba(2,6,23,.72);
+      box-shadow: 0 14px 34px rgba(0,0,0,.38);
+    }
+    .hu332-scanner-bottom strong {
+      color: #fff;
+      font-size: 13px;
+    }
+    .hu332-scanner-bottom span {
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .hu332-scanner-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .hu332-scanner-actions .sial-btn {
+      min-height: 44px;
+    }
+    .hu332-locked [data-hu332-editable],
+    .hu332-locked .hu332-position,
+    .hu332-locked .hu332-chip-action {
+      pointer-events: none;
+    }
+    .hu332-locked [data-hu332-editable] { opacity: .62; }
+    @media (max-width: 420px) {
+      .hu332-scan-row,
+      .hu332-actions,
+      .hu332-doc-grid,
+      .hu332-seal-evidence {
+        grid-template-columns: 1fr;
+      }
+      .hu332-scan-actions { grid-template-columns: 1fr; }
+      .hu332-scanner-actions { grid-template-columns: 1fr; }
+      .hu332-loaded-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sial-page hu332-page" data-hu332-root>
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title"><h1>Cargue contenedor</h1><p>HU332 - Scan-to-load en finca</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+
+    <section class="sial-page-body">
+      <section class="sial-flow-banner">
+        <strong>Contenedor SIALU1234567</strong>
+        <span>Inspeccion interna apta - Finca La Bacota - Operacion EXP-2026-0418</span>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-form">
+        <div class="hu332-card-title">
+          <h2 class="sial-section-title">Contexto de cargue</h2>
+          <span class="sial-pill success" data-hu332-inspection-pill>Inspeccion apta</span>
+        </div>
+        <div class="sial-list-row"><strong>Contenedor</strong><span data-hu332-container>SIALU1234567</span></div>
+        <div class="sial-list-row"><strong>Referencia programada</strong><span data-hu332-reference>BAN-REF-001</span></div>
+        <div class="sial-list-row"><strong>Finca</strong><span data-hu332-farm>0435 - La Bacota</span></div>
+        <div class="sial-list-row"><strong>Cliente / certificacion</strong><span data-hu332-client>Cliente Europa / Fairtrade</span></div>
+        <div class="sial-list-row"><strong>Regla offline</strong><span>Guarda local y queda pendiente de sincronizar.</span></div>
+      </section>
+
+      <form class="sial-card sial-card-pad sial-form" data-hu332-form>
+        <div class="hu332-card-title">
+          <h2 class="sial-section-title">Escaneo SSCC</h2>
+          <span class="sial-pill" data-hu332-selected-position>Posicion 1</span>
+        </div>
+        <div class="sial-status warning" data-hu332-cert-alert hidden>
+          <span><strong>Certificacion incompatible</strong>El pallet no coincide con la certificacion esperada para este contenedor.</span>
+        </div>
+        <div class="hu332-scan-row">
+          <div class="sial-field">
+            <label class="sial-label" for="hu332-sscc">SSCC del pallet</label>
+            <input class="sial-input-wrap sial-input" id="hu332-sscc" inputmode="numeric" autocomplete="off" placeholder="Escanea o digita SSCC" data-hu332-sscc data-hu332-editable>
+          </div>
+          <div class="hu332-scan-actions">
+            <button class="sial-btn sial-btn-secondary" type="button" data-hu332-scan data-hu332-editable>Abrir camara</button>
+            <button class="sial-btn sial-btn-primary" type="button" data-hu332-load data-hu332-editable>Cargar posicion</button>
+          </div>
+        </div>
+        <p class="sial-field-note" data-hu332-scan-status>Selecciona una posicion libre y escanea el SSCC del pallet.</p>
+
+        <div class="hu332-card-title">
+          <h2 class="sial-section-title">Posiciones del contenedor</h2>
+          <span class="sial-pill info">22 posiciones</span>
+        </div>
+        <div class="hu332-position-grid" data-hu332-position-grid></div>
+
+        <div class="hu332-card-title">
+          <h2 class="sial-section-title">Pallets cargados</h2>
+          <span class="sial-pill" data-hu332-loaded-pill>0 / 22</span>
+        </div>
+        <div class="hu332-loaded-list" data-hu332-loaded-list></div>
+
+        <div class="hu332-card-title">
+          <h2 class="sial-section-title">Seguridad y cierre</h2>
+          <span class="sial-pill warning" data-hu332-lock-pill>Editable</span>
+        </div>
+        <div class="sial-field">
+          <label class="sial-label" for="hu332-seal">Precinto final / botella</label>
+          <input class="sial-input-wrap sial-input" id="hu332-seal" required placeholder="Numero de precinto" data-hu332-seal data-hu332-editable>
+        </div>
+        <div class="hu332-seal-evidence" data-hu332-seal-gallery></div>
+        <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu332-capture-seal data-hu332-editable>Agregar fotos de sellos</button>
+
+        <div class="hu332-doc-grid" aria-label="Documentacion generada">
+          <div class="hu332-doc-card">
+            <strong>Manifiesto de carga</strong>
+            <span data-hu332-manifest>Se genera al cerrar cargue.</span>
+          </div>
+          <div class="hu332-doc-card">
+            <strong>POMA / Remision</strong>
+            <span data-hu332-poma>Se genera al cerrar cargue.</span>
+          </div>
+          <div class="hu332-doc-card">
+            <strong>Consumo ERP</strong>
+            <span data-hu332-erp>Pendiente de sincronizar.</span>
+          </div>
+          <div class="hu332-doc-card">
+            <strong>Total cajas</strong>
+            <span data-hu332-boxes-total>0 cajas</span>
+          </div>
+        </div>
+
+        <p class="sial-inline-error" data-hu332-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit" data-hu332-editable>Cerrar cargue del contenedor</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script>
+    (function () {
+      var stateKey = "sial-mobile-hu332";
+      var maxPositions = 22;
+      var activeScanner = null;
+      var context = {
+        container: "SIALU1234567",
+        operation: "EXP-2026-0418",
+        farmCode: "0435",
+        farmName: "La Bacota",
+        reference: "BAN-REF-001",
+        requiredCertification: "FAIRTRADE",
+        client: "Cliente Europa",
+        inspectionReady: true,
+        driver: "Carlos Mendoza",
+        vehicle: "TUL458",
+        user: "Maria Operadora"
+      };
+      var demoPallets = [
+        { sscc: "177012345678900019", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 912, certification: "FAIRTRADE" },
+        { sscc: "177012345678900026", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 913, certification: "FAIRTRADE" },
+        { sscc: "177012345678900033", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 47, weight: 894, certification: "FAIRTRADE" },
+        { sscc: "177012345678900040", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 911, certification: "FAIRTRADE" },
+        { sscc: "177012345678900057", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 916, certification: "FAIRTRADE" },
+        { sscc: "177012345678900064", farmCode: "0527", farmName: "Santa Isabel", reference: "BAN-REF-001", boxes: 48, weight: 908, certification: "FAIRTRADE" },
+        { sscc: "177012345678900071", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-004", boxes: 54, weight: 940, certification: "FAIRTRADE" },
+        { sscc: "177012345678900088", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 910, certification: "TESCO" }
+      ];
+
+      function $(selector, root) {
+        return (root || document).querySelector(selector);
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function readState() {
+        try {
+          var parsed = JSON.parse(localStorage.getItem(stateKey) || "{}");
+          return {
+            selectedPosition: Number(parsed.selectedPosition || 1),
+            loaded: Array.isArray(parsed.loaded) ? parsed.loaded : [],
+            sealPhotos: Array.isArray(parsed.sealPhotos) ? parsed.sealPhotos : [],
+            sealNumber: parsed.sealNumber || "",
+            locked: Boolean(parsed.locked),
+            syncStatus: parsed.syncStatus || "LOCAL_DRAFT",
+            closedAt: parsed.closedAt || ""
+          };
+        } catch (_) {
+          return { selectedPosition: 1, loaded: [], sealPhotos: [], sealNumber: "", locked: false, syncStatus: "LOCAL_DRAFT", closedAt: "" };
+        }
+      }
+
+      function writeState(state) {
+        localStorage.setItem(stateKey, JSON.stringify(state));
+      }
+
+      function toast(type, title, message) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.showToast === "function") {
+          window.SialMobileUI.showToast({ type: type, title: title, message: message });
+        }
+      }
+
+      function markDirty(reason) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.markUnsavedChanges === "function") {
+          window.SialMobileUI.markUnsavedChanges(reason || "hu332");
+        }
+      }
+
+      function showError(message) {
+        var node = $("[data-hu332-error]");
+        if (!node) return;
+        node.hidden = false;
+        node.textContent = message;
+      }
+
+      function clearError() {
+        var node = $("[data-hu332-error]");
+        if (!node) return;
+        node.hidden = true;
+        node.textContent = "";
+      }
+
+      function findPallet(sscc) {
+        return demoPallets.find(function(item) { return item.sscc === sscc; }) || null;
+      }
+
+      function normalizeSscc(value) {
+        return String(value || "").replace(/\D/g, "");
+      }
+
+      function positionItem(state, position) {
+        return state.loaded.find(function(item) { return item.position === position; }) || null;
+      }
+
+      function nextFreePosition(state) {
+        for (var position = 1; position <= maxPositions; position += 1) {
+          if (!positionItem(state, position)) return position;
+        }
+        return maxPositions;
+      }
+
+      function hasFreePosition(state) {
+        return state.loaded.length < maxPositions;
+      }
+
+      function nextScannablePallet(state) {
+        return demoPallets.find(function(pallet) {
+          return !state.loaded.some(function(item) { return item.sscc === pallet.sscc; })
+            && pallet.farmCode === context.farmCode
+            && pallet.reference === context.reference
+            && pallet.certification === context.requiredCertification;
+        }) || null;
+      }
+
+      function setScanStatus(message, type) {
+        var node = $("[data-hu332-scan-status]");
+        if (!node) return;
+        node.textContent = message;
+        node.className = "sial-field-note" + (type ? " " + type : "");
+      }
+
+      function setScannerStatus(message) {
+        if (activeScanner && activeScanner.status) {
+          activeScanner.status.textContent = message;
+        }
+      }
+
+      function stopScanner() {
+        if (!activeScanner) return;
+        if (activeScanner.raf) cancelAnimationFrame(activeScanner.raf);
+        if (activeScanner.stream) {
+          activeScanner.stream.getTracks().forEach(function(track) { track.stop(); });
+        }
+        if (activeScanner.overlay && activeScanner.overlay.parentNode) {
+          activeScanner.overlay.parentNode.removeChild(activeScanner.overlay);
+        }
+        document.body.classList.remove("dialog-open");
+        activeScanner = null;
+      }
+
+      function completeScannerRead(rawValue) {
+        var sscc = normalizeSscc(rawValue);
+        var state = readState();
+        if (!sscc) {
+          setScannerStatus("No se detecto un SSCC valido. Ajusta el encuadre e intenta de nuevo.");
+          return;
+        }
+        if (positionItem(state, state.selectedPosition)) {
+          state.selectedPosition = nextFreePosition(state);
+          writeState(state);
+          render(state);
+        }
+        var pallet = findPallet(sscc);
+        var error = validatePalletForLoad(readState(), pallet, readState().selectedPosition);
+        if (error) {
+          setScannerStatus(error);
+          toast("warning", "Validacion de cargue", error);
+          return;
+        }
+        stopScanner();
+        $("[data-hu332-sscc]").value = sscc;
+        setScanStatus("SSCC leido por camara: " + sscc + ". Cargando posicion " + readState().selectedPosition + ".", "success");
+        loadPallet();
+      }
+
+      function startScannerDetection(video) {
+        if (!("BarcodeDetector" in window)) {
+          setScannerStatus("Camara activa. Este navegador no expone lectura nativa; usa lectura demo para probar el flujo.");
+          return;
+        }
+        var detector;
+        try {
+          detector = new BarcodeDetector({ formats: ["code_128", "ean_13", "qr_code", "data_matrix"] });
+        } catch (_) {
+          setScannerStatus("Camara activa. Detector no disponible; usa lectura demo.");
+          return;
+        }
+        var loop = function() {
+          if (!activeScanner || !activeScanner.overlay) return;
+          detector.detect(video).then(function(codes) {
+            if (!activeScanner || !activeScanner.overlay) return;
+            var hit = (codes || []).map(function(code) { return code.rawValue || ""; }).find(function(value) {
+              return normalizeSscc(value).length >= 18;
+            });
+            if (hit) {
+              completeScannerRead(hit);
+              return;
+            }
+            activeScanner.raf = requestAnimationFrame(loop);
+          }).catch(function() {
+            if (activeScanner) activeScanner.raf = requestAnimationFrame(loop);
+          });
+        };
+        setScannerStatus("Camara activa. Ubica el SSCC dentro del marco.");
+        activeScanner.raf = requestAnimationFrame(loop);
+      }
+
+      function startScannerCamera(overlay) {
+        var video = overlay.querySelector("[data-hu332-scanner-video]");
+        var fallback = overlay.querySelector("[data-hu332-scanner-fallback]");
+        if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function") {
+          fallback.hidden = false;
+          setScannerStatus("Camara no disponible en este entorno. Usa lectura demo para validar el flujo.");
+          return;
+        }
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
+          .then(function(stream) {
+            if (!activeScanner) {
+              stream.getTracks().forEach(function(track) { track.stop(); });
+              return;
+            }
+            activeScanner.stream = stream;
+            fallback.hidden = true;
+            video.srcObject = stream;
+            video.play().then(function() {
+              startScannerDetection(video);
+            }).catch(function() {
+              fallback.hidden = false;
+              setScannerStatus("No fue posible iniciar la camara. Usa lectura demo para continuar.");
+            });
+          })
+          .catch(function() {
+            fallback.hidden = false;
+            setScannerStatus("Permiso de camara denegado o no disponible. Usa lectura demo para validar el cargue.");
+          });
+      }
+
+      function openScanner() {
+        clearError();
+        var state = readState();
+        if (state.locked) {
+          showError("El cargue esta cerrado y bloqueado por auditoria.");
+          return;
+        }
+        if (!hasFreePosition(state)) {
+          showError("El contenedor ya tiene las 22 posiciones ocupadas.");
+          return;
+        }
+        if (positionItem(state, state.selectedPosition)) {
+          state.selectedPosition = nextFreePosition(state);
+          writeState(state);
+          render(state);
+        }
+        var demo = nextScannablePallet(readState());
+        if (!demo) {
+          showError("No hay pallets validos pendientes para esta finca, referencia y certificacion.");
+          return;
+        }
+        stopScanner();
+        var overlay = document.createElement("div");
+        overlay.className = "hu332-scanner-overlay";
+        overlay.innerHTML = [
+          '<video class="hu332-scanner-video" data-hu332-scanner-video playsinline muted></video>',
+          '<div class="hu332-scanner-fallback" data-hu332-scanner-fallback hidden><strong>Camara no disponible</strong></div>',
+          '<div class="hu332-scanner-top">',
+          '<button class="hu332-scanner-icon" type="button" data-hu332-scanner-close aria-label="Cerrar escaner"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
+          '<div class="hu332-scanner-title">Escanear SSCC - Posicion ' + readState().selectedPosition + '</div>',
+          '<span></span>',
+          '</div>',
+          '<div class="hu332-scanner-frame" aria-hidden="true"></div>',
+          '<div class="hu332-scanner-bottom">',
+          '<strong>Scan-to-load</strong>',
+          '<span data-hu332-scanner-status>Solicitando camara. Ubica el SSCC dentro del marco.</span>',
+          '<div class="hu332-scanner-actions">',
+          '<button class="sial-btn sial-btn-secondary" type="button" data-hu332-scanner-close>Cancelar</button>',
+          '<button class="sial-btn sial-btn-primary" type="button" data-hu332-scanner-demo>Leer SSCC demo</button>',
+          '</div>',
+          '</div>'
+        ].join("");
+        document.body.appendChild(overlay);
+        document.body.classList.add("dialog-open");
+        activeScanner = {
+          overlay: overlay,
+          status: overlay.querySelector("[data-hu332-scanner-status]"),
+          stream: null,
+          raf: 0
+        };
+        overlay.querySelectorAll("[data-hu332-scanner-close]").forEach(function(button) {
+          button.addEventListener("click", stopScanner);
+        });
+        overlay.querySelector("[data-hu332-scanner-demo]").addEventListener("click", function() {
+          completeScannerRead(demo.sscc);
+        });
+        startScannerCamera(overlay);
+      }
+
+      function renderPositions(state) {
+        var grid = $("[data-hu332-position-grid]");
+        if (!grid) return;
+        var html = "";
+        for (var position = 1; position <= maxPositions; position += 1) {
+          var loaded = positionItem(state, position);
+          var classes = ["hu332-position"];
+          if (loaded) classes.push("is-loaded");
+          if (loaded && !(loaded.evidence || []).length) classes.push("needs-photo");
+          if (position === state.selectedPosition) classes.push("is-selected");
+          html += [
+            '<button class="' + classes.join(" ") + '" type="button" data-hu332-position="' + position + '"' + (state.locked ? " disabled" : "") + '>',
+            '<strong>Posicion ' + position + '</strong>',
+            '<span>' + (loaded ? escapeHtml(loaded.sscc) : "Libre") + '</span>',
+            '<span>' + (loaded ? ((loaded.evidence || []).length ? "Foto OK" : "Tocar para foto") : (position === state.selectedPosition ? "Seleccionada" : "Tocar para usar")) + '</span>',
+            '</button>'
+          ].join("");
+        }
+        grid.innerHTML = html;
+      }
+
+      function renderLoadedList(state) {
+        var list = $("[data-hu332-loaded-list]");
+        if (!list) return;
+        if (!state.loaded.length) {
+          list.innerHTML = '<div class="sial-list-row"><strong>Sin pallets cargados</strong><span>Escanea un SSCC para iniciar.</span></div>';
+          return;
+        }
+        list.innerHTML = state.loaded
+          .slice()
+          .sort(function(a, b) { return a.position - b.position; })
+          .map(function(item) {
+            var evidenceCount = (item.evidence || []).length;
+            return [
+              '<article class="hu332-loaded-item">',
+              '<div class="hu332-loaded-head">',
+              '<strong>' + escapeHtml(item.sscc) + '</strong>',
+              '<span class="sial-pill ' + (evidenceCount ? 'success' : 'warning') + '">' + (evidenceCount ? evidenceCount + ' foto' : 'Foto requerida') + '</span>',
+              '</div>',
+              '<div class="hu332-loaded-meta">',
+              '<span>Posicion ' + item.position + '</span>',
+              '<span>' + escapeHtml(item.reference) + '</span>',
+              '<span>' + escapeHtml(item.farmCode) + ' - ' + escapeHtml(item.farmName) + '</span>',
+              '<span>' + item.boxes + ' cajas</span>',
+              '</div>',
+              '<div class="hu332-actions">',
+              '<button class="sial-chip-action hu332-chip-action" type="button" data-hu332-photo="' + escapeHtml(item.sscc) + '">Foto posicion</button>',
+              '<button class="sial-chip-action hu332-chip-action" type="button" data-hu332-remove="' + escapeHtml(item.sscc) + '">Quitar</button>',
+              '</div>',
+              evidenceCount ? '<div class="hu332-photo-thumb"><img src="' + item.evidence[evidenceCount - 1].dataUrl + '" alt="Evidencia posicion ' + item.position + '"><span>Posicion ' + item.position + '</span></div>' : '',
+              '</article>'
+            ].join("");
+          }).join("");
+      }
+
+      function renderSealGallery(state) {
+        var gallery = $("[data-hu332-seal-gallery]");
+        if (!gallery) return;
+        if (!state.sealPhotos.length) {
+          gallery.innerHTML = '<div class="sial-list-row"><strong>Sin fotos de sellos</strong><span>Obligatorio para cerrar cargue.</span></div>';
+          return;
+        }
+        gallery.innerHTML = state.sealPhotos.map(function(photo, index) {
+          return '<div class="hu332-photo-thumb"><img src="' + photo.dataUrl + '" alt="Sello ' + (index + 1) + '"><span>Sello ' + (index + 1) + '</span></div>';
+        }).join("");
+      }
+
+      function renderDocs(state) {
+        var boxes = state.loaded.reduce(function(total, item) { return total + Number(item.boxes || 0); }, 0);
+        var weight = state.loaded.reduce(function(total, item) { return total + Number(item.weight || 0); }, 0);
+        $("[data-hu332-boxes-total]").textContent = boxes + " cajas / " + weight + " kg";
+        if (state.locked) {
+          $("[data-hu332-manifest]").textContent = "Generado localmente: " + state.loaded.length + " pallets.";
+          $("[data-hu332-poma]").textContent = "Remision lista con sello " + state.sealNumber + ".";
+          $("[data-hu332-erp]").textContent = "Consumo SAP/1E pendiente de sincronizar.";
+          return;
+        }
+        $("[data-hu332-manifest]").textContent = "Se genera al cerrar cargue.";
+        $("[data-hu332-poma]").textContent = "Se genera al cerrar cargue.";
+        $("[data-hu332-erp]").textContent = "Pendiente de cierre.";
+      }
+
+      function render(state) {
+        var root = $("[data-hu332-root]");
+        root.classList.toggle("hu332-locked", state.locked);
+        $("[data-hu332-loaded-pill]").textContent = state.loaded.length + " / " + maxPositions;
+        $("[data-hu332-selected-position]").textContent = "Posicion " + state.selectedPosition;
+        $("[data-hu332-lock-pill]").textContent = state.locked ? "Cerrado" : "Editable";
+        $("[data-hu332-lock-pill]").className = "sial-pill " + (state.locked ? "success" : "warning");
+        $("[data-hu332-seal]").value = state.sealNumber || "";
+        renderPositions(state);
+        renderLoadedList(state);
+        renderSealGallery(state);
+        renderDocs(state);
+      }
+
+      function validatePalletForLoad(state, pallet, position) {
+        if (!context.inspectionReady) return "Sin inspeccion apta no se puede ejecutar el cargue.";
+        if (state.locked) return "El cargue esta cerrado y bloqueado por auditoria.";
+        if (!pallet) return "El SSCC no existe en el catalogo local de pallets listos.";
+        if (state.loaded.some(function(item) { return item.sscc === pallet.sscc; })) return "Este SSCC ya fue cargado.";
+        if (positionItem(state, position)) return "La posicion " + position + " ya tiene un pallet asignado.";
+        if (pallet.farmCode !== context.farmCode) return "El pallet pertenece a otra finca.";
+        if (pallet.reference !== context.reference) return "El pallet no corresponde a la referencia programada.";
+        if (pallet.certification !== context.requiredCertification) {
+          $("[data-hu332-cert-alert]").hidden = false;
+          return "Certificacion incompatible para el cliente del contenedor.";
+        }
+        $("[data-hu332-cert-alert]").hidden = true;
+        return "";
+      }
+
+      function loadPallet() {
+        clearError();
+        var state = readState();
+        var input = $("[data-hu332-sscc]");
+        var sscc = normalizeSscc(input.value);
+        input.value = sscc;
+        if (!hasFreePosition(state)) {
+          showError("El contenedor ya tiene las 22 posiciones ocupadas.");
+          toast("warning", "Contenedor lleno", "No hay posiciones libres para cargar.");
+          return;
+        }
+        var position = Number(state.selectedPosition || nextFreePosition(state));
+        var pallet = findPallet(sscc);
+        var error = validatePalletForLoad(state, pallet, position);
+        if (error) {
+          showError(error);
+          toast("warning", "Validacion de cargue", error);
+          return;
+        }
+        state.loaded.push({
+          sscc: pallet.sscc,
+          position: position,
+          farmCode: pallet.farmCode,
+          farmName: pallet.farmName,
+          reference: pallet.reference,
+          boxes: pallet.boxes,
+          weight: pallet.weight,
+          certification: pallet.certification,
+          evidence: [],
+          loadedAt: new Date().toISOString(),
+          loadedBy: context.user
+        });
+        state.selectedPosition = nextFreePosition(state);
+        state.syncStatus = "LOCAL_DRAFT";
+        writeState(state);
+        input.value = "";
+        render(state);
+        setScanStatus("Ultimo cargue: posicion " + position + " - SSCC " + pallet.sscc + ".", "success");
+        markDirty("load");
+        toast("success", "Pallet cargado", "SSCC " + pallet.sscc + " asignado a posicion " + position + ".");
+      }
+
+      function scanAndLoadPallet() {
+        openScanner();
+      }
+
+      function removePallet(sscc) {
+        var state = readState();
+        if (state.locked) return;
+        state.loaded = state.loaded.filter(function(item) { return item.sscc !== sscc; });
+        state.selectedPosition = nextFreePosition(state);
+        writeState(state);
+        render(state);
+        markDirty("remove");
+      }
+
+      function capturePositionPhoto(sscc) {
+        var state = readState();
+        if (state.locked) return;
+        var item = state.loaded.find(function(entry) { return entry.sscc === sscc; });
+        if (!item) return;
+        var capture = window.SialMobileUI && (window.SialMobileUI.openPhotoCapture || window.SialMobileUI.openCamera);
+        if (!capture) {
+          showError("Camara no disponible en esta vista.");
+          return;
+        }
+        capture({
+          title: "Posicion " + item.position,
+          eventName: "hu332Load",
+          pointKey: "posicion-" + item.position,
+          allowMultiple: false,
+          maxPhotos: 1,
+          onComplete: function(photos) {
+            var photo = photos && photos[0];
+            if (!photo || !photo.dataUrl) return;
+            var fresh = readState();
+            var target = fresh.loaded.find(function(entry) { return entry.sscc === sscc; });
+            if (!target) return;
+            target.evidence = [{ dataUrl: photo.dataUrl, capturedAt: new Date().toISOString(), title: "Posicion " + target.position }];
+            fresh.syncStatus = "LOCAL_DRAFT";
+            writeState(fresh);
+            render(fresh);
+            markDirty("photo");
+          }
+        });
+      }
+
+      function captureSealPhotos() {
+        var state = readState();
+        if (state.locked) return;
+        var capture = window.SialMobileUI && (window.SialMobileUI.openPhotoCapture || window.SialMobileUI.openCamera);
+        if (!capture) {
+          showError("Camara no disponible en esta vista.");
+          return;
+        }
+        capture({
+          title: "Sellos y precintos",
+          eventName: "hu332Load",
+          pointKey: "sellos",
+          allowMultiple: true,
+          maxPhotos: 4,
+          onComplete: function(photos) {
+            if (!photos || !photos.length) return;
+            var fresh = readState();
+            fresh.sealPhotos = photos.filter(function(photo) { return photo && photo.dataUrl; }).map(function(photo, index) {
+              return { dataUrl: photo.dataUrl, capturedAt: new Date().toISOString(), title: "Sello " + (index + 1) };
+            });
+            fresh.syncStatus = "LOCAL_DRAFT";
+            writeState(fresh);
+            render(fresh);
+            markDirty("seal-photo");
+          }
+        });
+      }
+
+      function closeLoad(event) {
+        event.preventDefault();
+        clearError();
+        var state = readState();
+        var seal = String($("[data-hu332-seal]").value || "").trim().toUpperCase();
+        if (state.locked) return showError("El cargue ya fue cerrado y no admite modificaciones.");
+        if (!context.inspectionReady) return showError("Sin inspeccion apta no se puede cerrar el cargue.");
+        if (!state.loaded.length) return showError("Carga al menos un pallet antes de cerrar.");
+        if (state.loaded.some(function(item) { return !(item.evidence || []).length; })) return showError("Cada pallet cargado requiere foto en posicion.");
+        if (!seal) return showError("Registra el numero de precinto final.");
+        if (!state.sealPhotos.length) return showError("Captura al menos una foto de sellos o precintos.");
+        state.sealNumber = seal;
+        state.locked = true;
+        state.closedAt = new Date().toISOString();
+        state.syncStatus = "LOCAL_PENDING_SYNC";
+        state.manifest = {
+          id: "MAN-" + context.operation + "-" + Date.now().toString(36).toUpperCase(),
+          boxes: state.loaded.reduce(function(total, item) { return total + Number(item.boxes || 0); }, 0),
+          weight: state.loaded.reduce(function(total, item) { return total + Number(item.weight || 0); }, 0),
+          driver: context.driver,
+          vehicle: context.vehicle,
+          seal: seal
+        };
+        writeState(state);
+        render(state);
+        toast("success", "Cargue cerrado", "Manifiesto y POMA quedan generados localmente.");
+        if (window.SialMobileUI && typeof window.SialMobileUI.clearUnsavedChanges === "function") {
+          window.SialMobileUI.clearUnsavedChanges();
+        }
+      }
+
+      function wire() {
+        var state = readState();
+        render(state);
+        $("[data-hu332-load]").addEventListener("click", loadPallet);
+        $("[data-hu332-scan]").addEventListener("click", scanAndLoadPallet);
+        $("[data-hu332-sscc]").addEventListener("keydown", function(event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            loadPallet();
+          }
+        });
+        $("[data-hu332-position-grid]").addEventListener("click", function(event) {
+          var button = event.target.closest("[data-hu332-position]");
+          if (!button) return;
+          var fresh = readState();
+          if (fresh.locked) return;
+          var position = Number(button.dataset.hu332Position);
+          if (positionItem(fresh, position)) {
+            capturePositionPhoto(positionItem(fresh, position).sscc);
+            return;
+          }
+          fresh.selectedPosition = position;
+          writeState(fresh);
+          render(fresh);
+          setScanStatus("Posicion " + position + " seleccionada. Escanea el SSCC para cargarla.", "");
+        });
+        $("[data-hu332-loaded-list]").addEventListener("click", function(event) {
+          var photo = event.target.closest("[data-hu332-photo]");
+          var remove = event.target.closest("[data-hu332-remove]");
+          if (photo) capturePositionPhoto(photo.dataset.hu332Photo);
+          if (remove) removePallet(remove.dataset.hu332Remove);
+        });
+        $("[data-hu332-capture-seal]").addEventListener("click", captureSealPhotos);
+        $("[data-hu332-seal]").addEventListener("input", function() {
+          var state = readState();
+          if (state.locked) return;
+          state.sealNumber = this.value.toUpperCase();
+          writeState(state);
+          markDirty("seal");
+        });
+        $("[data-hu332-form]").addEventListener("submit", closeLoad);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+</body>
+</html>
