@@ -1,1 +1,653 @@
-﻿<!doctype html><html lang="es" data-theme="light"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <link rel="manifest" href="../manifest.webmanifest">  <meta name="theme-color" content="#005CA8">  <title>SIAL Movil - Armar pallet</title>  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>  <link rel="stylesheet" href="../shared/sial-mobile-core.css"></head><body>  <main class="sial-page">    <header class="sial-page-header">      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>      <div class="sial-page-title"><h1>Armar pallet</h1><p>Escaneo o digitacion de cajas</p></div>      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>    </header>    <section class="sial-page-body">      <div class="sial-status warning" data-requires="farmReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>      <section class="sial-stat-row">        <div class="sial-stat"><strong data-flow-boxes>0</strong><span>Cajas registradas</span></div>        <div class="sial-stat"><strong>48</strong><span>Capacidad maxima</span></div>      </section>      <div class="sial-card sial-card-pad sial-form">        <div class="sial-field"><label class="sial-label">Codigo finca</label><input class="sial-input-wrap sial-input" required value="FIN-001"></div>        <div class="sial-field"><label class="sial-label">Codigo SSCC / QR</label><input class="sial-input-wrap sial-input" data-box-code-input placeholder="Escanea o digita codigo"></div>        <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-add-box>Registrar caja</button>        <div class="sial-list" data-box-list></div>      </div>      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="palletBuilt" data-detail="Pallet armado con cajas registradas" data-next="cargar-pallets.html" data-assert-boxes-min="1">        <div class="sial-field"><label class="sial-label">Identificador unico de pallet</label><input class="sial-input-wrap sial-input" name="pallet" required value="PALLET-001"></div>        <div class="sial-field"><label class="sial-label">Referencia</label><input class="sial-input-wrap sial-input" name="referencia" required value="BAN-REF-001"></div>        <div class="sial-field"><label class="sial-label">Contenedor</label><input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567"></div>        <div class="sial-field"><label class="sial-label">Operacion activa</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>        <p class="sial-inline-error" data-flow-error hidden></p>        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Cerrar armado de pallet</button>      </form>    </section>  </main>  <script src="../shared/sial-mobile-core.js"></script>  <script src="../shared/sial-mobile-flow.js"></script></body></html>
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - HU591 Armado de pallet</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title"><h1>Armado de pallet</h1><p>HU591 - SSCC, referencia y cajas reales</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+
+    <section class="sial-page-body hu591-page">
+      <section class="sial-flow-banner">
+        <strong>Pallet listo para cargue</strong>
+        <span>Permite armar pallets antes de asociarlos al vehiculo o contenedor.</span>
+      </section>
+
+      <section class="sial-stat-row" aria-label="Resumen HU591">
+        <div class="sial-stat"><strong data-hu591-ready-count>0</strong><span>Pallets listos</span></div>
+        <div class="sial-stat"><strong data-hu591-boxes-total>0</strong><span>Cajas listas</span></div>
+        <div class="sial-stat"><strong data-hu591-last-sscc>--</strong><span>Ultimo SSCC</span></div>
+      </section>
+
+      <form class="sial-card sial-card-pad sial-form hu591-form" data-flow-form data-event="palletBuilt" data-detail="HU591 pallet armado" data-assert-boxes-min="1">
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Identificacion</h2>
+            <span class="sial-pill info">70+ referencias activas</span>
+          </div>
+
+          <div class="sial-field">
+            <label class="sial-label" for="hu591-sscc">Codigo SSCC unico</label>
+            <div class="hu591-input-action">
+              <input class="sial-input-wrap sial-input" id="hu591-sscc" name="pallet" inputmode="numeric" autocomplete="off" required placeholder="Genera o digita SSCC" data-hu591-sscc>
+              <button class="sial-btn sial-btn-secondary" type="button" data-hu591-generate-sscc>Generar</button>
+            </div>
+            <p class="sial-field-note" data-hu591-sscc-status>El SSCC debe ser unico e irrepetible para cada pallet.</p>
+          </div>
+
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-farm-code">Codigo finca</label>
+              <input class="sial-input-wrap sial-input" id="hu591-farm-code" name="codigoFinca" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required value="0435" data-hu591-farm-code>
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-farm">Finca origen</label>
+              <select class="sial-select" id="hu591-farm" name="fincaOrigen" required data-hu591-farm-select>
+                <option value="0435">0435 - La Bacota</option>
+                <option value="0412">0412 - Carolina</option>
+                <option value="0527">0527 - Santa Isabel</option>
+                <option value="0601">0601 - El Prado</option>
+                <option value="0718">0718 - San Joaquin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sial-field">
+            <label class="sial-label" for="hu591-reference">Referencia activa</label>
+            <select class="sial-select" id="hu591-reference" name="referenciaHu591" required data-hu591-reference>
+              <option value="BAN-REF-001">BAN-REF-001 - Premium 22XU - 48 cajas</option>
+              <option value="BAN-REF-004">BAN-REF-004 - Cluster 208 - 54 cajas</option>
+              <option value="BAN-REF-011">BAN-REF-011 - Export 40LB - 48 cajas</option>
+              <option value="BAN-REF-014">BAN-REF-014 - IFCO Mixto - 66 cajas</option>
+              <option value="BAN-REF-018">BAN-REF-018 - Baby Banana - 54 cajas</option>
+              <option value="BAN-REF-019">BAN-REF-019 - EPS Puerto - 48 cajas</option>
+              <option value="BAN-REF-022">BAN-REF-022 - Organico 18KG - 66 cajas</option>
+              <option value="BAN-REF-027">BAN-REF-027 - Convencional 13KG - 54 cajas</option>
+              <option value="BAN-REF-030">BAN-REF-030 - Canastilla retorno - 48 cajas</option>
+              <option value="BAN-REF-035">BAN-REF-035 - Especial consolidado - 66 cajas</option>
+              <option value="BAN-REF-038">BAN-REF-038 - Cierre corte - 48 cajas</option>
+              <option value="BAN-REF-044">BAN-REF-044 - Mercado Norte - 54 cajas</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Produccion real</h2>
+            <span class="sial-pill" data-hu591-recipe-pill>Receta 48</span>
+          </div>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-boxes">Cajas reales</label>
+              <input class="sial-input-wrap sial-input" id="hu591-boxes" name="cajasReales" type="number" min="1" max="96" required value="48" data-hu591-boxes>
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-packaging">Tipo de empaque</label>
+              <select class="sial-select" id="hu591-packaging" name="tipoEmpaque" required data-hu591-packaging>
+                <option value="CARTON">Carton</option>
+                <option value="IFCO">Canastilla IFCO</option>
+                <option value="EPS">EPS</option>
+              </select>
+            </div>
+          </div>
+          <div class="sial-status warning hu591-mismatch" data-hu591-mismatch hidden>
+            <span><strong>Diferencia contra receta</strong>Registra el motivo para conservar la trazabilidad del pallet incompleto o ajustado.</span>
+          </div>
+          <div class="sial-field" data-hu591-mismatch-reason-wrap hidden>
+            <label class="sial-label" for="hu591-mismatch-reason">Motivo de diferencia</label>
+            <textarea class="sial-textarea" id="hu591-mismatch-reason" name="motivoDiferencia" placeholder="Ej. Cierre de corte con pallet incompleto" data-hu591-mismatch-reason></textarea>
+          </div>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Trazabilidad</h2>
+            <span class="sial-pill success">DD-MM-AAAA</span>
+          </div>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-week">Semana</label>
+              <input class="sial-input-wrap sial-input" id="hu591-week" name="semana" required data-hu591-week>
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-date">Fecha etiqueta</label>
+              <input class="sial-input-wrap sial-input" id="hu591-date" name="fechaEtiqueta" readonly data-hu591-date>
+            </div>
+          </div>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-start">Hora inicio</label>
+              <input class="sial-input-wrap sial-input" id="hu591-start" name="horaInicio" type="time" required data-hu591-start>
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-end">Hora terminacion</label>
+              <input class="sial-input-wrap sial-input" id="hu591-end" name="horaTerminacion" type="time" required data-hu591-end>
+            </div>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu591-lots">Lotes de origen</label>
+            <textarea class="sial-textarea" id="hu591-lots" name="lotesOrigen" required placeholder="Ej. L-0435-26-148, L-0435-26-149" data-hu591-lots>L-0435-26-148</textarea>
+          </div>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Re-etiquetado</h2>
+            <span class="sial-pill warning">Anula SSCC anterior</span>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu591-mode">Tipo de registro</label>
+            <select class="sial-select" id="hu591-mode" name="tipoRegistro" data-hu591-mode>
+              <option value="NUEVO">Nuevo pallet</option>
+              <option value="REETIQUETADO">Re-etiquetado por consolidacion</option>
+            </select>
+          </div>
+          <div class="hu591-relabel-grid" data-hu591-relabel hidden>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-old-sscc">SSCC anterior</label>
+              <input class="sial-input-wrap sial-input" id="hu591-old-sscc" name="ssccAnterior" inputmode="numeric" data-hu591-old-sscc>
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu591-relabel-reason">Motivo</label>
+              <textarea class="sial-textarea" id="hu591-relabel-reason" name="motivoReetiquetado" placeholder="Agregado o retiro de cajas, consolidacion, correccion operativa" data-hu591-relabel-reason></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Lecturas opcionales</h2>
+            <span class="sial-pill" data-hu591-reading-count>0 lecturas</span>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu591-reading">Etiqueta de caja, lote o finca</label>
+            <div class="hu591-input-action">
+              <input class="sial-input-wrap sial-input" id="hu591-reading" autocomplete="off" placeholder="Escanea o digita codigo" data-hu591-reading-input>
+              <button class="sial-btn sial-btn-secondary" type="button" data-hu591-add-reading>Agregar</button>
+            </div>
+          </div>
+          <div class="sial-list hu591-reading-list" data-hu591-reading-list></div>
+        </section>
+
+        <section class="hu591-label-preview" aria-label="Previsualizacion de etiqueta">
+          <div>
+            <span>Etiqueta pallet</span>
+            <strong data-hu591-preview-sscc>SSCC pendiente</strong>
+          </div>
+          <dl>
+            <div><dt>Finca</dt><dd data-hu591-preview-farm>0435 - La Bacota</dd></div>
+            <div><dt>Referencia</dt><dd data-hu591-preview-reference>BAN-REF-001</dd></div>
+            <div><dt>Cajas</dt><dd data-hu591-preview-boxes>48 / receta 48</dd></div>
+            <div><dt>Fecha</dt><dd data-hu591-preview-date>--</dd></div>
+          </dl>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <h2 class="sial-section-title">Pallets listos</h2>
+            <span class="sial-pill success" data-hu591-ready-pill>0 disponibles</span>
+          </div>
+          <div class="sial-list" data-hu591-ready-list></div>
+        </section>
+
+        <input type="hidden" name="operacion" value="EXP-2026-0418" data-hu591-operation>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Cerrar armado de pallet</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script>
+    (function () {
+      var workflowKey = "sial-mobile-workflow";
+      var pageKey = "sial-mobile-hu591";
+      var references = {
+        "BAN-REF-001": { name: "Premium 22XU", recipe: 48, packaging: "CARTON" },
+        "BAN-REF-004": { name: "Cluster 208", recipe: 54, packaging: "CARTON" },
+        "BAN-REF-011": { name: "Export 40LB", recipe: 48, packaging: "CARTON" },
+        "BAN-REF-014": { name: "IFCO Mixto", recipe: 66, packaging: "IFCO" },
+        "BAN-REF-018": { name: "Baby Banana", recipe: 54, packaging: "CARTON" },
+        "BAN-REF-019": { name: "EPS Puerto", recipe: 48, packaging: "EPS" },
+        "BAN-REF-022": { name: "Organico 18KG", recipe: 66, packaging: "CARTON" },
+        "BAN-REF-027": { name: "Convencional 13KG", recipe: 54, packaging: "CARTON" },
+        "BAN-REF-030": { name: "Canastilla retorno", recipe: 48, packaging: "IFCO" },
+        "BAN-REF-035": { name: "Especial consolidado", recipe: 66, packaging: "CARTON" },
+        "BAN-REF-038": { name: "Cierre corte", recipe: 48, packaging: "CARTON" },
+        "BAN-REF-044": { name: "Mercado Norte", recipe: 54, packaging: "EPS" }
+      };
+      var farms = {
+        "0435": "La Bacota",
+        "0412": "Carolina",
+        "0527": "Santa Isabel",
+        "0601": "El Prado",
+        "0718": "San Joaquin"
+      };
+      var readings = [];
+
+      function $(selector, root) {
+        return (root || document).querySelector(selector);
+      }
+
+      function $all(selector, root) {
+        return Array.from((root || document).querySelectorAll(selector));
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function readJson(key, fallback) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || "") || fallback;
+        } catch (_) {
+          return fallback;
+        }
+      }
+
+      function writeJson(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+
+      function readPageState() {
+        var state = readJson(pageKey, {});
+        state.readyPallets = Array.isArray(state.readyPallets) ? state.readyPallets : [];
+        state.usedSscc = Array.isArray(state.usedSscc) ? state.usedSscc : [];
+        state.sequence = Number(state.sequence || 0);
+        return state;
+      }
+
+      function writePageState(state) {
+        writeJson(pageKey, state);
+      }
+
+      function readWorkflowState() {
+        return readJson(workflowKey, {});
+      }
+
+      function writeWorkflowState(state) {
+        writeJson(workflowKey, state);
+      }
+
+      function toast(type, title, message) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.showToast === "function") {
+          window.SialMobileUI.showToast({ type: type, title: title, message: message });
+        }
+      }
+
+      function markDirty(reason) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.markUnsavedChanges === "function") {
+          window.SialMobileUI.markUnsavedChanges(reason || "hu591");
+        }
+      }
+
+      function nowParts() {
+        var now = new Date();
+        var pad = function(value) { return String(value).padStart(2, "0"); };
+        return {
+          date: pad(now.getDate()) + "-" + pad(now.getMonth() + 1) + "-" + now.getFullYear(),
+          time: pad(now.getHours()) + ":" + pad(now.getMinutes())
+        };
+      }
+
+      function isoWeek(date) {
+        var current = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        var day = current.getUTCDay() || 7;
+        current.setUTCDate(current.getUTCDate() + 4 - day);
+        var yearStart = new Date(Date.UTC(current.getUTCFullYear(), 0, 1));
+        var week = Math.ceil((((current - yearStart) / 86400000) + 1) / 7);
+        return current.getUTCFullYear() + "-W" + String(week).padStart(2, "0");
+      }
+
+      function checkDigit(body) {
+        var sum = 0;
+        for (var i = body.length - 1, weight = 3; i >= 0; i -= 1, weight = weight === 3 ? 1 : 3) {
+          sum += Number(body.charAt(i)) * weight;
+        }
+        return String((10 - (sum % 10)) % 10);
+      }
+
+      function buildSscc(sequence) {
+        var body = "1770123456789" + String(sequence).padStart(4, "0");
+        return body + checkDigit(body);
+      }
+
+      function allUsedSscc(pageState) {
+        var workflow = readWorkflowState();
+        var workflowUsed = Array.isArray(workflow.usedSscc) ? workflow.usedSscc : [];
+        var palletCodes = Array.isArray(workflow.readyPallets) ? workflow.readyPallets.map(function(item) { return item.sscc; }) : [];
+        return new Set([].concat(pageState.usedSscc || [], workflowUsed, palletCodes).filter(Boolean));
+      }
+
+      function generateUniqueSscc() {
+        var state = readPageState();
+        var used = allUsedSscc(state);
+        var next = state.sequence || 0;
+        var code = "";
+        do {
+          next += 1;
+          code = buildSscc(next);
+        } while (used.has(code));
+        state.sequence = next;
+        writePageState(state);
+        return code;
+      }
+
+      function selectedReference() {
+        var code = $("[data-hu591-reference]").value;
+        return { code: code, data: references[code] || references["BAN-REF-001"] };
+      }
+
+      function selectedFarm() {
+        var code = $("[data-hu591-farm-code]").value;
+        return { code: code, name: farms[code] || "Finca no registrada" };
+      }
+
+      function updateRecipe() {
+        var ref = selectedReference();
+        var packaging = $("[data-hu591-packaging]");
+        var recipePill = $("[data-hu591-recipe-pill]");
+        if (packaging && ref.data.packaging) packaging.value = ref.data.packaging;
+        if (recipePill) recipePill.textContent = "Receta " + ref.data.recipe;
+        updateMismatch();
+        updatePreview();
+      }
+
+      function updateMismatch() {
+        var ref = selectedReference();
+        var boxes = Number($("[data-hu591-boxes]").value || 0);
+        var mismatch = boxes > 0 && boxes !== ref.data.recipe;
+        var panel = $("[data-hu591-mismatch]");
+        var reasonWrap = $("[data-hu591-mismatch-reason-wrap]");
+        var reason = $("[data-hu591-mismatch-reason]");
+        if (panel) panel.hidden = !mismatch;
+        if (reasonWrap) reasonWrap.hidden = !mismatch;
+        if (reason) reason.required = mismatch;
+        updatePreview();
+      }
+
+      function updatePreview() {
+        var sscc = $("[data-hu591-sscc]").value || "SSCC pendiente";
+        var ref = selectedReference();
+        var farm = selectedFarm();
+        var boxes = Number($("[data-hu591-boxes]").value || 0);
+        $("[data-hu591-preview-sscc]").textContent = sscc;
+        $("[data-hu591-preview-farm]").textContent = farm.code + " - " + farm.name;
+        $("[data-hu591-preview-reference]").textContent = ref.code + " - " + ref.data.name;
+        $("[data-hu591-preview-boxes]").textContent = boxes + " / receta " + ref.data.recipe;
+        $("[data-hu591-preview-date]").textContent = $("[data-hu591-date]").value || "--";
+      }
+
+      function syncFarmFromSelect() {
+        var select = $("[data-hu591-farm-select]");
+        var code = select.value;
+        $("[data-hu591-farm-code]").value = code;
+        updatePreview();
+      }
+
+      function syncFarmFromCode() {
+        var input = $("[data-hu591-farm-code]");
+        var code = input.value.replace(/\D/g, "").slice(0, 4);
+        input.value = code;
+        var select = $("[data-hu591-farm-select]");
+        if (farms[code]) select.value = code;
+        updatePreview();
+      }
+
+      function updateRelabelMode() {
+        var isRelabel = $("[data-hu591-mode]").value === "REETIQUETADO";
+        var wrap = $("[data-hu591-relabel]");
+        var oldSscc = $("[data-hu591-old-sscc]");
+        var reason = $("[data-hu591-relabel-reason]");
+        if (wrap) wrap.hidden = !isRelabel;
+        if (oldSscc) oldSscc.required = isRelabel;
+        if (reason) reason.required = isRelabel;
+      }
+
+      function renderReadings() {
+        var list = $("[data-hu591-reading-list]");
+        var count = $("[data-hu591-reading-count]");
+        if (count) count.textContent = readings.length + " lecturas";
+        if (!list) return;
+        if (!readings.length) {
+          list.innerHTML = '<div class="sial-list-row"><strong>Sin lecturas</strong><span>El registro puede cerrarse usando cajas reales.</span></div>';
+          return;
+        }
+        list.innerHTML = readings.map(function(item, index) {
+          return [
+            '<div class="sial-list-row">',
+            '<strong>' + escapeHtml(item) + '</strong>',
+            '<button class="sial-chip-action" type="button" data-hu591-remove-reading="' + index + '">Quitar</button>',
+            '</div>'
+          ].join("");
+        }).join("");
+      }
+
+      function addReading() {
+        var input = $("[data-hu591-reading-input]");
+        var value = String(input.value || "").trim().toUpperCase();
+        if (!value) return;
+        if (readings.indexOf(value) >= 0) {
+          toast("warning", "Lectura duplicada", "El codigo ya fue registrado en este pallet.");
+          return;
+        }
+        readings.push(value);
+        input.value = "";
+        renderReadings();
+        markDirty("reading");
+      }
+
+      function renderReadyPallets() {
+        var state = readPageState();
+        var ready = state.readyPallets.filter(function(item) { return item.status === "LISTO_PARA_CARGUE"; });
+        var totalBoxes = ready.reduce(function(total, item) { return total + Number(item.boxes || 0); }, 0);
+        var list = $("[data-hu591-ready-list]");
+        $("[data-hu591-ready-count]").textContent = String(ready.length);
+        $("[data-hu591-boxes-total]").textContent = String(totalBoxes);
+        $("[data-hu591-last-sscc]").textContent = ready[0] ? ready[0].sscc.slice(-6) : "--";
+        $("[data-hu591-ready-pill]").textContent = ready.length + " disponibles";
+        if (!list) return;
+        if (!state.readyPallets.length) {
+          list.innerHTML = '<div class="sial-list-row"><strong>Sin pallets registrados</strong><span>El primer SSCC quedara listo para cargue.</span></div>';
+          return;
+        }
+        list.innerHTML = state.readyPallets.slice(0, 6).map(function(item) {
+          var statusClass = item.status === "ANULADO" ? "error" : "success";
+          return [
+            '<div class="sial-list-row">',
+            '<strong>' + escapeHtml(item.sscc) + '</strong>',
+            '<span>' + escapeHtml(item.reference) + ' - ' + escapeHtml(item.farmCode) + ' - ' + Number(item.boxes || 0) + ' cajas</span>',
+            '<span class="sial-pill ' + statusClass + '">' + escapeHtml(item.status) + '</span>',
+            '</div>'
+          ].join("");
+        }).join("");
+      }
+
+      function validateSscc(value) {
+        var code = String(value || "").replace(/\D/g, "");
+        if (code.length !== 18) return { ok: false, message: "El SSCC debe tener 18 digitos." };
+        if (checkDigit(code.slice(0, 17)) !== code.slice(17)) return { ok: false, message: "Digito de control SSCC invalido." };
+        if (allUsedSscc(readPageState()).has(code)) return { ok: false, message: "Este SSCC ya fue usado. Genera uno nuevo." };
+        return { ok: true, message: "SSCC valido y disponible." };
+      }
+
+      function setSsccStatus(result) {
+        var node = $("[data-hu591-sscc-status]");
+        if (!node) return;
+        node.textContent = result.message;
+        node.className = "sial-field-note " + (result.ok ? "success" : "error");
+      }
+
+      function collectRecord() {
+        var ref = selectedReference();
+        var farm = selectedFarm();
+        var workflow = readWorkflowState();
+        var sscc = $("[data-hu591-sscc]").value.replace(/\D/g, "");
+        var boxes = Number($("[data-hu591-boxes]").value || 0);
+        var now = nowParts();
+        return {
+          sscc: sscc,
+          operation: workflow.operation || $("[data-hu591-operation]").value || "EXP-2026-0418",
+          user: workflow.user || "Maria Operadora",
+          reference: ref.code,
+          referenceName: ref.data.name,
+          recipeBoxes: ref.data.recipe,
+          boxes: boxes,
+          farmCode: farm.code,
+          farmName: farm.name,
+          packaging: $("[data-hu591-packaging]").value,
+          week: $("[data-hu591-week]").value,
+          labelDate: $("[data-hu591-date]").value,
+          startTime: $("[data-hu591-start]").value,
+          endTime: $("[data-hu591-end]").value || now.time,
+          lots: $("[data-hu591-lots]").value,
+          mode: $("[data-hu591-mode]").value,
+          oldSscc: $("[data-hu591-old-sscc]").value.replace(/\D/g, ""),
+          relabelReason: $("[data-hu591-relabel-reason]").value,
+          mismatchReason: $("[data-hu591-mismatch-reason]").value,
+          readings: readings.slice(),
+          status: "LISTO_PARA_CARGUE",
+          createdAt: new Date().toISOString()
+        };
+      }
+
+      function showInline(message) {
+        var error = $("[data-flow-error]");
+        if (!error) return;
+        error.hidden = false;
+        error.textContent = message;
+      }
+
+      function validateRecord(record) {
+        var ssccResult = validateSscc(record.sscc);
+        setSsccStatus(ssccResult);
+        if (!ssccResult.ok) return ssccResult.message;
+        if (!/^\d{4}$/.test(record.farmCode) || !farms[record.farmCode]) return "Selecciona una finca valida de 4 digitos.";
+        if (!references[record.reference]) return "Selecciona una referencia activa.";
+        if (!record.boxes || record.boxes < 1) return "Registra el numero real de cajas.";
+        if (record.boxes !== record.recipeBoxes && !String(record.mismatchReason || "").trim()) {
+          return "La cantidad difiere de la receta. Registra el motivo.";
+        }
+        if (!String(record.lots || "").trim()) return "Registra al menos un lote de origen.";
+        if (record.mode === "REETIQUETADO") {
+          if (!record.oldSscc) return "Indica el SSCC anterior que sera anulado.";
+          if (record.oldSscc === record.sscc) return "El SSCC nuevo no puede ser igual al anterior.";
+          if (!String(record.relabelReason || "").trim()) return "Indica el motivo del re-etiquetado.";
+        }
+        return "";
+      }
+
+      function saveRecord(record) {
+        var page = readPageState();
+        if (record.mode === "REETIQUETADO" && record.oldSscc) {
+          page.readyPallets = page.readyPallets.map(function(item) {
+            if (item.sscc === record.oldSscc && item.status !== "ANULADO") {
+              return Object.assign({}, item, { status: "ANULADO", replacedBy: record.sscc, anulledAt: new Date().toISOString() });
+            }
+            return item;
+          });
+        }
+        page.readyPallets = [record].concat(page.readyPallets.filter(function(item) { return item.sscc !== record.sscc; }));
+        page.usedSscc = Array.from(new Set([record.sscc].concat(page.usedSscc || [])));
+        if (record.oldSscc) page.usedSscc = Array.from(new Set([record.oldSscc].concat(page.usedSscc)));
+        writePageState(page);
+
+        var workflow = readWorkflowState();
+        workflow.readyPallets = page.readyPallets;
+        workflow.usedSscc = Array.from(new Set([].concat(workflow.usedSscc || [], page.usedSscc)));
+        workflow.boxes = Math.max(Number(workflow.boxes || 0), Number(record.boxes || 0));
+        workflow.pallets = page.readyPallets.filter(function(item) { return item.status === "LISTO_PARA_CARGUE"; }).length;
+        workflow.lastPallet = record;
+        writeWorkflowState(workflow);
+      }
+
+      function wireForm() {
+        var form = $("[data-flow-form]");
+        var current = nowParts();
+        $("[data-hu591-date]").value = current.date;
+        $("[data-hu591-start]").value = current.time;
+        $("[data-hu591-end]").value = current.time;
+        $("[data-hu591-week]").value = isoWeek(new Date());
+        renderReadings();
+        renderReadyPallets();
+        updateRecipe();
+
+        $("[data-hu591-generate-sscc]").addEventListener("click", function() {
+          var code = generateUniqueSscc();
+          $("[data-hu591-sscc]").value = code;
+          setSsccStatus({ ok: true, message: "SSCC generado y reservado para validacion." });
+          updatePreview();
+          markDirty("sscc");
+        });
+        $("[data-hu591-reference]").addEventListener("change", function() { updateRecipe(); markDirty("reference"); });
+        $("[data-hu591-farm-select]").addEventListener("change", function() { syncFarmFromSelect(); markDirty("farm"); });
+        $("[data-hu591-farm-code]").addEventListener("input", function() { syncFarmFromCode(); markDirty("farm"); });
+        $("[data-hu591-boxes]").addEventListener("input", function() { updateMismatch(); markDirty("boxes"); });
+        $("[data-hu591-packaging]").addEventListener("change", function() { updatePreview(); markDirty("packaging"); });
+        $("[data-hu591-mode]").addEventListener("change", function() { updateRelabelMode(); markDirty("relabel"); });
+        $("[data-hu591-add-reading]").addEventListener("click", addReading);
+        $("[data-hu591-reading-input]").addEventListener("keydown", function(event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            addReading();
+          }
+        });
+        $("[data-hu591-reading-list]").addEventListener("click", function(event) {
+          var button = event.target.closest("[data-hu591-remove-reading]");
+          if (!button) return;
+          readings.splice(Number(button.dataset.hu591RemoveReading), 1);
+          renderReadings();
+          markDirty("reading");
+        });
+        $("[data-hu591-sscc]").addEventListener("input", function(event) {
+          event.target.value = event.target.value.replace(/\D/g, "").slice(0, 18);
+          if (event.target.value.length === 18) setSsccStatus(validateSscc(event.target.value));
+          updatePreview();
+          markDirty("sscc");
+        });
+
+        form.addEventListener("submit", function(event) {
+          var endField = $("[data-hu591-end]");
+          if (!endField.value) endField.value = nowParts().time;
+          var record = collectRecord();
+          var error = validateRecord(record);
+          if (error) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            showInline(error);
+            toast("warning", "Validacion HU591", error);
+            return;
+          }
+          form.dataset.detail = "HU591 pallet " + record.sscc + " | " + record.reference + " | " + record.boxes + " cajas";
+          saveRecord(record);
+          renderReadyPallets();
+          toast("success", "Pallet listo", "SSCC " + record.sscc + " queda disponible para cargue.");
+        }, true);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wireForm);
+      } else {
+        wireForm();
+      }
+    })();
+  </script>
+</body>
+</html>

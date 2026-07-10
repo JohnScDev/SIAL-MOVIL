@@ -304,7 +304,7 @@
     farmExternalInspection: ["farmReception"],
     farmInternalInspection: ["farmReception"],
     responsibility: ["farmReception"],
-    palletBuilt: ["farmReception"],
+    palletBuilt: [],
     palletsLoaded: ["farmReception"],
     containerClosed: ["farmReception", "palletsLoaded"],
     farmDispatch: ["containerClosed"],
@@ -323,7 +323,7 @@
     farmExternalInspection: "Inspeccion externa en finca",
     farmInternalInspection: "Inspeccion interna en finca",
     responsibility: "Sesion de responsabilidad",
-    palletBuilt: "Armado de pallet",
+    palletBuilt: "HU591 - Armado de pallet",
     palletsLoaded: "Cargue de pallets",
     containerClosed: "Cierre de contenedor",
     farmDispatch: "Despacho desde finca a ZE",
@@ -517,7 +517,7 @@
       ["farmExternalInspection", "../finca/inspeccion-externa.html?selectContainer=1", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
       ["farmInternalInspection", "../finca/inspeccion-interna.html?selectContainer=1", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
       ["responsibility", "../finca/sesion-responsabilidad.html", "Sesion responsabilidad", "Capturar responsables y firmas."],
-      ["palletBuilt", "../pallets/armar-pallet.html", "Armar pallet", "Registrar cajas por escaneo o digitacion."],
+      ["palletBuilt", "../pallets/armar-pallet.html", "HU591 - Armar pallet", "Registrar SSCC, referencia, finca y cajas reales."],
       ["palletsLoaded", "../pallets/cargar-pallets.html", "Cargar pallets", "Asociar pallets al contenedor."],
       ["containerClosed", "../finca/cierre-contenedor.html", "Cerrar contenedor", "Validar sellos, cantidades y evidencia."],
       ["farmDispatch", "../finca/despacho-ze.html", "Despachar a ZE", "Enviar contenedor cerrado hacia zona externa."],
@@ -1374,7 +1374,10 @@
     }
 
     if (eventName === "palletBuilt") {
-      state.pallets = Math.max(1, state.pallets || 0);
+      var readyPallets = Array.isArray(state.readyPallets)
+        ? state.readyPallets.filter(function(item) { return item && item.status !== "ANULADO"; }).length
+        : 0;
+      state.pallets = Math.max(1, readyPallets, state.pallets || 0);
     }
     if (eventName === "palletsLoaded") state.loadedPallets = (state.loadedPallets || 0) + 1;
     if (eventName === "portDelivery") state.vehicleStatus = "DISPONIBLE";
