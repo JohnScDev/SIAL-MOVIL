@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - Sincronizacion de operaciones</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <style>
+    .sync-page { gap: 10px; }
+    .sync-panel,
+    .sync-detail {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-large);
+      background: var(--sial-surface);
+    }
+    .sync-panel-head,
+    .sync-detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .sync-panel h2,
+    .sync-detail h2 {
+      margin: 0;
+      color: var(--sial-text);
+      font-size: 17px;
+      line-height: 1.18;
+    }
+    .sync-panel p,
+    .sync-detail p {
+      margin: 4px 0 0;
+      color: var(--sial-text-2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .sync-network {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid color-mix(in srgb, var(--sial-success) 30%, var(--sial-border));
+      border-radius: var(--sial-radius-pill);
+      background: var(--sial-success-bg);
+      color: var(--sial-success);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .sync-network::before,
+    .sync-state-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+    .sync-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+    .sync-actions .sial-btn { min-height: 44px; }
+    .sync-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .sync-summary-item {
+      display: grid;
+      gap: 2px;
+      padding: 10px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-bg-soft);
+    }
+    .sync-summary-item strong {
+      color: var(--sial-text);
+      font-size: 18px;
+      line-height: 1;
+    }
+    .sync-summary-item span {
+      color: var(--sial-text-2);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .sync-filter-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .sync-filter {
+      min-height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-pill);
+      background: var(--sial-surface);
+      color: var(--sial-text-2);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .sync-filter.active {
+      border-color: var(--sial-primary-500);
+      background: color-mix(in srgb, var(--sial-primary-500) 10%, var(--sial-surface));
+      color: var(--sial-primary-600);
+    }
+    .sync-list {
+      display: grid;
+      gap: 8px;
+    }
+    .sync-row {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-surface);
+      background: var(--sial-surface);
+    }
+    .sync-row-main {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: flex-start;
+      gap: 9px;
+    }
+    .sync-state-dot { margin-top: 7px; }
+    .sync-state-dot.pending { color: var(--sial-warning); }
+    .sync-state-dot.syncing { color: var(--sial-primary-500); }
+    .sync-state-dot.synced { color: var(--sial-success); }
+    .sync-state-dot.error,
+    .sync-state-dot.blocked { color: var(--sial-error); }
+    .sync-title {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .sync-title strong {
+      color: var(--sial-text);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+    .sync-title span {
+      color: var(--sial-text-2);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .sync-pill {
+      min-height: 26px;
+      padding: 6px 8px;
+      border-radius: var(--sial-radius-pill);
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .sync-pill.pending { background: var(--sial-warning-bg); color: var(--sial-warning); }
+    .sync-pill.syncing { background: color-mix(in srgb, var(--sial-primary-500) 12%, var(--sial-surface)); color: var(--sial-primary-600); }
+    .sync-pill.synced { background: var(--sial-success-bg); color: var(--sial-success); }
+    .sync-pill.error,
+    .sync-pill.blocked { background: var(--sial-error-bg); color: var(--sial-error); }
+    .sync-row-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      color: var(--sial-text-2);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+    .sync-row-meta span + span::before {
+      margin-right: 10px;
+      color: var(--sial-border);
+      content: "/";
+    }
+    .sync-row-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+    }
+    .sync-detail[hidden] { display: none; }
+    .sync-detail-grid {
+      display: grid;
+      gap: 6px;
+      color: var(--sial-text-2);
+      font-size: 12px;
+    }
+    .sync-detail-grid strong {
+      color: var(--sial-text);
+      overflow-wrap: anywhere;
+    }
+    .sync-maintenance {
+      justify-self: center;
+      min-height: 34px;
+      color: var(--sial-text-2);
+      font-size: 12px;
+    }
+    .sync-empty {
+      padding: 16px;
+      text-align: center;
+    }
+    @media (max-width: 430px) {
+      .sync-panel-head,
+      .sync-detail-head,
+      .sync-actions,
+      .sync-row-actions {
+        grid-template-columns: 1fr;
+      }
+      .sync-panel-head,
+      .sync-detail-head {
+        display: grid;
+      }
+      .sync-network {
+        justify-self: start;
+      }
+      .sync-row-main {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .sync-pill {
+        grid-column: 2;
+        justify-self: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Sincronizacion</h1>
+        <p>Operaciones locales, cola y reintentos manuales</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body sync-page">
+      <section class="sync-panel">
+        <div class="sync-panel-head">
+          <div>
+            <h2>Cola de sincronizacion</h2>
+            <p>Trabajos locales listos para enviar, reintentar o revisar.</p>
+          </div>
+          <span class="sync-network" data-sync-network>En linea</span>
+        </div>
+        <div class="sync-actions">
+          <button class="sial-btn sial-btn-primary" type="button" data-sync-all>Sincronizar pendientes</button>
+          <button class="sial-btn sial-btn-secondary" type="button" data-retry-errors>Reintentar errores</button>
+        </div>
+        <div class="sync-summary" aria-label="Resumen de sincronizacion">
+          <div class="sync-summary-item"><strong data-sync-count="pending">0</strong><span>Pendientes</span></div>
+          <div class="sync-summary-item"><strong data-sync-count="error">0</strong><span>Errores</span></div>
+          <div class="sync-summary-item"><strong data-sync-count="queue">0</strong><span>En cola</span></div>
+        </div>
+      </section>
+
+      <section class="sync-filter-row" aria-label="Filtros de cola">
+        <button class="sync-filter active" type="button" data-sync-filter="LOCAL_PENDING_SYNC">Pendientes</button>
+        <button class="sync-filter" type="button" data-sync-filter="SYNC_ERROR">Errores</button>
+        <button class="sync-filter" type="button" data-sync-filter="all">Todos</button>
+      </section>
+
+      <section class="sync-detail" data-sync-detail hidden>
+        <div class="sync-detail-head">
+          <div>
+            <h2 data-detail-title>Detalle</h2>
+            <p data-detail-copy></p>
+          </div>
+          <button class="sial-btn sial-btn-icon" type="button" data-close-detail aria-label="Cerrar detalle">
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="sync-detail-grid">
+          <span><strong>Id local:</strong> <span data-detail-local-id></span></span>
+          <span><strong>Idempotencia:</strong> <span data-detail-key></span></span>
+          <span><strong>Evidencias:</strong> <span data-detail-evidence></span></span>
+          <span><strong>Intentos:</strong> <span data-detail-attempts></span></span>
+        </div>
+        <div class="sial-timeline" data-detail-timeline></div>
+      </section>
+
+      <section class="sial-section">
+        <h2 class="sial-section-title">Trabajos</h2>
+        <div class="sync-list" data-sync-list></div>
+        <button class="sial-btn sial-btn-ghost sync-maintenance" type="button" data-reset-sync>Restaurar cola local</button>
+      </section>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script>
+    (function () {
+      var queueKey = "sial-mobile-sync-queue";
+      var workflowKey = "sial-mobile-workflow";
+      var currentFilter = "LOCAL_PENDING_SYNC";
+      var labels = {
+        LOCAL_PENDING_SYNC: "Pendiente",
+        SYNCING: "Sincronizando",
+        SYNCED: "Sincronizado",
+        SYNC_ERROR: "Error",
+        BLOCKED: "Bloqueado"
+      };
+
+      function $(selector, root) {
+        return (root || document).querySelector(selector);
+      }
+
+      function $all(selector, root) {
+        return Array.from((root || document).querySelectorAll(selector));
+      }
+
+      function toast(type, title, message) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.showToast === "function") {
+          window.SialMobileUI.showToast({ type: type, title: title, message: message });
+        }
+      }
+
+      function readJson(key, fallback) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function writeQueue(queue) {
+        localStorage.setItem(queueKey, JSON.stringify(queue));
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" }[char];
+        });
+      }
+
+      function nowLabel() {
+        return new Date().toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      function baseSeedQueue() {
+        return [
+          {
+            id: "sync-hu759-ingreso",
+            hu: "HU759",
+            title: "Ingreso vehiculo finca",
+            subtitle: "Recepcion local de TUL458 en Finca Santa Isabel",
+            operation: "EXP-2026-0418",
+            entity: "SIALU1234567",
+            status: "LOCAL_PENDING_SYNC",
+            evidence: 2,
+            attempts: 0,
+            nextRetry: "Manual",
+            createdAt: "10/07/2026, 8:20 p. m.",
+            localId: "loc_hu759_0418",
+            idempotencyKey: "EXP-2026-0418_vehicleFarmIngress_loc_hu759_0418",
+            detail: "Checklist tecnico, sellos de llegada e interior del contenedor.",
+            dependency: ""
+          },
+          {
+            id: "sync-hu591-pallet",
+            hu: "HU591",
+            title: "Armado de pallet",
+            subtitle: "SSCC listo para cargue con 48 cajas",
+            operation: "EXP-2026-0418",
+            entity: "SSCC 000000000123456789",
+            status: "SYNCED",
+            evidence: 0,
+            attempts: 1,
+            nextRetry: "Confirmado",
+            createdAt: "10/07/2026, 8:32 p. m.",
+            localId: "loc_hu591_123456789",
+            idempotencyKey: "EXP-2026-0418_palletBuilt_loc_hu591_123456789",
+            detail: "Pallet disponible para scan-to-load.",
+            dependency: ""
+          },
+          {
+            id: "sync-hu332-cargue",
+            hu: "HU332",
+            title: "Cargue de contenedor",
+            subtitle: "3 posiciones cargadas, sellos pendientes de confirmar",
+            operation: "EXP-2026-0418",
+            entity: "SIALU1234567",
+            status: "SYNC_ERROR",
+            evidence: 4,
+            attempts: 2,
+            nextRetry: "Reintento manual",
+            createdAt: "10/07/2026, 8:48 p. m.",
+            localId: "loc_hu332_0418",
+            idempotencyKey: "EXP-2026-0418_hu332Load_loc_hu332_0418",
+            detail: "Fallo simulado por red inestable durante envio de evidencias.",
+            dependency: "HU759 sincronizado"
+          },
+          {
+            id: "sync-inspeccion-finca",
+            hu: "Finca",
+            title: "Inspeccion externa finca",
+            subtitle: "Bloqueada hasta enviar la recepcion del vehiculo",
+            operation: "EXP-2026-0418",
+            entity: "SIALU1234567",
+            status: "BLOCKED",
+            evidence: 6,
+            attempts: 0,
+            nextRetry: "Requiere dependencia",
+            createdAt: "10/07/2026, 8:55 p. m.",
+            localId: "loc_finca_ext_0418",
+            idempotencyKey: "EXP-2026-0418_farmExternalInspection_loc_finca_ext_0418",
+            detail: "No se envia hasta confirmar la recepcion de ingreso en finca.",
+            dependency: "HU759 pendiente"
+          }
+        ];
+      }
+
+      function normalizeStatus(status) {
+        if (!status) return "LOCAL_PENDING_SYNC";
+        if (status === "SYNC_FAILED") return "SYNC_ERROR";
+        return status;
+      }
+
+      function fromWorkflow() {
+        var workflow = readJson(workflowKey, {});
+        var events = Array.isArray(workflow.events) ? workflow.events : [];
+        var statuses = workflow.eventSyncStatus || {};
+        var localIds = workflow.eventLocalIds || {};
+        var keys = workflow.eventIdempotencyKeys || {};
+        return events.map(function (event, index) {
+          var eventName = event.event || event.name || "evento-" + index;
+          var status = normalizeStatus(statuses[eventName] || event.sync || "LOCAL_PENDING_SYNC");
+          return {
+            id: "wf-" + eventName + "-" + index,
+            hu: eventName.indexOf("pallet") >= 0 ? "HU591" : "Operacion",
+            title: event.label || eventName,
+            subtitle: event.detail || "Evento registrado en trazabilidad local",
+            operation: workflow.operation || "Operacion local",
+            entity: workflow.container || workflow.vehicle || "Entidad local",
+            status: status,
+            evidence: workflow.photos ? Object.keys(workflow.photos).length : 0,
+            attempts: status === "SYNC_ERROR" ? 1 : 0,
+            nextRetry: status === "SYNCED" ? "Confirmado" : "Manual",
+            createdAt: event.timestamp || nowLabel(),
+            localId: localIds[eventName] || "loc_" + eventName,
+            idempotencyKey: keys[eventName] || ((workflow.operation || "SIAL") + "_" + eventName + "_" + index),
+            detail: event.detail || "Trabajo generado desde una vista operacional.",
+            dependency: ""
+          };
+        });
+      }
+
+      function readQueue() {
+        var queue = readJson(queueKey, null);
+        if (Array.isArray(queue) && queue.length) return queue;
+        var built = fromWorkflow();
+        queue = built.length ? built.concat(baseSeedQueue().slice(0, 2)) : baseSeedQueue();
+        writeQueue(queue);
+        return queue;
+      }
+
+      function statusClass(status) {
+        if (status === "SYNCING") return "syncing";
+        if (status === "SYNCED") return "synced";
+        if (status === "SYNC_ERROR") return "error";
+        if (status === "BLOCKED") return "blocked";
+        return "pending";
+      }
+
+      function canSync(item) {
+        return item.status !== "SYNCED" && item.status !== "SYNCING" && item.status !== "BLOCKED";
+      }
+
+      function matchesFilter(item) {
+        if (currentFilter === "all") return true;
+        if (currentFilter === "LOCAL_PENDING_SYNC") {
+          return item.status === "LOCAL_PENDING_SYNC" || item.status === "SYNCING";
+        }
+        if (currentFilter === "SYNC_ERROR") {
+          return item.status === "SYNC_ERROR" || item.status === "BLOCKED";
+        }
+        return item.status === currentFilter;
+      }
+
+      function actionLabel(item) {
+        if (item.status === "SYNC_ERROR") return "Reintentar";
+        if (item.status === "SYNCING") return "En proceso";
+        if (item.status === "SYNCED") return "Listo";
+        if (item.status === "BLOCKED") return "Bloqueado";
+        return "Sincronizar";
+      }
+
+      function renderCounts(queue) {
+        var counts = {
+          queue: queue.length,
+          pending: queue.filter(function (item) { return item.status === "LOCAL_PENDING_SYNC" || item.status === "SYNCING"; }).length,
+          error: queue.filter(function (item) { return item.status === "SYNC_ERROR" || item.status === "BLOCKED"; }).length
+        };
+        Object.keys(counts).forEach(function (key) {
+          var node = document.querySelector("[data-sync-count='" + key + "']");
+          if (node) node.textContent = String(counts[key]);
+        });
+      }
+
+      function renderList() {
+        var queue = readQueue();
+        renderCounts(queue);
+        var list = $("[data-sync-list]");
+        var visible = queue.filter(matchesFilter);
+        if (!visible.length) {
+          list.innerHTML = '<div class="sial-empty-state sync-empty"><strong>Sin trabajos en este filtro</strong><p>Cambia el filtro o restaura la cola local.</p></div>';
+          return;
+        }
+        list.innerHTML = visible.map(function (item) {
+          var disabled = canSync(item) ? "" : " disabled";
+          return [
+            '<article class="sync-row" data-sync-id="' + escapeHtml(item.id) + '">',
+            '<div class="sync-row-main">',
+            '<span class="sync-state-dot ' + statusClass(item.status) + '" aria-hidden="true"></span>',
+            '<div class="sync-title"><strong>' + escapeHtml(item.hu + " - " + item.title) + '</strong><span>' + escapeHtml(item.subtitle) + '</span></div>',
+            '<span class="sync-pill ' + statusClass(item.status) + '">' + escapeHtml(labels[item.status] || item.status) + '</span>',
+            '</div>',
+            '<div class="sync-row-meta">',
+            '<span>' + escapeHtml(item.operation) + '</span>',
+            '<span>' + escapeHtml(item.evidence) + ' evidencia(s)</span>',
+            '<span>' + escapeHtml(item.attempts || 0) + ' intento(s)</span>',
+            '</div>',
+            '<div class="sync-row-actions">',
+            '<button class="sial-btn sial-btn-ghost" type="button" data-view-sync="' + escapeHtml(item.id) + '">Detalle</button>',
+            '<button class="sial-btn sial-btn-primary" type="button" data-force-sync="' + escapeHtml(item.id) + '"' + disabled + '>' + actionLabel(item) + '</button>',
+            '</div>',
+            '</article>'
+          ].join("");
+        }).join("");
+      }
+
+      function updateItems(ids, updater) {
+        var queue = readQueue().map(function (item) {
+          return ids.indexOf(item.id) >= 0 ? updater(Object.assign({}, item)) : item;
+        });
+        writeQueue(queue);
+        renderList();
+        return queue;
+      }
+
+      function completeSync(ids) {
+        window.setTimeout(function () {
+          updateItems(ids, function (item) {
+            item.status = "SYNCED";
+            item.attempts = Number(item.attempts || 0) + 1;
+            item.nextRetry = "Confirmado";
+            item.syncedAt = nowLabel();
+            return item;
+          });
+          toast("success", "Sincronizacion completada", ids.length + " trabajo(s) confirmado(s).");
+        }, 850);
+      }
+
+      function forceSync(ids) {
+        var queue = readQueue();
+        var allowed = queue.filter(function (item) {
+          return ids.indexOf(item.id) >= 0 && canSync(item);
+        }).map(function (item) { return item.id; });
+        if (!allowed.length) {
+          toast("warning", "Sin trabajos disponibles", "No hay trabajos pendientes o con error para enviar.");
+          return;
+        }
+        updateItems(allowed, function (item) {
+          item.status = "SYNCING";
+          item.nextRetry = "En proceso";
+          return item;
+        });
+        toast("info", "Sincronizando", allowed.length + " trabajo(s) en proceso.");
+        completeSync(allowed);
+      }
+
+      function showDetail(id) {
+        var item = readQueue().find(function (entry) { return entry.id === id; });
+        if (!item) return;
+        var detail = $("[data-sync-detail]");
+        $("[data-detail-title]").textContent = item.hu + " - " + item.title;
+        $("[data-detail-copy]").textContent = item.detail;
+        $("[data-detail-local-id]").textContent = item.localId;
+        $("[data-detail-key]").textContent = item.idempotencyKey;
+        $("[data-detail-evidence]").textContent = item.evidence + " archivo(s)";
+        $("[data-detail-attempts]").textContent = String(item.attempts || 0);
+        $("[data-detail-timeline]").innerHTML = [
+          '<div class="sial-timeline-item"><strong>Creado localmente</strong><span>' + escapeHtml(item.createdAt) + '</span></div>',
+          '<div class="sial-timeline-item"><strong>Estado actual</strong><span>' + escapeHtml(labels[item.status] || item.status) + '</span></div>',
+          item.dependency ? '<div class="sial-timeline-item"><strong>Dependencia</strong><span>' + escapeHtml(item.dependency) + '</span></div>' : '',
+          '<div class="sial-timeline-item"><strong>Proximo paso</strong><span>' + escapeHtml(item.nextRetry) + '</span></div>'
+        ].filter(Boolean).join("");
+        detail.hidden = false;
+        detail.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function wireEvents() {
+        document.addEventListener("click", function (event) {
+          var filter = event.target.closest("[data-sync-filter]");
+          if (filter) {
+            currentFilter = filter.dataset.syncFilter;
+            $all("[data-sync-filter]").forEach(function (node) {
+              node.classList.toggle("active", node === filter);
+            });
+            renderList();
+            return;
+          }
+          var force = event.target.closest("[data-force-sync]");
+          if (force) {
+            forceSync([force.dataset.forceSync]);
+            return;
+          }
+          var view = event.target.closest("[data-view-sync]");
+          if (view) {
+            showDetail(view.dataset.viewSync);
+            return;
+          }
+          if (event.target.closest("[data-sync-all]")) {
+            forceSync(readQueue().filter(function (item) {
+              return item.status === "LOCAL_PENDING_SYNC";
+            }).map(function (item) { return item.id; }));
+            return;
+          }
+          if (event.target.closest("[data-retry-errors]")) {
+            forceSync(readQueue().filter(function (item) { return item.status === "SYNC_ERROR"; }).map(function (item) { return item.id; }));
+            return;
+          }
+          if (event.target.closest("[data-reset-sync]")) {
+            writeQueue(baseSeedQueue());
+            $("[data-sync-detail]").hidden = true;
+            renderList();
+            toast("info", "Cola restaurada", "Se cargaron trabajos simulados para revision.");
+            return;
+          }
+          if (event.target.closest("[data-close-detail]")) {
+            $("[data-sync-detail]").hidden = true;
+          }
+        });
+      }
+
+      wireEvents();
+      renderList();
+    })();
+  </script>
+</body>
+</html>
