@@ -1,1 +1,315 @@
-﻿<!doctype html><html lang="es" data-theme="light"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <link rel="manifest" href="../manifest.webmanifest">  <meta name="theme-color" content="#005CA8">  <title>SIAL Movil - Recepcion en finca</title>  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>  <link rel="stylesheet" href="../shared/sial-mobile-core.css"></head><body>  <main class="sial-page">    <header class="sial-page-header">      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>      <div class="sial-page-title"><h1>Recepcion finca</h1><p>Confirmacion de llegada desde ZE</p></div>      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>    </header>    <section class="sial-page-body">      <div class="sial-status warning" data-requires="zeDispatch"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>      <div class="sial-flow-banner"><strong>Contenedor <span data-flow-container></span></strong><span>Estado <span data-flow-container-status></span> - Ubicacion <span data-flow-location></span></span></div>      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="farmReception" data-status="RECIBIDO_EN_FINCA" data-location="FINCA" data-has-active-dispatch="false" data-detail="Vehiculo recibido en finca" data-next="inspeccion-externa.html?selectContainer=1" data-assert-container-status-any="EN_TRANSITO_A_FINCA" data-assert-container-location="TRANSITO_FINCA" data-prevent-duplicate="true">        <div class="sial-field"><label class="sial-label">Tipo de vehiculo</label><select class="sial-select" name="tipoVehiculo" required><option>Contenedor transportado</option><option>Camion</option></select></div>        <div class="sial-field"><label class="sial-label">Placa del vehiculo</label><input class="sial-input-wrap sial-input" name="placa" required value="TUL458"></div>        <div class="sial-field"><label class="sial-label">Numero de contenedor</label><input class="sial-input-wrap sial-input" name="contenedor" value="SIALU1234567"></div>        <div class="sial-field"><label class="sial-label">Conductor</label><input class="sial-input-wrap sial-input" name="conductor" required value="Carlos Mendoza"></div>        <div class="sial-field"><label class="sial-label">Finca receptora</label><select class="sial-select" name="finca" required><option>Finca Santa Isabel</option><option>Finca La Esperanza</option></select></div>        <div class="sial-field"><label class="sial-label">Operacion o viaje asociado</label><input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418"></div>        <div class="sial-field"><label class="sial-label">Procedencia</label><select class="sial-select" name="procedencia" required><option>Zona Externa</option><option>Otra finca</option><option>Otro punto logistico</option></select></div>        <div class="sial-field"><label class="sial-label">Fecha y hora de llegada</label><input class="sial-input-wrap sial-input" name="fechaLlegada" type="datetime-local" required value="2026-05-05T11:10"></div>        <div class="sial-field"><label class="sial-label">Usuario que registra</label><input class="sial-input-wrap sial-input" name="usuario" required value="Maria Operadora"></div>        <div class="sial-field"><label class="sial-label">Observaciones de ingreso</label><textarea class="sial-textarea" name="observaciones" placeholder="Retrasos, danos visibles o inconsistencias logisticas"></textarea></div>        <p class="sial-inline-error" data-flow-error hidden></p>        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Registrar recepcion</button>      </form>    </section>  </main>  <script src="../shared/sial-mobile-core.js"></script>  <script src="../shared/sial-mobile-flow.js"></script></body></html>
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Movil - HU759 Ingreso vehiculo finca</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <style>
+    .hu759-page { gap: 12px; }
+    .hu759-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .hu759-card-head .sial-section-title { margin: 0; }
+    .hu759-search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+    .hu759-search-row .sial-btn {
+      min-height: 48px;
+      padding-inline: 14px;
+      white-space: nowrap;
+    }
+    .hu759-context-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .hu759-context-item {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface);
+    }
+    .hu759-context-item span {
+      color: var(--sial-text-2);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .hu759-context-item strong {
+      min-width: 0;
+      color: var(--sial-text);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .hu759-checklist {
+      display: grid;
+      gap: 8px;
+    }
+    .hu759-check {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--sial-border-subtle);
+      border-radius: var(--sial-radius-control);
+      background: var(--sial-surface);
+    }
+    .hu759-check input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--sial-primary-500);
+    }
+    .hu759-check strong {
+      display: block;
+      color: var(--sial-text);
+      font-size: 13px;
+    }
+    .hu759-check span {
+      display: block;
+      margin-top: 3px;
+      color: var(--sial-text-2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .hu759-sync-note {
+      display: grid;
+      gap: 8px;
+    }
+    .hu759-next-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (max-width: 430px) {
+      .hu759-search-row,
+      .hu759-context-grid,
+      .hu759-next-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Ingreso vehiculo finca</h1>
+        <p>HU759 - Consulta previa, inspeccion y recepcion</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body hu759-page">
+      <section class="sial-flow-banner">
+        <strong>Recepcion en finca</strong>
+        <span>Valida la placa, registra el ingreso y habilita el cargue del contenedor.</span>
+      </section>
+
+      <section class="sial-stat-row" aria-label="Resumen HU759">
+        <div class="sial-stat"><strong data-flow-vehicle>TUL458</strong><span>Vehiculo</span></div>
+        <div class="sial-stat"><strong data-flow-container>SIALU1234567</strong><span>Contenedor</span></div>
+        <div class="sial-stat"><strong data-flow-sync>Pendiente local</strong><span>Sincronizacion</span></div>
+      </section>
+
+      <form
+        class="sial-form hu759-form"
+        data-flow-form
+        data-event="vehicleFarmIngress"
+        data-status="RECIBIDO_EN_FINCA"
+        data-container-status="RECIBIDO_EN_FINCA"
+        data-operation-status="RECIBIDO_EN_FINCA"
+        data-location="FINCA"
+        data-vehicle-status="EN_FINCA"
+        data-has-active-dispatch="false"
+        data-detail="HU759 ingreso vehiculo en finca"
+        data-required-photos="hu759-sellos-llegada,hu759-interior-contenedor"
+        data-assert-no-future-date="[name='fechaLlegada']"
+        data-prevent-duplicate="true"
+        data-next="../pallets/cargar-pallets.html"
+      >
+        <section class="sial-card sial-card-pad">
+          <div class="hu759-card-head">
+            <div>
+              <h2 class="sial-section-title">Consulta previa</h2>
+              <p class="sial-field-note">Busca la placa para cargar datos simulados del viaje programado.</p>
+            </div>
+            <span class="sial-pill info">Programacion semanal</span>
+          </div>
+
+          <div class="hu759-search-row">
+            <label class="sial-field" for="hu759-placa">
+              <span class="sial-label">Placa del vehiculo</span>
+              <input class="sial-input-wrap sial-input" id="hu759-placa" name="placa" autocomplete="off" autocapitalize="characters" required value="TUL458">
+            </label>
+            <button class="sial-btn sial-btn-secondary" type="button" data-search-vehicle="#hu759-placa">Consultar</button>
+          </div>
+
+          <div class="sial-status info" data-search-status>
+            <span><strong>Datos simulados disponibles</strong>Usa TUL458, ABC123 o XYZ789 para revisar la consulta previa.</span>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad">
+          <div class="hu759-card-head">
+            <h2 class="sial-section-title">Viaje validado</h2>
+            <span class="sial-pill success">Coincide finca/semana</span>
+          </div>
+          <div class="hu759-context-grid">
+            <div class="hu759-context-item"><span>Operacion</span><strong data-flow-operation>EXP-2026-0418</strong></div>
+            <div class="hu759-context-item"><span>Semana</span><strong>2026-W28</strong></div>
+            <div class="hu759-context-item"><span>Finca destino</span><strong data-flow-finca>Finca Santa Isabel</strong></div>
+            <div class="hu759-context-item"><span>Transportadora</span><strong data-flow-carrier>Transbanasan</strong></div>
+            <div class="hu759-context-item"><span>Conductor</span><strong data-flow-driver>Carlos Mendoza</strong></div>
+            <div class="hu759-context-item"><span>Documento</span><strong data-flow-driver-document>1012345678</strong></div>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad">
+          <h2 class="sial-section-title">Datos de ingreso</h2>
+          <div class="sial-form-grid">
+            <label class="sial-field">
+              <span class="sial-label">Tipo de vehiculo</span>
+              <select class="sial-select" name="tipoVehiculo" required>
+                <option>Contenedor transportado</option>
+                <option>Camion sin carga completa</option>
+                <option>Vehiculo desde otra finca</option>
+              </select>
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Numero de contenedor</span>
+              <input class="sial-input-wrap sial-input" name="contenedor" required value="SIALU1234567">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Conductor</span>
+              <input class="sial-input-wrap sial-input" name="conductor" required value="Carlos Mendoza">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Documento conductor</span>
+              <input class="sial-input-wrap sial-input" name="documentoConductor" inputmode="numeric" required value="1012345678">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Transportadora</span>
+              <input class="sial-input-wrap sial-input" name="transportista" required value="Transbanasan">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Finca receptora</span>
+              <input class="sial-input-wrap sial-input" name="finca" required value="Finca Santa Isabel">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Operacion o viaje</span>
+              <input class="sial-input-wrap sial-input" name="operacion" required value="EXP-2026-0418">
+            </label>
+            <label class="sial-field">
+              <span class="sial-label">Fecha y hora de llegada</span>
+              <input class="sial-input-wrap sial-input" name="fechaLlegada" type="datetime-local" required value="2026-07-10T08:20">
+            </label>
+          </div>
+          <label class="sial-field">
+            <span class="sial-label">Procedencia</span>
+            <select class="sial-select" name="procedencia" required>
+              <option>Zona Externa</option>
+              <option>Otra finca</option>
+              <option>Otro punto logistico</option>
+            </select>
+          </label>
+          <label class="sial-field">
+            <span class="sial-label">Observaciones de ingreso</span>
+            <textarea class="sial-textarea" name="observaciones" placeholder="Retrasos, danos visibles, faltantes o inconsistencias del viaje"></textarea>
+          </label>
+        </section>
+
+        <section class="sial-card sial-card-pad">
+          <div class="hu759-card-head">
+            <h2 class="sial-section-title">Checklist tecnico</h2>
+            <span class="sial-pill warning">Antes de cargue</span>
+          </div>
+          <div class="hu759-checklist">
+            <label class="hu759-check">
+              <input type="checkbox" name="checkLimpieza" required checked>
+              <span><strong>Limpieza del contenedor</strong><span>Sin residuos, olores fuertes, humedad visible ni contaminantes.</span></span>
+            </label>
+            <label class="hu759-check">
+              <input type="checkbox" name="checkEstructura" required checked>
+              <span><strong>Estado estructural</strong><span>Piso, paredes, techo y puertas sin dano que comprometa la inocuidad.</span></span>
+            </label>
+            <label class="hu759-check">
+              <input type="checkbox" name="checkSellos" required checked>
+              <span><strong>Sellos de llegada</strong><span>Sellos de origen visibles y consistentes con la programacion.</span></span>
+            </label>
+            <label class="hu759-check">
+              <input type="checkbox" name="checkProgramacion" required checked>
+              <span><strong>Viaje programado</strong><span>La placa corresponde a la finca y semana operativa seleccionada.</span></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad">
+          <div class="hu759-card-head">
+            <h2 class="sial-section-title">Evidencias obligatorias</h2>
+            <span class="sial-pill">2 fotos minimas</span>
+          </div>
+          <div class="sial-evidence-grid">
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu759-sellos-llegada">
+              Sellos de llegada
+            </button>
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu759-interior-contenedor">
+              Interior del contenedor
+            </button>
+          </div>
+          <p class="sial-field-note">La propuesta exige ambas fotos antes de registrar el ingreso.</p>
+        </section>
+
+        <section class="sial-card sial-card-pad hu759-sync-note">
+          <h2 class="sial-section-title">Resultado esperado</h2>
+          <div class="sial-sync-stack">
+            <div class="sial-sync-item pending">
+              <strong>Registro local</strong>
+              <span>La recepcion queda guardada en el dispositivo.</span>
+              <span class="sial-pill">LOCAL_PENDING_SYNC</span>
+            </div>
+            <div class="sial-sync-item">
+              <strong>Estados simulados</strong>
+              <span>Contenedor RECIBIDO_EN_FINCA, vehiculo EN_FINCA y camion EN_FINCA_SIN_CARGA.</span>
+              <span class="sial-pill">HU759</span>
+            </div>
+            <div class="sial-sync-item success">
+              <strong>Siguiente paso</strong>
+              <span>Habilita inspeccion/cargue y continua hacia HU332.</span>
+              <span class="sial-pill">Scan-to-load</span>
+            </div>
+          </div>
+          <p class="sial-inline-error" data-flow-error hidden></p>
+          <div class="hu759-next-grid">
+            <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Registrar ingreso</button>
+            <a class="sial-btn sial-btn-secondary sial-btn-full" href="../pallets/cargar-pallets.html">Ir a HU332</a>
+          </div>
+        </section>
+      </form>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>
