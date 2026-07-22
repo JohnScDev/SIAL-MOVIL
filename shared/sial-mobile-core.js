@@ -584,6 +584,246 @@
     buildPhotoCaptureOverlay(config);
   }
 
+  /* ============================================
+     SIAL Barcode Scanner (getUserMedia)
+     Patron normalizado desde HU332
+     ============================================ */
+  var activeBarcodeScanner = null;
+
+  function normalizeSscc(value) {
+    var digits = String(value || "").replace(/\D/g, "");
+    if (digits.length === 20 && digits.slice(0, 2) === "00") return digits.slice(2);
+    return digits;
+  }
+
+  function setBarcodeScannerStatus(message) {
+    if (activeBarcodeScanner && activeBarcodeScanner.status) {
+      activeBarcodeScanner.status.textContent = message;
+    }
+  }
+
+  function closeBarcodeScanner() {
+    var scanner = activeBarcodeScanner;
+    if (!scanner) return;
+    activeBarcodeScanner = null;
+    if (scanner.raf) cancelAnimationFrame(scanner.raf);
+    if (scanner.retryTimer) window.clearTimeout(scanner.retryTimer);
+    if (scanner.stream) {
+      scanner.stream.getTracks().forEach(function(track) { track.stop(); });
+    }
+    if (scanner.escapeHandler) {
+      document.removeEventListener("keydown", scanner.escapeHandler);
+    }
+    if (scanner.overlay && scanner.overlay.parentNode) {
+      scanner.overlay.parentNode.removeChild(scanner.overlay);
+    }
+    document.body.classList.remove("dialog-open");
+    document.body.style.overflow = scanner.previousOverflow;
+  }
+
+  function cancelBarcodeScanner() {
+    var scanner = activeBarcodeScanner;
+    if (!scanner || scanner.settled) return;
+    scanner.settled = true;
+    var onCancel = scanner.config.onCancel || function() {};
+    closeBarcodeScanner();
+    onCancel();
+  }
+
+  function normalizeBarcodeValidation(result, value) {
+    if (result === true || typeof result === "undefined") {
+      return { ok: Boolean(value), value: value, message: value ? "" : "No se detecto un codigo valido." };
+    }
+    if (result === false) {
+      return { ok: false, value: value, message: "El codigo detectado no es valido." };
+    }
+    if (typeof result === "string") {
+      return { ok: false, value: value, message: result };
+    }
+    return {
+      ok: Boolean(result && result.ok),
+      value: result && typeof result.value !== "undefined" ? result.value : value,
+      message: result && result.message ? result.message : "El codigo detectado no es valido."
+    };
+  }
+
+  function processBarcodeCandidate(rawValue, source) {
+    var scanner = activeBarcodeScanner;
+    if (!scanner || scanner.settled || scanner.processing) return false;
+    scanner.processing = true;
+    var config = scanner.config;
+    var normalize = typeof config.normalize === "function" ? config.normalize : function(value) { return String(value || "").trim(); };
+    var value = normalize(rawValue);
+    var validation = normalizeBarcodeValidation(
+      typeof config.validate === "function" ? config.validate(value, rawValue) : true,
+      value
+    );
+
+    if (!validation.ok) {
+      setBarcodeScannerStatus(validation.message);
+      scanner.retryTimer = window.setTimeout(function() {
+        if (!activeBarcodeScanner || activeBarcodeScanner !== scanner) return;
+        scanner.processing = false;
+        startBarcodeScannerDetection(scanner.video);
+      }, Number(config.retryDelay || 700));
+      return false;
+    }
+
+    scanner.settled = true;
+    var onDetected = config.onDetected || function() {};
+    var payload = {
+      rawValue: rawValue,
+      value: validation.value,
+      source: source || "camera"
+    };
+    if (navigator.vibrate) navigator.vibrate(24);
+    closeBarcodeScanner();
+    onDetected(validation.value, payload);
+    return true;
+  }
+
+  function startBarcodeScannerDetection(video) {
+    var scanner = activeBarcodeScanner;
+    if (!scanner || scanner.settled || scanner.processing) return;
+    if (!("BarcodeDetector" in window)) {
+      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Este navegador no expone lectura nativa; usa la lectura demo para probar el flujo.");
+      return;
+    }
+
+    var detector;
+    try {
+      detector = new BarcodeDetector({
+        formats: scanner.config.formats || ["code_128", "ean_13", "qr_code", "data_matrix"]
+      });
+    } catch (_) {
+      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Detector no disponible; usa la lectura demo.");
+      return;
+    }
+
+    var loop = function() {
+      var current = activeBarcodeScanner;
+      if (!current || current !== scanner || current.settled || current.processing) return;
+      detector.detect(video).then(function(codes) {
+        if (!activeBarcodeScanner || activeBarcodeScanner !== scanner || scanner.settled) return;
+        var hit = (codes || []).map(function(code) { return code.rawValue || ""; }).find(Boolean);
+        if (hit) {
+          processBarcodeCandidate(hit, "camera");
+          return;
+        }
+        scanner.raf = requestAnimationFrame(loop);
+      }).catch(function() {
+        if (activeBarcodeScanner === scanner && !scanner.settled) {
+          scanner.raf = requestAnimationFrame(loop);
+        }
+      });
+    };
+
+    setBarcodeScannerStatus(scanner.config.activeMessage || "Camara activa. Ubica el codigo dentro del marco.");
+    scanner.raf = requestAnimationFrame(loop);
+  }
+
+  function startBarcodeScannerCamera() {
+    var scanner = activeBarcodeScanner;
+    if (!scanner) return;
+    var video = scanner.video;
+    var fallback = scanner.fallback;
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function") {
+      fallback.hidden = false;
+      setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "Camara no disponible en este entorno. Usa la lectura demo para validar el flujo.");
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    }).then(function(stream) {
+      if (!activeBarcodeScanner || activeBarcodeScanner !== scanner) {
+        stream.getTracks().forEach(function(track) { track.stop(); });
+        return;
+      }
+      scanner.stream = stream;
+      fallback.hidden = true;
+      video.srcObject = stream;
+      video.play().then(function() {
+        startBarcodeScannerDetection(video);
+      }).catch(function() {
+        fallback.hidden = false;
+        setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "No fue posible iniciar la camara. Usa la lectura demo para continuar.");
+      });
+    }).catch(function() {
+      fallback.hidden = false;
+      setBarcodeScannerStatus(scanner.config.permissionDeniedMessage || "Permiso de camara denegado o no disponible. Usa la lectura demo para continuar.");
+    });
+  }
+
+  function openBarcodeScanner(config) {
+    config = config || {};
+    closeBarcodeScanner();
+
+    var title = String(config.title || "Escanear codigo").trim() || "Escanear codigo";
+    var eyebrow = String(config.eyebrow || "Escaner").trim() || "Escaner";
+    var demoValue = String(config.demoValue || "");
+    var demoLabel = String(config.demoLabel || "Leer codigo demo");
+    var previousOverflow = document.body.style.overflow;
+    var overlay = document.createElement("div");
+    overlay.className = "sial-barcode-scanner-overlay";
+    overlay.innerHTML = [
+      '<video class="sial-barcode-scanner-video" data-barcode-scanner-video playsinline muted></video>',
+      '<div class="sial-barcode-scanner-fallback" data-barcode-scanner-fallback hidden><strong>Camara no disponible</strong></div>',
+      '<div class="sial-barcode-scanner-top">',
+      '<button class="sial-barcode-scanner-icon" type="button" data-barcode-scanner-close aria-label="Cerrar escaner"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
+      '<div class="sial-barcode-scanner-title">' + escapeCameraText(title) + '</div>',
+      '<span></span>',
+      '</div>',
+      '<div class="sial-barcode-scanner-frame" aria-hidden="true"></div>',
+      '<div class="sial-barcode-scanner-bottom">',
+      '<strong>' + escapeCameraText(eyebrow) + '</strong>',
+      '<span data-barcode-scanner-status>' + escapeCameraText(config.initialMessage || "Solicitando camara. Ubica el codigo dentro del marco.") + '</span>',
+      '<div class="sial-barcode-scanner-actions">',
+      '<button class="sial-btn sial-btn-secondary" type="button" data-barcode-scanner-close>Cancelar</button>',
+      '<button class="sial-btn sial-btn-primary" type="button" data-barcode-scanner-demo' + (demoValue ? "" : " hidden") + '>' + escapeCameraText(demoLabel) + '</button>',
+      '</div>',
+      '</div>'
+    ].join("");
+
+    document.body.appendChild(overlay);
+    document.body.classList.add("dialog-open");
+    document.body.style.overflow = "hidden";
+
+    activeBarcodeScanner = {
+      config: config,
+      overlay: overlay,
+      video: overlay.querySelector("[data-barcode-scanner-video]"),
+      fallback: overlay.querySelector("[data-barcode-scanner-fallback]"),
+      status: overlay.querySelector("[data-barcode-scanner-status]"),
+      stream: null,
+      raf: 0,
+      retryTimer: 0,
+      processing: false,
+      settled: false,
+      previousOverflow: previousOverflow,
+      escapeHandler: null
+    };
+
+    activeBarcodeScanner.escapeHandler = function(event) {
+      if (event.key === "Escape") cancelBarcodeScanner();
+    };
+    document.addEventListener("keydown", activeBarcodeScanner.escapeHandler);
+
+    overlay.querySelectorAll("[data-barcode-scanner-close]").forEach(function(button) {
+      button.addEventListener("click", cancelBarcodeScanner);
+    });
+    overlay.querySelector("[data-barcode-scanner-demo]").addEventListener("click", function() {
+      if (demoValue) processBarcodeCandidate(demoValue, "demo");
+    });
+
+    startBarcodeScannerCamera();
+    return {
+      close: cancelBarcodeScanner,
+      setStatus: setBarcodeScannerStatus
+    };
+  }
+
 ﻿function preferredTheme() {
     const saved = localStorage.getItem(storageThemeKey);
     if (saved === "light" || saved === "dark") return saved;
@@ -1514,6 +1754,9 @@
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
     openPhotoCapture: function(config) { buildPhotoCaptureOverlay(config); },
     openCamera: function(config) { buildCameraOverlay(config); },
+    openBarcodeScanner: function(config) { return openBarcodeScanner(config); },
+    closeBarcodeScanner: function() { cancelBarcodeScanner(); },
+    normalizeSscc,
     setTheme,
     showToast,
     setInlineStatus,

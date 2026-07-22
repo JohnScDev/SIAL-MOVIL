@@ -118,117 +118,6 @@
       position: absolute; left: 6px; right: 6px; bottom: 6px;
       color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.82);
     }
-    .hu332-scanner-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1200;
-      overflow: hidden;
-      background: #020617;
-      color: #fff;
-    }
-    .hu332-scanner-video,
-    .hu332-scanner-fallback {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .hu332-scanner-fallback {
-      display: grid;
-      place-items: center;
-      padding: 28px;
-      background:
-        linear-gradient(135deg, rgba(0,92,168,.46), rgba(15,23,36,.92)),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 24px);
-      text-align: center;
-    }
-    .hu332-scanner-fallback[hidden] { display: none; }
-    .hu332-scanner-top {
-      position: absolute;
-      top: max(14px, env(safe-area-inset-top));
-      left: 14px;
-      right: 14px;
-      z-index: 3;
-      display: grid;
-      grid-template-columns: 48px minmax(0, 1fr) 48px;
-      align-items: center;
-      gap: 10px;
-    }
-    .hu332-scanner-title {
-      min-width: 0;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 800;
-      text-align: center;
-      text-shadow: 0 2px 12px rgba(0,0,0,.82);
-    }
-    .hu332-scanner-icon {
-      width: 48px;
-      height: 48px;
-      display: inline-grid;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.34);
-      border-radius: 16px;
-      background: rgba(0,0,0,.18);
-      color: #fff;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .hu332-scanner-frame {
-      position: absolute;
-      top: 28%;
-      left: 10%;
-      right: 10%;
-      z-index: 2;
-      aspect-ratio: 1.7;
-      border: 2px solid rgba(255,255,255,.86);
-      border-radius: 18px;
-      box-shadow: 0 0 0 999px rgba(0,0,0,.34), 0 0 28px rgba(0,92,168,.42);
-      pointer-events: none;
-    }
-    .hu332-scanner-frame::after {
-      content: "";
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      top: 50%;
-      height: 2px;
-      background: #20a7ff;
-      box-shadow: 0 0 16px rgba(32,167,255,.9);
-      transform: translateY(-50%);
-    }
-    .hu332-scanner-bottom {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: max(18px, env(safe-area-inset-bottom));
-      z-index: 3;
-      display: grid;
-      gap: 10px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 18px;
-      background: rgba(2,6,23,.72);
-      box-shadow: 0 14px 34px rgba(0,0,0,.38);
-    }
-    .hu332-scanner-bottom strong {
-      color: #fff;
-      font-size: 13px;
-    }
-    .hu332-scanner-bottom span {
-      color: rgba(255,255,255,.78);
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.35;
-    }
-    .hu332-scanner-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .hu332-scanner-actions .sial-btn {
-      min-height: 44px;
-    }
     .hu332-locked [data-hu332-editable],
     .hu332-locked .hu332-position,
     .hu332-locked .hu332-chip-action {
@@ -243,7 +132,6 @@
         grid-template-columns: 1fr;
       }
       .hu332-scan-actions { grid-template-columns: 1fr; }
-      .hu332-scanner-actions { grid-template-columns: 1fr; }
       .hu332-loaded-meta { grid-template-columns: 1fr; }
     }
   </style>
@@ -348,7 +236,6 @@
     (function () {
       var stateKey = "sial-mobile-hu332";
       var maxPositions = 22;
-      var activeScanner = null;
       var context = {
         container: "SIALU1234567",
         operation: "EXP-2026-0418",
@@ -438,7 +325,11 @@
       }
 
       function normalizeSscc(value) {
-        return String(value || "").replace(/\D/g, "");
+        if (window.SialMobileUI && typeof window.SialMobileUI.normalizeSscc === "function") {
+          return window.SialMobileUI.normalizeSscc(value);
+        }
+        var digits = String(value || "").replace(/\D/g, "");
+        return digits.length === 20 && digits.slice(0, 2) === "00" ? digits.slice(2) : digits;
       }
 
       function positionItem(state, position) {
@@ -472,112 +363,6 @@
         node.className = "sial-field-note" + (type ? " " + type : "");
       }
 
-      function setScannerStatus(message) {
-        if (activeScanner && activeScanner.status) {
-          activeScanner.status.textContent = message;
-        }
-      }
-
-      function stopScanner() {
-        if (!activeScanner) return;
-        if (activeScanner.raf) cancelAnimationFrame(activeScanner.raf);
-        if (activeScanner.stream) {
-          activeScanner.stream.getTracks().forEach(function(track) { track.stop(); });
-        }
-        if (activeScanner.overlay && activeScanner.overlay.parentNode) {
-          activeScanner.overlay.parentNode.removeChild(activeScanner.overlay);
-        }
-        document.body.classList.remove("dialog-open");
-        activeScanner = null;
-      }
-
-      function completeScannerRead(rawValue) {
-        var sscc = normalizeSscc(rawValue);
-        var state = readState();
-        if (!sscc) {
-          setScannerStatus("No se detecto un SSCC valido. Ajusta el encuadre e intenta de nuevo.");
-          return;
-        }
-        if (positionItem(state, state.selectedPosition)) {
-          state.selectedPosition = nextFreePosition(state);
-          writeState(state);
-          render(state);
-        }
-        var pallet = findPallet(sscc);
-        var error = validatePalletForLoad(readState(), pallet, readState().selectedPosition);
-        if (error) {
-          setScannerStatus(error);
-          toast("warning", "Validacion de cargue", error);
-          return;
-        }
-        stopScanner();
-        $("[data-hu332-sscc]").value = sscc;
-        setScanStatus("SSCC leido por camara: " + sscc + ". Cargando posicion " + readState().selectedPosition + ".", "success");
-        loadPallet();
-      }
-
-      function startScannerDetection(video) {
-        if (!("BarcodeDetector" in window)) {
-          setScannerStatus("Camara activa. Este navegador no expone lectura nativa; usa lectura demo para probar el flujo.");
-          return;
-        }
-        var detector;
-        try {
-          detector = new BarcodeDetector({ formats: ["code_128", "ean_13", "qr_code", "data_matrix"] });
-        } catch (_) {
-          setScannerStatus("Camara activa. Detector no disponible; usa lectura demo.");
-          return;
-        }
-        var loop = function() {
-          if (!activeScanner || !activeScanner.overlay) return;
-          detector.detect(video).then(function(codes) {
-            if (!activeScanner || !activeScanner.overlay) return;
-            var hit = (codes || []).map(function(code) { return code.rawValue || ""; }).find(function(value) {
-              return normalizeSscc(value).length >= 18;
-            });
-            if (hit) {
-              completeScannerRead(hit);
-              return;
-            }
-            activeScanner.raf = requestAnimationFrame(loop);
-          }).catch(function() {
-            if (activeScanner) activeScanner.raf = requestAnimationFrame(loop);
-          });
-        };
-        setScannerStatus("Camara activa. Ubica el SSCC dentro del marco.");
-        activeScanner.raf = requestAnimationFrame(loop);
-      }
-
-      function startScannerCamera(overlay) {
-        var video = overlay.querySelector("[data-hu332-scanner-video]");
-        var fallback = overlay.querySelector("[data-hu332-scanner-fallback]");
-        if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function") {
-          fallback.hidden = false;
-          setScannerStatus("Camara no disponible en este entorno. Usa lectura demo para validar el flujo.");
-          return;
-        }
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
-          .then(function(stream) {
-            if (!activeScanner) {
-              stream.getTracks().forEach(function(track) { track.stop(); });
-              return;
-            }
-            activeScanner.stream = stream;
-            fallback.hidden = true;
-            video.srcObject = stream;
-            video.play().then(function() {
-              startScannerDetection(video);
-            }).catch(function() {
-              fallback.hidden = false;
-              setScannerStatus("No fue posible iniciar la camara. Usa lectura demo para continuar.");
-            });
-          })
-          .catch(function() {
-            fallback.hidden = false;
-            setScannerStatus("Permiso de camara denegado o no disponible. Usa lectura demo para validar el cargue.");
-          });
-      }
-
       function openScanner() {
         clearError();
         var state = readState();
@@ -594,49 +379,49 @@
           writeState(state);
           render(state);
         }
+
         var demo = nextScannablePallet(readState());
         if (!demo) {
           showError("No hay pallets validos pendientes para esta finca, referencia y certificacion.");
           return;
         }
-        stopScanner();
-        var overlay = document.createElement("div");
-        overlay.className = "hu332-scanner-overlay";
-        overlay.innerHTML = [
-          '<video class="hu332-scanner-video" data-hu332-scanner-video playsinline muted></video>',
-          '<div class="hu332-scanner-fallback" data-hu332-scanner-fallback hidden><strong>Camara no disponible</strong></div>',
-          '<div class="hu332-scanner-top">',
-          '<button class="hu332-scanner-icon" type="button" data-hu332-scanner-close aria-label="Cerrar escaner"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
-          '<div class="hu332-scanner-title">Escanear SSCC - Posicion ' + readState().selectedPosition + '</div>',
-          '<span></span>',
-          '</div>',
-          '<div class="hu332-scanner-frame" aria-hidden="true"></div>',
-          '<div class="hu332-scanner-bottom">',
-          '<strong>Scan-to-load</strong>',
-          '<span data-hu332-scanner-status>Solicitando camara. Ubica el SSCC dentro del marco.</span>',
-          '<div class="hu332-scanner-actions">',
-          '<button class="sial-btn sial-btn-secondary" type="button" data-hu332-scanner-close>Cancelar</button>',
-          '<button class="sial-btn sial-btn-primary" type="button" data-hu332-scanner-demo>Leer SSCC demo</button>',
-          '</div>',
-          '</div>'
-        ].join("");
-        document.body.appendChild(overlay);
-        document.body.classList.add("dialog-open");
-        activeScanner = {
-          overlay: overlay,
-          status: overlay.querySelector("[data-hu332-scanner-status]"),
-          stream: null,
-          raf: 0
-        };
-        overlay.querySelectorAll("[data-hu332-scanner-close]").forEach(function(button) {
-          button.addEventListener("click", stopScanner);
-        });
-        overlay.querySelector("[data-hu332-scanner-demo]").addEventListener("click", function() {
-          completeScannerRead(demo.sscc);
-        });
-        startScannerCamera(overlay);
-      }
+        if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") {
+          showError("Escaner no disponible en esta vista.");
+          return;
+        }
 
+        window.SialMobileUI.openBarcodeScanner({
+          title: "Escanear SSCC - Posicion " + readState().selectedPosition,
+          eyebrow: "Scan-to-load",
+          demoValue: demo.sscc,
+          demoLabel: "Leer SSCC demo",
+          normalize: normalizeSscc,
+          validate: function(sscc) {
+            if (!sscc) {
+              return { ok: false, message: "No se detecto un SSCC valido. Ajusta el encuadre e intenta de nuevo." };
+            }
+            var fresh = readState();
+            if (positionItem(fresh, fresh.selectedPosition)) {
+              fresh.selectedPosition = nextFreePosition(fresh);
+              writeState(fresh);
+              render(fresh);
+            }
+            var pallet = findPallet(sscc);
+            var error = validatePalletForLoad(readState(), pallet, readState().selectedPosition);
+            if (error) {
+              toast("warning", "Validacion de cargue", error);
+              return { ok: false, message: error };
+            }
+            return { ok: true, value: sscc };
+          },
+          onDetected: function(sscc, result) {
+            $("[data-hu332-sscc]").value = sscc;
+            var source = result && result.source === "camera" ? "camara" : "lectura demo";
+            setScanStatus("SSCC leido por " + source + ": " + sscc + ". Cargando posicion " + readState().selectedPosition + ".", "success");
+            loadPallet();
+          }
+        });
+      }
       function renderPositions(state) {
         var grid = $("[data-hu332-position-grid]");
         if (!grid) return;

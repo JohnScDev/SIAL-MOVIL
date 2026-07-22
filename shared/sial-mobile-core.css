@@ -4399,6 +4399,142 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
   white-space: nowrap;
 }
 
+.hu591-sscc-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* ============================================
+   Barcode scanner compartido
+   Fuente inicial: HU332 - Cargue de pallets
+   ============================================ */
+.sial-barcode-scanner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  overflow: hidden;
+  background: #020617;
+  color: #fff;
+}
+
+.sial-barcode-scanner-video,
+.sial-barcode-scanner-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sial-barcode-scanner-fallback {
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background:
+    linear-gradient(135deg, rgba(0, 92, 168, .46), rgba(15, 23, 36, .92)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .06) 0 1px, transparent 1px 24px);
+  text-align: center;
+}
+
+.sial-barcode-scanner-fallback[hidden] {
+  display: none;
+}
+
+.sial-barcode-scanner-top {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 10px;
+}
+
+.sial-barcode-scanner-title {
+  min-width: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  text-align: center;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .82);
+}
+
+.sial-barcode-scanner-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, .18);
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sial-barcode-scanner-frame {
+  position: absolute;
+  top: 28%;
+  left: 10%;
+  right: 10%;
+  z-index: 2;
+  aspect-ratio: 1.7;
+  border: 2px solid rgba(255, 255, 255, .86);
+  border-radius: 18px;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, .34), 0 0 28px rgba(0, 92, 168, .42);
+  pointer-events: none;
+}
+
+.sial-barcode-scanner-frame::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 2px;
+  background: #20a7ff;
+  box-shadow: 0 0 16px rgba(32, 167, 255, .9);
+  transform: translateY(-50%);
+}
+
+.sial-barcode-scanner-bottom {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 3;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, .72);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .38);
+}
+
+.sial-barcode-scanner-bottom strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.sial-barcode-scanner-bottom span {
+  color: rgba(255, 255, 255, .78);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.sial-barcode-scanner-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sial-barcode-scanner-actions .sial-btn {
+  min-height: 44px;
+}
 .hu591-mismatch[hidden],
 .hu591-relabel-grid[hidden],
 [data-hu591-mismatch-reason-wrap][hidden] {
@@ -4490,6 +4626,10 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
 }
 
 @media (max-width: 420px) {
+  .sial-barcode-scanner-actions {
+    grid-template-columns: 1fr;
+  }
+
   .hu591-input-action {
     grid-template-columns: 1fr;
   }

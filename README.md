@@ -37,6 +37,7 @@ Prototipo navegable de la version movil de SIAL. El alcance movil no replica SIA
 Comandos habituales:
 
 ```powershell
+node qa/mobile-barcode-scanner-contract.js
 node --check shared/sial-mobile-core.js
 node --check shared/sial-mobile-flow.js
 node --check login/sial-mobile-login.js

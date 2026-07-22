@@ -3,6 +3,31 @@
     return window.SialMobileUI;
   }
 
+  function activateBarcodeScannerPanels() {
+    document.querySelectorAll(".sial-scan-panel").forEach((panel) => {
+      panel.setAttribute("role", "button");
+      panel.setAttribute("tabindex", "0");
+      panel.setAttribute("aria-label", "Probar escaner compartido");
+      panel.dataset.libraryBarcodeScanner = "";
+      if (!panel.querySelector("code")) {
+        panel.insertAdjacentHTML("beforeend", "<code>SialMobileUI.openBarcodeScanner({ onDetected })</code>");
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", activateBarcodeScannerPanels);
+  } else {
+    activateBarcodeScannerPanels();
+  }
+
+  document.addEventListener("keydown", (event) => {
+    const panel = event.target.closest("[data-library-barcode-scanner]");
+    if (!panel || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    panel.click();
+  });
+
   document.addEventListener("click", (event) => {
     const segment = event.target.closest(".sial-segment-option");
     if (segment) {
@@ -95,6 +120,32 @@
             type: "info",
             title: "Captura cancelada",
             message: "No se agrego evidencia."
+          });
+        }
+      });
+      return;
+    }
+
+    const barcodeScanner = event.target.closest("[data-library-barcode-scanner]");
+    if (barcodeScanner && uiReady() && typeof window.SialMobileUI.openBarcodeScanner === "function") {
+      window.SialMobileUI.openBarcodeScanner({
+        title: "Escaner compartido",
+        eyebrow: "Patron reutilizable",
+        demoValue: "177012345678900019",
+        demoLabel: "Leer codigo demo",
+        normalize: window.SialMobileUI.normalizeSscc,
+        validate(value) {
+          return value.length === 18
+            ? { ok: true, value }
+            : { ok: false, message: "El ejemplo requiere un SSCC de 18 digitos." };
+        },
+        onDetected(value) {
+          const copy = barcodeScanner.querySelector(".sial-feedback-copy span");
+          if (copy) copy.textContent = "Ultima lectura: " + value;
+          window.SialMobileUI.showToast({
+            type: "success",
+            title: "Codigo detectado",
+            message: value
           });
         }
       });

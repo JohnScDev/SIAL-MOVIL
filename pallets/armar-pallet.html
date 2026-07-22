@@ -40,8 +40,11 @@
           <div class="sial-field">
             <label class="sial-label" for="hu591-sscc">Codigo SSCC unico</label>
             <div class="hu591-input-action">
-              <input class="sial-input-wrap sial-input" id="hu591-sscc" name="pallet" inputmode="numeric" autocomplete="off" required placeholder="Genera o digita SSCC" data-hu591-sscc>
-              <button class="sial-btn sial-btn-secondary" type="button" data-hu591-generate-sscc>Generar</button>
+              <input class="sial-input-wrap sial-input" id="hu591-sscc" name="pallet" inputmode="numeric" autocomplete="off" required placeholder="Escanea, genera o digita SSCC" data-hu591-sscc>
+              <div class="hu591-sscc-actions">
+                <button class="sial-btn sial-btn-secondary" type="button" data-hu591-scan-sscc>Escanear</button>
+                <button class="sial-btn sial-btn-secondary" type="button" data-hu591-generate-sscc>Generar</button>
+              </div>
             </div>
             <p class="sial-field-note" data-hu591-sscc-status>El SSCC debe ser unico e irrepetible para cada pallet.</p>
           </div>
@@ -236,6 +239,7 @@
         "0718": "San Joaquin"
       };
       var readings = [];
+      var ssccSource = "TYPED";
 
       function $(selector, root) {
         return (root || document).querySelector(selector);
@@ -348,6 +352,58 @@
         state.sequence = next;
         writePageState(state);
         return code;
+      }
+
+      function previewUniqueSscc() {
+        var state = readPageState();
+        var used = allUsedSscc(state);
+        var next = state.sequence || 0;
+        var code = "";
+        do {
+          next += 1;
+          code = buildSscc(next);
+        } while (used.has(code));
+        return code;
+      }
+
+      function normalizeSscc(value) {
+        if (window.SialMobileUI && typeof window.SialMobileUI.normalizeSscc === "function") {
+          return window.SialMobileUI.normalizeSscc(value);
+        }
+        var digits = String(value || "").replace(/\D/g, "");
+        return digits.length === 20 && digits.slice(0, 2) === "00" ? digits.slice(2) : digits;
+      }
+
+      function applySscc(value, source, message) {
+        var code = normalizeSscc(value).slice(0, 18);
+        var result = validateSscc(code);
+        $("[data-hu591-sscc]").value = code;
+        ssccSource = source || "TYPED";
+        setSsccStatus({
+          ok: result.ok,
+          message: result.ok && message ? message : result.message
+        });
+        updatePreview();
+        markDirty("sscc");
+        return result;
+      }
+
+      function openSsccScanner() {
+        if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") {
+          setSsccStatus({ ok: false, message: "Escaner no disponible en esta vista." });
+          return;
+        }
+        window.SialMobileUI.openBarcodeScanner({
+          title: "Escanear codigo SSCC",
+          eyebrow: "Identificacion de pallet",
+          demoValue: previewUniqueSscc(),
+          demoLabel: "Leer SSCC demo",
+          normalize: normalizeSscc,
+          validate: validateSscc,
+          onDetected: function(sscc) {
+            applySscc(sscc, "SCANNED", "SSCC escaneado y disponible.");
+          }
+        });
       }
 
       function selectedReference() {
@@ -481,7 +537,7 @@
       }
 
       function validateSscc(value) {
-        var code = String(value || "").replace(/\D/g, "");
+        var code = normalizeSscc(value);
         if (code.length !== 18) return { ok: false, message: "El SSCC debe tener 18 digitos." };
         if (checkDigit(code.slice(0, 17)) !== code.slice(17)) return { ok: false, message: "Digito de control SSCC invalido." };
         if (allUsedSscc(readPageState()).has(code)) return { ok: false, message: "Este SSCC ya fue usado. Genera uno nuevo." };
@@ -499,11 +555,12 @@
         var ref = selectedReference();
         var farm = selectedFarm();
         var workflow = readWorkflowState();
-        var sscc = $("[data-hu591-sscc]").value.replace(/\D/g, "");
+        var sscc = normalizeSscc($("[data-hu591-sscc]").value);
         var boxes = Number($("[data-hu591-boxes]").value || 0);
         var now = nowParts();
         return {
           sscc: sscc,
+          ssccSource: ssccSource,
           operation: workflow.operation || $("[data-hu591-operation]").value || "EXP-2026-0418",
           user: workflow.user || "Maria Operadora",
           reference: ref.code,
@@ -590,12 +647,9 @@
         updateRecipe();
 
         $("[data-hu591-generate-sscc]").addEventListener("click", function() {
-          var code = generateUniqueSscc();
-          $("[data-hu591-sscc]").value = code;
-          setSsccStatus({ ok: true, message: "SSCC generado y reservado para validacion." });
-          updatePreview();
-          markDirty("sscc");
+          applySscc(generateUniqueSscc(), "GENERATED", "SSCC generado y reservado para validacion.");
         });
+        $("[data-hu591-scan-sscc]").addEventListener("click", openSsccScanner);
         $("[data-hu591-reference]").addEventListener("change", function() { updateRecipe(); markDirty("reference"); });
         $("[data-hu591-farm-select]").addEventListener("change", function() { syncFarmFromSelect(); markDirty("farm"); });
         $("[data-hu591-farm-code]").addEventListener("input", function() { syncFarmFromCode(); markDirty("farm"); });
@@ -618,6 +672,7 @@
         });
         $("[data-hu591-sscc]").addEventListener("input", function(event) {
           event.target.value = event.target.value.replace(/\D/g, "").slice(0, 18);
+          ssccSource = "TYPED";
           if (event.target.value.length === 18) setSsccStatus(validateSscc(event.target.value));
           updatePreview();
           markDirty("sscc");
