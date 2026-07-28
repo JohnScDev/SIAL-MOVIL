@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Re-etiquetado de pallet</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="armar-pallet.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Re-etiquetado</h1>
+        <p>Proceso independiente de armado de pallet</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body hu591-page">
+      <section class="sial-status info">
+        <span><strong>Proceso separado</strong>El SSCC anterior se anulará únicamente cuando confirmes el nuevo re-etiquetado.</span>
+      </section>
+
+      <form class="sial-card sial-card-pad sial-form hu591-form" data-flow-form data-event="palletRelabeled" data-detail="Pallet re-etiquetado" novalidate>
+        <section class="hu591-section" data-relabel-source-section>
+          <div class="hu591-section-head">
+            <div><span class="hu591-step">01</span><h2 class="sial-section-title">Pallet a re-etiquetar</h2></div>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="relabel-old-sscc">SSCC anterior</label>
+            <input class="sial-input-wrap sial-input" id="relabel-old-sscc" inputmode="numeric" autocomplete="off" placeholder="Escanea o digita el SSCC actual" data-relabel-old-sscc>
+            <div class="hu591-sscc-actions">
+              <button class="sial-btn sial-btn-primary" type="button" data-relabel-scan-old>Escanear</button>
+              <button class="sial-btn sial-btn-secondary" type="button" data-relabel-search>Consultar</button>
+            </div>
+            <p class="sial-field-note" data-relabel-old-status>Consulta un pallet disponible para cargar su información.</p>
+          </div>
+          <div class="hu591-relabel-source" data-relabel-source hidden></div>
+        </section>
+
+        <section class="hu591-section">
+          <div class="hu591-section-head">
+            <div><span class="hu591-step">02</span><h2 class="sial-section-title">Motivo del cambio</h2></div>
+            <span class="sial-pill warning">Obligatorio</span>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="relabel-reason">Motivo de re-etiquetado</label>
+            <select class="sial-select" id="relabel-reason" data-relabel-reason>
+              <option value="">Selecciona un motivo</option>
+              <option value="CONSOLIDACION">Consolidación de cajas</option>
+              <option value="RETIRO_CAJAS">Retiro de cajas</option>
+              <option value="CORRECCION_DATOS">Corrección de información</option>
+              <option value="ETIQUETA_DANADA">Etiqueta dañada o ilegible</option>
+              <option value="OTRO">Otro</option>
+            </select>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="relabel-notes">Detalle</label>
+            <textarea class="sial-textarea" id="relabel-notes" maxlength="500" placeholder="Explica el cambio realizado y su justificación" data-relabel-notes></textarea>
+          </div>
+        </section>
+
+        <section class="hu591-section" data-relabel-new-section>
+          <div class="hu591-section-head">
+            <div><span class="hu591-step">03</span><h2 class="sial-section-title">Nuevo SSCC</h2></div>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="relabel-new-sscc">Código de reemplazo</label>
+            <input class="sial-input-wrap sial-input" id="relabel-new-sscc" inputmode="numeric" autocomplete="off" placeholder="Escanea, genera o digita el nuevo SSCC" data-relabel-new-sscc>
+            <div class="hu591-sscc-actions">
+              <button class="sial-btn sial-btn-primary" type="button" data-relabel-scan-new>Escanear</button>
+              <button class="sial-btn sial-btn-secondary" type="button" data-relabel-generate>Generar SSCC</button>
+            </div>
+            <p class="sial-field-note" data-relabel-new-status>El nuevo SSCC debe ser único.</p>
+          </div>
+        </section>
+
+        <section class="hu591-label-preview" aria-label="Confirmación del re-etiquetado">
+          <header>
+            <div><span>Nueva etiqueta</span><strong data-relabel-preview-new>SSCC pendiente</strong></div>
+            <span class="sial-pill warning">Re-etiquetado</span>
+          </header>
+          <dl>
+            <div><dt>SSCC anterior</dt><dd data-relabel-preview-old>--</dd></div>
+            <div><dt>Finca</dt><dd data-relabel-preview-farm>--</dd></div>
+            <div><dt>Referencias</dt><dd data-relabel-preview-references>0</dd></div>
+            <div><dt>Total cajas</dt><dd data-relabel-preview-boxes>0</dd></div>
+          </dl>
+        </section>
+
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Confirmar re-etiquetado</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script src="reetiquetar-pallet.js"></script>
+</body>
+</html>

@@ -1940,7 +1940,7 @@
       aria: "Navegacion pallets",
       items: [
         { href: "../pallets/armar-pallet.html", label: "HU591 - Armar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
-        { href: "../pallets/armar-pallet.html", label: "SSCC y cajas reales", icon: drawerIcon('<path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>') },
+        { href: "../pallets/reetiquetar-pallet.html", label: "Re-etiquetar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="m8 12 3 3 5-6"/><path d="M7 20h10"/>') },
         { href: "../pallets/cargar-pallets.html", label: "HU332 - Cargue contenedor", icon: drawerIcon('<path d="M12 5v14"/><path d="M5 12h14"/>') }
       ]
     },

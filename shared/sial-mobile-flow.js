@@ -517,8 +517,8 @@
       ["farmExternalInspection", "../finca/inspeccion-externa.html?selectContainer=1", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
       ["farmInternalInspection", "../finca/inspeccion-interna.html?selectContainer=1", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
       ["responsibility", "../finca/sesion-responsabilidad.html", "Sesion responsabilidad", "Capturar responsables y firmas."],
-      ["palletBuilt", "../pallets/armar-pallet.html", "HU591 - Armar pallet", "Registrar SSCC, referencia, finca y cajas reales."],
-      ["palletsLoaded", "../pallets/cargar-pallets.html", "HU332 - Cargue contenedor", "Registrar cargue scan-to-load del contenedor."]
+      ["palletBuilt", "../pallets/armar-pallet.html", "HU591 - Armar pallet", "Registrar SSCC, múltiples referencias, cajas y lotes reales."],
+      ["palletsLoaded", "../pallets/cargar-pallets.html", "HU332 - Cargue contenedor", "Registrar cargue scan-to-load del contenedor."],
       ["containerClosed", "../finca/cierre-contenedor.html", "Cerrar contenedor", "Validar sellos, cantidades y evidencia."],
       ["farmDispatch", "../finca/despacho-ze.html", "Despachar a ZE", "Enviar contenedor cerrado hacia zona externa."],
       ["zeReturnReception", "../puerto-ze/recepcion-ze-retorno.html", "Recibir retorno ZE", "Confirmar llegada desde finca."],

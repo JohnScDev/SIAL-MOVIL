@@ -10,7 +10,7 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "u
 const coreJs = read("shared/sial-mobile-core.js");
 const coreCss = read("shared/sial-mobile-core.css");
 const hu332 = read("pallets/cargar-pallets.html");
-const hu591 = read("pallets/armar-pallet.html");
+const hu591 = read("pallets/armar-pallet.html") + read("pallets/armar-pallet.js");
 const libraryJs = read("libreria/sial-mobile-library.js");
 
 assert.match(coreJs, /function openBarcodeScanner\(config\)/, "La API compartida debe implementar openBarcodeScanner.");
