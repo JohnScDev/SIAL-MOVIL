@@ -8,7 +8,7 @@
   <title>SIAL Móvil - HU591 Armado de pallet</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
   <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260728">
-  <link rel="stylesheet" href="hu591.css?v=20260728-2">
+  <link rel="stylesheet" href="hu591.css?v=20260728-3">
 </head>
 <body>
   <main class="sial-page">
@@ -130,13 +130,10 @@
         </section>
 
         <section class="hu591-label-preview" aria-label="Resumen final del pallet" data-hu591-summary>
-          <header>
-            <div>
-              <span>Resumen para etiqueta</span>
-              <strong data-hu591-preview-sscc>SSCC pendiente</strong>
-            </div>
-            <span class="sial-pill info">Vista previa</span>
-          </header>
+          <div class="hu591-label-head">
+            <span>Etiqueta pallet</span>
+            <strong data-hu591-preview-sscc>SSCC pendiente</strong>
+          </div>
           <dl>
             <div><dt>Finca</dt><dd data-hu591-preview-farm>--</dd></div>
             <div><dt>Semana actual</dt><dd data-hu591-preview-week>--</dd></div>
@@ -163,6 +160,6 @@
 
   <script src="../shared/sial-mobile-core.js?v=20260728"></script>
   <script src="../shared/sial-mobile-flow.js?v=20260728"></script>
-  <script src="armar-pallet.js?v=20260728-2"></script>
+  <script src="armar-pallet.js?v=20260728-3"></script>
 </body>
 </html>
