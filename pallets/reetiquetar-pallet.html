@@ -7,7 +7,8 @@
   <meta name="theme-color" content="#005CA8">
   <title>SIAL Móvil - Re-etiquetado de pallet</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
-  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260728">
+  <link rel="stylesheet" href="hu591.css?v=20260728-2">
 </head>
 <body>
   <main class="sial-page">
@@ -30,10 +31,13 @@
         <span><strong>Proceso separado</strong>El SSCC anterior se anulará únicamente cuando confirmes el nuevo re-etiquetado.</span>
       </section>
 
-      <form class="sial-card sial-card-pad sial-form hu591-form" data-flow-form data-event="palletRelabeled" data-detail="Pallet re-etiquetado" novalidate>
-        <section class="hu591-section" data-relabel-source-section>
+      <form class="sial-form hu591-form" data-flow-form data-event="palletRelabeled" data-detail="Pallet re-etiquetado" novalidate>
+        <section class="sial-card sial-card-pad hu591-section" data-relabel-source-section>
           <div class="hu591-section-head">
-            <div><span class="hu591-step">01</span><h2 class="sial-section-title">Pallet a re-etiquetar</h2></div>
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg></span>
+              <div><h2 class="sial-section-title">Pallet actual</h2><p>Consulta el SSCC que será reemplazado.</p></div>
+            </div>
           </div>
           <div class="sial-field">
             <label class="sial-label" for="relabel-old-sscc">SSCC anterior</label>
@@ -47,9 +51,12 @@
           <div class="hu591-relabel-source" data-relabel-source hidden></div>
         </section>
 
-        <section class="hu591-section">
+        <section class="sial-card sial-card-pad hu591-section">
           <div class="hu591-section-head">
-            <div><span class="hu591-step">02</span><h2 class="sial-section-title">Motivo del cambio</h2></div>
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h8"/></svg></span>
+              <div><h2 class="sial-section-title">Motivo del cambio</h2><p>Deja trazabilidad clara del reemplazo.</p></div>
+            </div>
             <span class="sial-pill warning">Obligatorio</span>
           </div>
           <div class="sial-field">
@@ -69,9 +76,12 @@
           </div>
         </section>
 
-        <section class="hu591-section" data-relabel-new-section>
+        <section class="sial-card sial-card-pad hu591-section" data-relabel-new-section>
           <div class="hu591-section-head">
-            <div><span class="hu591-step">03</span><h2 class="sial-section-title">Nuevo SSCC</h2></div>
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="m9 12 2 2 4-5"/></svg></span>
+              <div><h2 class="sial-section-title">Nuevo SSCC</h2><p>Escanea o genera el código de reemplazo.</p></div>
+            </div>
           </div>
           <div class="sial-field">
             <label class="sial-label" for="relabel-new-sscc">Código de reemplazo</label>
@@ -98,13 +108,16 @@
         </section>
 
         <p class="sial-inline-error" data-flow-error hidden></p>
-        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Confirmar re-etiquetado</button>
+        <section class="sial-card sial-card-pad hu591-submit-card">
+          <p>Al confirmar, el SSCC anterior quedará anulado y no podrá volver a utilizarse.</p>
+          <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Confirmar re-etiquetado</button>
+        </section>
       </form>
     </section>
   </main>
 
-  <script src="../shared/sial-mobile-core.js"></script>
-  <script src="../shared/sial-mobile-flow.js"></script>
-  <script src="reetiquetar-pallet.js"></script>
+  <script src="../shared/sial-mobile-core.js?v=20260728"></script>
+  <script src="../shared/sial-mobile-flow.js?v=20260728"></script>
+  <script src="reetiquetar-pallet.js?v=20260728-2"></script>
 </body>
 </html>

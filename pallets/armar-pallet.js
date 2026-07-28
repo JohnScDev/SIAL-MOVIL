@@ -365,7 +365,7 @@
           '<div class="hu591-reference-boxes"><label class="sial-field"><span class="sial-label">Número de cajas</span><input class="sial-input-wrap sial-input" type="number" inputmode="numeric" min="1" max="96" value="' + escapeHtml(item.boxes) + '" data-hu591-reference-boxes></label>',
           '<span class="sial-pill">Receta ' + data.recipe + '</span></div>',
           '<div class="sial-field hu591-mismatch-reason"' + (mismatch ? "" : " hidden") + '><label class="sial-label">Motivo de diferencia</label><textarea class="sial-textarea" placeholder="Explica por qué la cantidad difiere de la receta" data-hu591-mismatch-reason>' + escapeHtml(item.mismatchReason) + '</textarea></div>',
-          '<div class="hu591-lots-head"><div><strong>Distribución por lotes</strong><span>La suma debe coincidir con las cajas de la referencia.</span></div><button class="sial-chip-action" type="button" data-hu591-add-lot>+ Agregar lote</button></div>',
+          '<div class="hu591-lots-head"><div><strong>Distribución por lotes</strong><span>La suma debe coincidir con las cajas de la referencia.</span></div><button class="sial-chip-action" type="button" data-hu591-add-lot>+ Lote</button></div>',
           '<div class="hu591-lot-list">' + lots + '</div>',
           '<p class="hu591-allocation-status ' + status.type + '" data-hu591-allocation-status>' + escapeHtml(status.message) + '</p>',
           '</article>'
@@ -645,9 +645,6 @@
     renderReadings();
     updateSummary();
 
-    $("[data-hu591-generate-sscc]").addEventListener("click", function () {
-      applySscc(nextSscc(true), "GENERATED", "SSCC generado y disponible.");
-    });
     $("[data-hu591-scan-sscc]").addEventListener("click", openSsccScanner);
     $("[data-hu591-open-reference-picker]").addEventListener("click", openReferencePicker);
     $("[data-hu591-reference-list]").addEventListener("click", handleReferenceAction);
