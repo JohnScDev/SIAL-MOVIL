@@ -1,14 +1,22 @@
-﻿(function () {
+(function () {
   const storageThemeKey = "sial-mobile-theme";
   const contextStorageKey = "sial-mobile-context";
   const companyStorageKey = "sial-mobile-company";
   const root = document.documentElement;
+
   const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   const dialogExitDelay = 220;
   let activeLogoIntroPromise = null;
   let logoIntroQueued = false;
   let hasPendingUnsavedChanges = false;
+  const pendingUnsavedReasons = new Set();
   let pendingNavigationTarget = "";
+  const modalLayerStack = [];
+  const isolatedBodyChildren = new Map();
+  let modalLayerBodyOverflow = "";
+  let alertStatusObserver = null;
+  let pendingValidationForm = null;
+  let validationRedirectTimer = 0;
   let edgeGesture = null;
   let suppressNextEdgeClick = false;
   const drawerEdgeStartWidth = 40;
@@ -39,11 +47,15 @@
     if (!shouldTrackUnsavedChanges()) return;
     hasPendingUnsavedChanges = true;
     root.dataset.unsavedChanges = "true";
-    if (reason && document.body) document.body.dataset.unsavedReason = reason;
+    if (reason) pendingUnsavedReasons.add(reason);
+    if (pendingUnsavedReasons.size && document.body) {
+      document.body.dataset.unsavedReason = Array.from(pendingUnsavedReasons).join(",");
+    }
   }
 
   function clearUnsavedChanges() {
     hasPendingUnsavedChanges = false;
+    pendingUnsavedReasons.clear();
     pendingNavigationTarget = "";
     delete root.dataset.unsavedChanges;
     if (document.body) delete document.body.dataset.unsavedReason;
@@ -53,16 +65,29 @@
     return Boolean(hasPendingUnsavedChanges && shouldTrackUnsavedChanges());
   }
 
+  function unsavedChangesMessage() {
+    const groups = [];
+    const reasons = pendingUnsavedReasons;
+    if (reasons.has("field") || reasons.has("control-point") || reasons.has("signature")) groups.push("los datos ingresados");
+    if (reasons.has("photo") || reasons.has("evidence")) groups.push("las fotografías y evidencias");
+    if (reasons.has("novelty")) groups.push("las novedades");
+    if (reasons.has("box") || reasons.has("scan") || reasons.has("hu591") || reasons.has("hu332")) groups.push("los códigos escaneados");
+    if (!groups.length) return "Se perderán los cambios realizados en esta vista.";
+    if (groups.length === 1) return "Se perderán " + groups[0] + " que aún no se han guardado.";
+    return "Se perderán " + groups.slice(0, -1).join(", ") + " y " + groups[groups.length - 1] + " que aún no se han guardado.";
+  }
+
   function showUnsavedNavigationDialog(href, options = {}) {
     if (!href) return;
     pendingNavigationTarget = href;
     document.body.classList.remove("drawer-open");
-    openDialog({
+    openDecisionSheet({
       id: "unsaved-navigation",
-      variant: "modal",
+      type: "warning",
       title: "Cambios sin guardar",
-      message: "Hay cambios en esta vista que aun no se han guardado.",
+      message: unsavedChangesMessage(),
       dismissible: false,
+      initialFocus: "[data-dialog-primary]",
       actions: [
         {
           label: "Permanecer",
@@ -73,7 +98,7 @@
         },
         {
           label: "Salir sin guardar",
-          variant: "secondary",
+          variant: "destructive",
           onClick: function() {
             var target = pendingNavigationTarget;
             clearUnsavedChanges();
@@ -289,6 +314,8 @@
     if (doneBtn) {
       doneBtn.style.visibility = allowMultiple && !isSequence && capturedPhotos.length ? "visible" : "hidden";
       doneBtn.disabled = !(allowMultiple && !isSequence && capturedPhotos.length);
+      doneBtn.textContent = capturedPhotos.length === 1 ? "Usar foto" : "Usar " + capturedPhotos.length + " fotos";
+      doneBtn.setAttribute("aria-label", doneBtn.textContent);
     }
   }
 
@@ -362,8 +389,10 @@
     stopCameraStream();
     capturedPhotos = [];
     var overlay = document.querySelector(".sial-camera-overlay");
-    if (overlay) overlay.remove();
-    document.body.style.overflow = "";
+    if (overlay) {
+      unmountModalLayer(overlay);
+      overlay.remove();
+    }
   }
 
   function getCameraCanvas() {
@@ -382,7 +411,6 @@
     var onPhoto = config.onPhoto || function() {};
     var onComplete = config.onComplete || function() {};
     var onCancel = config.onCancel || function() {};
-    var escapeHandler = null;
     var isSettled = false;
 
     capturedPhotos = [];
@@ -390,11 +418,15 @@
 
     var overlay = document.createElement("div");
     overlay.className = "sial-camera-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "sial-camera-active-title");
+    overlay.tabIndex = -1;
     overlay.innerHTML = [
       '<div class="sial-camera-topline">',
-      '<button class="sial-camera-icon-btn" type="button" data-camera-cancel aria-label="Cerrar camara"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
+      '<button class="sial-camera-icon-btn" type="button" data-camera-cancel aria-label="Cancelar captura"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
       '<div class="sial-camera-title-stack">',
-      '<h2 class="sial-camera-title" data-camera-title>' + escapeCameraText(title) + '</h2>',
+      '<h2 class="sial-camera-title" id="sial-camera-active-title" data-camera-title>' + escapeCameraText(title) + '</h2>',
       '<span class="sial-camera-step" data-camera-step hidden></span>',
       '</div>',
       '<div class="sial-camera-btn-group">',
@@ -420,14 +452,13 @@
       '<div class="sial-camera-capture-area">',
       '<span class="sial-camera-control-spacer" aria-hidden="true"></span>',
       '<button class="sial-camera-capture-btn" type="button" aria-label="Capturar foto"></button>',
-      '<button class="sial-camera-secondary-action" type="button" data-camera-done>Usar</button>',
+      '<button class="sial-camera-secondary-action" type="button" data-camera-done>Usar foto</button>',
       '</div>',
       '<div class="sial-camera-empty-state" data-camera-count>Sin fotos</div>',
       '</div>'
     ].join("");
 
     document.body.appendChild(overlay);
-    document.body.style.overflow = "hidden";
 
     var video = overlay.querySelector("video");
     var canvas = getCameraCanvas();
@@ -465,9 +496,37 @@
       if (isSettled) return;
       isSettled = true;
       var result = capturedPhotos.slice();
-      if (escapeHandler) document.removeEventListener("keydown", escapeHandler);
       closeCameraOverlay();
       onComplete(result);
+    }
+
+    function cancelCapture() {
+      if (isSettled) return;
+      isSettled = true;
+      var result = capturedPhotos.slice();
+      closeCameraOverlay();
+      onCancel(result);
+    }
+
+    function requestCancel() {
+      if (isSettled) return;
+      if (!capturedPhotos.length) {
+        cancelCapture();
+        return;
+      }
+      openDecisionSheet({
+        id: "camera-discard-confirm",
+        type: "warning",
+        title: "¿Descartar fotos capturadas?",
+        message: capturedPhotos.length === 1
+          ? "La foto capturada no se guardará."
+          : "Las " + capturedPhotos.length + " fotos capturadas no se guardarán.",
+        returnFocus: overlay.querySelector("[data-camera-cancel]"),
+        actions: [
+          { label: "Continuar captura", variant: "primary" },
+          { label: "Descartar fotos", variant: "destructive", close: false, onClick: function() { closeDialog("camera-discard-confirm", { immediate: true, restoreFocus: false }); cancelCapture(); } }
+        ]
+      });
     }
 
     function addCapturedPhoto(dataUrl, source) {
@@ -515,17 +574,12 @@
     updateCameraTitle();
     updateCameraProgress(countEl, doneBtn, allowMultiple, isSequence, maxPhotos);
 
-    escapeHandler = function(event) {
-      if (event.key !== "Escape") return;
-      if (isSettled) return;
-      isSettled = true;
-      var result = capturedPhotos.slice();
-      closeCameraOverlay();
-      if (result.length && allowMultiple && !isSequence) onComplete(result);
-      else onCancel(result);
-      document.removeEventListener("keydown", escapeHandler);
-    };
-    document.addEventListener("keydown", escapeHandler);
+    mountModalLayer(overlay, {
+      panel: overlay,
+      dismissible: true,
+      initialFocus: "[data-camera-cancel]",
+      onEscape: requestCancel
+    });
 
     overlay.querySelector("[data-camera-flip]").addEventListener("click", function() {
       cameraFacingMode = cameraFacingMode === "environment" ? "user" : "environment";
@@ -542,18 +596,7 @@
       } catch(e) {}
     });
 
-    overlay.querySelector("[data-camera-cancel]").addEventListener("click", function() {
-      if (isSettled) return;
-      isSettled = true;
-      var result = capturedPhotos.slice();
-      closeCameraOverlay();
-      document.removeEventListener("keydown", escapeHandler);
-      if (result.length > 0 && allowMultiple && !isSequence) {
-        onComplete(result);
-      } else {
-        onCancel(result);
-      }
-    });
+    overlay.querySelector("[data-camera-cancel]").addEventListener("click", requestCancel);
 
     overlay.querySelector(".sial-camera-capture-btn").addEventListener("click", function() {
       if (!hasRoom()) return;
@@ -572,7 +615,6 @@
     if (doneBtn) {
       doneBtn.addEventListener("click", function() {
         if (!capturedPhotos.length) return;
-        document.removeEventListener("keydown", escapeHandler);
         finishWithPhotos();
       });
       doneBtn.style.visibility = "hidden";
@@ -611,14 +653,10 @@
     if (scanner.stream) {
       scanner.stream.getTracks().forEach(function(track) { track.stop(); });
     }
-    if (scanner.escapeHandler) {
-      document.removeEventListener("keydown", scanner.escapeHandler);
+    if (scanner.overlay) {
+      unmountModalLayer(scanner.overlay);
+      if (scanner.overlay.parentNode) scanner.overlay.parentNode.removeChild(scanner.overlay);
     }
-    if (scanner.overlay && scanner.overlay.parentNode) {
-      scanner.overlay.parentNode.removeChild(scanner.overlay);
-    }
-    document.body.classList.remove("dialog-open");
-    document.body.style.overflow = scanner.previousOverflow;
   }
 
   function cancelBarcodeScanner() {
@@ -764,21 +802,25 @@
     var eyebrow = String(config.eyebrow || "Escaner").trim() || "Escaner";
     var demoValue = String(config.demoValue || "");
     var demoLabel = String(config.demoLabel || "Leer codigo demo");
-    var previousOverflow = document.body.style.overflow;
     var overlay = document.createElement("div");
     overlay.className = "sial-barcode-scanner-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "sial-barcode-scanner-title");
+    overlay.setAttribute("aria-describedby", "sial-barcode-scanner-status");
+    overlay.tabIndex = -1;
     overlay.innerHTML = [
       '<video class="sial-barcode-scanner-video" data-barcode-scanner-video playsinline muted></video>',
       '<div class="sial-barcode-scanner-fallback" data-barcode-scanner-fallback hidden><strong>Camara no disponible</strong></div>',
       '<div class="sial-barcode-scanner-top">',
       '<button class="sial-barcode-scanner-icon" type="button" data-barcode-scanner-close aria-label="Cerrar escaner"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
-      '<div class="sial-barcode-scanner-title">' + escapeCameraText(title) + '</div>',
+      '<h2 class="sial-barcode-scanner-title" id="sial-barcode-scanner-title">' + escapeCameraText(title) + '</h2>',
       '<span></span>',
       '</div>',
       '<div class="sial-barcode-scanner-frame" aria-hidden="true"></div>',
       '<div class="sial-barcode-scanner-bottom">',
       '<strong>' + escapeCameraText(eyebrow) + '</strong>',
-      '<span data-barcode-scanner-status>' + escapeCameraText(config.initialMessage || "Solicitando camara. Ubica el codigo dentro del marco.") + '</span>',
+      '<span id="sial-barcode-scanner-status" data-barcode-scanner-status role="status" aria-live="polite">' + escapeCameraText(config.initialMessage || "Solicitando camara. Ubica el codigo dentro del marco.") + '</span>',
       '<div class="sial-barcode-scanner-actions">',
       '<button class="sial-btn sial-btn-secondary" type="button" data-barcode-scanner-close>Cancelar</button>',
       '<button class="sial-btn sial-btn-primary" type="button" data-barcode-scanner-demo' + (demoValue ? "" : " hidden") + '>' + escapeCameraText(demoLabel) + '</button>',
@@ -787,8 +829,6 @@
     ].join("");
 
     document.body.appendChild(overlay);
-    document.body.classList.add("dialog-open");
-    document.body.style.overflow = "hidden";
 
     activeBarcodeScanner = {
       config: config,
@@ -800,15 +840,15 @@
       raf: 0,
       retryTimer: 0,
       processing: false,
-      settled: false,
-      previousOverflow: previousOverflow,
-      escapeHandler: null
+      settled: false
     };
 
-    activeBarcodeScanner.escapeHandler = function(event) {
-      if (event.key === "Escape") cancelBarcodeScanner();
-    };
-    document.addEventListener("keydown", activeBarcodeScanner.escapeHandler);
+    mountModalLayer(overlay, {
+      panel: overlay,
+      dismissible: true,
+      initialFocus: "[data-barcode-scanner-close]",
+      onEscape: cancelBarcodeScanner
+    });
 
     overlay.querySelectorAll("[data-barcode-scanner-close]").forEach(function(button) {
       button.addEventListener("click", cancelBarcodeScanner);
@@ -913,6 +953,41 @@
     return ["info", "success", "warning", "error"].includes(type) ? type : "info";
   }
 
+  function feedbackTypeMeta(type) {
+    const normalized = normalizeType(type);
+    return {
+      type: normalized,
+      label: {
+        info: "Informaci\u00f3n",
+        success: "Operaci\u00f3n exitosa",
+        warning: "Atenci\u00f3n requerida",
+        error: "Ocurri\u00f3 un error"
+      }[normalized]
+    };
+  }
+
+  function feedbackIconMarkup(type) {
+    return {
+      info: '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path>',
+      success: '<circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.6 2.6L16.5 9"></path>',
+      warning: '<path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v4"></path><path d="M12 16h.01"></path>',
+      error: '<circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6"></path><path d="m15 9-6 6"></path>'
+    }[normalizeType(type)];
+  }
+
+  function createFeedbackIdentity(type) {
+    const identity = document.createElement("span");
+    const symbol = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    identity.className = "sial-feedback-identity";
+    identity.setAttribute("aria-hidden", "true");
+    symbol.setAttribute("class", "sial-feedback-symbol");
+    symbol.setAttribute("viewBox", "0 0 24 24");
+    symbol.setAttribute("focusable", "false");
+    symbol.innerHTML = feedbackIconMarkup(type);
+    identity.appendChild(symbol);
+    return identity;
+  }
+
   function appendFeedbackText(parent, title, message) {
     const copy = document.createElement("div");
     copy.className = "sial-feedback-copy";
@@ -933,17 +1008,128 @@
     return target instanceof Element ? target : null;
   }
 
+  function modalFocusableElements(panel) {
+    if (!panel) return [];
+    return Array.from(panel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')).filter(function(node) {
+      return !node.hidden && node.getAttribute("aria-hidden") !== "true";
+    });
+  }
+
+  function restoreIsolatedBodyChildren() {
+    isolatedBodyChildren.forEach(function(previous, child) {
+      child.inert = previous.inert;
+      if (previous.ariaHidden === null) child.removeAttribute("aria-hidden");
+      else child.setAttribute("aria-hidden", previous.ariaHidden);
+    });
+    isolatedBodyChildren.clear();
+  }
+
+  function refreshModalLayerState() {
+    restoreIsolatedBodyChildren();
+    const top = modalLayerStack[modalLayerStack.length - 1];
+    if (!top) {
+      document.body.classList.remove("dialog-open");
+      document.body.style.overflow = modalLayerBodyOverflow;
+      return;
+    }
+    Array.from(document.body.children).forEach(function(child) {
+      if (child === top.element) return;
+      isolatedBodyChildren.set(child, {
+        inert: Boolean(child.inert),
+        ariaHidden: child.getAttribute("aria-hidden")
+      });
+      child.inert = true;
+      child.setAttribute("aria-hidden", "true");
+    });
+    document.body.classList.add("dialog-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function mountModalLayer(element, options = {}) {
+    if (!(element instanceof Element)) return null;
+    const existingIndex = modalLayerStack.findIndex(function(layer) { return layer.element === element; });
+    if (existingIndex !== -1) modalLayerStack.splice(existingIndex, 1);
+    if (!modalLayerStack.length) modalLayerBodyOverflow = document.body.style.overflow || "";
+    const panel = options.panel instanceof Element
+      ? options.panel
+      : (typeof options.panel === "string" ? element.querySelector(options.panel) : element);
+    const opener = resolveElement(options.returnFocus) || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    const layer = {
+      element: element,
+      panel: panel || element,
+      dismissible: options.dismissible !== false,
+      onEscape: typeof options.onEscape === "function" ? options.onEscape : null,
+      opener: opener
+    };
+    modalLayerStack.push(layer);
+    refreshModalLayerState();
+    const initialFocus = (typeof options.initialFocus === "string"
+      ? layer.panel.querySelector(options.initialFocus)
+      : resolveElement(options.initialFocus))
+      || modalFocusableElements(layer.panel)[0]
+      || layer.panel;
+    window.setTimeout(function() {
+      if (modalLayerStack.includes(layer) && initialFocus instanceof HTMLElement) initialFocus.focus({ preventScroll: true });
+    }, 0);
+    return layer;
+  }
+
+  function unmountModalLayer(element, options = {}) {
+    const index = modalLayerStack.findIndex(function(layer) { return layer.element === element; });
+    if (index === -1) return null;
+    const layer = modalLayerStack[index];
+    modalLayerStack.splice(index, 1);
+    refreshModalLayerState();
+    if (options.restoreFocus !== false) {
+      const top = modalLayerStack[modalLayerStack.length - 1];
+      const target = layer.opener && layer.opener.isConnected ? layer.opener : (top ? top.panel : null);
+      if (target instanceof HTMLElement) window.setTimeout(function() { target.focus({ preventScroll: true }); }, 0);
+    }
+    return layer;
+  }
+
+  function handleModalLayerKeydown(event) {
+    const layer = modalLayerStack[modalLayerStack.length - 1];
+    if (!layer) return false;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!layer.dismissible) {
+        replayMotionState(layer.panel, "is-blocked-attempt", 420);
+        return true;
+      }
+      if (layer.onEscape) layer.onEscape();
+      return true;
+    }
+    if (event.key !== "Tab") return false;
+    const focusable = modalFocusableElements(layer.panel);
+    if (!focusable.length) {
+      event.preventDefault();
+      layer.panel.focus({ preventScroll: true });
+      return true;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+    return true;
+  }
+
   function showToast(options = {}) {
     const region = ensureToastRegion();
     const type = normalizeType(options.type);
     const toast = document.createElement("div");
     toast.className = `sial-toast ${type}`;
     toast.setAttribute("role", type === "error" ? "alert" : "status");
-    const icon = document.createElement("span");
-    icon.className = "sial-toast-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.textContent = options.icon || "i";
-    toast.appendChild(icon);
+    toast.setAttribute("aria-label", [feedbackTypeMeta(type).label, options.title, options.message].filter(Boolean).join(". "));
+    const identity = createFeedbackIdentity(type, options);
+    identity.classList.add("is-compact");
+    toast.appendChild(identity);
     appendFeedbackText(toast, options.title, options.message);
     region.appendChild(toast);
     window.setTimeout(() => {
@@ -954,16 +1140,106 @@
     return toast;
   }
 
+  function validationFieldLabel(field) {
+    if (!(field instanceof Element)) return "este campo";
+    const explicit = field.getAttribute("aria-label");
+    if (explicit) return explicit.trim();
+    const label = field.labels && field.labels[0]
+      ? field.labels[0]
+      : field.closest(".sial-field")?.querySelector(".sial-label, label");
+    const text = label ? label.textContent.replace(/\s*\*\s*$/, "").trim() : "";
+    return text || field.getAttribute("placeholder") || field.name || "este campo";
+  }
+
+  function validationMessageForField(field) {
+    const label = validationFieldLabel(field);
+    if (!field || !field.validity) return "Revisa la informacion indicada y vuelve a intentar.";
+    if (field.validity.valueMissing) return "Completa " + label + " para continuar.";
+    if (field.validity.typeMismatch) return "Ingresa un valor valido en " + label + ".";
+    if (field.validity.patternMismatch) return "Revisa el formato solicitado para " + label + ".";
+    if (field.validity.tooShort) return label + " requiere mas caracteres.";
+    if (field.validity.tooLong) return label + " supera la longitud permitida.";
+    if (field.validity.rangeUnderflow || field.validity.rangeOverflow) return "Revisa el valor permitido para " + label + ".";
+    return "Revisa " + label + " antes de continuar.";
+  }
+
+  function ensureFormValidationStatus(form) {
+    if (!(form instanceof HTMLFormElement)) return null;
+    let status = form.querySelector("[data-flow-error], [data-login-status], [data-recovery-status], [data-global-validation-status]");
+    if (status) return status;
+    status = document.createElement("div");
+    status.className = "sial-status error";
+    status.dataset.globalValidationStatus = "";
+    status.hidden = true;
+    const submit = form.querySelector('[type="submit"]');
+    if (submit) submit.before(status);
+    else form.appendChild(status);
+    return status;
+  }
+
+  function revealValidationContext(target) {
+    if (!(target instanceof Element)) return;
+    target.closest("details:not([open])")?.setAttribute("open", "");
+    const panel = target.closest('[role="tabpanel"][hidden], [data-tab-panel][hidden]');
+    if (!panel) return;
+    panel.hidden = false;
+    panel.removeAttribute("aria-hidden");
+    if (!panel.id) return;
+    const tab = Array.from(document.querySelectorAll('[aria-controls]')).find(function(candidate) {
+      return candidate.getAttribute("aria-controls") === panel.id;
+    });
+    if (tab instanceof HTMLElement) tab.click();
+  }
+
+  function revealValidationError(target, options = {}) {
+    const status = resolveElement(target);
+    const form = resolveElement(options.form)
+      || (status ? status.closest("form") : null)
+      || (resolveElement(options.field)?.closest("form") || null);
+    const field = resolveElement(options.field)
+      || (form ? form.querySelector('[aria-invalid="true"], input:invalid, select:invalid, textarea:invalid') : null);
+    const destination = field || status;
+    if (!destination) return null;
+
+    if (field) {
+      setFieldInvalid(field, true);
+      if (status) {
+        if (!status.id) status.id = "sial-validation-" + Date.now().toString(36);
+        const describedBy = new Set((field.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
+        describedBy.add(status.id);
+        field.setAttribute("aria-describedby", Array.from(describedBy).join(" "));
+      }
+    }
+
+    revealValidationContext(destination);
+    destination.classList.add("sial-error-target");
+    if (!field && destination instanceof HTMLElement && !destination.matches('a, button, input, select, textarea, [tabindex]')) {
+      destination.tabIndex = -1;
+    }
+    window.requestAnimationFrame(function() {
+      destination.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
+      if (destination instanceof HTMLElement) destination.focus({ preventScroll: true });
+      window.setTimeout(function() { destination.classList.remove("sial-error-target"); }, 700);
+    });
+    return destination;
+  }
   function setInlineStatus(target, options = {}) {
     const node = resolveElement(target);
     if (!node) return null;
     const type = normalizeType(options.type);
-    node.className = `sial-status ${type}`;
+    const branded = options.branded !== false;
+    node.className = `sial-status${branded ? " sial-alert-card" : ""} ${type}`;
     node.setAttribute("role", type === "error" ? "alert" : "status");
     node.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+    node.setAttribute("aria-label", [feedbackTypeMeta(type).label, options.title, options.message].filter(Boolean).join(". "));
+    node.dataset.sialAlertHydrated = "true";
     node.hidden = false;
     node.replaceChildren();
+    if (branded) node.appendChild(createFeedbackIdentity(type, options));
     appendFeedbackText(node, options.title, options.message || "");
+    if (type === "error" && options.reveal !== false) {
+      revealValidationError(node, { field: options.field || options.focusTarget, form: options.form });
+    }
     return node;
   }
 
@@ -972,6 +1248,53 @@
     if (!node) return;
     node.hidden = true;
     node.replaceChildren();
+  }
+
+  function hydrateAlertStatus(node) {
+    if (!(node instanceof Element) || !node.classList.contains("sial-status") || node.dataset.sialAlertHydrated === "true") return false;
+    const type = ["info", "success", "warning", "error"].find(function(candidate) { return node.classList.contains(candidate); }) || "info";
+
+    const directChildren = Array.from(node.children);
+    directChildren.forEach(function(child) {
+      if (child.matches("svg.sial-icon")) child.remove();
+    });
+    let copy = Array.from(node.children).find(function(child) { return child.classList.contains("sial-feedback-copy"); });
+    if (!copy) {
+      copy = document.createElement(node.tagName === "P" ? "span" : "div");
+      copy.className = "sial-feedback-copy";
+      Array.from(node.childNodes).forEach(function(child) { copy.appendChild(child); });
+      node.appendChild(copy);
+    }
+    const semanticLabel = document.createElement("span");
+    semanticLabel.className = "sial-visually-hidden";
+    semanticLabel.textContent = feedbackTypeMeta(type).label + ". ";
+    copy.prepend(semanticLabel);
+    node.dataset.sialAlertHydrated = "true";
+    node.classList.add("sial-alert-card");
+    node.setAttribute("role", type === "error" ? "alert" : "status");
+    node.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+    node.removeAttribute("aria-label");
+    node.prepend(createFeedbackIdentity(type));
+    return true;
+  }
+
+  function hydrateAlertStatuses(scope = document) {
+    const nodes = [];
+    if (scope instanceof Element && scope.classList.contains("sial-status")) nodes.push(scope);
+    if (scope && typeof scope.querySelectorAll === "function") nodes.push(...scope.querySelectorAll(".sial-status"));
+    return nodes.reduce(function(count, node) { return count + (hydrateAlertStatus(node) ? 1 : 0); }, 0);
+  }
+
+  function observeAlertStatuses() {
+    if (alertStatusObserver || !document.body || typeof MutationObserver !== "function") return;
+    alertStatusObserver = new MutationObserver(function(records) {
+      records.forEach(function(record) {
+        record.addedNodes.forEach(function(node) {
+          if (node instanceof Element) hydrateAlertStatuses(node);
+        });
+      });
+    });
+    alertStatusObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   function setFieldInvalid(field, invalid) {
@@ -1034,16 +1357,29 @@
     banner.className = `sial-banner ${type}`;
     banner.dataset.bannerId = id;
     banner.setAttribute("role", type === "error" ? "alert" : "status");
+    banner.setAttribute("aria-label", [feedbackTypeMeta(type).label, options.title, options.message].filter(Boolean).join(". "));
 
-    const icon = document.createElement("span");
-    icon.className = "sial-banner-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.textContent = options.icon || "i";
-    banner.appendChild(icon);
+    const identity = createFeedbackIdentity(type, options);
+    identity.classList.add("is-compact");
+    banner.appendChild(identity);
     appendFeedbackText(banner, options.title, options.message);
+
+    if (options.action && options.action.label) {
+      const action = document.createElement("button");
+      action.className = "sial-banner-action";
+      action.type = "button";
+      action.textContent = options.action.label;
+      action.addEventListener("click", function() {
+        if (typeof options.action.onClick === "function") options.action.onClick();
+        if (options.action.dismiss !== false) hideBanner(id);
+      });
+      banner.classList.add("has-action");
+      banner.appendChild(action);
+    }
 
     if (options.dismissible !== false) {
       const close = document.createElement("button");
+      banner.classList.add("has-close");
       close.className = "sial-banner-close";
       close.type = "button";
       close.dataset.bannerDismiss = id;
@@ -1061,9 +1397,7 @@
   }
 
   function syncDialogOpenState() {
-    if (!document.querySelector(".sial-modal-backdrop")) {
-      document.body.classList.remove("dialog-open");
-    }
+    refreshModalLayerState();
   }
 
   function closeDialog(id, options = {}) {
@@ -1074,38 +1408,42 @@
       return;
     }
 
+    const finish = function() {
+      unmountModalLayer(dialog, { restoreFocus: options.restoreFocus !== false });
+      dialog.remove();
+      if (typeof dialog._sialOnClose === "function") dialog._sialOnClose(options.reason || "close");
+      syncDialogOpenState();
+    };
     const shouldAnimate = !options.immediate
       && dialog.dataset.dialogId === "access-recovery"
       && !prefersReducedMotion();
 
     if (!shouldAnimate) {
-      dialog.remove();
-      syncDialogOpenState();
+      finish();
       return;
     }
-
     if (dialog.classList.contains("is-closing")) return;
-    if (dialog.contains(document.activeElement) && document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
     dialog.classList.add("is-closing");
     dialog.setAttribute("aria-hidden", "true");
-    window.setTimeout(() => {
-      dialog.remove();
-      syncDialogOpenState();
-    }, options.delay || dialogExitDelay);
+    window.setTimeout(finish, options.delay || dialogExitDelay);
   }
 
   function openDialog(options = {}) {
     const id = options.id || `dialog-${Date.now()}`;
-    closeDialog(id, { immediate: true });
+    closeDialog(id, { immediate: true, restoreFocus: false });
+    const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g, "-");
+    const dismissible = options.dismissible !== false;
+    const type = normalizeType(options.type);
+    const branded = options.branded === true;
 
     const backdrop = document.createElement("div");
     backdrop.className = "sial-modal-backdrop";
     backdrop.dataset.dialogId = id;
+    backdrop.dataset.dialogDismissible = String(dismissible);
 
     const panel = document.createElement("section");
     panel.className = options.variant === "sheet" ? "sial-bottom-sheet" : "sial-modal";
+    if (branded) panel.classList.add("sial-decision-alert", type);
     panel.setAttribute("role", options.role || "dialog");
     panel.setAttribute("aria-modal", "true");
     panel.tabIndex = -1;
@@ -1113,23 +1451,40 @@
     const header = document.createElement("header");
     header.className = "sial-dialog-header";
     const title = document.createElement("h2");
-    title.textContent = options.title || "Confirmar accion";
-    header.appendChild(title);
-    if (options.dismissible !== false) {
+    title.id = safeId + "-title";
+    title.textContent = options.title || "Confirmar acción";
+    panel.setAttribute("aria-labelledby", title.id);
+    if (branded) {
+      const heading = document.createElement("div");
+      const headingCopy = document.createElement("div");
+      const eyebrow = document.createElement("span");
+      heading.className = "sial-dialog-heading";
+      headingCopy.className = "sial-dialog-heading-copy";
+      eyebrow.className = "sial-dialog-eyebrow";
+      eyebrow.textContent = options.eyebrow || "SIAL \u00b7 " + feedbackTypeMeta(type).label;
+      headingCopy.append(eyebrow, title);
+      heading.append(createFeedbackIdentity(type, options), headingCopy);
+      header.appendChild(heading);
+    } else {
+      header.appendChild(title);
+    }
+    if (dismissible) {
       const close = document.createElement("button");
       close.className = "sial-btn sial-btn-icon";
       close.type = "button";
       close.dataset.dialogClose = id;
-      close.setAttribute("aria-label", "Cerrar dialogo");
-      close.textContent = "x";
+      close.setAttribute("aria-label", "Cerrar diálogo");
+      close.textContent = "×";
       header.appendChild(close);
     }
     panel.appendChild(header);
 
     if (options.message) {
       const message = document.createElement("p");
+      message.id = safeId + "-description";
       message.className = "sial-dialog-copy";
       message.textContent = options.message;
+      panel.setAttribute("aria-describedby", message.id);
       panel.appendChild(message);
     }
 
@@ -1152,21 +1507,46 @@
       actions.forEach((action) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `sial-btn ${action.variant === "secondary" ? "sial-btn-secondary" : "sial-btn-primary"}`;
+        const variantClass = action.variant === "destructive"
+          ? "sial-btn-danger"
+          : (action.variant === "secondary" ? "sial-btn-secondary" : "sial-btn-primary");
+        button.className = `sial-btn ${variantClass}`;
         button.textContent = action.label;
+        if (action.variant !== "secondary" && action.variant !== "destructive") button.dataset.dialogPrimary = "";
+        if (action.initialFocus) button.dataset.dialogInitialFocus = "";
         button.addEventListener("click", () => {
           if (typeof action.onClick === "function") action.onClick();
-          if (action.close !== false) closeDialog(id);
+          if (action.close !== false) closeDialog(id, { reason: "action" });
         });
         footer.appendChild(button);
       });
       panel.appendChild(footer);
     }
     backdrop.appendChild(panel);
+    backdrop._sialOnClose = options.onClose;
+    backdrop.addEventListener("click", function(event) {
+      if (event.target === backdrop && dismissible) closeDialog(id, { reason: "backdrop" });
+    });
     document.body.appendChild(backdrop);
-    document.body.classList.add("dialog-open");
-    panel.focus({ preventScroll: true });
+    mountModalLayer(backdrop, {
+      panel: panel,
+      dismissible: dismissible,
+      initialFocus: options.initialFocus || "[data-dialog-initial-focus]",
+      returnFocus: options.returnFocus,
+      onEscape: function() { closeDialog(id, { reason: "escape" }); }
+    });
     return backdrop;
+  }
+
+  function openDecisionSheet(options = {}) {
+    const type = normalizeType(options.type);
+    return openDialog({
+      ...options,
+      variant: "sheet",
+      type,
+      branded: options.branded !== false,
+      role: options.role || (type === "warning" || type === "error" ? "alertdialog" : "dialog")
+    });
   }
 
   function normalizePickerItem(item) {
@@ -1760,13 +2140,18 @@
     setTheme,
     showToast,
     setInlineStatus,
+    revealValidationError,
     clearInlineStatus,
+    hydrateAlertStatuses,
     showBanner,
     hideBanner,
     playLogoIntro,
     openDialog,
+    openDecisionSheet,
     openMobilePicker,
     closeDialog,
+    mountModalLayer,
+    unmountModalLayer,
     replayMotionState,
     navigateTo,
     markUnsavedChanges,
@@ -1783,6 +2168,8 @@
     clearSelectedContext
   });
 
+  hydrateAlertStatuses(document);
+  observeAlertStatuses();
   startLogoIntroIfNeeded();
 
   document.addEventListener("click", (event) => {
@@ -1830,10 +2217,8 @@
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeDrawer();
-      closeDialog();
-    }
+    if (handleModalLayerKeydown(event)) return;
+    if (event.key === "Escape") closeDrawer();
   });
 
   document.addEventListener("click", (event) => {
@@ -1848,7 +2233,42 @@
     }
   });
 
+  document.addEventListener("invalid", (event) => {
+    const field = event.target;
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement)) return;
+    setFieldInvalid(field, true);
+    const form = field.form || field.closest("form");
+    if (!form) {
+      revealValidationError(field, { field });
+      return;
+    }
+    pendingValidationForm = form;
+    window.clearTimeout(validationRedirectTimer);
+    validationRedirectTimer = window.setTimeout(function() {
+      const activeForm = pendingValidationForm;
+      pendingValidationForm = null;
+      if (!activeForm) return;
+      const firstInvalid = activeForm.querySelector("input:invalid, select:invalid, textarea:invalid") || field;
+      const status = ensureFormValidationStatus(activeForm);
+      setInlineStatus(status, {
+        type: "error",
+        title: "Revisa " + validationFieldLabel(firstInvalid),
+        message: validationMessageForField(firstInvalid),
+        field: firstInvalid,
+        form: activeForm
+      });
+    }, 0);
+  }, true);
+
   document.addEventListener("input", (event) => {
+    const correctedField = event.target.closest('input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"]');
+    if (correctedField && correctedField.validity.valid) {
+      setFieldInvalid(correctedField, false);
+      const validationForm = correctedField.form || correctedField.closest("form");
+      const remainingInvalid = validationForm && validationForm.querySelector('[aria-invalid="true"], input:invalid, select:invalid, textarea:invalid');
+      if (!remainingInvalid && validationForm) clearInlineStatus(ensureFormValidationStatus(validationForm));
+    }
+
     const flowField = event.target.closest("[data-flow-form] input, [data-flow-form] select, [data-flow-form] textarea");
     if (flowField && !flowField.matches("[type='hidden'], [data-unsaved-ignore]")) {
       markUnsavedChanges("field");
@@ -2031,7 +2451,7 @@
         type: "success",
         icon: "ok",
         title: "Acceso validado",
-        message: "El siguiente paso serÃ¡ selecciÃ³n de empresa."
+        message: "El siguiente paso ser\u00e1 selecci\u00f3n de empresa."
       });
       if (form.dataset.next) {
         window.setTimeout(() => {

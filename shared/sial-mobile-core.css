@@ -1,4 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 :root {
   color-scheme: light;
@@ -1028,6 +1028,21 @@ html[data-theme="dark"] .sial-auth-logo {
   background: var(--sial-primary-600);
 }
 
+.sial-btn-danger {
+  border-color: color-mix(in srgb, var(--sial-error) 55%, var(--sial-border));
+  background: var(--sial-error);
+  color: #fff;
+}
+
+.sial-btn-danger:hover {
+  background: color-mix(in srgb, var(--sial-error) 88%, #000);
+}
+
+.sial-btn-danger:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-error) 28%, transparent);
+  outline-offset: 2px;
+}
+
 .sial-btn-secondary {
   border-color: var(--sial-border);
   background: var(--sial-surface);
@@ -1054,6 +1069,18 @@ html[data-theme="dark"] .sial-auth-logo {
   width: 100%;
 }
 
+.sial-visually-hidden {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
 .sial-status {
   display: flex;
   align-items: flex-start;
@@ -1109,52 +1136,168 @@ html[data-theme="dark"] .sial-auth-logo {
   background: var(--sial-error-bg);
 }
 
+.sial-status.success {
+  border-color: color-mix(in srgb, var(--sial-success) 34%, var(--sial-border));
+  background: var(--sial-success-bg);
+}
+
+.sial-alert-card,
+.sial-decision-alert,
+.sial-toast,
+.sial-banner {
+  --sial-feedback-accent: var(--sial-info);
+  --sial-feedback-tint: var(--sial-info-bg);
+}
+
+.sial-alert-card.success,
+.sial-decision-alert.success,
+.sial-toast.success,
+.sial-banner.success {
+  --sial-feedback-accent: var(--sial-success);
+  --sial-feedback-tint: var(--sial-success-bg);
+}
+
+.sial-alert-card.warning,
+.sial-decision-alert.warning,
+.sial-toast.warning,
+.sial-banner.warning {
+  --sial-feedback-accent: var(--sial-warning);
+  --sial-feedback-tint: var(--sial-warning-bg);
+}
+
+.sial-alert-card.error,
+.sial-decision-alert.error,
+.sial-toast.error,
+.sial-banner.error {
+  --sial-feedback-accent: var(--sial-error);
+  --sial-feedback-tint: var(--sial-error-bg);
+}
+
+.sial-alert-card {
+  min-height: 80px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  padding: 14px 16px;
+  border-color: color-mix(in srgb, var(--sial-feedback-accent) 38%, var(--sial-border));
+  background:
+    linear-gradient(110deg, color-mix(in srgb, var(--sial-feedback-tint) 76%, transparent), transparent 72%),
+    var(--sial-surface-raised);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--sial-feedback-accent) 9%, transparent);
+}
+
+.sial-status[hidden] {
+  display: none;
+}
+
+.sial-feedback-identity {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--sial-feedback-accent) 32%, var(--sial-border));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--sial-feedback-tint) 78%, var(--sial-surface));
+}
+
+.sial-feedback-identity.is-compact {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+}
+
+.sial-feedback-symbol {
+  width: 26px;
+  height: 26px;
+  display: block;
+  fill: none;
+  stroke: var(--sial-feedback-accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.15;
+}
+
+.sial-feedback-identity.is-compact .sial-feedback-symbol {
+  width: 24px;
+  height: 24px;
+}
+.sial-alert-card strong {
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.sial-alert-card p {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sial-alert-card .sial-feedback-copy > span {
+  display: block;
+  color: var(--sial-text-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sial-alert-card .sial-feedback-copy > span > strong {
+  margin-bottom: 4px;
+}
+
+.sial-error-target {
+  scroll-margin-block: 104px 28px;
+}
+
+.sial-alert-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-error) 30%, transparent);
+  outline-offset: 3px;
+}
+
+.sial-input[aria-invalid="true"],
+.sial-select[aria-invalid="true"],
+.sial-textarea[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--sial-error) 64%, var(--sial-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-error) 14%, transparent);
+}
+
 .sial-toast-region {
   position: fixed;
   left: 50%;
-  bottom: max(16px, env(safe-area-inset-bottom));
+  bottom: max(20px, env(safe-area-inset-bottom));
   z-index: 80;
-  width: min(calc(100vw - 32px), 448px);
+  width: min(calc(100vw - 24px), 560px);
   display: grid;
-  gap: 10px;
+  gap: 12px;
   transform: translateX(-50%);
   pointer-events: none;
 }
-
 .sial-toast {
-  min-height: 52px;
+  min-height: 76px;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-columns: 44px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--sial-border);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--sial-surface-overlay) 96%, transparent);
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--sial-feedback-accent) 38%, var(--sial-border));
+  border-radius: 18px;
+  background:
+    linear-gradient(110deg, color-mix(in srgb, var(--sial-feedback-tint) 52%, transparent), transparent 72%),
+    color-mix(in srgb, var(--sial-surface-overlay) 98%, transparent);
   color: var(--sial-text);
-  box-shadow: var(--sial-shadow-overlay);
+  box-shadow: 0 16px 38px rgba(2, 20, 43, .24);
   backdrop-filter: blur(16px);
   pointer-events: auto;
-  animation: sial-toast-in .18s ease-out both;
+  animation: sial-toast-in .22s var(--sial-motion-ease) both;
 }
-
-.sial-toast-icon {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--sial-radius-pill);
-  background: var(--sial-primary-100);
-  color: var(--sial-primary-500);
-  font-size: 13px;
-  font-weight: 700;
-}
-
 .sial-toast strong {
   display: block;
   color: var(--sial-text);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
 }
 
 .sial-toast .sial-feedback-copy {
@@ -1162,36 +1305,22 @@ html[data-theme="dark"] .sial-auth-logo {
 }
 
 .sial-toast p {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   color: var(--sial-text-2);
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .sial-toast.success {
   border-color: color-mix(in srgb, var(--sial-success) 36%, var(--sial-border));
 }
 
-.sial-toast.success .sial-toast-icon {
-  background: var(--sial-success-bg);
-  color: var(--sial-success);
-}
-
 .sial-toast.warning {
   border-color: color-mix(in srgb, var(--sial-warning) 38%, var(--sial-border));
 }
 
-.sial-toast.warning .sial-toast-icon {
-  background: var(--sial-warning-bg);
-  color: var(--sial-warning-text);
-}
-
 .sial-toast.error {
   border-color: color-mix(in srgb, var(--sial-error) 38%, var(--sial-border));
-}
-
-.sial-toast.error .sial-toast-icon {
-  background: var(--sial-error-bg);
-  color: var(--sial-error);
 }
 
 @keyframes sial-toast-in {
@@ -1220,7 +1349,7 @@ html[data-theme="dark"] .sial-auth-logo {
 .sial-banner {
   min-height: 56px;
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) 36px;
+  grid-template-columns: 44px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   padding: 12px;
@@ -1232,6 +1361,10 @@ html[data-theme="dark"] .sial-auth-logo {
   backdrop-filter: blur(16px);
   pointer-events: auto;
 }
+
+.sial-banner.has-action { grid-template-columns: 44px minmax(0, 1fr) auto; }
+.sial-banner.has-close { grid-template-columns: 44px minmax(0, 1fr) 44px; }
+.sial-banner.has-action.has-close { grid-template-columns: 44px minmax(0, 1fr) auto 44px; }
 
 .sial-banner.info {
   border-color: color-mix(in srgb, var(--sial-info) 30%, var(--sial-border));
@@ -1290,9 +1423,27 @@ html[data-theme="dark"] .sial-auth-logo {
   line-height: 1.35;
 }
 
+.sial-banner-action {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+  color: var(--sial-primary-600);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sial-banner-action:focus-visible,
+.sial-banner-close:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 22%, transparent);
+  outline-offset: 2px;
+}
+
 .sial-banner-close {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   border: 1px solid var(--sial-border-subtle);
@@ -1392,6 +1543,70 @@ html[data-theme="dark"] .sial-auth-logo {
   border-bottom-left-radius: 0;
 }
 
+.sial-decision-alert {
+  position: relative;
+  gap: 18px;
+  overflow: hidden;
+  padding: 22px 18px max(20px, env(safe-area-inset-bottom));
+  border-color: color-mix(in srgb, var(--sial-feedback-accent) 42%, var(--sial-border));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--sial-feedback-tint) 54%, var(--sial-surface)) 0, var(--sial-surface) 180px);
+  animation: sial-decision-alert-in var(--sial-motion-slow) var(--sial-motion-emphasis) both;
+}
+
+.sial-dialog-heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sial-dialog-heading-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sial-dialog-eyebrow {
+  color: var(--sial-feedback-accent);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.sial-decision-alert .sial-feedback-identity {
+  width: 54px;
+  height: 54px;
+  border-color: color-mix(in srgb, var(--sial-feedback-accent) 28%, var(--sial-border));
+}
+
+.sial-decision-alert .sial-feedback-symbol {
+  width: 30px;
+  height: 30px;
+}
+
+.sial-decision-alert .sial-dialog-copy {
+  color: var(--sial-text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.sial-decision-alert .sial-dialog-actions .sial-btn {
+  min-height: 50px;
+}
+
+@keyframes sial-decision-alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .sial-modal-backdrop[data-dialog-id="unsaved-navigation"] {
   background: color-mix(in srgb, var(--sial-backdrop) 82%, transparent);
 }
@@ -1574,8 +1789,11 @@ html[data-theme="dark"] .sial-auth-logo {
   box-shadow: inset 3px 0 0 var(--sial-primary-500);
 }
 
-.sial-container-option.is-locked {
-  opacity: .86;
+.sial-container-option.is-locked,
+.sial-container-option:disabled {
+  opacity: .62;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .sial-container-option[aria-pressed="true"] {
@@ -2046,6 +2264,8 @@ html[data-theme="dark"] .sial-recovery-flow > .sial-auth-logo {
   animation: sial-recovery-digit-pop var(--sial-motion-base) var(--sial-motion-ease);
 }
 
+.sial-modal.is-blocked-attempt,
+.sial-bottom-sheet.is-blocked-attempt,
 .sial-otp-group.is-blocked-attempt,
 .sial-input.is-blocked-attempt,
 .sial-input-wrap.is-blocked-attempt,

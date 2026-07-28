@@ -141,7 +141,7 @@
     <header class="sial-page-header">
       <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
       <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
-      <div class="sial-page-title"><h1>Cargue contenedor</h1><p>HU332 - Scan-to-load en finca</p></div>
+      <div class="sial-page-title"><h1>Cargue contenedor</h1><p>HU332 - Cargue por lectura SSCC</p></div>
       <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
     </header>
 
@@ -309,17 +309,32 @@
       function showError(message) {
         var node = $("[data-hu332-error]");
         if (!node) return;
+        if (window.SialMobileUI && typeof window.SialMobileUI.setInlineStatus === "function") {
+          window.SialMobileUI.setInlineStatus(node, {
+            type: "error",
+            title: "No es posible continuar",
+            message: message,
+            form: node.closest("form")
+          });
+          return;
+        }
         node.hidden = false;
         node.textContent = message;
+        node.tabIndex = -1;
+        node.scrollIntoView({ behavior: "smooth", block: "center" });
+        node.focus({ preventScroll: true });
       }
 
       function clearError() {
         var node = $("[data-hu332-error]");
         if (!node) return;
+        if (window.SialMobileUI && typeof window.SialMobileUI.clearInlineStatus === "function") {
+          window.SialMobileUI.clearInlineStatus(node);
+          return;
+        }
         node.hidden = true;
         node.textContent = "";
       }
-
       function findPallet(sscc) {
         return demoPallets.find(function(item) { return item.sscc === sscc; }) || null;
       }
@@ -392,7 +407,7 @@
 
         window.SialMobileUI.openBarcodeScanner({
           title: "Escanear SSCC - Posicion " + readState().selectedPosition,
-          eyebrow: "Scan-to-load",
+          eyebrow: "Lectura SSCC para cargue",
           demoValue: demo.sscc,
           demoLabel: "Leer SSCC demo",
           normalize: normalizeSscc,

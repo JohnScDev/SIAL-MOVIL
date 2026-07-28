@@ -15,10 +15,49 @@
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", activateBarcodeScannerPanels);
-  } else {
+  function installAlertSystemDemo() {
+    const grid = document.querySelector('[data-library-section="feedback"] .library-preview-grid');
+    if (!grid || grid.querySelector("[data-library-alert-system]")) return;
+    const article = document.createElement("article");
+    article.className = "sial-card sial-card-pad library-demo-card library-alert-system";
+    article.dataset.libraryAlertSystem = "";
+    article.innerHTML = [
+      '<div class="library-alert-system-head">',
+      '<div><span class="sial-pill">Patron principal</span><h3>Alertas SIAL</h3></div>',
+      '<p class="library-muted">La tarjeta contextual informa dentro del flujo. La hoja inferior se reserva para decisiones que requieren una accion.</p>',
+      '</div>',
+      '<div class="library-alert-variant-grid" data-library-alert-variants></div>',
+      '<div class="library-alert-actions">',
+      '<button class="sial-btn sial-btn-secondary" type="button" data-library-decision-alert data-alert-type="warning">Ver decision de advertencia</button>',
+      '<button class="sial-btn sial-btn-primary" type="button" data-library-decision-alert data-alert-type="error">Ver decision de error</button>',
+      '</div>',
+      '<code>SialMobileUI.setInlineStatus(...) + SialMobileUI.openDecisionSheet(...)</code>'
+    ].join("");
+    grid.prepend(article);
+
+    const variants = [
+      { type: "info", title: "Informaci\u00f3n de la operaci\u00f3n", message: "Dato relevante para continuar, sin bloquear la tarea." },
+      { type: "success", title: "Registro completado", message: "La operaci\u00f3n qued\u00f3 guardada correctamente." },
+      { type: "warning", title: "Revisi\u00f3n necesaria", message: "Verifica la informaci\u00f3n antes de continuar." },
+      { type: "error", title: "No fue posible guardar", message: "Corrige los datos indicados e intenta nuevamente." }
+    ];
+    const variantGrid = article.querySelector("[data-library-alert-variants]");
+    variants.forEach((variant) => {
+      const node = document.createElement("div");
+      variantGrid.appendChild(node);
+      window.SialMobileUI.setInlineStatus(node, variant);
+    });
+  }
+
+  function initializeLibraryDemos() {
     activateBarcodeScannerPanels();
+    if (uiReady()) installAlertSystemDemo();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeLibraryDemos);
+  } else {
+    initializeLibraryDemos();
   }
 
   document.addEventListener("keydown", (event) => {
@@ -58,7 +97,14 @@
         id: "library-offline",
         type: "warning",
         title: "Banner persistente",
-        message: "Estado global visible hasta que cambie la condicion."
+        message: "Estado global visible hasta que cambie la condicion.",
+        action: {
+          label: "Reintentar",
+          dismiss: false,
+          onClick: function() {
+            window.SialMobileUI.showToast({ type: "info", title: "Reintento iniciado", message: "La accion permanece visible mientras se procesa." });
+          }
+        }
       });
     }
 
@@ -192,6 +238,24 @@
         actions: [
           { label: "Cerrar", variant: "secondary" },
           { label: "Aplicar", variant: "primary" }
+        ]
+      });
+    }
+
+    const decisionTrigger = event.target.closest("[data-library-decision-alert]");
+    if (decisionTrigger && uiReady() && typeof window.SialMobileUI.openDecisionSheet === "function") {
+      const type = decisionTrigger.dataset.alertType || "warning";
+      const isError = type === "error";
+      window.SialMobileUI.openDecisionSheet({
+        id: "library-decision-alert",
+        type,
+        title: isError ? "No se pudo completar la operaci\u00f3n" : "\u00bfDeseas continuar?",
+        message: isError
+          ? "Los datos no se guardaron. Revisa la informaci\u00f3n o intenta nuevamente."
+          : "Se detect\u00f3 una diferencia en los datos. Puedes volver a revisarlos o continuar bajo tu responsabilidad.",
+        actions: [
+          { label: "Revisar datos", variant: "secondary" },
+          { label: isError ? "Intentar nuevamente" : "Continuar", variant: "primary", initialFocus: true }
         ]
       });
     }

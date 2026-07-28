@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   const stateKey = "sial-mobile-workflow";
   const zeReceptionEvidenceKey = "ze-rec-evidencia-inicial";
   const zeReceptionEvidenceMax = 6;
@@ -602,15 +602,23 @@
   function showInline(form, message) {
     let box = form.querySelector("[data-flow-error]");
     if (!box) return;
+    const firstInvalid = form.querySelector("input:invalid, select:invalid, textarea:invalid");
+    if (firstInvalid) firstInvalid.setAttribute("aria-invalid", "true");
     if (window.SialMobileUI && typeof window.SialMobileUI.setInlineStatus === "function") {
       window.SialMobileUI.setInlineStatus(box, {
-        type: "warning",
-        title: "Validacion requerida",
-        message
+        type: "error",
+        title: firstInvalid ? "Revisa el campo indicado" : "No es posible continuar",
+        message,
+        field: firstInvalid,
+        form
       });
     } else {
       box.hidden = false;
       box.textContent = message;
+      const destination = firstInvalid || box;
+      destination.tabIndex = destination.tabIndex < 0 ? -1 : destination.tabIndex;
+      destination.scrollIntoView({ behavior: "smooth", block: "center" });
+      destination.focus({ preventScroll: true });
     }
   }
 
@@ -750,6 +758,26 @@
   function pageHasBlockingRequirement() {
     if (isPrototypeReviewPage()) return false;
     return Array.from(document.querySelectorAll("[data-requires]")).some((node) => !node.hidden);
+  }
+
+  function blockingRequirementMessage() {
+    var requirement = Array.from(document.querySelectorAll("[data-requires]")).find(function(node) { return !node.hidden; });
+    if (!requirement) return "Completa el evento requerido antes de continuar.";
+    var detail = requirement.dataset.requiresDetail || "";
+    var missing = requirement.querySelector("[data-missing-list]");
+    if (detail) return detail;
+    if (missing && missing.textContent.trim()) return "Completa primero: " + missing.textContent.trim() + ".";
+    return "Completa el evento requerido antes de continuar.";
+  }
+
+  function showFlowBlocked() {
+    showBanner({
+      id: "flow-blocked",
+      type: "warning",
+      title: "Operación bloqueada",
+      message: blockingRequirementMessage(),
+      dismissible: true
+    });
   }
 
   function clearInline(form) {
@@ -906,12 +934,13 @@
       document.removeEventListener("keydown", activePhotoViewerKeydown);
       activePhotoViewerKeydown = null;
     }
-    if (viewer) viewer.remove();
-    document.body.classList.remove("photo-viewer-open");
-    if (document.body.hasAttribute("data-photo-viewer-overflow")) {
-      document.body.style.overflow = document.body.getAttribute("data-photo-viewer-overflow") || "";
-      document.body.removeAttribute("data-photo-viewer-overflow");
+    if (viewer) {
+      if (window.SialMobileUI && typeof window.SialMobileUI.unmountModalLayer === "function") {
+        window.SialMobileUI.unmountModalLayer(viewer);
+      }
+      viewer.remove();
     }
+    document.body.classList.remove("photo-viewer-open");
   }
 
   function openPhotoViewer(options) {
@@ -927,12 +956,13 @@
     viewer.dataset.photoViewer = "";
     viewer.setAttribute("role", "dialog");
     viewer.setAttribute("aria-modal", "true");
-    viewer.setAttribute("aria-label", "Vista de evidencia fotografica");
+    viewer.setAttribute("aria-labelledby", "sial-photo-viewer-title");
+    viewer.tabIndex = -1;
     viewer.innerHTML = [
       '<header class="sial-photo-viewer-header">',
       '<button class="sial-photo-viewer-icon" type="button" data-photo-viewer-close aria-label="Cerrar visor"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>',
       '<div class="sial-photo-viewer-title-stack">',
-      '<h2 data-photo-viewer-title>Foto</h2>',
+      '<h2 id="sial-photo-viewer-title" data-photo-viewer-title>Foto</h2>',
       '<span data-photo-viewer-counter>1 de 1</span>',
       '</div>',
       '<span class="sial-photo-viewer-spacer" aria-hidden="true"></span>',
@@ -945,14 +975,19 @@
       '<button class="sial-photo-viewer-nav" type="button" data-photo-viewer-next aria-label="Foto siguiente"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>',
       '</div>',
       '<footer class="sial-photo-viewer-actions">',
-      '<button class="sial-photo-viewer-retake" type="button" data-photo-viewer-retake><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Retomar</button>',
+      '<button class="sial-photo-viewer-retake" type="button" data-photo-viewer-retake><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Volver a tomar foto</button>',
       '</footer>'
     ].join("");
 
     document.body.appendChild(viewer);
-    document.body.setAttribute("data-photo-viewer-overflow", document.body.style.overflow || "");
-    document.body.style.overflow = "hidden";
     document.body.classList.add("photo-viewer-open");
+    if (window.SialMobileUI && typeof window.SialMobileUI.mountModalLayer === "function") {
+      window.SialMobileUI.mountModalLayer(viewer, {
+        panel: viewer,
+        initialFocus: "[data-photo-viewer-close]",
+        onEscape: closePhotoViewer
+      });
+    }
 
     var titleEl = viewer.querySelector("[data-photo-viewer-title]");
     var counterEl = viewer.querySelector("[data-photo-viewer-counter]");
@@ -1008,7 +1043,6 @@
       if (event.target === viewer) closePhotoViewer();
     });
     activePhotoViewerKeydown = function(event) {
-      if (event.key === "Escape") closePhotoViewer();
       if (event.key === "ArrowLeft") move(-1);
       if (event.key === "ArrowRight") move(1);
     };
@@ -1268,8 +1302,8 @@
       '<label>Tipo <select data-novelty-type>',
       renderSelectOptions([
         { value: "CONTAMINANTE", label: "Contaminante" },
-        { value: "OBJETO_EXTRANO", label: "Objeto extrano" },
-        { value: "DANO_ESTRUCTURAL", label: "Dano estructural" },
+        { value: "OBJETO_EXTRANO", label: "Objeto extraño" },
+        { value: "DANO_ESTRUCTURAL", label: "Daño estructural" },
         { value: "MODIFICACION", label: "Modificacion" },
         { value: "CORROSION", label: "Corrosion" },
         { value: "OTRO", label: "Otro" }
@@ -1280,11 +1314,11 @@
         { value: "BAJA", label: "Baja" },
         { value: "MEDIA", label: "Media" },
         { value: "ALTA", label: "Alta" },
-        { value: "CRITICA", label: "Critica" }
+        { value: "CRITICA", label: "Crítica" }
       ], selectedSeverity),
       '</select></label>',
-      '<label class="sial-checkbox-row"><input type="checkbox" data-novelty-blocking' + (item.blocking ? " checked" : "") + "> Bloqueante</label>",
-      '<label>Descripcion <textarea data-novelty-desc placeholder="Describe la novedad">' + escapeHtml(item.noveltyDesc || "") + "</textarea></label>"
+      '<label class="sial-checkbox-row"><input type="checkbox" data-novelty-blocking' + (item.blocking ? " checked" : "") + "> Impide continuar la operación</label>",
+      '<label>Descripción <textarea data-novelty-desc placeholder="Describe la novedad">' + escapeHtml(item.noveltyDesc || "") + "</textarea></label>"
     ].join("");
     form.addEventListener("submit", function(event) {
       event.preventDefault();
@@ -1464,6 +1498,31 @@
     }
   };
 
+  const showBanner = (options) => {
+    if (window.SialMobileUI && typeof window.SialMobileUI.showBanner === "function") {
+      window.SialMobileUI.showBanner(options);
+    }
+  };
+
+  function updateConnectionBanner() {
+    if (!window.SialMobileUI) return;
+    if (navigator.onLine) {
+      window.SialMobileUI.hideBanner("network-offline");
+      return;
+    }
+    showBanner({
+      id: "network-offline",
+      type: "warning",
+      title: "Sin conexión",
+      message: "Los cambios se conservarán en este dispositivo y se sincronizarán cuando recuperes la conexión.",
+      dismissible: false
+    });
+  }
+
+  window.addEventListener("online", updateConnectionBanner);
+  window.addEventListener("offline", updateConnectionBanner);
+  window.setTimeout(updateConnectionBanner, 0);
+
   function markUnsaved(reason) {
     if (window.SialMobileUI && typeof window.SialMobileUI.markUnsavedChanges === "function") {
       window.SialMobileUI.markUnsavedChanges(reason || "flow");
@@ -1501,11 +1560,11 @@
 
   function compactInspectionAvailabilityLabel(item) {
     var eventName = item.nextInspectionEvent || "";
-    if (eventName === "portExternalInspection") return "Ext. ZE";
-    if (eventName === "portInternalInspection") return "Int. ZE";
-    if (eventName === "farmExternalInspection") return "Ext. finca";
-    if (eventName === "farmInternalInspection") return "Int. finca";
-    return "Otra";
+    if (eventName === "portExternalInspection") return "inspección externa en Zona Externa";
+    if (eventName === "portInternalInspection") return "inspección interna en Zona Externa";
+    if (eventName === "farmExternalInspection") return "inspección externa en finca";
+    if (eventName === "farmInternalInspection") return "inspección interna en finca";
+    return "otra operación";
   }
 
   function normalizeContainerSearch(value) {
@@ -1713,11 +1772,13 @@
         inspectionAvailabilityLabel(item)
       ].join(" "));
       option.setAttribute("aria-pressed", String((state.selectedInspectionContainers || {})[eventName] === item.id));
+      option.disabled = !isAvailable;
+      option.setAttribute("aria-disabled", String(!isAvailable));
       option.innerHTML = [
         '<span class="sial-container-option-main">',
         '<span class="sial-container-option-head">',
         '<strong class="sial-container-option-title">' + escapeHtml(item.container) + '</strong>',
-        '<span class="sial-pill ' + (isAvailable ? 'success' : 'warning') + '">' + escapeHtml(isAvailable ? "Disponible" : "Para " + compactInspectionAvailabilityLabel(item)) + '</span>',
+        '<span class="sial-pill ' + (isAvailable ? 'success' : 'warning') + '">' + escapeHtml(isAvailable ? "Disponible" : "Disponible para " + compactInspectionAvailabilityLabel(item)) + '</span>',
         '</span>',
         '<span class="sial-container-option-meta">' + escapeHtml(item.operation || "") + ' - ' + escapeHtml(item.journey || "") + ' - ' + escapeHtml(item.vehicle || "") + '</span>',
         '</span>'
@@ -1746,6 +1807,11 @@
     return content;
   }
 
+  function showPendingInspectionContext() {
+    document.querySelectorAll("[data-flow-container]").forEach(function(node) { node.textContent = "Sin seleccionar"; });
+    document.querySelectorAll("[data-flow-container-status]").forEach(function(node) { node.textContent = "Pendiente"; });
+  }
+
   function selectedInspectionContainerId(state, eventName) {
     return (state.selectedInspectionContainers || {})[eventName] || "";
   }
@@ -1770,12 +1836,15 @@
       var hasAvailableForEvent = availableInspectionContainers(latest).some(function(item) {
         return item.nextInspectionEvent === eventName;
       });
+      if (shouldForce && !selectedInspectionContainerId(latest, eventName)) showPendingInspectionContext();
       window.SialMobileUI.openDialog({
         id: "inspection-container-selector",
         variant: "modal",
         title: "Selecciona un contenedor",
+        message: "Elige un contenedor disponible para " + (labels[eventName] || "esta inspección") + ".",
         content: createInspectionContainerSelectorContent(eventName, latest),
         dismissible: !hasAvailableForEvent,
+        initialFocus: "[data-inspection-container-search-input]",
         actions: []
       });
     }, 0);
@@ -1929,14 +1998,7 @@
         var stContainer = readState();
         var selectedContainer = availableInspectionContainers(stContainer).find(function(item) { return item.id === containerId; });
         if (!selectedContainer || !targetEvent) return;
-        if (selectedContainer.nextInspectionEvent !== targetEvent) {
-          showToast({
-            type: "warning",
-            title: "Contenedor no disponible",
-            message: "Este contenedor esta disponible para " + inspectionAvailabilityLabel(selectedContainer) + "."
-          });
-          return;
-        }
+        if (selectedContainer.nextInspectionEvent !== targetEvent) return;
         applyInspectionContainerToState(stContainer, selectedContainer, targetEvent);
         writeState(stContainer);
         ensureInspectionContextSummary(stContainer);
@@ -1996,12 +2058,10 @@
         var statusEl = document.querySelector("[data-search-status]");
         if (!found) {
           if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "error", title: "No encontrado", message: "El vehiculo " + query + " no esta registrado en el sistema." });
-          showToast({ type: "error", title: "No encontrado", message: "Vehiculo no registrado." });
           return;
         }
         if (!found.active) {
           if (statusEl) window.SialMobileUI && window.SialMobileUI.setInlineStatus(statusEl, { type: "warning", title: "Vehiculo inactivo", message: found.truckPlate + " esta inactivo. Contacte al administrador." });
-          showToast({ type: "warning", title: "Vehiculo inactivo", message: found.truckPlate + " no puede operar." });
           return;
         }
         st.vehicle = found.truckPlate;
@@ -2277,13 +2337,11 @@
       const missing = missingRequirements(eventName, state);
       if (missing.length) {
         showInline(form, `Falta completar: ${missing.map((key) => labels[key] || key).join(", ")}.`);
-        showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa el evento anterior requerido." });
         return;
       }
       const ruleError = validateFormRules(form, state, eventName);
       if (ruleError) {
         showInline(form, ruleError);
-        showToast({ type: "warning", title: "Validacion requerida", message: ruleError });
         return;
       }
       const invalid = Array.from(form.querySelectorAll("[required]")).find((field) => !field.value);
@@ -2394,14 +2452,21 @@
         const state = readState();
         var offlineAvailable = navigator.onLine;
         if (!offlineAvailable) {
-          showToast({ type: "warning", title: "Sin conexion", message: "Conectate a internet para reintentar la sincronizacion." });
+          updateConnectionBanner();
           return;
         }
+        if (window.SialMobileUI) window.SialMobileUI.hideBanner("network-offline");
         state.eventSyncStatus = state.eventSyncStatus || {};
         state.eventSyncStatus[eventName] = "SYNCING";
         writeState(state);
         hydrateSummary(state);
-        showToast({ type: "info", title: "Sincronizando...", message: "Enviando evento a servidor." });
+        showBanner({
+          id: "sync-event",
+          type: "info",
+          title: "Sincronizando",
+          message: "Enviando el evento al servidor.",
+          dismissible: false
+        });
         window.setTimeout(function() {
           var fresh = readState();
           fresh.eventSyncStatus = fresh.eventSyncStatus || {};
@@ -2410,9 +2475,16 @@
           writeState(fresh);
           hydrateSummary(fresh);
           if (success) {
+            if (window.SialMobileUI) window.SialMobileUI.hideBanner("sync-event");
             showToast({ type: "success", title: "Sincronizado", message: "El evento fue confirmado por el servidor." });
           } else {
-            showToast({ type: "error", title: "Error de sincronizacion", message: "El servidor no pudo procesar el evento. Reintenta." });
+            showBanner({
+              id: "sync-event",
+              type: "error",
+              title: "No se pudo sincronizar",
+              message: "El servidor no procesó el evento. Puedes volver a intentarlo sin perder la información local.",
+              action: { label: "Reintentar", onClick: function() { retryBtn.click(); } }
+            });
           }
         }, 1200);
         return;
@@ -2434,7 +2506,7 @@
       const zeReceptionTrigger = event.target.closest("[data-ze-reception-photo-trigger]");
       if (zeReceptionTrigger) {
         if (pageHasBlockingRequirement()) {
-          showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          showFlowBlocked();
           return;
         }
         openZeReceptionEvidenceCapture(zeReceptionTrigger.closest("[data-flow-form]"));
@@ -2462,7 +2534,7 @@
       const photo = event.target.closest("[data-add-photo]");
       if (photo) {
         if (pageHasBlockingRequirement()) {
-          showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          showFlowBlocked();
           return;
         }
         const key = photo.dataset.addPhoto;
@@ -2514,7 +2586,7 @@
       const photoSet = event.target.closest("[data-add-photo-set]");
       if (photoSet) {
         if (pageHasBlockingRequirement()) {
-          showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          showFlowBlocked();
           return;
         }
         const keys = photoSet.dataset.addPhotoSet.split(",").map((key) => key.trim()).filter(Boolean);
@@ -2566,7 +2638,7 @@
       const scan = event.target.closest("[data-add-box]");
       if (scan) {
         if (pageHasBlockingRequirement()) {
-          showToast({ type: "warning", title: "Flujo bloqueado", message: "Completa primero el evento requerido." });
+          showFlowBlocked();
           return;
         }
         const state = readState();

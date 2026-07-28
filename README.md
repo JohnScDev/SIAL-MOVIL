@@ -32,6 +32,27 @@ Prototipo navegable de la version movil de SIAL. El alcance movil no replica SIA
 - Mantener las vistas como prototipo funcional, sin cambios backend.
 - No forzar avance automatico entre vistas cuando la HU solo requiere revisar diseno y comportamiento.
 
+## Catalogo visual de libreria movil
+
+`libreria/index.html` es la referencia unica para crear o modificar componentes emergentes. Conserva los tokens, temas y medidas tactiles de la propuesta y documenta los patrones disponibles en `SialMobileUI`.
+
+## Reglas de uso por componente
+
+- Toast flotante: confirmaciones breves que no requieren una decision.
+- Alerta inline: errores corregibles dentro de la vista; debe orientar y mover el foco al dato o accion pendiente.
+- Banner persistente: conexion, sincronizacion, conflictos o bloqueos generales. Puede incluir una accion contextual como `Reintentar`.
+- Modal o bottom sheet: decisiones bloqueantes, confirmaciones criticas o captura contextual.
+- Selector movil: seleccion contextual con controles tactiles y foco administrado.
+- Empty state: ausencia de datos con orientacion y siguiente accion cuando aplique.
+- Loading skeleton: espera breve sin bloquear ni alterar el contenido final.
+- Camara, escaner y visor: capas de dialogo administradas por el nucleo compartido.
+
+Toda capa emergente debe tener nombre y descripcion accesibles, foco inicial, trampa y retorno de foco. Solo la capa superior puede cerrarse y `dismissible: false` impide cierre por Escape, backdrop o controles indirectos.
+
+## Modelo offline y sincronizacion como patron de interfaz
+
+La ausencia de conexion se comunica mediante un banner persistente. Durante la sincronizacion, el banner se reemplaza por identificador para mostrar progreso, error o conflicto sin acumular mensajes. Al resolver el estado se retira el banner y una sincronizacion completada puede confirmarse con toast.
+
 ## Validacion
 
 Comandos habituales:

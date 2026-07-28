@@ -189,6 +189,7 @@
         <button class="sial-material-pod-box ${state.podPhoto ? "done" : ""}" type="button" data-material-action="capture-pod">${icon('<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>')}<strong>${state.podPhoto ? "Foto POD capturada" : "Capturar foto POD"}</strong></button>
         <button class="sial-material-pod-box ${state.podSignature ? "done" : ""}" type="button" data-material-action="sign-pod">${icon('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>')}<strong>${state.podSignature ? "Firma digital capturada" : "Capturar firma digital"}</strong></button>
       </section>
+      <div data-material-pod-status></div>
       <div class="sial-bottom-actions"><button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-material-action="close-delivery">Cerrar entrega</button></div>
     `;
   }
@@ -273,7 +274,20 @@
     }
     if (action === "close-delivery") {
       if (!state.podPhoto || !state.podSignature) {
-        toast("warning", "POD requerido", "Captura foto y firma antes de cerrar la entrega.");
+        const missing = [
+          !state.podPhoto ? "la fotografía POD" : "",
+          !state.podSignature ? "la firma digital" : ""
+        ].filter(Boolean);
+        const status = qs("[data-material-pod-status]");
+        ui().setInlineStatus?.(status, {
+          type: "error",
+          title: "Evidencia pendiente",
+          message: `Completa ${missing.join(" y ")} antes de cerrar la entrega.`
+        });
+        status?.setAttribute("tabindex", "-1");
+        status?.focus({ preventScroll: true });
+        status?.scrollIntoView({ behavior: "smooth", block: "center" });
+        qs(!state.podPhoto ? '[data-material-action="capture-pod"]' : '[data-material-action="sign-pod"]')?.focus({ preventScroll: true });
         return;
       }
       state.closed = true;

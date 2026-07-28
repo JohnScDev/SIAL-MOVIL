@@ -177,8 +177,12 @@
             <label class="sial-label" for="hu591-reading">Etiqueta de caja, lote o finca</label>
             <div class="hu591-input-action">
               <input class="sial-input-wrap sial-input" id="hu591-reading" autocomplete="off" placeholder="Escanea o digita codigo" data-hu591-reading-input>
-              <button class="sial-btn sial-btn-secondary" type="button" data-hu591-add-reading>Agregar</button>
+              <div class="hu591-sscc-actions">
+                <button class="sial-btn sial-btn-primary" type="button" data-hu591-scan-reading>Abrir camara</button>
+                <button class="sial-btn sial-btn-secondary" type="button" data-hu591-add-reading>Agregar</button>
+              </div>
             </div>
+            <p class="sial-field-note" data-hu591-reading-status>Escanea la etiqueta con la camara o digita el codigo manualmente.</p>
           </div>
           <div class="sial-list hu591-reading-list" data-hu591-reading-list></div>
         </section>
@@ -496,18 +500,68 @@
         }).join("");
       }
 
-      function addReading() {
+      function normalizeReading(value) {
+        return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
+      }
+
+      function setReadingStatus(message, type) {
+        var node = $("[data-hu591-reading-status]");
+        if (!node) return;
+        node.textContent = message;
+        node.className = "sial-field-note" + (type ? " " + type : "");
+      }
+
+      function registerReading(rawValue, source) {
         var input = $("[data-hu591-reading-input]");
-        var value = String(input.value || "").trim().toUpperCase();
-        if (!value) return;
+        var value = normalizeReading(rawValue);
+        if (!value) {
+          setReadingStatus("Escanea o digita un codigo para agregar la lectura.", "error");
+          input.focus();
+          return false;
+        }
         if (readings.indexOf(value) >= 0) {
           toast("warning", "Lectura duplicada", "El codigo ya fue registrado en este pallet.");
-          return;
+          setReadingStatus("La lectura " + value + " ya esta asociada al pallet.", "warning");
+          return false;
         }
         readings.push(value);
         input.value = "";
         renderReadings();
         markDirty("reading");
+        setReadingStatus(
+          source === "scanner"
+            ? "Lectura escaneada y agregada: " + value + "."
+            : "Lectura agregada manualmente: " + value + ".",
+          "success"
+        );
+        return true;
+      }
+
+      function addReading() {
+        var input = $("[data-hu591-reading-input]");
+        registerReading(input.value, "manual");
+      }
+
+      function openReadingScanner() {
+        if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") {
+          setReadingStatus("Escaner no disponible en esta vista. Digita el codigo manualmente.", "error");
+          return;
+        }
+        window.SialMobileUI.openBarcodeScanner({
+          title: "Escanear etiqueta",
+          eyebrow: "Caja, lote o finca",
+          demoValue: "L-0435-26-148",
+          demoLabel: "Leer codigo demo",
+          normalize: normalizeReading,
+          validate: function(value) {
+            return value
+              ? { ok: true, value: value }
+              : { ok: false, message: "No se detecto un codigo. Ajusta el encuadre e intenta de nuevo." };
+          },
+          onDetected: function(value) {
+            registerReading(value, "scanner");
+          }
+        });
       }
 
       function renderReadyPallets() {
@@ -588,10 +642,21 @@
       function showInline(message) {
         var error = $("[data-flow-error]");
         if (!error) return;
+        if (window.SialMobileUI && typeof window.SialMobileUI.setInlineStatus === "function") {
+          window.SialMobileUI.setInlineStatus(error, {
+            type: "error",
+            title: "Revisa el armado del pallet",
+            message: message,
+            form: error.closest("form")
+          });
+          return;
+        }
         error.hidden = false;
         error.textContent = message;
+        error.tabIndex = -1;
+        error.scrollIntoView({ behavior: "smooth", block: "center" });
+        error.focus({ preventScroll: true });
       }
-
       function validateRecord(record) {
         var ssccResult = validateSscc(record.sscc);
         setSsccStatus(ssccResult);
@@ -656,6 +721,7 @@
         $("[data-hu591-boxes]").addEventListener("input", function() { updateMismatch(); markDirty("boxes"); });
         $("[data-hu591-packaging]").addEventListener("change", function() { updatePreview(); markDirty("packaging"); });
         $("[data-hu591-mode]").addEventListener("change", function() { updateRelabelMode(); markDirty("relabel"); });
+        $("[data-hu591-scan-reading]").addEventListener("click", openReadingScanner);
         $("[data-hu591-add-reading]").addEventListener("click", addReading);
         $("[data-hu591-reading-input]").addEventListener("keydown", function(event) {
           if (event.key === "Enter") {
@@ -687,7 +753,7 @@
             event.preventDefault();
             event.stopImmediatePropagation();
             showInline(error);
-            toast("warning", "Validacion HU591", error);
+            toast("error", "Validacion HU591", error);
             return;
           }
           form.dataset.detail = "HU591 pallet " + record.sscc + " | " + record.reference + " | " + record.boxes + " cajas";

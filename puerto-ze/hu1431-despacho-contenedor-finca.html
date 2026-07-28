@@ -462,7 +462,7 @@
           nextStep: "recepcion en finca"
         }
       ];
-      var selectedDispatchContainer = dispatchContainers[0];
+      var selectedDispatchContainer = null;
 
       function nowLabel() {
         return new Date().toLocaleString("es-CO");
@@ -496,7 +496,7 @@
 
       function statusLabel(item) {
         if (item.available) return "Disponible";
-        return item.nextStep ? "Para " + item.nextStep : "No disponible";
+        return item.nextStep ? "Disponible para " + item.nextStep : "No disponible";
       }
 
       function hydrateSelectedContainer(item) {
@@ -582,6 +582,8 @@
             item.nextStep
           ].join(" "));
           option.setAttribute("aria-pressed", String(selectedDispatchContainer && selectedDispatchContainer.id === item.id));
+          option.disabled = !item.available;
+          option.setAttribute("aria-disabled", String(!item.available));
           option.innerHTML = [
             '<span class="sial-container-option-main">',
             '<span class="sial-container-option-head">',
@@ -610,24 +612,41 @@
           id: "hu1431-container-selector",
           variant: "modal",
           title: "Selecciona un contenedor",
-          message: "Selecciona un contenedor disponible para HU303 / DESPACHO_A_FINCA.",
+          message: "Elige un contenedor disponible para despacho a finca.",
           content: createHu1431ContainerSelectorContent(),
+          dismissible: false,
+          initialFocus: "[data-hu1431-container-search-input]",
           actions: []
         });
       }
 
       function showError(message) {
         if (!errorNode) return;
+        if (window.SialMobileUI && typeof window.SialMobileUI.setInlineStatus === "function") {
+          window.SialMobileUI.setInlineStatus(errorNode, {
+            type: "error",
+            title: "Revisa el despacho",
+            message: message,
+            form: errorNode.closest("form")
+          });
+          return;
+        }
         errorNode.textContent = message;
         errorNode.hidden = false;
+        errorNode.tabIndex = -1;
+        errorNode.scrollIntoView({ behavior: "smooth", block: "center" });
+        errorNode.focus({ preventScroll: true });
       }
 
       function clearError() {
         if (!errorNode) return;
+        if (window.SialMobileUI && typeof window.SialMobileUI.clearInlineStatus === "function") {
+          window.SialMobileUI.clearInlineStatus(errorNode);
+          return;
+        }
         errorNode.textContent = "";
         errorNode.hidden = true;
       }
-
       function renderPhotos() {
         if (countNode) countNode.textContent = photos.length + " de " + maxPhotos + " fotos";
         if (trigger) {
@@ -659,7 +678,9 @@
 
       if (createdAt) createdAt.value = nowLabel();
       if (deviceTime) deviceTime.value = nowLabel();
-      hydrateSelectedContainer(selectedDispatchContainer);
+      setSummary("container", "Sin seleccionar");
+      setSummary("status", "Pendiente");
+      window.setTimeout(openHu1431ContainerSelector, 0);
 
       document.addEventListener("click", function (event) {
         if (event.target.closest("[data-hu1431-open-container-selector]")) {
@@ -672,16 +693,7 @@
           var containerId = containerOption.dataset.hu1431ContainerOption;
           var selected = dispatchContainers.find(function (item) { return item.id === containerId; });
           if (!selected) return;
-          if (!selected.available) {
-            if (window.SialMobileUI) {
-              window.SialMobileUI.showToast({
-                type: "warning",
-                title: "Contenedor no disponible",
-                message: "Este contenedor esta disponible para " + (selected.nextStep || "otro proceso") + "."
-              });
-            }
-            return;
-          }
+          if (!selected.available) return;
           hydrateSelectedContainer(selected);
           clearError();
           if (window.SialMobileUI) {
