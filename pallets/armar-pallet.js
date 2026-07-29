@@ -18,20 +18,6 @@
     "BAN-REF-038": { name: "Cierre corte", recipe: 48 },
     "BAN-REF-044": { name: "Mercado Norte", recipe: 54 }
   };
-  var lotsByReference = {
-    "BAN-REF-001": ["L-0435-26-148", "L-0435-26-149", "L-0435-26-152"],
-    "BAN-REF-004": ["L-0435-26-153", "L-0435-26-154"],
-    "BAN-REF-011": ["L-0435-26-155", "L-0435-26-158"],
-    "BAN-REF-014": ["L-0435-26-160", "L-0435-26-161"],
-    "BAN-REF-018": ["L-0435-26-164", "L-0435-26-165"],
-    "BAN-REF-019": ["L-0435-26-166", "L-0435-26-168"],
-    "BAN-REF-022": ["L-0435-26-170", "L-0435-26-171"],
-    "BAN-REF-027": ["L-0435-26-173", "L-0435-26-174"],
-    "BAN-REF-030": ["L-0435-26-175", "L-0435-26-176"],
-    "BAN-REF-035": ["L-0435-26-178", "L-0435-26-180"],
-    "BAN-REF-038": ["L-0435-26-181", "L-0435-26-182"],
-    "BAN-REF-044": ["L-0435-26-184", "L-0435-26-185"]
-  };
   var contextFarmCodes = {
     "finca-santa-isabel": "0527",
     "finca-la-esperanza": "0412",
@@ -216,18 +202,11 @@
     }, 0);
   }
 
-  function lotBoxes(item) {
-    return item.lots.reduce(function (total, lot) {
-      return total + Number(lot.boxes || 0);
-    }, 0);
-  }
-
   function makeReference(code) {
     return {
       code: code,
       boxes: references[code].recipe,
-      mismatchReason: "",
-      lots: [{ lotId: "", boxes: references[code].recipe }]
+      mismatchReason: ""
     };
   }
 
@@ -307,30 +286,6 @@
     });
   }
 
-  function lotOptions(referenceCode, selectedLot) {
-    return ['<option value="">Selecciona un lote</option>'].concat(
-      (lotsByReference[referenceCode] || []).map(function (lotId) {
-        return '<option value="' + escapeHtml(lotId) + '"' + (lotId === selectedLot ? " selected" : "") + ">" + escapeHtml(lotId) + "</option>";
-      })
-    ).join("");
-  }
-
-  function referenceStatus(item) {
-    var assigned = lotBoxes(item);
-    var boxes = Number(item.boxes || 0);
-    if (!boxes) return { type: "error", message: "Registra la cantidad de cajas de esta referencia." };
-    if (!item.lots.length || item.lots.some(function (lot) { return !lot.lotId; })) {
-      return { type: "warning", message: "Selecciona todos los lotes asociados." };
-    }
-    if (assigned !== boxes) {
-      return { type: "error", message: "Asignación incompleta: " + assigned + " de " + boxes + " cajas." };
-    }
-    if (boxes !== references[item.code].recipe && !String(item.mismatchReason || "").trim()) {
-      return { type: "warning", message: "La cantidad difiere de la receta. Explica el motivo." };
-    }
-    return { type: "success", message: "Distribución completa: " + assigned + " de " + boxes + " cajas." };
-  }
-
   function renderReferenceCards() {
     var list = $("[data-hu591-reference-list]");
     var count = $("[data-hu591-reference-count]");
@@ -347,17 +302,7 @@
     } else {
       list.innerHTML = draftReferences.map(function (item, index) {
         var data = references[item.code];
-        var status = referenceStatus(item);
         var mismatch = Number(item.boxes || 0) > 0 && Number(item.boxes) !== data.recipe;
-        var lots = item.lots.map(function (lot, lotIndex) {
-          return [
-            '<div class="hu591-lot-row" data-hu591-lot-row>',
-            '<label class="sial-field"><span class="sial-label">Lote</span><select class="sial-select" data-hu591-lot-select="' + lotIndex + '">' + lotOptions(item.code, lot.lotId) + '</select></label>',
-            '<label class="sial-field"><span class="sial-label">Cajas</span><input class="sial-input-wrap sial-input" type="number" inputmode="numeric" min="1" max="96" value="' + escapeHtml(lot.boxes) + '" data-hu591-lot-boxes="' + lotIndex + '"></label>',
-            '<button class="sial-btn sial-btn-icon hu591-remove-lot" type="button" data-hu591-remove-lot="' + lotIndex + '" aria-label="Quitar lote">×</button>',
-            '</div>'
-          ].join("");
-        }).join("");
         return [
           '<article class="hu591-reference-card" data-hu591-reference-card="' + index + '">',
           '<header><div><span>Referencia ' + String(index + 1).padStart(2, "0") + '</span><strong>' + escapeHtml(item.code) + '</strong><small>' + escapeHtml(data.name) + '</small></div>',
@@ -365,13 +310,10 @@
           '<div class="hu591-reference-boxes"><label class="sial-field"><span class="sial-label">Número de cajas</span><input class="sial-input-wrap sial-input" type="number" inputmode="numeric" min="1" max="96" value="' + escapeHtml(item.boxes) + '" data-hu591-reference-boxes></label>',
           '<span class="sial-pill">Receta ' + data.recipe + '</span></div>',
           '<div class="sial-field hu591-mismatch-reason"' + (mismatch ? "" : " hidden") + '><label class="sial-label">Motivo de diferencia</label><textarea class="sial-textarea" placeholder="Explica por qué la cantidad difiere de la receta" data-hu591-mismatch-reason>' + escapeHtml(item.mismatchReason) + '</textarea></div>',
-          '<div class="hu591-lots-head"><div><strong>Distribución por lotes</strong><span>La suma debe coincidir con las cajas de la referencia.</span></div><button class="sial-chip-action" type="button" data-hu591-add-lot>+ Lote</button></div>',
-          '<div class="hu591-lot-list">' + lots + '</div>',
-          '<p class="hu591-allocation-status ' + status.type + '" data-hu591-allocation-status>' + escapeHtml(status.message) + '</p>',
           '</article>'
         ].join("");
       }).join("");
-      setFieldStatus($("[data-hu591-references-status]"), "Completa las cajas y lotes de cada referencia.", "");
+      setFieldStatus($("[data-hu591-references-status]"), "Completa las cajas de cada referencia.", "");
     }
     updateReadingReferenceOptions();
     updateSummary();
@@ -387,21 +329,11 @@
     var mismatchWrap = $(".hu591-mismatch-reason", card);
     mismatchWrap.hidden = !mismatch;
     item.mismatchReason = mismatch ? $("[data-hu591-mismatch-reason]", card).value : "";
-    item.lots.forEach(function (lot, lotIndex) {
-      lot.lotId = $('[data-hu591-lot-select="' + lotIndex + '"]', card).value;
-      lot.boxes = Number($('[data-hu591-lot-boxes="' + lotIndex + '"]', card).value || 0);
+    $all("[aria-invalid='true']", card).forEach(function (field) {
+      field.removeAttribute("aria-invalid");
+      field.classList.remove("sial-error-target");
     });
-    var status = referenceStatus(item);
-    var statusNode = $("[data-hu591-allocation-status]", card);
-    statusNode.className = "hu591-allocation-status " + status.type;
-    statusNode.textContent = status.message;
-    if (status.type === "success") {
-      $all("[aria-invalid='true']", card).forEach(function (field) {
-        field.removeAttribute("aria-invalid");
-        field.classList.remove("sial-error-target");
-      });
-      clearValidationFeedback();
-    }
+    clearValidationFeedback();
     updateSummary();
   }
 
@@ -410,8 +342,6 @@
     if (!card) return;
     var index = Number(card.dataset.hu591ReferenceCard);
     var removeReference = event.target.closest("[data-hu591-remove-reference]");
-    var addLot = event.target.closest("[data-hu591-add-lot]");
-    var removeLot = event.target.closest("[data-hu591-remove-lot]");
     if (removeReference) {
       draftReferences.splice(index, 1);
       readings = readings.filter(function (reading) {
@@ -421,17 +351,6 @@
       renderReadings();
       markDirty("reference");
       return;
-    }
-    if (addLot) {
-      draftReferences[index].lots.push({ lotId: "", boxes: 0 });
-      renderReferenceCards();
-      markDirty("lot");
-      return;
-    }
-    if (removeLot) {
-      draftReferences[index].lots.splice(Number(removeLot.dataset.hu591RemoveLot), 1);
-      renderReferenceCards();
-      markDirty("lot");
     }
   }
 
@@ -532,14 +451,10 @@
       return;
     }
     preview.innerHTML = draftReferences.map(function (item) {
-      var lotSummary = item.lots.filter(function (lot) { return lot.lotId; }).map(function (lot) {
-        return lot.lotId + " · " + Number(lot.boxes || 0);
-      }).join(" / ");
       return [
         '<div class="hu591-label-reference-row">',
         '<div><strong>' + escapeHtml(item.code) + '</strong><span>' + escapeHtml(references[item.code].name) + '</span></div>',
         '<strong>' + Number(item.boxes || 0) + ' cajas</strong>',
-        '<small>' + escapeHtml(lotSummary || "Lotes pendientes") + '</small>',
         '</div>'
       ].join("");
     }).join("");
@@ -574,20 +489,15 @@
       var item = draftReferences[i];
       var card = $('[data-hu591-reference-card="' + i + '"]');
       if (!Number(item.boxes || 0)) return { message: "Registra las cajas de " + item.code + ".", field: $("[data-hu591-reference-boxes]", card) };
-      if (!item.lots.length || item.lots.some(function (lot) { return !lot.lotId; })) {
-        return { message: "Selecciona todos los lotes de " + item.code + ".", field: $(".sial-select", card) };
-      }
-      var uniqueLots = new Set(item.lots.map(function (lot) { return lot.lotId; }));
-      if (uniqueLots.size !== item.lots.length) return { message: "Un lote no puede repetirse dentro de " + item.code + ".", field: $(".sial-select", card) };
-      if (item.lots.some(function (lot) { return Number(lot.boxes || 0) < 1; })) {
-        return { message: "Cada lote de " + item.code + " debe tener al menos una caja.", field: $('[data-hu591-lot-boxes]', card) };
-      }
-      if (lotBoxes(item) !== Number(item.boxes)) {
-        return { message: "Las cajas por lote de " + item.code + " deben sumar " + item.boxes + ".", field: $('[data-hu591-lot-boxes]', card) };
-      }
       if (Number(item.boxes) !== references[item.code].recipe && !String(item.mismatchReason || "").trim()) {
         return { message: "Explica la diferencia contra receta de " + item.code + ".", field: $("[data-hu591-mismatch-reason]", card) };
       }
+    }
+    if (!$("[data-hu591-start-time]").value) {
+      return { message: "Registra la hora de inicio del pallet.", field: $("[data-hu591-start-time]") };
+    }
+    if (!$("[data-hu591-end-time]").value) {
+      return { message: "Registra la hora de finalización del pallet.", field: $("[data-hu591-end-time]") };
     }
     return null;
   }
@@ -610,13 +520,14 @@
           referenceName: references[item.code].name,
           recipeBoxes: references[item.code].recipe,
           boxes: Number(item.boxes),
-          lots: item.lots.map(function (lot) { return { lotId: lot.lotId, boxes: Number(lot.boxes) }; }),
           mismatchReason: item.mismatchReason || ""
         };
       }),
       boxes: totalBoxes(),
       observations: $("[data-hu591-observations]").value.trim(),
       readings: readings.slice(),
+      startTime: $("[data-hu591-start-time]").value,
+      endTime: $("[data-hu591-end-time]").value,
       startedAt: draftStartedAt,
       createdAt: new Date().toISOString(),
       status: "LISTO_PARA_CARGUE"
@@ -644,6 +555,7 @@
     renderReferenceCards();
     renderReadings();
     updateSummary();
+    $("[data-hu591-start-time]").value = new Date().toTimeString().slice(0, 5);
 
     $("[data-hu591-scan-sscc]").addEventListener("click", openSsccScanner);
     $("[data-hu591-open-reference-picker]").addEventListener("click", openReferencePicker);
@@ -652,13 +564,7 @@
       var card = event.target.closest("[data-hu591-reference-card]");
       if (!card) return;
       updateReferenceCard(Number(card.dataset.hu591ReferenceCard));
-      markDirty(event.target.matches("[data-hu591-lot-boxes]") ? "lot" : "reference");
-    });
-    $("[data-hu591-reference-list]").addEventListener("change", function (event) {
-      var card = event.target.closest("[data-hu591-reference-card]");
-      if (!card) return;
-      updateReferenceCard(Number(card.dataset.hu591ReferenceCard));
-      markDirty("lot");
+      markDirty("reference");
     });
     $("[data-hu591-sscc]").addEventListener("input", function (event) {
       event.target.value = event.target.value.replace(/\D/g, "").slice(0, 18);
@@ -686,6 +592,8 @@
       markDirty("scan");
     });
     $("[data-hu591-observations]").addEventListener("input", function () { markDirty("field"); });
+    $("[data-hu591-start-time]").addEventListener("input", function () { markDirty("time"); });
+    $("[data-hu591-end-time]").addEventListener("input", function () { markDirty("time"); });
 
     form.addEventListener("submit", function (event) {
       var validation = validateDraft();

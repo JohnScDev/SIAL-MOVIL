@@ -163,16 +163,14 @@
   box-shadow: none;
 }
 
-.hu591-reference-card > header,
-.hu591-lots-head {
+.hu591-reference-card > header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
 
-.hu591-reference-card > header > div,
-.hu591-lots-head > div {
+.hu591-reference-card > header > div {
   min-width: 0;
   display: grid;
   gap: 2px;
@@ -191,8 +189,7 @@
   font-size: 14px;
 }
 
-.hu591-reference-card > header small,
-.hu591-lots-head span {
+.hu591-reference-card > header small {
   color: var(--sial-text-2);
   font-size: 10px;
   line-height: 1.35;
@@ -209,50 +206,6 @@
   min-height: 30px;
   margin-bottom: 9px;
 }
-
-.hu591-lots-head {
-  align-items: flex-end;
-  padding-top: 10px;
-  border-top: 1px solid var(--sial-border-subtle);
-}
-
-.hu591-lots-head strong {
-  color: var(--sial-text);
-  font-size: 12px;
-}
-
-.hu591-lot-list {
-  display: grid;
-  gap: 8px;
-}
-
-.hu591-lot-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(76px, .6fr) 42px;
-  align-items: end;
-  gap: 8px;
-}
-
-.hu591-remove-lot {
-  width: 42px;
-  min-height: 48px;
-  color: var(--sial-error);
-  font-size: 20px;
-}
-
-.hu591-allocation-status {
-  margin: 0;
-  padding: 8px 10px;
-  border-radius: var(--sial-radius-control);
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  font-size: 10px;
-  font-weight: 750;
-  line-height: 1.4;
-}
-
-.hu591-allocation-status.success { color: var(--sial-success); }
-.hu591-allocation-status.warning { color: var(--sial-warning); }
-.hu591-allocation-status.error { color: var(--sial-error); }
 
 .hu591-mismatch-reason[hidden],
 .hu591-relabel-source[hidden] {
@@ -529,15 +482,6 @@
     flex: 0 0 auto;
   }
 
-  .hu591-lot-row {
-    grid-template-columns: minmax(0, 1fr) 82px;
-  }
-
-  .hu591-remove-lot {
-    grid-column: 1 / -1;
-    width: 100%;
-    min-height: 40px;
-  }
 }
 
 @media (min-width: 600px) {
