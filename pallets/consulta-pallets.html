@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Consulta Pallet´s</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260728">
+  <link rel="stylesheet" href="hu591.css?v=20260729-4">
+  <link rel="stylesheet" href="consulta-pallets.css?v=20260729">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Consulta Pallet´s</h1>
+        <p>Pallets armados y listos para cargue</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body consulta-pallet-page">
+      <section class="sial-flow-banner hu591-context-banner" aria-label="Contexto de la consulta">
+        <div>
+          <strong data-consulta-context-farm>Finca Santa Isabel</strong>
+          <span>Semana actual <b data-consulta-context-week>--</b></span>
+        </div>
+      </section>
+
+      <section class="sial-card sial-card-pad consulta-pallet-filters" aria-labelledby="consulta-pallet-search-title">
+        <div class="hu591-section-heading">
+          <span class="hu591-section-icon" aria-hidden="true">
+            <svg class="sial-icon" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/><path d="M7 10h6"/></svg>
+          </span>
+          <div>
+            <h2 class="sial-section-title" id="consulta-pallet-search-title">Buscar pallet</h2>
+            <p>Consulta por SSCC o número de referencia.</p>
+          </div>
+        </div>
+
+        <div class="sial-search-row">
+          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" placeholder="SSCC o referencia" aria-label="Buscar por SSCC o referencia" data-consulta-search>
+          <button class="sial-btn sial-btn-primary sial-btn-icon consulta-scan-button" type="button" data-consulta-scan aria-label="Escanear SSCC">
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
+          </button>
+        </div>
+
+        <div class="consulta-filter-grid">
+          <div class="sial-field">
+            <label class="sial-label" for="consulta-week">Periodo</label>
+            <select class="sial-select" id="consulta-week" data-consulta-week>
+              <option value="current">Semana actual</option>
+              <option value="all">Todas las semanas</option>
+            </select>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="consulta-date">Fecha de armado</label>
+            <input class="sial-input-wrap sial-input" id="consulta-date" type="date" data-consulta-date>
+          </div>
+        </div>
+      </section>
+
+      <section class="consulta-results" aria-labelledby="consulta-results-title">
+        <div class="consulta-results-head">
+          <div>
+            <h2 class="sial-section-title" id="consulta-results-title">Pallets encontrados</h2>
+            <p data-consulta-summary>0 pallets · 0 cajas</p>
+          </div>
+          <button class="sial-btn sial-btn-ghost consulta-clear" type="button" data-consulta-clear hidden>Limpiar filtros</button>
+        </div>
+
+        <div class="consulta-pallet-list" data-consulta-list aria-live="polite"></div>
+
+        <div class="sial-empty-state" data-consulta-empty hidden>
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg>
+          <strong data-consulta-empty-title>No hay pallets armados</strong>
+          <p data-consulta-empty-copy>No se encontraron pallets para la finca y el periodo seleccionados.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js?v=20260729"></script>
+  <script src="../shared/sial-mobile-flow.js?v=20260728"></script>
+  <script src="consulta-pallets.js?v=20260729"></script>
+</body>
+</html>

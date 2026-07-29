@@ -1,0 +1,237 @@
+/* Consulta Pallet´s: extensión de consulta basada en los componentes de HU591. */
+.consulta-pallet-page {
+  gap: 12px;
+}
+
+.consulta-pallet-filters {
+  display: grid;
+  gap: 14px;
+  border-radius: var(--sial-radius-large);
+  box-shadow: none;
+}
+
+.consulta-pallet-filters .hu591-section-heading {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.consulta-pallet-filters .hu591-section-heading > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.consulta-pallet-filters .hu591-section-heading p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.consulta-scan-button {
+  flex: 0 0 48px;
+  width: 48px;
+  padding: 0;
+}
+
+.consulta-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.consulta-results {
+  display: grid;
+  gap: 10px;
+}
+
+.consulta-results-head {
+  min-height: 38px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+}
+
+.consulta-results-head > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.consulta-results-head p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.consulta-clear {
+  min-height: 36px;
+  padding: 0 6px;
+  color: var(--sial-primary-600);
+  font-size: 11px;
+}
+
+.consulta-pallet-list {
+  display: grid;
+  gap: 10px;
+}
+
+.consulta-pallet-card {
+  width: 100%;
+  min-height: 118px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  text-align: left;
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.consulta-pallet-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 24%, transparent);
+  outline-offset: 2px;
+}
+
+.consulta-pallet-card-head,
+.consulta-pallet-card-foot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.consulta-pallet-card-code {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.consulta-pallet-card-code span {
+  color: var(--sial-text-3);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.consulta-pallet-card-code strong {
+  font-size: 13px;
+  letter-spacing: -.015em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.consulta-pallet-card-head > .sial-pill {
+  min-height: 26px;
+  padding: 0 8px;
+  font-size: 10px;
+}
+
+.consulta-pallet-card-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.consulta-pallet-card-stat {
+  display: grid;
+  gap: 2px;
+  padding: 9px 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.consulta-pallet-card-stat span {
+  color: var(--sial-text-3);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.consulta-pallet-card-stat strong {
+  font-size: 12px;
+}
+
+.consulta-pallet-card-foot {
+  align-items: center;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.consulta-pallet-card-foot .sial-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: var(--sial-primary-600);
+}
+
+.consulta-pallet-page .sial-empty-state .sial-icon {
+  width: 34px;
+  height: 34px;
+  color: var(--sial-primary-500);
+}
+
+.consulta-detail {
+  display: grid;
+  gap: 14px;
+}
+
+.consulta-detail .hu591-label-preview {
+  box-shadow: none;
+}
+
+.consulta-detail-meta {
+  display: grid;
+  gap: 8px;
+}
+
+.consulta-detail-meta .sial-list-row {
+  background: var(--sial-surface-raised);
+}
+
+.consulta-detail-observations {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.consulta-detail-observations strong {
+  color: var(--sial-text);
+  font-size: 12px;
+}
+
+.consulta-detail-observations p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.consulta-copy-sscc {
+  width: 100%;
+}
+
+@media (max-width: 380px) {
+  .consulta-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .consulta-results-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

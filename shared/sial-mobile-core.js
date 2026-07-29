@@ -1940,6 +1940,7 @@
       aria: "Navegacion pallets",
       items: [
         { href: "../pallets/armar-pallet.html", label: "HU591 - Armar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
+        { href: "../pallets/consulta-pallets.html", label: "Consulta Pallet´s", icon: drawerIcon('<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/><path d="M7 10h6"/>') },
         { href: "../pallets/reetiquetar-pallet.html", label: "Re-etiquetar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="m8 12 3 3 5-6"/><path d="M7 20h10"/>') },
         { href: "../pallets/cargar-pallets.html", label: "HU332 - Cargue contenedor", icon: drawerIcon('<path d="M12 5v14"/><path d="M5 12h14"/>') }
       ]
@@ -2009,6 +2010,12 @@
     const existingDrawer = document.querySelector(".sial-drawer");
     if (existingDrawer) {
       const content = existingDrawer.querySelector(".sial-drawer-content");
+      const palletsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion pallets");
+      const existingPallets = content?.querySelector('[aria-label="Navegacion pallets"]');
+      if (existingPallets && palletsGroup) {
+        existingPallets.insertAdjacentHTML("afterend", renderDrawerMenuGroup(palletsGroup));
+        existingPallets.remove();
+      }
       const hasMaterials = content?.querySelector('[aria-label="Navegacion materiales y suministros"]');
       const materialsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion materiales y suministros");
       if (content && !hasMaterials && materialsGroup) content.insertAdjacentHTML("beforeend", renderDrawerMenuGroup(materialsGroup));
