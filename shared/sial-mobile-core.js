@@ -1961,6 +1961,7 @@
       label: "Trazabilidad",
       aria: "Navegacion trazabilidad",
       items: [
+        { href: "../trazabilidad/sincronizacion.html", label: "Sincronización móvil", icon: drawerIcon('<path d="M20 7h-7V3"/><path d="m20 7-4-4"/><path d="M4 17h7v4"/><path d="m4 17 4 4"/>') },
         { href: "../trazabilidad/consultar-contenedor.html", label: "Consultar contenedor", icon: drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>') },
         { href: "../trazabilidad/consultar-operacion.html", label: "Consultar operacion", icon: drawerIcon('<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/>') }
       ]
@@ -2015,6 +2016,12 @@
       if (existingPallets && palletsGroup) {
         existingPallets.insertAdjacentHTML("afterend", renderDrawerMenuGroup(palletsGroup));
         existingPallets.remove();
+      }
+      const traceabilityGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion trazabilidad");
+      const existingTraceability = content?.querySelector('[aria-label="Navegacion trazabilidad"]');
+      if (existingTraceability && traceabilityGroup) {
+        existingTraceability.insertAdjacentHTML("afterend", renderDrawerMenuGroup(traceabilityGroup));
+        existingTraceability.remove();
       }
       const hasMaterials = content?.querySelector('[aria-label="Navegacion materiales y suministros"]');
       const materialsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion materiales y suministros");
