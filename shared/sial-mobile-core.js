@@ -1965,15 +1965,23 @@
         { href: "../trazabilidad/consultar-contenedor.html", label: "Consultar contenedor", icon: drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>') },
         { href: "../trazabilidad/consultar-operacion.html", label: "Consultar operacion", icon: drawerIcon('<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/>') }
       ]
+    },
+    {
+      label: "Sistema de diseño",
+      aria: "Navegacion sistema de diseño",
+      items: [
+        { href: "../libreria/index.html", label: "Librería", icon: drawerIcon('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5Z"/>') }
+      ]
     }
   ];
 
   function shouldMountGlobalDrawer() {
     const path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
-    if (!document.querySelector(".sial-page")) return false;
-    if (document.querySelector(".login-screen, .library-shell")) return false;
-    if (path.includes("/login/") || path.includes("/libreria/")) return false;
-    if (path.endsWith("/index.html") && !path.includes("/app/") && !path.includes("/puerto-ze/") && !path.includes("/materiales/")) return false;
+    const isLibrary = Boolean(document.querySelector(".library-shell"));
+    if (!document.querySelector(".sial-page") && !isLibrary) return false;
+    if (document.querySelector(".login-screen")) return false;
+    if (path.includes("/login/")) return false;
+    if (path.endsWith("/index.html") && !isLibrary && !path.includes("/app/") && !path.includes("/puerto-ze/") && !path.includes("/materiales/")) return false;
     if (path.includes("/app/seleccion-empresa.html") || path.includes("/app/seleccion-finca.html")) return false;
     if (path.includes("/demo-camara.html")) return false;
     return true;
@@ -2026,6 +2034,9 @@
       const hasMaterials = content?.querySelector('[aria-label="Navegacion materiales y suministros"]');
       const materialsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion materiales y suministros");
       if (content && !hasMaterials && materialsGroup) content.insertAdjacentHTML("beforeend", renderDrawerMenuGroup(materialsGroup));
+      const hasDesignSystem = content?.querySelector('[aria-label="Navegacion sistema de diseño"]');
+      const designSystemGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion sistema de diseño");
+      if (content && !hasDesignSystem && designSystemGroup) content.insertAdjacentHTML("beforeend", renderDrawerMenuGroup(designSystemGroup));
       return;
     }
     const brandSrc = resolveRelativeUrl("../assets/brand/isotipo-sial.svg");

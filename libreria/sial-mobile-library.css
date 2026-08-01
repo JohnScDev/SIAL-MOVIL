@@ -27,6 +27,17 @@ body .library-topbar {
   backdrop-filter: blur(14px);
 }
 
+.library-topbar-start {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.library-topbar-start > .sial-btn-icon {
+  flex: 0 0 auto;
+}
+
 .library-brand {
   min-width: 0;
   display: inline-flex;
@@ -297,28 +308,167 @@ body .library-demo-card {
 }
 
 .library-capture-grid {
+  container-type: inline-size;
   display: grid;
+  align-content: start;
   gap: 12px;
+}
+
+body .library-capture-item {
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-areas: "icon content action";
+  align-items: center;
+  place-items: initial;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  overflow: hidden;
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font: inherit;
+  text-align: left;
+}
+
+.library-capture-icon {
+  grid-area: icon;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+.library-capture-icon .sial-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.library-capture-content {
+  grid-area: content;
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.library-capture-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body .library-capture-heading strong {
+  color: var(--sial-text);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+body .library-capture-heading .sial-pill {
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 10px;
+}
+
+body .library-capture-description {
+  max-width: none;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.library-capture-content code {
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  overflow: hidden;
+  background: var(--sial-field-bg);
+  color: var(--sial-text-3);
+  font-size: 10px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-capture-action {
+  grid-area: action;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  color: var(--sial-primary-500);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.library-capture-action .sial-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.library-signature-mark {
+  grid-area: action;
+  width: 88px;
+  padding: 6px 0 2px;
+  border-bottom: 1px solid var(--sial-border);
+  color: var(--sial-primary-500);
+}
+
+.library-signature-mark svg {
+  width: 100%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body .library-photo-capture-demo,
+body .library-scanner-demo {
+  cursor: pointer;
+  transition:
+    transform var(--sial-motion-fast) var(--sial-motion-ease),
+    background-color var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+@media (hover: hover) {
+  body .library-photo-capture-demo:hover,
+  body .library-scanner-demo:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--sial-primary-500) 48%, var(--sial-border));
+    background: color-mix(in srgb, var(--sial-primary-100) 48%, var(--sial-surface-raised));
+  }
+}
+
+body .library-photo-capture-demo:active,
+body .library-scanner-demo:active {
+  transform: translateY(0);
+}
+
+body .library-photo-capture-demo:focus-visible,
+body .library-scanner-demo:focus-visible {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
 }
 
 .library-photo-capture-demo {
   position: relative;
-  width: 100%;
-  cursor: pointer;
-  border-style: solid;
-  border-color: var(--sial-primary-500);
-  overflow: hidden;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--sial-primary-500) 10%, transparent), transparent 60%),
-    var(--sial-surface-raised);
-  transition:
-    transform var(--sial-motion-fast) var(--sial-motion-ease),
-    box-shadow var(--sial-motion-base) var(--sial-motion-ease),
-    border-color var(--sial-motion-base) var(--sial-motion-ease);
 }
 
 .library-photo-capture-demo.is-captured {
-  min-height: 180px;
+  min-height: 116px;
   border-color: var(--sial-success);
   color: #fff;
 }
@@ -335,15 +485,76 @@ body .library-demo-card {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.62));
+  background: linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.36));
 }
 
-.library-photo-capture-demo.is-captured .sial-feedback-copy,
-.library-photo-capture-demo.is-captured code {
+.library-photo-capture-demo.is-captured .library-capture-icon,
+.library-photo-capture-demo.is-captured .library-capture-content,
+.library-photo-capture-demo.is-captured .library-capture-action {
   position: relative;
   z-index: 1;
+}
+
+.library-photo-capture-demo.is-captured .library-capture-icon {
+  background: rgba(255,255,255,.16);
+  color: #fff;
+}
+
+.library-photo-capture-demo.is-captured .library-capture-heading strong,
+.library-photo-capture-demo.is-captured .library-capture-description,
+.library-photo-capture-demo.is-captured .library-capture-action,
+.library-photo-capture-demo.is-captured code {
   color: #fff;
   text-shadow: 0 2px 8px rgba(0,0,0,.72);
+}
+
+@container (max-width: 460px) {
+  body .library-capture-item {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas:
+      "icon content"
+      ". action";
+    align-items: start;
+    padding: 12px;
+  }
+
+  body .library-photo-capture-demo,
+  body .library-scanner-demo {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    grid-template-areas: "icon content action";
+    align-items: center;
+  }
+
+  .library-photo-capture-demo .library-capture-action,
+  .library-scanner-demo .library-capture-action {
+    width: 44px;
+    min-width: 44px;
+    justify-content: center;
+    justify-self: end;
+    margin: 0;
+    font-size: 0;
+  }
+
+  .library-photo-capture-demo .library-capture-action .sial-icon,
+  .library-scanner-demo .library-capture-action .sial-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  body .library-signature-demo {
+    grid-template-areas: "icon content";
+  }
+
+  body .library-signature-demo .library-signature-mark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .library-photo-capture-demo,
+  body .library-scanner-demo {
+    transition: none;
+  }
 }
 
 .library-alert-system {
@@ -383,10 +594,6 @@ body .library-demo-card {
 
   body .library-hero {
     padding: 28px;
-  }
-
-  .library-capture-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   }
 
   .library-alert-variant-grid,

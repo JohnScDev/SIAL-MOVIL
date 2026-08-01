@@ -150,11 +150,17 @@
           if (!photos || !photos.length) return;
           const photo = photos[photos.length - 1];
           photoCapture.classList.add("is-captured");
-          photoCapture.innerHTML = [
-            '<img src="' + photo.dataUrl + '" alt="Preview de captura fotografica" loading="lazy">',
-            '<div class="sial-feedback-copy"><strong>Captura fotografica</strong><span>' + photos.length + ' foto(s) capturada(s) en secuencia.</span></div>',
-            '<code>SialMobileUI.openPhotoCapture({ steps, onPhoto, onComplete })</code>'
-          ].join("");
+          const previousPreview = photoCapture.querySelector(":scope > img");
+          if (previousPreview) previousPreview.remove();
+          const preview = document.createElement("img");
+          preview.src = photo.dataUrl;
+          preview.alt = "Preview de captura fotografica";
+          preview.loading = "lazy";
+          photoCapture.insertBefore(preview, photoCapture.firstChild);
+          const badge = photoCapture.querySelector(".library-capture-heading .sial-pill");
+          const description = photoCapture.querySelector(".library-capture-description");
+          if (badge) badge.textContent = photos.length + " foto(s)";
+          if (description) description.textContent = "Secuencia capturada. Toca para reemplazarla.";
           window.SialMobileUI.showToast({
             type: "success",
             title: "Patron de fotos",
