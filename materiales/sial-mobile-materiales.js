@@ -11,15 +11,27 @@
 
   const dataset = {
     suggested: {
-      id: "PED-071",
-      finca: "Finca Santa Isabel",
-      week: "Semana 27 - 2026",
-      material: "Caja carton corrugado",
-      quantity: "1400 unidades",
-      stock: "1280 unidades",
-      document: "RPT",
-      status: "SUGERIDO"
+      id: "PED-SUG-2026-032-014",
+      notice: "AC-2026-032",
+      finca: "Finca La Ceiba",
+      week: "SEM-2026-32",
+      reference: "AGSTDRA",
+      recipe: "Receta versión 3",
+      inventory: "03/08/2026, 06:40",
+      status: "SUGERIDO",
+      materials: [
+        { name: "Caja de cartón corrugado", quantity: "744 unidades" },
+        { name: "Tapa de cartón", quantity: "804 unidades" },
+        { name: "Etiqueta de trazabilidad", quantity: "25 rollos" },
+        { name: "Estiba de exportación", quantity: "28 unidades" }
+      ]
     },
+    additionalMaterials: [
+      { code: "MAT-CAR-001", name: "Caja de cartón corrugado", unit: "unidades", base: 790, stock: 1280 },
+      { code: "MAT-TAP-001", name: "Tapa de cartón", unit: "unidades", base: 925, stock: 900 },
+      { code: "MAT-ETQ-001", name: "Etiqueta de trazabilidad", unit: "rollos", base: 25, stock: 12 },
+      { code: "MAT-EST-001", name: "Estiba de exportación", unit: "unidades", base: 28, stock: 12 }
+    ],
     stock: [
       { material: "Caja carton corrugado", finca: "Finca Santa Isabel", available: "1280 und", updated: "28/06/2026 07:40", status: "Disponible" },
       { material: "Caja carton corrugado", finca: "Finca El Retiro", available: "360 und", updated: "28/06/2026 07:50", status: "Bajo" },
@@ -39,9 +51,9 @@
 
   function loadState() {
     try {
-      return { activeOrderId: "OTI-546-001", consulted: false, podPhoto: false, podSignature: false, closed: false, ...(JSON.parse(localStorage.getItem(stateKey)) || {}) };
+      return { activeOrderId: "OTI-546-001", consulted: false, additional: null, podPhoto: false, podSignature: false, closed: false, ...(JSON.parse(localStorage.getItem(stateKey)) || {}) };
     } catch (_) {
-      return { activeOrderId: "OTI-546-001", consulted: false, podPhoto: false, podSignature: false, closed: false };
+      return { activeOrderId: "OTI-546-001", consulted: false, additional: null, podPhoto: false, podSignature: false, closed: false };
     }
   }
 
@@ -113,6 +125,7 @@
       <section class="sial-quick-grid">
         ${actionCard("pedido-sugerido.html", "Pedido sugerido", "HU659 conectado con stock finca.", '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>')}
         ${actionCard("inventario-finca.html", "Inventario finca", "Consulta stock antes de confirmar.", '<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/>')}
+        ${actionCard("pedido-adicional.html", "Pedido adicional", "Solicitud excepcional vinculada al corte.", '<path d="M12 5v14"/><path d="M5 12h14"/>')}
         ${actionCard("ordenes-asignadas.html", "Ordenes asignadas", "Despacho y notificaciones.", '<path d="M3 7h11v10H3z"/><path d="M14 11h4l3 3v3h-7z"/>')}
         ${actionCard("pallets.html", "Pallets", "Completos y mochos para consolidacion.", '<path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>')}
       </section>
@@ -125,23 +138,85 @@
     return `
       <section class="sial-card sial-card-pad sial-material-order-card">
         <div class="sial-material-order-head">
-          <div><strong>${esc(pedido.id)}</strong><span>${esc(pedido.finca)} - ${esc(pedido.week)}</span></div>
+          <div><strong>${esc(pedido.id)}</strong><span>${esc(pedido.finca)} · ${esc(pedido.week)}</span></div>
           ${status(state.consulted ? "Consultado" : pedido.status)}
         </div>
-        <div class="sial-material-matrix">
-          ${mini("Material", pedido.material)}
-          ${mini("Cantidad sugerida", pedido.quantity)}
-          ${mini("Stock finca", pedido.stock)}
-          ${mini("Documento", pedido.document)}
-        </div>
-        <button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-material-action="confirm-suggestion">Marcar consultado</button>
+        <div class="sial-material-source-line"><span>Aviso</span><strong>${esc(pedido.notice)}</strong></div>
+        <div class="sial-material-source-line"><span>Referencia</span><strong>${esc(pedido.reference)}</strong></div>
+        <div class="sial-material-source-line"><span>Receta aplicada</span><strong>${esc(pedido.recipe)}</strong></div>
+        <div class="sial-material-source-line"><span>Inventario consultado</span><strong>${esc(pedido.inventory)}</strong></div>
       </section>
-      <section class="sial-card sial-card-pad sial-form">
-        <h2 class="sial-section-title">Pedido adicional</h2>
-        <div class="sial-field"><label class="sial-label">Motivo</label><textarea class="sial-textarea" placeholder="Necesidad extraordinaria de finca vinculada al corte"></textarea></div>
-        <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-material-action="additional-order">Registrar adicional</button>
+      <section class="sial-card sial-card-pad">
+        <div class="sial-material-section-head"><div><h2 class="sial-section-title">Materiales sugeridos</h2><p>Resultado calculado en Web para esta finca.</p></div><span class="sial-chip-action info">${pedido.materials.length} materiales</span></div>
+        <div class="sial-list sial-material-suggestion-list">${pedido.materials.map((item) => `<div class="sial-list-row"><strong>${esc(item.name)}</strong><span>${esc(item.quantity)}</span></div>`).join("")}</div>
       </section>
+      <section class="sial-inline-status info" role="status">
+        <strong>Consulta de solo lectura</strong>
+        <span>Los ajustes de cantidades se gestionan en el paso de revisión del pedido.</span>
+      </section>
+      <div class="sial-bottom-actions"><button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-material-action="confirm-suggestion" ${state.consulted ? "disabled" : ""}>${state.consulted ? "Consulta registrada" : "Marcar como revisado"}</button><button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-material-action="open-additional" ${state.consulted ? "" : "disabled"}>Solicitar material adicional</button></div>
     `;
+  }
+
+  function additionalStock(code) {
+    return dataset.additionalMaterials.find((item) => item.code === code) || dataset.additionalMaterials[0];
+  }
+
+  function additionalOrder() {
+    const state = loadState();
+    const pedido = dataset.suggested;
+    const params = new URLSearchParams(location.search);
+    if (params.get("access") === "denied") {
+      return `<section class="sial-inline-status error" role="alert"><strong>Solicitud no disponible</strong><span>No existe información visible dentro de tu compañía y finca autorizada.</span></section><a class="sial-btn sial-btn-secondary sial-btn-full" href="index.html">Volver a Materiales</a>`;
+    }
+    if (!state.consulted) {
+      return `<section class="sial-inline-status warning" role="alert"><strong>Revisa primero el pedido base</strong><span>Debes marcar ${esc(pedido.id)} como revisado antes de registrar una necesidad adicional.</span></section><a class="sial-btn sial-btn-primary sial-btn-full" href="pedido-sugerido.html">Revisar pedido sugerido</a>`;
+    }
+    if (state.additional) {
+      const item = state.additional;
+      return `
+        <section class="sial-card sial-card-pad sial-material-order-card">
+          <div class="sial-material-order-head"><div><strong>${esc(item.id)}</strong><span>${esc(pedido.finca)} · ${esc(pedido.week)}</span></div>${status(item.sync === "pending" ? "Pendiente de sincronización" : item.status)}</div>
+          <div class="sial-material-source-line"><span>Pedido base</span><strong>${esc(pedido.id)}</strong></div>
+          <div class="sial-material-source-line"><span>Aviso de corte</span><strong>${esc(pedido.notice)}</strong></div>
+          <div class="sial-material-source-line"><span>Material</span><strong>${esc(item.materialName)}</strong></div>
+          <div class="sial-material-source-line"><span>Cantidad adicional</span><strong>${esc(item.quantity)} ${esc(item.unit)}</strong></div>
+          <div class="sial-material-source-line"><span>Motivo</span><strong>${esc(item.reasonLabel)}</strong></div>
+        </section>
+        <section class="sial-card sial-card-pad"><h2 class="sial-section-title">Seguimiento</h2><div class="sial-additional-timeline">
+          <div class="is-done"><i>${icon('<path d="m20 6-11 11-5-5"/>')}</i><span><strong>Solicitud registrada</strong><small>Guardada una sola vez en este dispositivo.</small></span></div>
+          <div class="is-current"><i></i><span><strong>${item.sync === "pending" ? "Pendiente de sincronización" : "Pendiente de validación"}</strong><small>${item.stockWarning ? "Requiere revisar disponibilidad de abastecimiento." : "Materiales validará cantidad, motivo y stock."}</small></span></div>
+          <div><i></i><span><strong>Clasificación y despacho</strong><small>Continuará en Web después de la aprobación.</small></span></div>
+        </div></section>
+        <section class="sial-inline-status info" role="status"><strong>Consulta de estado</strong><span>La aprobación y el procesamiento no se realizan desde esta vista móvil.</span></section>
+        <a class="sial-btn sial-btn-secondary sial-btn-full" href="pedido-sugerido.html">Volver al pedido base</a>
+      `;
+    }
+    const material = dataset.additionalMaterials[0];
+    return `
+      <section class="sial-additional-origin" aria-label="Origen de la solicitud"><div><span>Aviso</span><strong>${esc(pedido.notice)}</strong></div><b>→</b><div><span>Pedido base</span><strong>${esc(pedido.id)}</strong></div><b>→</b><div class="active"><span>Nueva solicitud</span><strong>Adicional 3</strong></div></section>
+      <section class="sial-card sial-card-pad sial-material-order-card">
+        <div class="sial-material-order-head"><div><strong>${esc(pedido.finca)}</strong><span>${esc(pedido.reference)} · ${esc(pedido.week)}</span></div>${status("Pedido validado")}</div>
+        <div class="sial-inline-status info"><strong>Necesidad excepcional</strong><span>Ya existe 1 adicional esta semana. No se reemplazará el pedido base.</span></div>
+      </section>
+      <form class="sial-card sial-card-pad sial-form sial-additional-form" data-flow-form data-additional-mobile-form>
+        <h2 class="sial-section-title">Material y cantidad</h2>
+        <div class="sial-field"><label class="sial-label" for="mobileAdditionalMaterial">Material</label><select class="sial-select" id="mobileAdditionalMaterial" required>${dataset.additionalMaterials.map((item) => `<option value="${esc(item.code)}">${esc(item.name)}</option>`).join("")}</select></div>
+        <div class="sial-additional-stock" data-additional-mobile-stock><div><span>Pedido base</span><strong>${esc(material.base)} ${esc(material.unit)}</strong></div><div><span>Stock visible</span><strong>${esc(material.stock)} ${esc(material.unit)}</strong></div></div>
+        <div class="sial-field"><label class="sial-label" for="mobileAdditionalQuantity">Cantidad adicional</label><input class="sial-input-wrap sial-input" id="mobileAdditionalQuantity" type="number" min="1" step="1" inputmode="numeric" placeholder="Ingresa la cantidad" required></div>
+        <div class="sial-field"><label class="sial-label" for="mobileAdditionalReason">Motivo</label><select class="sial-select" id="mobileAdditionalReason" required><option value="">Seleccionar motivo</option><option value="incremento-corte">Incremento extraordinario del corte</option><option value="inventario">Diferencia de inventario</option><option value="entrega-incompleta">Entrega incompleta del proveedor</option><option value="dano">Material dañado o no utilizable</option><option value="otro">Otra necesidad operativa</option></select></div>
+        <div class="sial-field"><label class="sial-label" for="mobileAdditionalDetail">Detalle <span>(opcional)</span></label><textarea class="sial-textarea" id="mobileAdditionalDetail" rows="3" placeholder="Información útil para quien validará la solicitud"></textarea></div>
+      </form>
+      <div data-additional-mobile-status></div>
+      <div class="sial-bottom-actions"><button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-material-action="additional-order">Enviar a validación</button></div>
+    `;
+  }
+
+  function updateAdditionalStock(code) {
+    const target = qs("[data-additional-mobile-stock]");
+    if (!target) return;
+    const material = additionalStock(code);
+    target.innerHTML = `<div><span>Pedido base</span><strong>${esc(material.base)} ${esc(material.unit)}</strong></div><div><span>Stock visible</span><strong>${esc(material.stock)} ${esc(material.unit)}</strong></div>`;
   }
 
   function inventory() {
@@ -212,13 +287,20 @@
     `).join("")}</div></section><a class="sial-btn sial-btn-secondary sial-btn-full" href="../pallets/armar-pallet.html">Abrir flujo existente de pallets</a>`;
   }
 
-  const renderers = { index: dashboard, "pedido-sugerido": suggested, "inventario-finca": inventory, "ordenes-asignadas": orders, "detalle-orden": detail, "registrar-entrega": delivery, pod, pallets };
+  const renderers = { index: dashboard, "pedido-sugerido": suggested, "pedido-adicional": additionalOrder, "inventario-finca": inventory, "ordenes-asignadas": orders, "detalle-orden": detail, "registrar-entrega": delivery, pod, pallets };
 
   function render() {
     const root = qs("[data-material-mobile-view]");
     if (!root) return;
     const view = root.dataset.materialMobileView || "index";
     root.innerHTML = (renderers[view] || dashboard)();
+    const state = loadState();
+    const accessDenied = new URLSearchParams(location.search).get("access") === "denied";
+    if (view === "pedido-adicional" && !accessDenied && state.additional?.sync === "pending") {
+      ui().showBanner?.({ id: "additional-sync", type: "warning", title: "Sin conexión", message: "La solicitud está guardada en el dispositivo y pendiente de sincronización.", dismissible: false });
+    } else {
+      ui().hideBanner?.("additional-sync");
+    }
   }
 
   function navigate(path) {
@@ -226,6 +308,11 @@
     if (ui().navigateTo) ui().navigateTo(path);
     else window.location.href = path;
   }
+
+  document.addEventListener("change", (event) => {
+    const material = event.target.closest("#mobileAdditionalMaterial");
+    if (material) updateAdditionalStock(material.value);
+  });
 
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-material-action]");
@@ -242,12 +329,63 @@
     if (action === "confirm-suggestion") {
       state.consulted = true;
       saveState(state);
-      toast("success", "Pedido consultado", "La consulta queda registrada localmente en la propuesta.");
+      toast("success", "Pedido revisado", "Tu revisión quedó registrada.");
       render();
       return;
     }
+    if (action === "open-additional") {
+      if (!state.consulted) return;
+      const offlineSimulation = new URLSearchParams(location.search).get("offline") === "1" ? "?offline=1" : "";
+      navigate(`pedido-adicional.html${offlineSimulation}`);
+      return;
+    }
     if (action === "additional-order") {
-      toast("success", "Adicional registrado", "Entrara al flujo de validacion y despacho.");
+      const statusTarget = qs("[data-additional-mobile-status]");
+      const materialCode = qs("#mobileAdditionalMaterial")?.value || "";
+      const material = additionalStock(materialCode);
+      const quantity = Number(qs("#mobileAdditionalQuantity")?.value || 0);
+      const reason = qs("#mobileAdditionalReason")?.value || "";
+      const detail = qs("#mobileAdditionalDetail")?.value.trim() || "";
+      if (!Number.isInteger(quantity) || quantity <= 0 || !reason) {
+        ui().setInlineStatus?.(statusTarget, {
+          type: "error",
+          title: "Completa la solicitud",
+          message: !Number.isInteger(quantity) || quantity <= 0 ? "Ingresa una cantidad entera mayor que cero." : "Selecciona el motivo del pedido adicional."
+        });
+        const target = !Number.isInteger(quantity) || quantity <= 0 ? qs("#mobileAdditionalQuantity") : qs("#mobileAdditionalReason");
+        target?.focus({ preventScroll: true });
+        statusTarget?.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      if (state.additional) {
+        toast("info", "Solicitud ya registrada", `${state.additional.id} ya existe y no se creó un duplicado.`);
+        render();
+        return;
+      }
+      const offline = new URLSearchParams(location.search).get("offline") === "1" || navigator.onLine === false;
+      state.additional = {
+        id: "PAD-2026-32-003",
+        material: material.code,
+        materialName: material.name,
+        quantity,
+        unit: material.unit,
+        stock: material.stock,
+        stockWarning: quantity > material.stock,
+        reason,
+        reasonLabel: qs("#mobileAdditionalReason").selectedOptions[0].textContent,
+        detail,
+        status: "Pendiente de validación",
+        sync: offline ? "pending" : "synced",
+        createdAt: "03/08/2026, 11:35"
+      };
+      saveState(state);
+      ui().clearUnsavedChanges?.();
+      if (offline) {
+        ui().showBanner?.({ id: "additional-sync", type: "warning", title: "Sin conexión", message: "La solicitud quedó guardada en el dispositivo y se enviará al recuperar conexión.", dismissible: false });
+      } else {
+        toast("success", "Pedido adicional registrado", "La solicitud quedó pendiente de validación.");
+      }
+      render();
       return;
     }
     if (action === "capture-pod") {

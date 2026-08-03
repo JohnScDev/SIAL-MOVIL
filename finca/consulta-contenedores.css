@@ -1,0 +1,45 @@
+.container-stage-track {
+  display: grid;
+  gap: 8px;
+}
+
+.container-stage-step {
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface);
+}
+
+.container-stage-step::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--sial-border);
+  border-radius: 50%;
+  background: var(--sial-surface);
+}
+
+.container-stage-step.is-complete::before,
+.container-stage-step.is-current::before {
+  border-color: var(--sial-primary-500);
+  background: var(--sial-primary-500);
+}
+
+.container-stage-step strong {
+  color: var(--sial-text);
+  font-size: 11px;
+}
+
+.container-stage-step span {
+  color: var(--sial-text-2);
+  font-size: 10px;
+}
+
+.container-stage-step.is-current strong {
+  color: var(--sial-primary-600);
+}

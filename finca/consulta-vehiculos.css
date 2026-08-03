@@ -1,0 +1,151 @@
+.vehicle-route {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-bg-muted);
+}
+
+.vehicle-route-point {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.vehicle-route-point:last-child {
+  text-align: right;
+}
+
+.vehicle-route-point span {
+  color: var(--sial-text-muted);
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.vehicle-route-point strong {
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vehicle-route-arrow {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  color: var(--sial-primary);
+}
+
+.vehicle-route-arrow .sial-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.vehicle-detail-route {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-bg-muted);
+}
+
+.vehicle-detail-route .vehicle-route-point strong {
+  white-space: normal;
+}
+
+.vehicle-journey {
+  display: grid;
+  gap: 0;
+}
+
+.vehicle-journey-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+  min-height: 50px;
+}
+
+.vehicle-journey-step::before {
+  content: "";
+  position: absolute;
+  top: 17px;
+  bottom: -1px;
+  left: 7px;
+  width: 2px;
+  background: var(--sial-border);
+}
+
+.vehicle-journey-step:last-child::before {
+  display: none;
+}
+
+.vehicle-journey-dot {
+  position: relative;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 2px solid var(--sial-border-strong);
+  border-radius: 50%;
+  background: var(--sial-surface);
+}
+
+.vehicle-journey-copy {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding-bottom: 12px;
+}
+
+.vehicle-journey-copy strong {
+  color: var(--sial-text);
+  font-size: 0.78rem;
+}
+
+.vehicle-journey-copy span {
+  color: var(--sial-text-muted);
+  font-size: 0.72rem;
+}
+
+.vehicle-journey-step.is-complete .vehicle-journey-dot {
+  border-color: var(--sial-success);
+  background: var(--sial-success);
+  box-shadow: inset 0 0 0 3px var(--sial-surface);
+}
+
+.vehicle-journey-step.is-complete::before {
+  background: var(--sial-success);
+}
+
+.vehicle-journey-step.is-current .vehicle-journey-dot {
+  border-color: var(--sial-primary);
+  background: var(--sial-primary-soft);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sial-primary) 12%, transparent);
+}
+
+.vehicle-journey-step.is-current .vehicle-journey-copy strong {
+  color: var(--sial-primary);
+}
+
+@media (max-width: 360px) {
+  .vehicle-route,
+  .vehicle-detail-route {
+    grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr);
+    gap: 5px;
+    padding-inline: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vehicle-journey-step.is-current .vehicle-journey-dot {
+    box-shadow: none;
+  }
+}

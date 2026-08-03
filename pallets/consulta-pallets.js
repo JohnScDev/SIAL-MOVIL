@@ -10,6 +10,7 @@
     "unidad-operativa-puerto": "0435"
   };
   var pallets = [];
+  var retryRequested = false;
 
   function $(selector, root) {
     return (root || document).querySelector(selector);
@@ -32,12 +33,13 @@
       .replace(/'/g, "&#39;");
   }
 
-  function normalizeSscc(value) {
-    if (window.SialMobileUI && typeof window.SialMobileUI.normalizeSscc === "function") {
-      return window.SialMobileUI.normalizeSscc(value);
-    }
-    var digits = String(value || "").replace(/\D/g, "");
-    return digits.length === 20 && digits.slice(0, 2) === "00" ? digits.slice(2) : digits;
+  function activeFarm() {
+    var context = readJson(contextKey, {});
+    var workflow = readJson(workflowKey, {});
+    return {
+      code: contextFarmCodes[context.id] || workflow.farmCode || "0527",
+      name: context.name || workflow.farmName || "Finca Santa Isabel"
+    };
   }
 
   function isoWeek(date) {
@@ -49,27 +51,37 @@
     return current.getUTCFullYear() + "-W" + String(week).padStart(2, "0");
   }
 
-  function activeFarm() {
-    var context = readJson(contextKey, {});
-    var workflow = readJson(workflowKey, {});
-    return {
-      code: contextFarmCodes[context.id] || workflow.farmCode || "0527",
-      name: context.name || workflow.farmName || "Finca Santa Isabel"
-    };
+  function weekAtOffset(offset) {
+    var date = new Date();
+    date.setDate(date.getDate() + offset * 7);
+    return isoWeek(date);
+  }
+
+  function populateWeeks() {
+    var options = [
+      { value: weekAtOffset(0), label: "Semana actual · " + weekAtOffset(0) },
+      { value: weekAtOffset(-1), label: "Semana anterior · " + weekAtOffset(-1) },
+      { value: weekAtOffset(-2), label: "Hace 2 semanas · " + weekAtOffset(-2) },
+      { value: "all", label: "Todas las semanas" }
+    ];
+    $("[data-pallet-week]").innerHTML = options.map(function (option) {
+      return '<option value="' + option.value + '">' + option.label + "</option>";
+    }).join("");
+  }
+
+  function addDays(date, amount) {
+    return new Date(date.getTime() + amount * 86400000);
   }
 
   function demoPallets() {
     var farm = activeFarm();
-    var week = isoWeek(new Date());
     var today = new Date();
-    var previous = new Date(today.getTime() - 86400000);
-    var older = new Date(today.getTime() - 172800000);
     return [
       {
         sscc: "177012345678900073",
         farmCode: farm.code,
         farmName: farm.name,
-        week: week,
+        week: weekAtOffset(0),
         references: [
           { reference: "BAN-REF-001", referenceName: "Premium 22XU", boxes: 48 },
           { reference: "BAN-REF-011", referenceName: "Export 40LB", boxes: 48 },
@@ -88,7 +100,7 @@
         sscc: "177012345678900066",
         farmCode: farm.code,
         farmName: farm.name,
-        week: week,
+        week: weekAtOffset(0),
         references: [
           { reference: "BAN-REF-004", referenceName: "Cluster 208", boxes: 54 },
           { reference: "BAN-REF-019", referenceName: "EPS Puerto", boxes: 48 }
@@ -98,24 +110,40 @@
         endTime: "14:42",
         user: "operador.sial",
         observations: "",
-        createdAt: previous.toISOString(),
-        status: "LISTO_PARA_CARGUE"
+        createdAt: addDays(today, -1).toISOString(),
+        status: "CARGADO"
       },
       {
         sscc: "177012345678900059",
         farmCode: farm.code,
         farmName: farm.name,
-        week: week,
+        week: weekAtOffset(0),
         references: [
           { reference: "BAN-REF-022", referenceName: "Orgánico 18KG", boxes: 66 }
         ],
         boxes: 66,
         startTime: "09:05",
         endTime: "09:28",
-        user: "operador.sial",
+        user: "supervisor.finca",
         observations: "Validado para cargue.",
-        createdAt: older.toISOString(),
+        createdAt: addDays(today, -2).toISOString(),
         status: "LISTO_PARA_CARGUE"
+      },
+      {
+        sscc: "177012345678900042",
+        farmCode: farm.code,
+        farmName: farm.name,
+        week: weekAtOffset(-1),
+        references: [
+          { reference: "BAN-REF-002", referenceName: "Premium 20XU", boxes: 48 }
+        ],
+        boxes: 48,
+        startTime: "11:20",
+        endTime: "11:39",
+        user: "operador.sial",
+        observations: "Registro histórico.",
+        createdAt: addDays(today, -8).toISOString(),
+        status: "CARGADO"
       }
     ];
   }
@@ -137,6 +165,14 @@
     return unique.length ? unique : demoPallets();
   }
 
+  function normalizeSscc(value) {
+    if (window.SialMobileUI && typeof window.SialMobileUI.normalizeSscc === "function") {
+      return window.SialMobileUI.normalizeSscc(value);
+    }
+    var digits = String(value || "").replace(/\D/g, "");
+    return digits.length === 20 && digits.slice(0, 2) === "00" ? digits.slice(2) : digits;
+  }
+
   function statusMeta(status) {
     if (status === "ANULADO") return { label: "Anulado", className: "error" };
     if (status === "CARGADO") return { label: "Cargado", className: "info" };
@@ -144,8 +180,7 @@
   }
 
   function timestamp(item) {
-    var value = item.createdAt || item.startedAt || "";
-    var parsed = new Date(value);
+    var parsed = new Date(item.createdAt || item.startedAt || "");
     return Number.isNaN(parsed.getTime()) ? new Date(0) : parsed;
   }
 
@@ -159,13 +194,6 @@
     }).format(date);
   }
 
-  function dateValue(item) {
-    var date = timestamp(item);
-    if (!date.getTime()) return "";
-    var local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-    return local.toISOString().slice(0, 10);
-  }
-
   function duration(item) {
     if (!item.startTime || !item.endTime) return "--";
     var start = item.startTime.split(":").map(Number);
@@ -173,10 +201,6 @@
     var minutes = (end[0] * 60 + end[1]) - (start[0] * 60 + start[1]);
     if (minutes < 0) minutes += 1440;
     return minutes + " min";
-  }
-
-  function referenceCount(item) {
-    return Array.isArray(item.references) ? item.references.length : 0;
   }
 
   function totalBoxes(item) {
@@ -187,80 +211,83 @@
   }
 
   function matchesFilters(item) {
-    var query = $("[data-consulta-search]").value.trim().toLowerCase();
-    var week = $("[data-consulta-week]").value;
-    var selectedDate = $("[data-consulta-date]").value;
+    var query = $("[data-pallet-search]").value.trim().toLowerCase();
+    var week = $("[data-pallet-week]").value;
+    var status = $("[data-pallet-status]").value;
     var farm = activeFarm();
-    var searchable = [
-      item.sscc,
-      item.farmCode,
-      item.farmName
-    ].concat((item.references || []).reduce(function (values, reference) {
-      return values.concat(reference.reference, reference.referenceName);
-    }, [])).join(" ").toLowerCase();
+    var searchable = [item.sscc, item.farmCode, item.farmName]
+      .concat((item.references || []).reduce(function (values, reference) {
+        return values.concat(reference.reference, reference.referenceName);
+      }, []))
+      .join(" ")
+      .toLowerCase();
 
-    if (item.farmCode && item.farmCode !== farm.code) return false;
-    if (query && searchable.indexOf(query) < 0) return false;
-    if (week === "current" && item.week && item.week !== isoWeek(new Date())) return false;
-    if (selectedDate && dateValue(item) !== selectedDate) return false;
-    return true;
+    return (!item.farmCode || item.farmCode === farm.code) &&
+      (!query || searchable.indexOf(query) >= 0) &&
+      (week === "all" || item.week === week) &&
+      (status === "all" || item.status === status);
   }
 
   function cardTemplate(item) {
     var status = statusMeta(item.status);
-    var references = referenceCount(item);
+    var references = Array.isArray(item.references) ? item.references.length : 0;
     return [
-      '<button class="consulta-pallet-card" type="button" data-consulta-pallet="' + escapeHtml(item.sscc) + '" aria-label="Ver pallet ' + escapeHtml(item.sscc) + '">',
-      '<span class="consulta-pallet-card-head">',
-      '<span class="consulta-pallet-card-code"><span>SSCC</span><strong>' + escapeHtml(item.sscc) + '</strong></span>',
-      '<span class="sial-pill ' + status.className + '">' + status.label + '</span>',
+      '<button class="sial-query-item" type="button" data-pallet-id="' + escapeHtml(item.sscc) + '" aria-label="Ver pallet ' + escapeHtml(item.sscc) + '">',
+      '<span class="sial-query-item-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg></span>',
+      '<span class="sial-query-item-body">',
+      '<span class="sial-query-item-title"><strong>' + escapeHtml(item.sscc) + '</strong><span class="sial-pill ' + status.className + '">' + status.label + '</span></span>',
+      '<span class="sial-query-item-meta"><span><strong>' + references + '</strong> referencia(s)</span><span><strong>' + totalBoxes(item) + '</strong> cajas</span></span>',
+      '<span class="sial-query-item-foot"><span>' + escapeHtml(formatDate(item)) + '</span><span>' + escapeHtml(item.startTime || "--") + " – " + escapeHtml(item.endTime || "--") + '</span></span>',
       '</span>',
-      '<span class="consulta-pallet-card-stats">',
-      '<span class="consulta-pallet-card-stat"><span>Referencias</span><strong>' + references + '</strong></span>',
-      '<span class="consulta-pallet-card-stat"><span>Total cajas</span><strong>' + totalBoxes(item) + '</strong></span>',
-      '</span>',
-      '<span class="consulta-pallet-card-foot">',
-      '<span>' + escapeHtml(formatDate(item)) + ' · ' + escapeHtml(item.startTime || "--") + ' – ' + escapeHtml(item.endTime || "--") + '</span>',
-      '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
-      '</span>',
+      '<svg class="sial-icon sial-query-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
       '</button>'
     ].join("");
+  }
+
+  function setViewState(state) {
+    $("[data-pallet-loading]").hidden = state !== "loading";
+    $("[data-pallet-list]").hidden = state !== "results";
+    $("[data-pallet-empty]").hidden = state !== "empty";
+    $("[data-pallet-error]").hidden = state !== "error";
   }
 
   function render() {
     var filtered = pallets.filter(matchesFilters).sort(function (a, b) {
       return timestamp(b) - timestamp(a);
     });
-    var list = $("[data-consulta-list]");
-    var empty = $("[data-consulta-empty]");
-    var queryActive = Boolean($("[data-consulta-search]").value.trim() || $("[data-consulta-date]").value || $("[data-consulta-week]").value === "all");
+    var queryActive = Boolean(
+      $("[data-pallet-search]").value.trim() ||
+      $("[data-pallet-week]").value !== weekAtOffset(0) ||
+      $("[data-pallet-status]").value !== "all"
+    );
     var boxes = filtered.reduce(function (total, item) { return total + totalBoxes(item); }, 0);
-    var label = filtered.length === 1 ? "pallet" : "pallets";
+    var list = $("[data-pallet-list]");
 
-    $("[data-consulta-summary]").textContent = filtered.length + " " + label + " · " + boxes + " cajas";
-    $("[data-consulta-clear]").hidden = !queryActive;
+    $("[data-pallet-summary]").textContent = filtered.length + (filtered.length === 1 ? " pallet" : " pallets") + " · " + boxes + " cajas";
+    $("[data-pallet-clear]").hidden = !queryActive;
     list.innerHTML = filtered.map(cardTemplate).join("");
-    list.hidden = filtered.length === 0;
-    empty.hidden = filtered.length > 0;
 
-    if (!filtered.length) {
-      var hasSearch = Boolean($("[data-consulta-search]").value.trim() || $("[data-consulta-date]").value);
-      $("[data-consulta-empty-title]").textContent = hasSearch ? "Sin resultados" : "No hay pallets armados";
-      $("[data-consulta-empty-copy]").textContent = hasSearch
-        ? "No encontramos pallets que coincidan con los criterios de búsqueda."
-        : "No se encontraron pallets para la finca y el periodo seleccionados.";
+    if (filtered.length) {
+      setViewState("results");
+      return;
     }
+
+    var hasSearch = Boolean($("[data-pallet-search]").value.trim());
+    $("[data-pallet-empty-title]").textContent = hasSearch ? "Sin coincidencias" : "No hay pallets creados";
+    $("[data-pallet-empty-copy]").textContent = hasSearch
+      ? "No encontramos pallets que coincidan con el SSCC o referencia ingresados."
+      : "No existen pallets para la finca, semana y estado seleccionados.";
+    setViewState("empty");
   }
 
   function referenceRows(item) {
     if (!Array.isArray(item.references) || !item.references.length) {
-      return "<p>No hay referencias registradas.</p>";
+      return '<p class="sial-query-detail-note">No hay referencias registradas.</p>';
     }
     return item.references.map(function (reference) {
       return [
-        '<div class="hu591-label-reference-row">',
-        '<div><strong>' + escapeHtml(reference.reference || "--") + '</strong>',
-        '<span>' + escapeHtml(reference.referenceName || "Referencia") + '</span></div>',
+        '<div class="pallet-reference-row">',
+        '<div><strong>' + escapeHtml(reference.reference || "--") + '</strong><span>' + escapeHtml(reference.referenceName || "Referencia") + '</span></div>',
         '<strong>' + Number(reference.boxes || 0) + ' cajas</strong>',
         '</div>'
       ].join("");
@@ -268,41 +295,34 @@
   }
 
   function detailContent(item) {
-    var content = document.createElement("div");
     var status = statusMeta(item.status);
-    content.className = "consulta-detail";
+    var content = document.createElement("div");
+    content.className = "sial-query-detail";
     content.innerHTML = [
-      '<section class="hu591-label-preview consulta-detail-label" aria-label="Etiqueta del pallet">',
-      '<div class="hu591-label-head"><span>Etiqueta pallet</span><strong>' + escapeHtml(item.sscc) + '</strong></div>',
-      '<dl>',
-      '<div><dt>Finca</dt><dd>' + escapeHtml((item.farmCode || "--") + " · " + (item.farmName || "--")) + '</dd></div>',
-      '<div><dt>Semana actual</dt><dd>' + escapeHtml(item.week || "--") + '</dd></div>',
-      '<div><dt>Total cajas</dt><dd>' + totalBoxes(item) + ' cajas</dd></div>',
-      '<div><dt>Estado</dt><dd>' + status.label + '</dd></div>',
-      '</dl>',
-      '<div class="hu591-label-references"><span>Referencias</span><div>' + referenceRows(item) + '</div></div>',
-      '</section>',
-      '<button class="sial-btn sial-btn-secondary consulta-copy-sscc" type="button" data-consulta-copy="' + escapeHtml(item.sscc) + '">',
-      '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>',
-      'Copiar SSCC</button>',
-      '<section class="consulta-detail-meta" aria-label="Información operativa">',
+      '<section class="sial-query-detail-identity">',
+      '<div class="sial-query-detail-identity-head"><div><span>SSCC</span><strong>' + escapeHtml(item.sscc) + '</strong></div><span class="sial-pill ' + status.className + '">' + status.label + '</span></div>',
+      '<div class="sial-query-detail-grid">',
+      '<div class="sial-query-detail-field"><span>FINCA</span><strong>' + escapeHtml((item.farmCode || "--") + " · " + (item.farmName || "--")) + '</strong></div>',
+      '<div class="sial-query-detail-field"><span>SEMANA</span><strong>' + escapeHtml(item.week || "--") + '</strong></div>',
+      '<div class="sial-query-detail-field"><span>TOTAL CAJAS</span><strong>' + totalBoxes(item) + ' cajas</strong></div>',
+      '<div class="sial-query-detail-field"><span>DURACIÓN</span><strong>' + escapeHtml(duration(item)) + '</strong></div>',
+      '</div></section>',
+      '<section class="sial-query-detail-section"><h3>Referencias</h3><div class="pallet-reference-list">' + referenceRows(item) + '</div></section>',
+      '<section class="sial-query-detail-section"><h3>Información operativa</h3>',
       '<div class="sial-list-row"><strong>Fecha de creación</strong><span>' + escapeHtml(formatDate(item)) + '</span></div>',
-      '<div class="sial-list-row"><strong>Hora de inicio</strong><span>' + escapeHtml(item.startTime || "--") + '</span></div>',
-      '<div class="sial-list-row"><strong>Hora de finalización</strong><span>' + escapeHtml(item.endTime || "--") + '</span></div>',
-      '<div class="sial-list-row"><strong>Duración</strong><span>' + escapeHtml(duration(item)) + '</span></div>',
+      '<div class="sial-list-row"><strong>Horario</strong><span>' + escapeHtml(item.startTime || "--") + " – " + escapeHtml(item.endTime || "--") + '</span></div>',
       '<div class="sial-list-row"><strong>Creado por</strong><span>' + escapeHtml(item.user || "--") + '</span></div>',
       '</section>',
-      item.observations ? '<section class="consulta-detail-observations"><strong>Observaciones</strong><p>' + escapeHtml(item.observations) + '</p></section>' : "",
-      '</div>'
+      item.observations ? '<section class="sial-query-detail-section"><h3>Observaciones</h3><p class="sial-query-detail-note">' + escapeHtml(item.observations) + '</p></section>' : "",
+      '<button class="sial-btn sial-btn-secondary pallet-copy-sscc" type="button" data-copy-sscc="' + escapeHtml(item.sscc) + '"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>Copiar SSCC</button>'
     ].join("");
+
     content.addEventListener("click", function (event) {
-      var copy = event.target.closest("[data-consulta-copy]");
-      if (!copy) return;
-      var value = copy.dataset.consultaCopy;
+      var button = event.target.closest("[data-copy-sscc]");
+      if (!button) return;
+      var value = button.dataset.copySscc;
       var completed = function () {
-        if (window.SialMobileUI) {
-          window.SialMobileUI.showToast({ type: "success", title: "SSCC copiado", message: value });
-        }
+        window.SialMobileUI.showToast({ type: "success", title: "SSCC copiado", message: value });
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(value).then(completed).catch(completed);
@@ -317,7 +337,7 @@
     var item = pallets.find(function (candidate) { return candidate.sscc === sscc; });
     if (!item || !window.SialMobileUI) return;
     window.SialMobileUI.openDialog({
-      id: "consulta-pallet-detail",
+      id: "pallet-query-detail",
       title: "Detalle del pallet",
       variant: "sheet",
       content: detailContent(item),
@@ -327,21 +347,23 @@
 
   function scan() {
     if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") return;
+    var first = pallets.find(matchesFilters) || pallets[0];
     window.SialMobileUI.openBarcodeScanner({
       title: "Escanear SSCC",
       eyebrow: "Consulta de pallet",
+      demoValue: first ? first.sscc : "177012345678900073",
+      demoLabel: "Leer SSCC demo",
       normalize: normalizeSscc,
       validate: function (value) {
         var sscc = normalizeSscc(value);
         var found = pallets.some(function (item) { return item.sscc === sscc; });
-        return {
-          ok: found,
-          message: found ? "Pallet encontrado." : "No encontramos un pallet con este SSCC."
-        };
+        return { ok: found, message: found ? "Pallet encontrado." : "No encontramos un pallet con este SSCC." };
       },
       onDetected: function (value) {
         var sscc = normalizeSscc(value);
-        $("[data-consulta-search]").value = sscc;
+        $("[data-pallet-search]").value = sscc;
+        $("[data-pallet-week]").value = "all";
+        $("[data-pallet-status]").value = "all";
         render();
         openDetail(sscc);
       }
@@ -349,30 +371,47 @@
   }
 
   function clearFilters() {
-    $("[data-consulta-search]").value = "";
-    $("[data-consulta-week]").value = "current";
-    $("[data-consulta-date]").value = "";
+    $("[data-pallet-search]").value = "";
+    $("[data-pallet-week]").value = weekAtOffset(0);
+    $("[data-pallet-status]").value = "all";
     render();
-    $("[data-consulta-search]").focus();
+    $("[data-pallet-search]").focus();
+  }
+
+  function load() {
+    setViewState("loading");
+    $("[data-pallet-summary]").textContent = "Consultando pallets…";
+    window.setTimeout(function () {
+      var requestedState = new URLSearchParams(window.location.search).get("state");
+      if (requestedState === "error" && !retryRequested) {
+        $("[data-pallet-summary]").textContent = "Consulta no disponible";
+        setViewState("error");
+        return;
+      }
+      pallets = requestedState === "empty" ? [] : readPallets();
+      render();
+    }, 320);
   }
 
   function init() {
     var farm = activeFarm();
-    var week = isoWeek(new Date());
-    pallets = readPallets();
-    $("[data-consulta-context-farm]").textContent = farm.code + " · " + farm.name;
-    $("[data-consulta-context-week]").textContent = week;
+    populateWeeks();
+    $("[data-pallet-context-farm]").textContent = farm.code + " · " + farm.name;
 
-    $("[data-consulta-search]").addEventListener("input", render);
-    $("[data-consulta-week]").addEventListener("change", render);
-    $("[data-consulta-date]").addEventListener("change", render);
-    $("[data-consulta-scan]").addEventListener("click", scan);
-    $("[data-consulta-clear]").addEventListener("click", clearFilters);
-    $("[data-consulta-list]").addEventListener("click", function (event) {
-      var card = event.target.closest("[data-consulta-pallet]");
-      if (card) openDetail(card.dataset.consultaPallet);
+    $("[data-pallet-search]").addEventListener("input", render);
+    $("[data-pallet-week]").addEventListener("change", render);
+    $("[data-pallet-status]").addEventListener("change", render);
+    $("[data-pallet-scan]").addEventListener("click", scan);
+    $("[data-pallet-clear]").addEventListener("click", clearFilters);
+    $("[data-pallet-retry]").addEventListener("click", function () {
+      retryRequested = true;
+      load();
     });
-    render();
+    $("[data-pallet-list]").addEventListener("click", function (event) {
+      var card = event.target.closest("[data-pallet-id]");
+      if (card) openDetail(card.dataset.palletId);
+    });
+    load();
   }
 
   if (document.readyState === "loading") {

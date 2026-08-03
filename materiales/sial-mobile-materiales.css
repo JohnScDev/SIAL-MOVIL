@@ -143,3 +143,116 @@
     grid-template-columns: 1fr;
   }
 }
+/* HU659 — consulta móvil de solo lectura */
+.sial-material-source-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--sial-border-subtle);
+}
+
+.sial-material-source-line span {
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-material-source-line strong {
+  color: var(--sial-text);
+  font-size: 12px;
+  text-align: right;
+}
+
+.sial-material-section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.sial-material-section-head .sial-section-title,
+.sial-material-section-head p {
+  margin: 0;
+}
+
+.sial-material-section-head p {
+  margin-top: 3px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-material-suggestion-list .sial-list-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.sial-material-suggestion-list .sial-list-row span {
+  flex: 0 0 auto;
+  color: var(--sial-primary-500);
+  font-weight: 700;
+  text-align: right;
+}
+
+@media (max-width: 360px) {
+  .sial-material-section-head {
+    display: grid;
+  }
+
+  .sial-material-section-head .sial-chip-action {
+    justify-self: start;
+  }
+}
+
+/* HU666 — captura móvil de pedido adicional */
+.sial-additional-origin {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr);
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+}
+
+.sial-additional-origin > div { min-width: 0; padding: 10px; }
+.sial-additional-origin > b { display: grid; place-items: center; color: var(--sial-text-3); font-size: 12px; }
+.sial-additional-origin span, .sial-additional-origin strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sial-additional-origin span { color: var(--sial-text-3); font-size: 9px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.sial-additional-origin strong { margin-top: 4px; color: var(--sial-text); font-size: 11px; }
+.sial-additional-origin .active { border-left: 3px solid var(--sial-primary-500); background: var(--sial-primary-100); }
+.sial-additional-origin .active strong { color: var(--sial-primary-500); }
+
+.sial-additional-form { gap: 14px; }
+.sial-additional-form .sial-label span { color: var(--sial-text-3); font-weight: 400; }
+.sial-additional-stock { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; overflow: hidden; border: 1px solid var(--sial-border-subtle); border-radius: var(--sial-radius-control); background: var(--sial-border-subtle); }
+.sial-additional-stock > div { padding: 11px 12px; background: var(--sial-surface-raised); }
+.sial-additional-stock span, .sial-additional-stock strong { display: block; }
+.sial-additional-stock span { color: var(--sial-text-3); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.sial-additional-stock strong { margin-top: 4px; color: var(--sial-text); font-size: 13px; }
+
+.sial-additional-timeline { display: grid; margin-top: 14px; }
+.sial-additional-timeline > div { position: relative; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; min-height: 64px; }
+.sial-additional-timeline > div:not(:last-child)::before { content: ''; position: absolute; top: 24px; bottom: 0; left: 11px; width: 2px; background: var(--sial-border-subtle); }
+.sial-additional-timeline i { position: relative; z-index: 1; width: 24px; height: 24px; display: grid; place-items: center; border: 2px solid var(--sial-border); border-radius: 50%; background: var(--sial-surface-raised); color: var(--sial-text-3); }
+.sial-additional-timeline .is-done i { border-color: var(--sial-success); background: var(--sial-success); color: #fff; }
+.sial-additional-timeline .is-current i { border-color: var(--sial-primary-500); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sial-primary-500) 14%, transparent); }
+.sial-additional-timeline .sial-icon { width: 13px; height: 13px; }
+.sial-additional-timeline span strong, .sial-additional-timeline span small { display: block; }
+.sial-additional-timeline span strong { color: var(--sial-text); font-size: 13px; }
+.sial-additional-timeline span small { margin-top: 3px; color: var(--sial-text-2); font-size: 11px; line-height: 1.4; }
+
+@media (max-width: 360px) {
+  .sial-additional-origin { grid-template-columns: 1fr; }
+  .sial-additional-origin > b { height: 16px; transform: rotate(90deg); }
+  .sial-additional-stock { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .sial-banner-region {
+    top: calc(max(14px, env(safe-area-inset-top)) + 64px);
+  }
+}

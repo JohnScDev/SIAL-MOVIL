@@ -1,0 +1,431 @@
+.sial-query-page {
+  width: min(100%, 720px);
+  gap: 16px;
+}
+
+.sial-query-context {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+}
+
+.sial-query-context-icon,
+.sial-query-item-icon {
+  display: grid;
+  place-items: center;
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-600);
+}
+
+.sial-query-context-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.sial-query-context-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sial-query-context-copy strong {
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 14px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-query-context-copy span {
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.sial-query-context .sial-pill {
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 10px;
+}
+
+.sial-query-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+}
+
+.sial-query-panel-head {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sial-query-panel-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sial-query-panel-copy h2,
+.sial-query-results-head h2 {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.sial-query-panel-copy p,
+.sial-query-results-head p {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.sial-query-scan {
+  flex: 0 0 48px;
+  width: 48px;
+  padding: 0;
+}
+
+.sial-query-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sial-query-results {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-query-results-head {
+  min-height: 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+}
+
+.sial-query-results-head > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sial-query-clear {
+  min-height: 36px;
+  padding: 0 6px;
+  color: var(--sial-primary-600);
+  font-size: 11px;
+}
+
+.sial-query-list,
+.sial-query-loading {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-query-loading-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 116px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+}
+
+.sial-query-loading-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.sial-query-loading-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-query-loading-copy .sial-loading-skeleton:last-child {
+  width: 68%;
+}
+
+.sial-query-item {
+  width: 100%;
+  min-height: 116px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+  transition:
+    transform var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease),
+    background-color var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-query-item:active {
+  transform: scale(.99);
+}
+
+.sial-query-item:focus-visible {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+@media (hover: hover) {
+  .sial-query-item:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--sial-primary-500) 38%, var(--sial-border));
+    background: color-mix(in srgb, var(--sial-primary-50) 52%, var(--sial-surface));
+  }
+}
+
+.sial-query-item-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.sial-query-item-icon .sial-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.sial-query-item-body {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.sial-query-item-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sial-query-item-title strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 13px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-query-item-title .sial-pill {
+  flex: 0 0 auto;
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 9px;
+}
+
+.sial-query-item-meta,
+.sial-query-item-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.sial-query-item-meta strong {
+  color: var(--sial-text);
+  font-weight: 600;
+}
+
+.sial-query-item-meta span + span::before,
+.sial-query-item-foot span + span::before {
+  content: "·";
+  margin-right: 8px;
+  color: var(--sial-text-3);
+}
+
+.sial-query-item-stage {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sial-primary-600);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sial-query-item-stage .sial-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sial-query-chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--sial-primary-600);
+}
+
+.sial-query-state {
+  min-height: 164px;
+}
+
+.sial-query-state .sial-icon {
+  width: 34px;
+  height: 34px;
+  color: var(--sial-primary-500);
+}
+
+.sial-query-error {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-query-error .sial-btn {
+  justify-self: center;
+}
+
+.sial-query-detail {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-query-detail-identity {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+}
+
+.sial-query-detail-identity-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sial-query-detail-identity-head > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sial-query-detail-identity-head span:not(.sial-pill) {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.sial-query-detail-identity-head strong {
+  overflow-wrap: anywhere;
+  color: var(--sial-text);
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.sial-query-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sial-query-detail-field {
+  display: grid;
+  gap: 3px;
+  padding-top: 8px;
+  border-top: 1px solid var(--sial-border-subtle);
+}
+
+.sial-query-detail-field span {
+  color: var(--sial-text-3);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.sial-query-detail-field strong {
+  color: var(--sial-text);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.sial-query-detail-section {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-query-detail-section > h3 {
+  margin: 0;
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.sial-query-detail-note {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (max-width: 390px) {
+  .sial-query-context {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .sial-query-context-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sial-query-context .sial-pill {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .sial-query-filter-grid,
+  .sial-query-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sial-query-results-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sial-query-clear {
+    margin-left: -6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sial-query-item {
+    transition: none;
+  }
+}

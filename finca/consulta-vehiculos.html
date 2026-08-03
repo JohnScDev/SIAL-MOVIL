@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="manifest" href="../manifest.webmanifest">
   <meta name="theme-color" content="#005CA8">
-  <title>SIAL Móvil - Consulta Pallet’s</title>
+  <title>SIAL Móvil - Vehículos por finca</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
   <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260803">
   <link rel="stylesheet" href="../shared/sial-mobile-query.css?v=20260803">
-  <link rel="stylesheet" href="consulta-pallets.css?v=20260803">
+  <link rel="stylesheet" href="consulta-vehiculos.css?v=20260803">
 </head>
 <body>
   <main class="sial-page">
@@ -19,8 +19,8 @@
       </a>
       <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
       <div class="sial-page-title">
-        <h1>Consulta Pallet’s</h1>
-        <p>Pallets creados por finca</p>
+        <h1>Vehículos por finca</h1>
+        <p>Estado y destino operativo</p>
       </div>
       <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
         <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
@@ -33,75 +33,73 @@
           <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/></svg>
         </span>
         <div class="sial-query-context-copy">
-          <strong data-pallet-context-farm>Finca activa</strong>
-          <span>Los resultados pertenecen a la finca seleccionada.</span>
+          <strong data-vehicle-context-farm>Finca activa</strong>
+          <span>Vehículos con origen o destino asociado a la finca.</span>
         </div>
         <span class="sial-pill info">Solo consulta</span>
       </section>
 
-      <section class="sial-query-panel" aria-labelledby="pallet-filters-title">
+      <section class="sial-query-panel" aria-labelledby="vehicle-filters-title">
         <div class="sial-query-panel-head">
           <div class="sial-query-panel-copy">
-            <h2 id="pallet-filters-title">Buscar pallets</h2>
-            <p>Consulta por SSCC, referencia, semana o estado.</p>
+            <h2 id="vehicle-filters-title">Buscar vehículos</h2>
+            <p>Consulta por placa, conductor, destino, semana o estado.</p>
           </div>
         </div>
 
         <div class="sial-search-row">
-          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" placeholder="SSCC o referencia" aria-label="Buscar por SSCC o referencia" data-pallet-search>
-          <button class="sial-btn sial-btn-primary sial-btn-icon sial-query-scan" type="button" data-pallet-scan aria-label="Escanear SSCC">
-            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
-          </button>
+          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" autocapitalize="characters" placeholder="Placa, conductor o destino" aria-label="Buscar vehículo por placa, conductor o destino" data-vehicle-search>
         </div>
 
         <div class="sial-query-filter-grid">
           <label class="sial-field">
-            <span class="sial-label">Semana de creación</span>
-            <select class="sial-select" data-pallet-week aria-label="Filtrar pallets por semana"></select>
+            <span class="sial-label">Semana operativa</span>
+            <select class="sial-select" data-vehicle-week aria-label="Filtrar vehículos por semana"></select>
           </label>
           <label class="sial-field">
-            <span class="sial-label">Estado</span>
-            <select class="sial-select" data-pallet-status aria-label="Filtrar pallets por estado">
+            <span class="sial-label">Estado operativo</span>
+            <select class="sial-select" data-vehicle-status aria-label="Filtrar vehículos por estado operativo">
               <option value="all">Todos los estados</option>
-              <option value="LISTO_PARA_CARGUE">Listo para cargue</option>
-              <option value="CARGADO">Cargado</option>
-              <option value="ANULADO">Anulado</option>
+              <option value="PROGRAMADO">Programado</option>
+              <option value="EN_TRANSITO">En tránsito</option>
+              <option value="EN_DESTINO">En destino</option>
+              <option value="FINALIZADO">Finalizado</option>
             </select>
           </label>
         </div>
       </section>
 
-      <section class="sial-query-results" aria-labelledby="pallet-results-title">
+      <section class="sial-query-results" aria-labelledby="vehicle-results-title">
         <div class="sial-query-results-head">
           <div>
-            <h2 id="pallet-results-title">Pallets de la finca</h2>
-            <p data-pallet-summary>Consultando pallets…</p>
+            <h2 id="vehicle-results-title">Vehículos asociados</h2>
+            <p data-vehicle-summary>Consultando vehículos…</p>
           </div>
-          <button class="sial-btn sial-btn-ghost sial-query-clear" type="button" data-pallet-clear hidden>Limpiar filtros</button>
+          <button class="sial-btn sial-btn-ghost sial-query-clear" type="button" data-vehicle-clear hidden>Limpiar filtros</button>
         </div>
 
-        <div class="sial-query-loading" data-pallet-loading aria-label="Cargando pallets">
+        <div class="sial-query-loading" data-vehicle-loading aria-label="Cargando vehículos">
           <div class="sial-query-loading-card"><div class="sial-loading-skeleton sial-query-loading-icon"></div><div class="sial-query-loading-copy"><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div></div></div>
           <div class="sial-query-loading-card"><div class="sial-loading-skeleton sial-query-loading-icon"></div><div class="sial-query-loading-copy"><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div></div></div>
         </div>
 
-        <div class="sial-query-list" data-pallet-list aria-live="polite" hidden></div>
+        <div class="sial-query-list" data-vehicle-list aria-live="polite" hidden></div>
 
-        <div class="sial-empty-state sial-query-state" data-pallet-empty hidden>
-          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg>
-          <strong data-pallet-empty-title>No hay pallets creados</strong>
-          <p data-pallet-empty-copy>No existen pallets para la finca y semana seleccionadas.</p>
+        <div class="sial-empty-state sial-query-state" data-vehicle-empty hidden>
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
+          <strong data-vehicle-empty-title>No hay vehículos asociados</strong>
+          <p data-vehicle-empty-copy>No existen programaciones para la finca y semana seleccionadas.</p>
         </div>
 
-        <div class="sial-query-error" data-pallet-error hidden>
-          <div class="sial-status error"><div class="sial-feedback-copy"><strong>No fue posible consultar los pallets</strong><p>Revisa la conexión e intenta nuevamente. Los filtros seleccionados se conservarán.</p></div></div>
-          <button class="sial-btn sial-btn-secondary" type="button" data-pallet-retry>Reintentar consulta</button>
+        <div class="sial-query-error" data-vehicle-error hidden>
+          <div class="sial-status error"><div class="sial-feedback-copy"><strong>No fue posible consultar los vehículos</strong><p>Revisa la conexión e intenta nuevamente. Los filtros seleccionados se conservarán.</p></div></div>
+          <button class="sial-btn sial-btn-secondary" type="button" data-vehicle-retry>Reintentar consulta</button>
         </div>
       </section>
     </section>
   </main>
 
   <script src="../shared/sial-mobile-core.js?v=20260803"></script>
-  <script src="consulta-pallets.js?v=20260803"></script>
+  <script src="consulta-vehiculos.js?v=20260803"></script>
 </body>
 </html>

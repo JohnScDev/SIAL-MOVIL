@@ -1928,6 +1928,8 @@
       aria: "Navegacion finca",
       items: [
         { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
+        { href: "../finca/consulta-contenedores.html", label: "Contenedores por finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
+        { href: "../finca/consulta-vehiculos.html", label: "Vehículos por finca", icon: drawerIcon('<path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>') },
         { href: "../finca/inspeccion-externa.html?selectContainer=1", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
         { href: "../finca/inspeccion-interna.html?selectContainer=1", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../finca/sesion-responsabilidad.html", label: "Sesion responsabilidad", icon: drawerIcon('<path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/>') },
@@ -1940,7 +1942,7 @@
       aria: "Navegacion pallets",
       items: [
         { href: "../pallets/armar-pallet.html", label: "HU591 - Armar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
-        { href: "../pallets/consulta-pallets.html", label: "Consulta Pallet´s", icon: drawerIcon('<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/><path d="M7 10h6"/>') },
+        { href: "../pallets/consulta-pallets.html", label: "Consulta Pallet’s", icon: drawerIcon('<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/><path d="M7 10h6"/>') },
         { href: "../pallets/reetiquetar-pallet.html", label: "Re-etiquetar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="m8 12 3 3 5-6"/><path d="M7 20h10"/>') },
         { href: "../pallets/cargar-pallets.html", label: "HU332 - Cargue contenedor", icon: drawerIcon('<path d="M12 5v14"/><path d="M5 12h14"/>') }
       ]
@@ -2019,6 +2021,12 @@
     const existingDrawer = document.querySelector(".sial-drawer");
     if (existingDrawer) {
       const content = existingDrawer.querySelector(".sial-drawer-content");
+      const farmGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion finca");
+      const existingFarm = content?.querySelector('[aria-label="Navegacion finca"]');
+      if (existingFarm && farmGroup) {
+        existingFarm.insertAdjacentHTML("afterend", renderDrawerMenuGroup(farmGroup));
+        existingFarm.remove();
+      }
       const palletsGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion pallets");
       const existingPallets = content?.querySelector('[aria-label="Navegacion pallets"]');
       if (existingPallets && palletsGroup) {
