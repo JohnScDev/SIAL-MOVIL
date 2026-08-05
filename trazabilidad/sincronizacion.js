@@ -238,9 +238,15 @@
     var degrees = Math.round(progress * 3.6);
     var hasActiveSync = queue.some(function (item) { return item.status === "SYNCING"; });
     var command = $("[data-sync-command]");
+    var orbit = $("[data-sync-orbit]");
+    var isComplete = progress === 100 && counts.attention === 0 && counts.pending === 0 && !hasActiveSync;
 
     command.classList.toggle("is-syncing", hasActiveSync);
-    $("[data-sync-orbit]").style.setProperty("--sync-progress", degrees + "deg");
+    command.classList.toggle("is-complete", isComplete);
+    command.classList.toggle("has-errors", counts.error > 0);
+    orbit.style.setProperty("--sync-progress", degrees + "deg");
+    orbit.setAttribute("aria-valuenow", String(progress));
+    orbit.setAttribute("aria-valuetext", progress + "% sincronizado");
     animateProgressValue(progress);
     $("[data-sync-progress-label]").textContent = hasActiveSync ? "Enviando datos" : (progress === 100 ? "Operación al día" : "Progreso confirmado");
     $("[data-sync-progress-copy]").textContent = counts.synced + " de " + counts.total + " trabajos confirmados";

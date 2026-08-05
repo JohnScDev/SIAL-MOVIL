@@ -150,10 +150,7 @@
         <div class="sial-material-section-head"><div><h2 class="sial-section-title">Materiales sugeridos</h2><p>Resultado calculado en Web para esta finca.</p></div><span class="sial-chip-action info">${pedido.materials.length} materiales</span></div>
         <div class="sial-list sial-material-suggestion-list">${pedido.materials.map((item) => `<div class="sial-list-row"><strong>${esc(item.name)}</strong><span>${esc(item.quantity)}</span></div>`).join("")}</div>
       </section>
-      <section class="sial-inline-status info" role="status">
-        <strong>Consulta de solo lectura</strong>
-        <span>Los ajustes de cantidades se gestionan en el paso de revisión del pedido.</span>
-      </section>
+      <section class="sial-status info" role="status"><span class="sial-feedback-copy"><strong>Consulta de solo lectura</strong><p>Los ajustes de cantidades se gestionan en el paso de revisión del pedido.</p></span></section>
       <div class="sial-bottom-actions"><button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-material-action="confirm-suggestion" ${state.consulted ? "disabled" : ""}>${state.consulted ? "Consulta registrada" : "Marcar como revisado"}</button><button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-material-action="open-additional" ${state.consulted ? "" : "disabled"}>Solicitar material adicional</button></div>
     `;
   }
@@ -167,10 +164,10 @@
     const pedido = dataset.suggested;
     const params = new URLSearchParams(location.search);
     if (params.get("access") === "denied") {
-      return `<section class="sial-inline-status error" role="alert"><strong>Solicitud no disponible</strong><span>No existe información visible dentro de tu compañía y finca autorizada.</span></section><a class="sial-btn sial-btn-secondary sial-btn-full" href="index.html">Volver a Materiales</a>`;
+      return `<section class="sial-status error" role="alert"><span class="sial-feedback-copy"><strong>Solicitud no disponible</strong><p>No existe información visible dentro de tu compañía y finca autorizada.</p></span></section><a class="sial-btn sial-btn-secondary sial-btn-full" href="index.html">Volver a Materiales</a>`;
     }
     if (!state.consulted) {
-      return `<section class="sial-inline-status warning" role="alert"><strong>Revisa primero el pedido base</strong><span>Debes marcar ${esc(pedido.id)} como revisado antes de registrar una necesidad adicional.</span></section><a class="sial-btn sial-btn-primary sial-btn-full" href="pedido-sugerido.html">Revisar pedido sugerido</a>`;
+      return `<section class="sial-status warning" role="alert"><span class="sial-feedback-copy"><strong>Revisa primero el pedido base</strong><p>Marca ${esc(pedido.id)} como revisado antes de registrar una necesidad adicional.</p></span></section><a class="sial-btn sial-btn-primary sial-btn-full" href="pedido-sugerido.html">Revisar pedido sugerido</a>`;
     }
     if (state.additional) {
       const item = state.additional;
@@ -188,7 +185,7 @@
           <div class="is-current"><i></i><span><strong>${item.sync === "pending" ? "Pendiente de sincronización" : "Pendiente de validación"}</strong><small>${item.stockWarning ? "Requiere revisar disponibilidad de abastecimiento." : "Materiales validará cantidad, motivo y stock."}</small></span></div>
           <div><i></i><span><strong>Clasificación y despacho</strong><small>Continuará en Web después de la aprobación.</small></span></div>
         </div></section>
-        <section class="sial-inline-status info" role="status"><strong>Consulta de estado</strong><span>La aprobación y el procesamiento no se realizan desde esta vista móvil.</span></section>
+        <section class="sial-status info" role="status"><span class="sial-feedback-copy"><strong>Consulta de estado</strong><p>La aprobación y el procesamiento no se realizan desde esta vista móvil.</p></span></section>
         <a class="sial-btn sial-btn-secondary sial-btn-full" href="pedido-sugerido.html">Volver al pedido base</a>
       `;
     }
@@ -197,7 +194,7 @@
       <section class="sial-additional-origin" aria-label="Origen de la solicitud"><div><span>Aviso</span><strong>${esc(pedido.notice)}</strong></div><b>→</b><div><span>Pedido base</span><strong>${esc(pedido.id)}</strong></div><b>→</b><div class="active"><span>Nueva solicitud</span><strong>Adicional 3</strong></div></section>
       <section class="sial-card sial-card-pad sial-material-order-card">
         <div class="sial-material-order-head"><div><strong>${esc(pedido.finca)}</strong><span>${esc(pedido.reference)} · ${esc(pedido.week)}</span></div>${status("Pedido validado")}</div>
-        <div class="sial-inline-status info"><strong>Necesidad excepcional</strong><span>Ya existe 1 adicional esta semana. No se reemplazará el pedido base.</span></div>
+        <div class="sial-status info"><span class="sial-feedback-copy"><strong>Necesidad excepcional</strong><p>Ya existe 1 adicional esta semana. No se reemplazará el pedido base.</p></span></div>
       </section>
       <form class="sial-card sial-card-pad sial-form sial-additional-form" data-flow-form data-additional-mobile-form>
         <h2 class="sial-section-title">Material y cantidad</h2>

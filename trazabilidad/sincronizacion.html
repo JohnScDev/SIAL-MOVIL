@@ -37,7 +37,7 @@
         </div>
 
         <div class="sync-orbit-stage" aria-label="Progreso general de sincronización">
-          <div class="sync-orbit" data-sync-orbit style="--sync-progress: 0deg">
+          <div class="sync-orbit" data-sync-orbit style="--sync-progress: 0deg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <span class="sync-orbit-track" aria-hidden="true"></span>
             <span class="sync-orbit-node node-one" aria-hidden="true">
               <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/></svg>
@@ -49,9 +49,12 @@
               <svg class="sial-icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/></svg>
             </span>
             <div class="sync-orbit-core">
-              <svg class="sial-icon sync-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-7V3"/><path d="m20 7-4-4"/><path d="M4 17h7v4"/><path d="m4 17 4 4"/><path d="M6.5 8.5A7 7 0 0 1 18 7"/><path d="M17.5 15.5A7 7 0 0 1 6 17"/></svg>
+              <img class="sync-orbit-logo" src="../assets/brand/isotipo-sial.svg" alt="" aria-hidden="true">
               <strong data-sync-progress>0%</strong>
               <span data-sync-progress-label>Revisando operación</span>
+              <span class="sync-success-mark" aria-hidden="true">
+                <svg class="sial-icon" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+              </span>
             </div>
           </div>
         </div>

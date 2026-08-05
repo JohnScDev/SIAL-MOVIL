@@ -154,10 +154,10 @@ button {
   flex-direction: column;
 }
 
-.sial-page,
-.login-screen,
-.library-shell {
-  animation: sial-screen-enter var(--sial-motion-slow) var(--sial-motion-ease) both;
+body.sial-screen-entering .sial-page-body,
+body.sial-screen-entering .login-panel,
+body.sial-screen-entering .library-shell {
+  animation: sial-screen-enter var(--sial-motion-base) var(--sial-motion-emphasis) both;
 }
 
 html[data-sial-intro="pending"] body {
@@ -190,55 +190,13 @@ body.sial-screen-exiting .sial-page,
 body.sial-screen-exiting .login-screen,
 body.sial-screen-exiting .library-shell {
   pointer-events: none;
+}
+
+body.sial-screen-exiting .sial-page-body,
+body.sial-screen-exiting .login-panel,
+body.sial-screen-exiting .library-shell {
   animation: sial-screen-exit var(--sial-motion-fast) var(--sial-motion-exit) both;
 }
-
-.sial-page-header,
-.sial-page-body > *,
-.login-panel,
-.library-topbar,
-.library-hero,
-.library-rule-grid,
-.library-section {
-  animation: sial-view-motion-item var(--sial-motion-slow) var(--sial-motion-ease) both;
-}
-
-.sial-page-body > *:nth-child(1),
-.login-panel,
-.library-hero {
-  animation-delay: 40ms;
-}
-
-.sial-page-body > *:nth-child(2),
-.library-rule-grid {
-  animation-delay: 74ms;
-}
-
-.sial-page-body > *:nth-child(3),
-.library-section:nth-of-type(1) {
-  animation-delay: 108ms;
-}
-
-.sial-page-body > *:nth-child(4),
-.library-section:nth-of-type(2) {
-  animation-delay: 142ms;
-}
-
-.sial-page-body > *:nth-child(n+5),
-.library-section:nth-of-type(n+3) {
-  animation-delay: 176ms;
-}
-
-body.sial-screen-exiting .sial-page-header,
-body.sial-screen-exiting .sial-page-body > *,
-body.sial-screen-exiting .login-panel,
-body.sial-screen-exiting .library-topbar,
-body.sial-screen-exiting .library-hero,
-body.sial-screen-exiting .library-rule-grid,
-body.sial-screen-exiting .library-section {
-  animation: none;
-}
-
 @keyframes sial-view-motion-item {
   from {
     opacity: 0;
@@ -252,12 +210,29 @@ body.sial-screen-exiting .library-section {
 
 @keyframes sial-screen-enter {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: .72;
+    transform: translate3d(12px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+html[data-sial-nav-direction="back"] body.sial-screen-entering .sial-page-body,
+html[data-sial-nav-direction="back"] body.sial-screen-entering .login-panel,
+html[data-sial-nav-direction="back"] body.sial-screen-entering .library-shell {
+  animation-name: sial-screen-enter-back;
+}
+
+@keyframes sial-screen-enter-back {
+  from {
+    opacity: .72;
+    transform: translate3d(-12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -275,7 +250,20 @@ body.sial-screen-exiting .library-section {
 @keyframes sial-screen-exit {
   to {
     opacity: 0;
-    transform: translateY(6px) scale(.992);
+    transform: translate3d(-8px, 0, 0);
+  }
+}
+
+html[data-sial-nav-direction="back"] body.sial-screen-exiting .sial-page-body,
+html[data-sial-nav-direction="back"] body.sial-screen-exiting .login-panel,
+html[data-sial-nav-direction="back"] body.sial-screen-exiting .library-shell {
+  animation-name: sial-screen-exit-back;
+}
+
+@keyframes sial-screen-exit-back {
+  to {
+    opacity: 0;
+    transform: translate3d(8px, 0, 0);
   }
 }
 
@@ -1521,6 +1509,7 @@ html[data-theme="dark"] .sial-auth-logo {
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   background: rgba(5, 12, 24, .54);
   backdrop-filter: blur(10px);
+  animation: sial-layer-backdrop-in var(--sial-motion-base) var(--sial-motion-ease) both;
 }
 
 .sial-modal,
@@ -1534,6 +1523,11 @@ html[data-theme="dark"] .sial-auth-logo {
   background: var(--sial-surface);
   color: var(--sial-text);
   box-shadow: var(--sial-shadow-overlay);
+  transform-origin: center;
+}
+
+.sial-modal {
+  animation: sial-modal-in var(--sial-motion-base) var(--sial-motion-emphasis) both;
 }
 
 .sial-bottom-sheet {
@@ -1541,6 +1535,8 @@ html[data-theme="dark"] .sial-auth-logo {
   align-self: end;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  transform-origin: bottom center;
+  animation: sial-sheet-in var(--sial-motion-base) var(--sial-motion-emphasis) both;
 }
 
 .sial-decision-alert {
@@ -1551,7 +1547,7 @@ html[data-theme="dark"] .sial-auth-logo {
   border-color: color-mix(in srgb, var(--sial-feedback-accent) 42%, var(--sial-border));
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--sial-feedback-tint) 54%, var(--sial-surface)) 0, var(--sial-surface) 180px);
-  animation: sial-decision-alert-in var(--sial-motion-slow) var(--sial-motion-emphasis) both;
+  animation: sial-sheet-in var(--sial-motion-base) var(--sial-motion-emphasis) both;
 }
 
 .sial-dialog-heading {
@@ -1597,15 +1593,71 @@ html[data-theme="dark"] .sial-auth-logo {
   min-height: 50px;
 }
 
-@keyframes sial-decision-alert-in {
+@keyframes sial-layer-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sial-layer-backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes sial-modal-in {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translate3d(0, 8px, 0) scale(.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
+}
+
+@keyframes sial-modal-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(.985);
+  }
+}
+
+@keyframes sial-sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sial-sheet-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+
+.sial-modal-backdrop.is-closing {
+  pointer-events: none;
+  animation: sial-layer-backdrop-out var(--sial-motion-fast) var(--sial-motion-exit) both;
+}
+
+.sial-modal-backdrop.is-closing .sial-modal {
+  animation: sial-modal-out var(--sial-motion-fast) var(--sial-motion-exit) both;
+}
+
+.sial-modal-backdrop.is-closing .sial-bottom-sheet {
+  animation: sial-sheet-out var(--sial-motion-fast) var(--sial-motion-exit) both;
 }
 .sial-modal-backdrop[data-dialog-id="unsaved-navigation"] {
   background: color-mix(in srgb, var(--sial-backdrop) 82%, transparent);
@@ -1616,68 +1668,6 @@ html[data-theme="dark"] .sial-auth-logo {
   gap: 14px;
   padding: 18px;
   border-color: color-mix(in srgb, var(--sial-warning) 34%, var(--sial-border));
-}
-
-.sial-modal-backdrop[data-dialog-id="access-recovery"] {
-  animation: sial-recovery-backdrop-in var(--sial-motion-base) var(--sial-motion-ease) both;
-}
-
-.sial-modal-backdrop[data-dialog-id="access-recovery"] .sial-bottom-sheet {
-  animation: sial-recovery-sheet-in var(--sial-motion-slow) var(--sial-motion-ease) both;
-  transform-origin: bottom center;
-}
-
-.sial-modal-backdrop.is-closing[data-dialog-id="access-recovery"] {
-  pointer-events: none;
-  animation: sial-recovery-backdrop-out var(--sial-motion-base) var(--sial-motion-exit) both;
-}
-
-.sial-modal-backdrop.is-closing[data-dialog-id="access-recovery"] .sial-bottom-sheet {
-  animation: sial-recovery-sheet-out var(--sial-motion-base) var(--sial-motion-exit) both;
-}
-
-@keyframes sial-recovery-backdrop-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes sial-recovery-backdrop-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes sial-recovery-sheet-in {
-  from {
-    opacity: 0;
-    transform: translateY(28px) scale(.985);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes sial-recovery-sheet-out {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(22px) scale(.985);
-  }
 }
 
 .sial-dialog-header {
@@ -3377,7 +3367,7 @@ body.sial-edge-swipe-active::before {
   background: var(--sial-surface-overlay);
   box-shadow: var(--sial-shadow-overlay);
   transform: translateX(-102%);
-  transition: transform var(--sial-motion-slow) var(--sial-motion-ease);
+  transition: transform var(--sial-motion-base) var(--sial-motion-emphasis);
 }
 
 body.drawer-open {
@@ -3393,6 +3383,21 @@ body.drawer-open .sial-drawer {
   transform: translateX(0);
 }
 
+body.drawer-opening .sial-drawer,
+body.drawer-closing .sial-drawer {
+  will-change: transform;
+}
+
+body.drawer-closing .sial-drawer-backdrop {
+  transition-duration: var(--sial-motion-fast);
+  transition-timing-function: var(--sial-motion-exit);
+}
+
+body.drawer-closing .sial-drawer {
+  transition-duration: var(--sial-motion-fast);
+  transition-timing-function: var(--sial-motion-exit);
+}
+
 .sial-drawer-head {
   display: flex;
   align-items: flex-start;
@@ -3405,43 +3410,9 @@ body.drawer-open .sial-drawer {
 .sial-drawer-head,
 .sial-drawer .sial-btn-full,
 .sial-menu-group {
-  opacity: 0;
-  transform: translateX(-10px);
+  opacity: 1;
+  transform: none;
 }
-
-body.drawer-open .sial-drawer-head,
-body.drawer-open .sial-drawer .sial-btn-full,
-body.drawer-open .sial-menu-group {
-  animation: sial-drawer-item-in var(--sial-motion-slow) var(--sial-motion-ease) both;
-}
-
-body.drawer-open .sial-menu-group:nth-of-type(1) {
-  animation-delay: 40ms;
-}
-
-body.drawer-open .sial-menu-group:nth-of-type(2) {
-  animation-delay: 70ms;
-}
-
-body.drawer-open .sial-menu-group:nth-of-type(3) {
-  animation-delay: 100ms;
-}
-
-body.drawer-open .sial-menu-group:nth-of-type(4) {
-  animation-delay: 130ms;
-}
-
-body.drawer-open .sial-drawer .sial-btn-full {
-  animation-delay: 160ms;
-}
-
-@keyframes sial-drawer-item-in {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .sial-drawer-user {
   display: flex;
   align-items: center;
@@ -3454,6 +3425,7 @@ body.drawer-open .sial-drawer .sial-btn-full {
   align-content: start;
   gap: 18px;
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 18px 0;
 }
 

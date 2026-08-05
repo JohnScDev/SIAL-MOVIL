@@ -123,9 +123,23 @@
 
 .sync-orbit-track {
   position: absolute;
-  inset: 27px;
-  border: 1px dashed color-mix(in srgb, var(--sial-primary-500) 28%, var(--sial-border-subtle));
+  inset: 21px;
+  border: 1px solid color-mix(in srgb, var(--sial-primary-500) 26%, var(--sial-border-subtle));
   border-radius: 50%;
+  transform: rotate(0deg);
+}
+
+.sync-orbit-track::before {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: -6px;
+  left: calc(50% - 6px);
+  border: 3px solid var(--sial-surface);
+  border-radius: 50%;
+  background: var(--sial-yellow);
+  box-shadow: 0 2px 7px color-mix(in srgb, var(--sial-yellow) 42%, transparent);
+  content: "";
 }
 
 .sync-orbit-core {
@@ -143,10 +157,37 @@
   text-align: center;
 }
 
-.sync-core-icon {
-  width: 23px;
-  height: 23px;
-  color: var(--sial-primary-600);
+.sync-orbit-logo {
+  width: 42px;
+  height: 42px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--sial-primary-500) 18%, transparent));
+}
+
+.sync-success-mark {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  right: -1px;
+  bottom: 5px;
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--sial-surface);
+  border-radius: 50%;
+  background: var(--sial-success);
+  color: #fff;
+  opacity: 0;
+  transform: scale(.72);
+  transition:
+    opacity var(--sial-motion-fast) var(--sial-motion-ease),
+    transform var(--sial-motion-base) var(--sial-motion-emphasis);
+}
+
+.sync-success-mark .sial-icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.7;
 }
 
 .sync-orbit-core strong {
@@ -183,22 +224,29 @@
 .sync-orbit-node.node-three { bottom: 1px; left: 36px; }
 
 .sync-command.is-syncing .sync-orbit-track {
-  animation: sync-track-turn 8s linear infinite;
+  animation: sync-track-turn var(--sial-motion-loading) linear infinite;
 }
-
-.sync-command.is-syncing .sync-core-icon {
-  animation: sync-icon-turn 1.8s linear infinite;
-}
-
-.sync-command.is-syncing .sync-orbit-node {
-  animation: sync-node-float 2.4s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-}
-
-.sync-command.is-syncing .node-two { animation-delay: -800ms; }
-.sync-command.is-syncing .node-three { animation-delay: -1.6s; }
 
 .sync-command.is-syncing [data-sync-all] .sial-icon {
-  animation: sync-icon-turn 1.8s linear infinite;
+  animation: sync-icon-turn var(--sial-motion-loading) linear infinite;
+}
+
+.sync-command.is-complete .sync-orbit {
+  background: conic-gradient(var(--sial-success) 360deg, var(--sial-success) 0);
+}
+
+.sync-command.is-complete .sync-orbit-track {
+  border-color: color-mix(in srgb, var(--sial-success) 42%, var(--sial-border-subtle));
+}
+
+.sync-command.is-complete .sync-orbit-track::before {
+  background: var(--sial-success);
+  box-shadow: none;
+}
+
+.sync-command.is-complete .sync-success-mark {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .sync-progress-copy {
@@ -516,8 +564,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sync-command.is-syncing .sync-orbit-track,
-  .sync-command.is-syncing .sync-core-icon,
-  .sync-command.is-syncing .sync-orbit-node,
   .sync-command.is-syncing [data-sync-all] .sial-icon,
   .sync-row.is-completing {
     animation: none;

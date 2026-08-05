@@ -2,10 +2,11 @@
   const storageThemeKey = "sial-mobile-theme";
   const contextStorageKey = "sial-mobile-context";
   const companyStorageKey = "sial-mobile-company";
+  const navigationMotionKey = "sial-mobile-navigation-direction";
   const root = document.documentElement;
 
   const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-  const dialogExitDelay = 220;
+  const dialogExitDelay = 180;
   let activeLogoIntroPromise = null;
   let logoIntroQueued = false;
   let hasPendingUnsavedChanges = false;
@@ -26,6 +27,48 @@
   function prefersReducedMotion() {
     return Boolean(motionQuery && motionQuery.matches);
   }
+
+  function normalizeNavigationDirection(direction) {
+    return direction === "back" ? "back" : "forward";
+  }
+
+  function rememberNavigationDirection(direction) {
+    const normalized = normalizeNavigationDirection(direction);
+    root.dataset.sialNavDirection = normalized;
+    try {
+      window.sessionStorage.setItem(navigationMotionKey, normalized);
+    } catch (_) {}
+    return normalized;
+  }
+
+  function consumeNavigationDirection() {
+    let direction = "forward";
+    try {
+      direction = normalizeNavigationDirection(window.sessionStorage.getItem(navigationMotionKey));
+      window.sessionStorage.removeItem(navigationMotionKey);
+    } catch (_) {}
+    root.dataset.sialNavDirection = direction;
+    return direction;
+  }
+
+  function startScreenEntryMotion() {
+    consumeNavigationDirection();
+    if (!document.body || prefersReducedMotion()) return;
+    document.body.classList.add("sial-screen-entering");
+    window.setTimeout(() => {
+      document.body.classList.remove("sial-screen-entering");
+    }, 260);
+  }
+
+  function navigationDirectionForAnchor(anchor) {
+    if (!anchor) return "forward";
+    const explicit = anchor.getAttribute("data-nav-direction");
+    if (explicit) return normalizeNavigationDirection(explicit);
+    const label = (anchor.getAttribute("aria-label") || anchor.textContent || "").trim();
+    return /^(volver|regresar|atrás|atras)$/i.test(label) ? "back" : "forward";
+  }
+
+  startScreenEntryMotion();
 
   function replayMotionState(element, stateClass, duration = 520) {
     const node = resolveElement(element);
@@ -80,7 +123,7 @@
   function showUnsavedNavigationDialog(href, options = {}) {
     if (!href) return;
     pendingNavigationTarget = href;
-    document.body.classList.remove("drawer-open");
+    closeDrawer({ immediate: true });
     openDecisionSheet({
       id: "unsaved-navigation",
       type: "warning",
@@ -115,12 +158,14 @@
       showUnsavedNavigationDialog(href, options);
       return;
     }
+    const direction = rememberNavigationDirection(options.direction);
     if (prefersReducedMotion()) {
       window.location.href = href;
       return;
     }
     if (document.body.classList.contains("sial-screen-exiting")) return;
-    document.body.classList.remove("drawer-open");
+    document.body.classList.remove("drawer-open", "sial-screen-entering");
+    root.dataset.sialNavDirection = direction;
     document.body.classList.add("sial-screen-exiting");
     window.setTimeout(() => {
       window.location.href = href;
@@ -1033,7 +1078,7 @@
       return;
     }
     Array.from(document.body.children).forEach(function(child) {
-      if (child === top.element) return;
+      if (child === top.element || top.relatedElements.includes(child)) return;
       isolatedBodyChildren.set(child, {
         inert: Boolean(child.inert),
         ariaHidden: child.getAttribute("aria-hidden")
@@ -1059,7 +1104,10 @@
       panel: panel || element,
       dismissible: options.dismissible !== false,
       onEscape: typeof options.onEscape === "function" ? options.onEscape : null,
-      opener: opener
+      opener: opener,
+      relatedElements: (Array.isArray(options.relatedElements) ? options.relatedElements : [])
+        .map(resolveElement)
+        .filter(Boolean)
     };
     modalLayerStack.push(layer);
     refreshModalLayerState();
@@ -1409,20 +1457,20 @@
     }
 
     const finish = function() {
+      dialog.dataset.state = "closed";
       unmountModalLayer(dialog, { restoreFocus: options.restoreFocus !== false });
       dialog.remove();
       if (typeof dialog._sialOnClose === "function") dialog._sialOnClose(options.reason || "close");
       syncDialogOpenState();
     };
-    const shouldAnimate = !options.immediate
-      && dialog.dataset.dialogId === "access-recovery"
-      && !prefersReducedMotion();
+    const shouldAnimate = !options.immediate && !prefersReducedMotion();
 
     if (!shouldAnimate) {
       finish();
       return;
     }
     if (dialog.classList.contains("is-closing")) return;
+    dialog.dataset.state = "closing";
     dialog.classList.add("is-closing");
     dialog.setAttribute("aria-hidden", "true");
     window.setTimeout(finish, options.delay || dialogExitDelay);
@@ -1440,6 +1488,7 @@
     backdrop.className = "sial-modal-backdrop";
     backdrop.dataset.dialogId = id;
     backdrop.dataset.dialogDismissible = String(dismissible);
+    backdrop.dataset.state = "opening";
 
     const panel = document.createElement("section");
     panel.className = options.variant === "sheet" ? "sial-bottom-sheet" : "sial-modal";
@@ -1535,6 +1584,13 @@
       returnFocus: options.returnFocus,
       onEscape: function() { closeDialog(id, { reason: "escape" }); }
     });
+    if (prefersReducedMotion()) {
+      backdrop.dataset.state = "open";
+    } else {
+      window.setTimeout(function() {
+        if (backdrop.isConnected && backdrop.dataset.state === "opening") backdrop.dataset.state = "open";
+      }, 240);
+    }
     return backdrop;
   }
 
@@ -2016,6 +2072,17 @@
     return drawerMenuGroups.map(renderDrawerMenuGroup).join("");
   }
 
+  function prepareDrawerState(drawer, backdrop) {
+    if (!(drawer instanceof HTMLElement)) return;
+    const state = drawer.dataset.state || "closed";
+    drawer.dataset.state = state;
+    if (state === "closed") {
+      drawer.inert = true;
+      drawer.setAttribute("aria-hidden", "true");
+      if (backdrop) backdrop.setAttribute("aria-hidden", "true");
+    }
+  }
+
   function ensureGlobalDrawer() {
     if (!shouldMountGlobalDrawer()) return;
     const existingDrawer = document.querySelector(".sial-drawer");
@@ -2070,18 +2137,73 @@
       '<a class="sial-btn sial-btn-secondary sial-btn-full" href="' + resolveRelativeUrl("../app/seleccion-empresa.html") + '">Cambiar finca</a>'
     ].join("");
     document.body.append(backdrop, drawer);
+    prepareDrawerState(drawer, backdrop);
     hydrateContext();
   }
 
   function openDrawer() {
     if (!document.querySelector(".sial-drawer")) ensureGlobalDrawer();
-    if (!document.querySelector(".sial-drawer")) return;
-    document.body.classList.add("drawer-open");
+    const drawer = document.querySelector(".sial-drawer");
+    const backdrop = document.querySelector(".sial-drawer-backdrop");
+    if (!drawer || !backdrop || drawer.dataset.state === "open" || drawer.dataset.state === "opening") return drawer;
+
+    if (drawer._sialStateTimer) window.clearTimeout(drawer._sialStateTimer);
+    drawer.inert = false;
+    drawer.removeAttribute("aria-hidden");
+    backdrop.removeAttribute("aria-hidden");
+    drawer.dataset.state = "opening";
+    document.body.classList.remove("drawer-closing");
+    document.body.classList.add("drawer-opening");
+    mountModalLayer(drawer, {
+      panel: drawer,
+      relatedElements: [backdrop],
+      initialFocus: "[data-drawer-close]",
+      onEscape: function() { closeDrawer(); }
+    });
+
+    window.requestAnimationFrame(function() {
+      if (drawer.dataset.state !== "opening") return;
+      document.body.classList.add("drawer-open");
+      if (prefersReducedMotion()) {
+        drawer.dataset.state = "open";
+        document.body.classList.remove("drawer-opening");
+        return;
+      }
+      drawer._sialStateTimer = window.setTimeout(function() {
+        if (drawer.dataset.state === "opening") drawer.dataset.state = "open";
+        document.body.classList.remove("drawer-opening");
+        drawer._sialStateTimer = 0;
+      }, 240);
+    });
+    return drawer;
   }
 
-  function closeDrawer() {
-    document.body.classList.remove("drawer-open");
+  function closeDrawer(options = {}) {
+    const drawer = document.querySelector(".sial-drawer");
+    const backdrop = document.querySelector(".sial-drawer-backdrop");
     document.body.classList.remove("sial-edge-swipe-active");
+    if (!drawer || drawer.dataset.state === "closed" || drawer.dataset.state === "closing") return;
+
+    if (drawer._sialStateTimer) window.clearTimeout(drawer._sialStateTimer);
+    drawer.dataset.state = "closing";
+    document.body.classList.remove("drawer-open", "drawer-opening");
+    document.body.classList.add("drawer-closing");
+
+    const finish = function() {
+      drawer.dataset.state = "closed";
+      drawer.inert = true;
+      drawer.setAttribute("aria-hidden", "true");
+      if (backdrop) backdrop.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-closing");
+      drawer._sialStateTimer = 0;
+      unmountModalLayer(drawer, { restoreFocus: options.restoreFocus !== false });
+    };
+
+    if (options.immediate || prefersReducedMotion()) {
+      finish();
+      return;
+    }
+    drawer._sialStateTimer = window.setTimeout(finish, dialogExitDelay);
   }
 
   function activeBlockingOverlay() {
@@ -2163,6 +2285,7 @@
   hydrateCompanyContext();
   refreshSelectionViews();
   ensureGlobalDrawer();
+  prepareDrawerState(document.querySelector(".sial-drawer"), document.querySelector(".sial-drawer-backdrop"));
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
     openPhotoCapture: function(config) { buildPhotoCaptureOverlay(config); },
@@ -2216,7 +2339,7 @@
     const anchor = event.target.closest("a[href]");
     if (!shouldAnimateAnchor(anchor, event)) return;
     event.preventDefault();
-    navigateTo(anchor.href);
+    navigateTo(anchor.href, { direction: navigationDirectionForAnchor(anchor) });
   });
 
   document.addEventListener("click", (event) => {
