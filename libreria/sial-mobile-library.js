@@ -49,9 +49,63 @@
     });
   }
 
+  function installMotionMap() {
+    const shell = document.querySelector(".library-shell");
+    const catalog = window.SialMobileUI && window.SialMobileUI.motionApplications;
+    if (!shell || !catalog || shell.querySelector("[data-library-section=movimiento]")) return;
+
+    const section = document.createElement("section");
+    section.id = "movimiento";
+    section.className = "library-section";
+    section.dataset.librarySection = "movimiento";
+    section.innerHTML = [
+      '<div class="library-section-head">',
+      '<h2>Movimiento y aplicacion</h2>',
+      '<p>Mapa compartido de transiciones por estado. Cada patron respeta la preferencia de movimiento reducido.</p>',
+      '</div>',
+      '<div class="library-component-meta" data-library-motion-map></div>'
+    ].join("");
+
+    const labels = {
+      screen: "Cambio entre vistas",
+      press: "Press tactil",
+      selection: "Seleccion",
+      stateFeedback: "Feedback de estado",
+      drawer: "Menu lateral",
+      modal: "Modal centrado",
+      sheet: "Bottom sheet",
+      toast: "Toast y feedback",
+      loading: "Carga y sincronizacion",
+      brandIntro: "Intro de marca"
+    };
+    const map = section.querySelector("[data-library-motion-map]");
+    Object.entries(catalog).forEach(([key, item]) => {
+      const row = document.createElement("div");
+      row.className = "library-component-row";
+      const label = document.createElement("strong");
+      const purpose = document.createElement("span");
+      const timing = document.createElement("code");
+      label.textContent = labels[key] || key;
+      purpose.textContent = item.purpose;
+      timing.textContent = item.enter + " -> " + item.exit;
+      row.append(label, purpose, timing);
+      map.appendChild(row);
+    });
+    shell.appendChild(section);
+
+    const jump = document.querySelector(".library-jump");
+    if (jump && !jump.querySelector('a[href="#movimiento"]')) {
+      const link = document.createElement("a");
+      link.href = "#movimiento";
+      link.textContent = "Movimiento";
+      jump.appendChild(link);
+    }
+  }
+
   function initializeLibraryDemos() {
     activateBarcodeScannerPanels();
     if (uiReady()) installAlertSystemDemo();
+    if (uiReady()) installMotionMap();
   }
 
   if (document.readyState === "loading") {

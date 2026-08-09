@@ -563,6 +563,43 @@ Cuando el usuario solicite reducción de movimiento:
 - sustituir progreso animado por estados discretos;
 - mantener toda la información y funcionalidad.
 
+### 11.4 Mapa de aplicación
+
+| Superficie o evento | Entrada | Salida | Aplicación | Regla |
+| --- | --- | --- | --- | --- |
+| Cambio entre vistas | `motion-base` | `motion-fast` | Navegación interna hacia adelante o atrás | Desplazamiento horizontal corto; no se usa loader decorativo |
+| Press de botón o card accionable | `motion-fast` | `motion-fast` | Acciones táctiles compartidas | Respuesta inmediata sin rebote |
+| Selección de finca, tab, segmento o picker | `motion-base` | `motion-fast` | Cambio de estado dentro de la misma vista | Solo anima el elemento que cambió |
+| Menú lateral | `motion-base` | `motion-fast` | Navegación global | Desplaza el drawer y atenúa el fondo; controla foco |
+| Modal centrado | `motion-base` | `motion-fast` | Decisión bloqueante | Escala y desplazamiento mínimos; fondo bloqueado |
+| Bottom sheet | `motion-base` | `motion-fast` | Decisión contextual móvil | Entra desde el borde inferior y devuelve el foco al cerrar |
+| Toast y banner | `motion-base` | `motion-fast` | Feedback temporal o persistente | No mueve repetidamente el contenido de la vista |
+| Loading, skeleton y sincronización | `motion-loading` | `motion-fast` | Progreso comprobable | No simula avance ni bloquea cancelación válida |
+| Intro de marca | Excepción de acceso | `motion-slow` | Login institucional únicamente | No se reutiliza en navegación operativa |
+
+El objeto `SialMobileUI.motionApplications` expone este inventario para la propuesta. Todas las vistas que consumen `shared/sial-mobile-core.css` y `shared/sial-mobile-core.js` heredan los patrones compartidos; una animación local debe documentar la necesidad de negocio y su alternativa con movimiento reducido.
+
+### 11.5 Contrato de transición entre vistas
+
+- La navegación interna nueva entra hacia adelante; volver, regresar y los controles con `data-nav-direction="back"` entran en sentido inverso.
+- El historial del navegador conserva un índice por entrada para inferir correctamente atrás y adelante, incluso al restaurar una vista desde BFCache.
+- La recarga y la primera apertura no simulan una navegación: se presentan sin desplazamiento.
+- La estructura del encabezado permanece estable; solo cambian suavemente su título o contexto y el cuerpo de la vista.
+- Durante la salida se bloquea el segundo toque, se marca la vista como ocupada y el origen tocado confirma visualmente la acción.
+- Con reducción de movimiento, el cambio de ubicación es inmediato y conserva todo el estado funcional.
+
+### 11.6 Presupuesto de riqueza visual
+
+- Una entrada puede revelar como máximo cuatro superficies principales, con separación de 24 ms.
+- Los campos de un formulario no entran individualmente; se anima el bloque funcional completo.
+- La respuesta táctil aparece solo mientras existe contacto y nunca continúa después de la acción.
+- Los mensajes contextuales pueden asentarse una vez al cambiar de estado; no pulsan de forma permanente.
+- Solo sincronización, cámara o progreso comprobable pueden mantener movimiento continuo.
+- Una vista no combina simultáneamente intro, stagger, pulso y loading decorativo.
+- La riqueza debe reforzar prioridad, continuidad o confirmación; si no cumple una de esas funciones, se elimina.
+
+El cierre de sesión se presenta en encabezados internos junto al cambio de tema. En la propuesta elimina empresa y finca activas, conserva operaciones pendientes locales y vuelve al acceso. La implementación real debe invalidar las credenciales mediante el mecanismo de autenticación aprobado sin borrar silenciosamente la cola offline durable.
+
 ## 12. Accesibilidad
 
 - Objetivo táctil mínimo de 44 × 44 px; preferir 48 px en acciones principales.

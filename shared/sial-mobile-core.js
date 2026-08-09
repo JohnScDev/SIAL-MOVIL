@@ -3,11 +3,27 @@
   const contextStorageKey = "sial-mobile-context";
   const companyStorageKey = "sial-mobile-company";
   const navigationMotionKey = "sial-mobile-navigation-direction";
+  const navigationHistoryIndexKey = "sial-mobile-navigation-history-index";
+  const navigationHistoryStateKey = "sialNavigationIndex";
+  const motionApplications = Object.freeze({
+    screen: Object.freeze({ enter: "base", exit: "fast", purpose: "Continuidad adelante, atras y restauracion" }),
+    press: Object.freeze({ enter: "fast", exit: "fast", purpose: "Confirmacion tactil" }),
+    selection: Object.freeze({ enter: "base", exit: "fast", purpose: "Cambio de estado seleccionado" }),
+    stateFeedback: Object.freeze({ enter: "base", exit: "fast", purpose: "Confirmacion contextual de estado" }),
+    drawer: Object.freeze({ enter: "base", exit: "fast", purpose: "Navegacion lateral" }),
+    modal: Object.freeze({ enter: "base", exit: "fast", purpose: "Decision bloqueante" }),
+    sheet: Object.freeze({ enter: "base", exit: "fast", purpose: "Decision contextual movil" }),
+    toast: Object.freeze({ enter: "base", exit: "fast", purpose: "Confirmacion temporal" }),
+    loading: Object.freeze({ enter: "loading", exit: "fast", purpose: "Progreso real" }),
+    brandIntro: Object.freeze({ enter: "exception", exit: "slow", purpose: "Acceso inicial solamente" })
+  });
+
   const root = document.documentElement;
 
   const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   const dialogExitDelay = 180;
   let activeLogoIntroPromise = null;
+  let navigationInFlight = false;
   let logoIntroQueued = false;
   let hasPendingUnsavedChanges = false;
   const pendingUnsavedReasons = new Set();
@@ -29,11 +45,46 @@
   }
 
   function normalizeNavigationDirection(direction) {
-    return direction === "back" ? "back" : "forward";
+    if (direction === "back") return "back";
+    if (direction === "forward") return "forward";
+    return "none";
+  }
+
+  function numericNavigationIndex(value) {
+    const index = Number(value);
+    return Number.isFinite(index) && index >= 0 ? index : null;
+  }
+
+  function storedNavigationHistoryIndex() {
+    try {
+      return numericNavigationIndex(window.sessionStorage.getItem(navigationHistoryIndexKey));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function syncNavigationHistoryIndex() {
+    const storedIndex = storedNavigationHistoryIndex();
+    const state = window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    let currentIndex = numericNavigationIndex(state[navigationHistoryStateKey]);
+    if (currentIndex === null) {
+      currentIndex = storedIndex === null ? 0 : storedIndex + 1;
+      try {
+        window.history.replaceState({ ...state, [navigationHistoryStateKey]: currentIndex }, document.title, window.location.href);
+      } catch (_) {}
+    }
+
+    let direction = "none";
+    if (storedIndex !== null && currentIndex < storedIndex) direction = "back";
+    if (storedIndex !== null && currentIndex > storedIndex) direction = "forward";
+    try {
+      window.sessionStorage.setItem(navigationHistoryIndexKey, String(currentIndex));
+    } catch (_) {}
+    return direction;
   }
 
   function rememberNavigationDirection(direction) {
-    const normalized = normalizeNavigationDirection(direction);
+    const normalized = normalizeNavigationDirection(direction || "forward");
     root.dataset.sialNavDirection = normalized;
     try {
       window.sessionStorage.setItem(navigationMotionKey, normalized);
@@ -41,22 +92,64 @@
     return normalized;
   }
 
-  function consumeNavigationDirection() {
-    let direction = "forward";
+  function consumeNavigationDirection(fallbackDirection = "none") {
+    let direction = normalizeNavigationDirection(fallbackDirection);
     try {
-      direction = normalizeNavigationDirection(window.sessionStorage.getItem(navigationMotionKey));
+      const storedDirection = window.sessionStorage.getItem(navigationMotionKey);
+      if (storedDirection === "forward" || storedDirection === "back") {
+        direction = storedDirection;
+      }
       window.sessionStorage.removeItem(navigationMotionKey);
     } catch (_) {}
     root.dataset.sialNavDirection = direction;
     return direction;
   }
 
-  function startScreenEntryMotion() {
-    consumeNavigationDirection();
-    if (!document.body || prefersReducedMotion()) return;
+  function clearNavigationReveal() {
+    document.querySelectorAll(".sial-navigation-reveal").forEach((element) => {
+      element.classList.remove("sial-navigation-reveal");
+      element.style.removeProperty("--sial-motion-order");
+    });
+  }
+
+  function prepareNavigationReveal() {
+    const container = document.querySelector(".sial-page-body, .login-panel, .library-shell");
+    if (!container) return;
+    clearNavigationReveal();
+    Array.from(container.children)
+      .filter((element) => element.matches("section, form, article, .sial-card, .sial-surface, [data-motion-surface]"))
+      .slice(0, 4)
+      .forEach((element, index) => {
+        element.classList.add("sial-navigation-reveal");
+        element.style.setProperty("--sial-motion-order", String(index));
+      });
+  }
+
+  function clearScreenMotionState() {
+    navigationInFlight = false;
+    if (!document.body) return;
+    document.body.classList.remove("sial-screen-entering", "sial-screen-exiting");
+    document.body.removeAttribute("aria-busy");
+    delete document.body.dataset.sialNavigationState;
+    clearNavigationReveal();
+    document.querySelectorAll(".sial-navigation-source").forEach((element) => {
+      element.classList.remove("sial-navigation-source");
+    });
+  }
+
+  function startScreenEntryMotion(direction = "none") {
+    const normalized = normalizeNavigationDirection(direction);
+    root.dataset.sialNavDirection = normalized;
+    if (!document.body || normalized === "none" || prefersReducedMotion()) return;
+    prepareNavigationReveal();
+    document.body.classList.remove("sial-screen-exiting");
     document.body.classList.add("sial-screen-entering");
+    document.body.dataset.sialNavigationState = "entering";
     window.setTimeout(() => {
+      if (!document.body) return;
       document.body.classList.remove("sial-screen-entering");
+      clearNavigationReveal();
+      delete document.body.dataset.sialNavigationState;
     }, 260);
   }
 
@@ -68,7 +161,8 @@
     return /^(volver|regresar|atrás|atras)$/i.test(label) ? "back" : "forward";
   }
 
-  startScreenEntryMotion();
+  const initialNavigationDirection = consumeNavigationDirection(syncNavigationHistoryIndex());
+  startScreenEntryMotion(initialNavigationDirection);
 
   function replayMotionState(element, stateClass, duration = 520) {
     const node = resolveElement(element);
@@ -153,23 +247,31 @@
   }
 
   function navigateTo(href, options = {}) {
-    if (!href) return;
+    if (!href || navigationInFlight) return false;
     if (!options.force && hasUnsavedChanges()) {
       showUnsavedNavigationDialog(href, options);
-      return;
+      return false;
     }
+
     const direction = rememberNavigationDirection(options.direction);
-    if (prefersReducedMotion()) {
+    const source = resolveElement(options.source);
+    navigationInFlight = true;
+    if (source) source.classList.add("sial-navigation-source");
+
+    if (prefersReducedMotion() || !document.body) {
       window.location.href = href;
-      return;
+      return true;
     }
-    if (document.body.classList.contains("sial-screen-exiting")) return;
+
     document.body.classList.remove("drawer-open", "sial-screen-entering");
     root.dataset.sialNavDirection = direction;
     document.body.classList.add("sial-screen-exiting");
+    document.body.dataset.sialNavigationState = "exiting";
+    document.body.setAttribute("aria-busy", "true");
     window.setTimeout(() => {
       window.location.href = href;
-    }, options.delay || 150);
+    }, Number.isFinite(options.delay) ? options.delay : 150);
+    return true;
   }
 
   function playLogoIntro(config = {}) {
@@ -924,6 +1026,67 @@
     });
   }
 
+  function loginUrl() {
+    const coreScript = Array.from(document.scripts).find(function(script) {
+      const source = (script.src || "").split("?")[0];
+      return source.endsWith("/shared/sial-mobile-core.js");
+    });
+    return coreScript ? new URL("../index.html", coreScript.src).href : resolveRelativeUrl("../index.html");
+  }
+
+  function completeSignOut() {
+    closeDialog("session-signout", { immediate: true, restoreFocus: false });
+    closeDrawer({ immediate: true });
+    clearSelectedCompany();
+    clearSelectedContext();
+    sessionStorage.removeItem(navigationMotionKey);
+    navigateTo(loginUrl(), { force: true, direction: "back" });
+  }
+
+  function requestSignOut(returnFocus) {
+    closeDrawer({ immediate: true });
+    return openDialog({
+      id: "session-signout",
+      type: "info",
+      role: "alertdialog",
+      title: "Cerrar sesi\u00f3n",
+      message: "Saldr\u00e1s de SIAL M\u00f3vil. Las operaciones pendientes guardadas en este dispositivo se conservar\u00e1n.",
+      returnFocus: returnFocus,
+      initialFocus: "[data-dialog-primary]",
+      actions: [
+        { label: "Permanecer", variant: "secondary" },
+        { label: "Cerrar sesi\u00f3n", variant: "primary", close: false, onClick: completeSignOut }
+      ]
+    });
+  }
+
+  function ensureHeaderSessionAction() {
+    if (document.querySelector(".login-screen")) return;
+    document.querySelectorAll("[data-theme-toggle]").forEach(function(themeToggle) {
+      const header = themeToggle.closest(".sial-page-header, .library-topbar");
+      if (!header || header.querySelector("[data-session-logout]")) return;
+
+      let actions = themeToggle.parentElement && themeToggle.parentElement.classList.contains("sial-page-header-actions")
+        ? themeToggle.parentElement
+        : null;
+      if (!actions) {
+        actions = document.createElement("div");
+        actions.className = "sial-page-header-actions";
+        header.insertBefore(actions, themeToggle);
+        actions.appendChild(themeToggle);
+      }
+
+      const logout = document.createElement("button");
+      logout.type = "button";
+      logout.className = "sial-btn sial-btn-icon sial-session-logout";
+      logout.dataset.sessionLogout = "";
+      logout.setAttribute("aria-label", "Cerrar sesi\u00f3n");
+      logout.title = "Cerrar sesi\u00f3n";
+      logout.innerHTML = '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/></svg>';
+      actions.appendChild(logout);
+    });
+  }
+
   function readStoredPayload(storageKey, fallback = {}) {
     try {
       return JSON.parse(localStorage.getItem(storageKey) || JSON.stringify(fallback));
@@ -1285,6 +1448,7 @@
     node.replaceChildren();
     if (branded) node.appendChild(createFeedbackIdentity(type, options));
     appendFeedbackText(node, options.title, options.message || "");
+    replayMotionState(node, "is-status-updated", 360);
     if (type === "error" && options.reveal !== false) {
       revealValidationError(node, { field: options.field || options.focusTarget, form: options.form });
     }
@@ -2285,6 +2449,7 @@
   hydrateCompanyContext();
   refreshSelectionViews();
   ensureGlobalDrawer();
+  ensureHeaderSessionAction();
   prepareDrawerState(document.querySelector(".sial-drawer"), document.querySelector(".sial-drawer-backdrop"));
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
@@ -2294,6 +2459,9 @@
     closeBarcodeScanner: function() { cancelBarcodeScanner(); },
     normalizeSscc,
     setTheme,
+    motionApplications,
+    requestSignOut,
+    ensureHeaderSessionAction,
     showToast,
     setInlineStatus,
     revealValidationError,
@@ -2339,7 +2507,7 @@
     const anchor = event.target.closest("a[href]");
     if (!shouldAnimateAnchor(anchor, event)) return;
     event.preventDefault();
-    navigateTo(anchor.href, { direction: navigationDirectionForAnchor(anchor) });
+    navigateTo(anchor.href, { direction: navigationDirectionForAnchor(anchor), source: anchor });
   });
 
   document.addEventListener("click", (event) => {
@@ -2348,6 +2516,12 @@
     const next = root.dataset.theme === "dark" ? "light" : "dark";
     setTheme(next);
   });
+  document.addEventListener("click", (event) => {
+    const logout = event.target.closest("[data-session-logout]");
+    if (!logout) return;
+    requestSignOut(logout);
+  });
+
 
   document.addEventListener("click", (event) => {
     const passwordButton = event.target.closest("[data-password-toggle]");
@@ -2468,7 +2642,14 @@
     event.returnValue = "";
   });
 
-  window.addEventListener("pageshow", () => {
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      clearScreenMotionState();
+      const historyDirection = consumeNavigationDirection(syncNavigationHistoryIndex());
+      startScreenEntryMotion(historyDirection);
+    } else {
+      navigationInFlight = false;
+    }
     refreshSelectionViews();
   });
 
