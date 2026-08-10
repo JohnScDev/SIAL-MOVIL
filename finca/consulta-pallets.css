@@ -1,0 +1,108 @@
+.farm-pallet-page {
+  gap: 14px;
+}
+
+.farm-pallet-context {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 22%, var(--sial-border));
+  background:
+    linear-gradient(118deg, color-mix(in srgb, var(--sial-primary-100) 68%, transparent), transparent 72%),
+    var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.farm-pallet-context .sial-query-context-copy span b {
+  color: var(--sial-text);
+  font-weight: 700;
+}
+
+.farm-pallet-result-pill {
+  max-width: 104px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farm-pallet-filters {
+  gap: 12px;
+}
+
+.farm-pallet-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 12px;
+  background: var(--sial-bg);
+}
+
+.farm-pallet-status button {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--sial-text-2);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--sial-motion-fast) var(--sial-motion-ease),
+    color var(--sial-motion-fast) var(--sial-motion-ease),
+    box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.farm-pallet-status button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--sial-primary-500) 28%, transparent);
+  background: var(--sial-surface);
+  color: var(--sial-primary-600);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--sial-primary-700) 10%, transparent);
+}
+
+.farm-pallet-status button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 22%, transparent);
+  outline-offset: 1px;
+}
+
+.farm-pallet-page .sial-query-results-head {
+  align-items: center;
+}
+
+.farm-pallet-page .sial-query-item {
+  min-height: 110px;
+}
+
+.farm-pallet-page .sial-query-item-icon {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--sial-primary-100) 84%, transparent), var(--sial-surface));
+  color: var(--sial-primary-600);
+}
+
+.farm-pallet-page .sial-query-item-title strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 380px) {
+  .farm-pallet-context {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .farm-pallet-context .sial-query-context-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .farm-pallet-result-pill {
+    grid-column: 2;
+    justify-self: start;
+    max-width: none;
+  }
+
+  .farm-pallet-status button {
+    padding-inline: 4px;
+    font-size: 10px;
+  }
+}

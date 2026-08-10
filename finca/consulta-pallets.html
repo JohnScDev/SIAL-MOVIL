@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Pallets por finca</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260810">
+  <link rel="stylesheet" href="../shared/sial-mobile-query.css?v=20260810">
+  <link rel="stylesheet" href="../pallets/consulta-pallets.css?v=20260810">
+  <link rel="stylesheet" href="consulta-pallets.css?v=20260810">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Pallets por finca</h1>
+        <p>Disponibilidad y estado de cargue</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body sial-query-page farm-pallet-page">
+      <section class="sial-query-context farm-pallet-context" aria-label="Contexto de la consulta">
+        <span class="sial-query-context-icon" aria-hidden="true">
+          <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/></svg>
+        </span>
+        <div class="sial-query-context-copy">
+          <strong data-pallet-context-farm>Finca activa</strong>
+          <span>Semana visible <b data-farm-pallet-week>--</b></span>
+        </div>
+        <span class="sial-pill info farm-pallet-result-pill" data-farm-pallet-result>Consultando</span>
+      </section>
+
+      <section class="sial-query-panel farm-pallet-filters" aria-labelledby="farm-pallet-filters-title">
+        <div class="sial-query-panel-head">
+          <div class="sial-query-panel-copy">
+            <h2 id="farm-pallet-filters-title">Consulta operativa</h2>
+            <p>La finca se toma del contexto activo. Ajusta semana y disponibilidad.</p>
+          </div>
+          <span class="sial-pill">Solo consulta</span>
+        </div>
+
+        <label class="sial-field">
+          <span class="sial-label">Semana de creación</span>
+          <select class="sial-select" data-pallet-week aria-label="Filtrar pallets por semana"></select>
+        </label>
+
+        <div class="farm-pallet-status" role="group" aria-label="Disponibilidad del pallet">
+          <button type="button" data-farm-pallet-status="LISTO_PARA_CARGUE" aria-pressed="true">Disponibles</button>
+          <button type="button" data-farm-pallet-status="CARGADO" aria-pressed="false">Cargados</button>
+          <button type="button" data-farm-pallet-status="all" aria-pressed="false">Todos</button>
+        </div>
+        <select data-pallet-status aria-label="Estado interno de pallets" hidden>
+          <option value="all">Todos</option>
+          <option value="LISTO_PARA_CARGUE">Disponibles</option>
+          <option value="CARGADO">Cargados</option>
+          <option value="ANULADO">Anulados</option>
+        </select>
+
+        <div class="sial-search-row">
+          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" autocapitalize="characters" placeholder="SSCC o referencia" aria-label="Buscar por SSCC o referencia" data-pallet-search>
+          <button class="sial-btn sial-btn-primary sial-btn-icon sial-query-scan" type="button" data-pallet-scan aria-label="Escanear SSCC">
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="sial-query-results" aria-labelledby="farm-pallet-results-title">
+        <div class="sial-query-results-head">
+          <div>
+            <h2 id="farm-pallet-results-title" data-farm-pallet-results-title>Pallets disponibles</h2>
+            <p data-pallet-summary>Consultando pallets…</p>
+          </div>
+          <button class="sial-btn sial-btn-ghost sial-query-clear" type="button" data-pallet-clear hidden>Restablecer</button>
+        </div>
+
+        <div class="sial-query-loading" data-pallet-loading aria-label="Cargando pallets">
+          <div class="sial-query-loading-card"><div class="sial-loading-skeleton sial-query-loading-icon"></div><div class="sial-query-loading-copy"><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div></div></div>
+          <div class="sial-query-loading-card"><div class="sial-loading-skeleton sial-query-loading-icon"></div><div class="sial-query-loading-copy"><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div><div class="sial-loading-skeleton line"></div></div></div>
+        </div>
+
+        <div class="sial-query-list" data-pallet-list aria-live="polite" hidden></div>
+
+        <div class="sial-empty-state sial-query-state" data-pallet-empty hidden>
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg>
+          <strong data-pallet-empty-title>No hay pallets disponibles</strong>
+          <p data-pallet-empty-copy>No existen pallets para la finca y semana seleccionadas.</p>
+        </div>
+
+        <div class="sial-query-error" data-pallet-error hidden>
+          <div class="sial-status error"><div class="sial-feedback-copy"><strong>No fue posible consultar los pallets</strong><p>Revisa la conexión e intenta nuevamente. La finca y los filtros se conservarán.</p></div></div>
+          <button class="sial-btn sial-btn-secondary" type="button" data-pallet-retry>Reintentar consulta</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js?v=20260810"></script>
+  <script src="../pallets/consulta-pallets.js?v=20260810"></script>
+  <script src="consulta-pallets.js?v=20260810"></script>
+</body>
+</html>

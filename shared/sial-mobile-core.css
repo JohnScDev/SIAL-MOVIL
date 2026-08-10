@@ -3776,6 +3776,116 @@ body.drawer-closing .sial-drawer {
   gap: 10px;
 }
 
+
+.sial-drawer-search {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.sial-drawer-search-box {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 7px 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-3);
+  transition:
+    border-color var(--sial-motion-fast) var(--sial-motion-ease),
+    box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-drawer-search-box:focus-within {
+  border-color: var(--sial-primary-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-primary-500) 14%, transparent);
+  color: var(--sial-primary-500);
+}
+
+.sial-drawer-search-box > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sial-drawer-search-box input {
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--sial-text-1);
+  font: inherit;
+  font-size: 14px;
+}
+
+.sial-drawer-search-box input::placeholder {
+  color: var(--sial-text-3);
+}
+
+.sial-drawer-search-box input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.sial-drawer-search-box button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-500);
+}
+
+.sial-drawer-search-box button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sial-drawer-search-status {
+  min-height: 14px;
+  margin: 0 4px;
+  color: var(--sial-text-3);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sial-drawer-search-empty {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+  padding: 20px;
+  border: 1px dashed var(--sial-border);
+  border-radius: var(--sial-radius-card);
+  color: var(--sial-text-3);
+  text-align: center;
+}
+
+.sial-drawer-search-empty > svg {
+  width: 26px;
+  height: 26px;
+  color: var(--sial-primary-500);
+}
+
+.sial-drawer-search-empty strong {
+  color: var(--sial-text-1);
+  font-size: 14px;
+}
+
+.sial-drawer-search-empty span {
+  max-width: 220px;
+  font-size: 12px;
+  line-height: 1.45;
+
+}
 .sial-drawer-content {
   flex: 1;
   display: grid;
@@ -3783,7 +3893,7 @@ body.drawer-closing .sial-drawer {
   gap: 18px;
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 18px 0;
+  padding: 14px 0 18px;
 }
 
 .sial-menu-group {

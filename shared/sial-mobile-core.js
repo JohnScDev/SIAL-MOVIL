@@ -2319,6 +2319,7 @@
       items: [
         { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
         { href: "../finca/consulta-contenedores.html", label: "Trazabilidad contenedores", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
+        { href: "../finca/consulta-pallets.html", label: "Pallets por finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
         { href: "../finca/consulta-vehiculos.html", label: "Trazabilidad vehículos", icon: drawerIcon('<path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>') },
         { href: "../finca/inspeccion-externa.html?selectContainer=1", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
         { href: "../finca/inspeccion-interna.html?selectContainer=1", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
@@ -2406,6 +2407,94 @@
     return drawerMenuGroups.map(renderDrawerMenuGroup).join("");
   }
 
+  function normalizeDrawerSearch(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
+  function updateDrawerSearch(drawer, rawQuery) {
+    const content = drawer?.querySelector(".sial-drawer-content");
+    if (!content) return;
+
+    const term = normalizeDrawerSearch(rawQuery);
+    let visibleLinks = 0;
+    content.querySelectorAll(".sial-menu-group").forEach((group) => {
+      const groupLabel = normalizeDrawerSearch(group.querySelector(".sial-menu-label")?.textContent);
+      let visibleInGroup = 0;
+      group.querySelectorAll(".sial-menu-link").forEach((link) => {
+        const matches = !term || groupLabel.includes(term) || normalizeDrawerSearch(link.textContent).includes(term);
+        link.hidden = !matches;
+        if (matches) visibleInGroup += 1;
+      });
+      group.hidden = visibleInGroup === 0;
+      visibleLinks += visibleInGroup;
+    });
+
+    const clearButton = drawer.querySelector("[data-drawer-search-clear]");
+    const status = drawer.querySelector("[data-drawer-search-status]");
+    const emptyState = drawer.querySelector("[data-drawer-search-empty]");
+    if (clearButton) clearButton.hidden = !term;
+    if (status) {
+      status.hidden = !term;
+      status.textContent = term ? visibleLinks + (visibleLinks === 1 ? " resultado" : " resultados") : "";
+    }
+    if (emptyState) emptyState.hidden = !term || visibleLinks > 0;
+  }
+
+  function mountDrawerSearch(drawer) {
+    const content = drawer?.querySelector(".sial-drawer-content");
+    if (!content || drawer.querySelector("[data-drawer-search]")) return;
+
+    const search = document.createElement("section");
+    search.className = "sial-drawer-search";
+    search.setAttribute("role", "search");
+    search.setAttribute("aria-label", "Buscar vistas del menu");
+    search.innerHTML = [
+      '<label class="sial-drawer-search-box">',
+      drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'),
+      '<input type="search" inputmode="search" autocomplete="off" placeholder="Buscar vista o proceso" aria-label="Buscar vista o proceso" data-drawer-search>',
+      '<button type="button" data-drawer-search-clear aria-label="Limpiar busqueda" hidden>',
+      drawerIcon('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+      '</button>',
+      '</label>',
+      '<p class="sial-drawer-search-status" data-drawer-search-status aria-live="polite" hidden></p>'
+    ].join("");
+
+    const emptyState = document.createElement("div");
+    emptyState.className = "sial-drawer-search-empty";
+    emptyState.dataset.drawerSearchEmpty = "";
+    emptyState.hidden = true;
+    emptyState.innerHTML = [
+      drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'),
+      '<strong>Sin coincidencias</strong>',
+      '<span>Prueba con el nombre de una vista, proceso o HU.</span>'
+    ].join("");
+
+    drawer.insertBefore(search, content);
+    content.prepend(emptyState);
+
+    const input = search.querySelector("[data-drawer-search]");
+    const clearButton = search.querySelector("[data-drawer-search-clear]");
+    input?.addEventListener("input", () => {
+      content.scrollTop = 0;
+      updateDrawerSearch(drawer, input.value);
+    });
+    input?.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !input.value) return;
+      event.stopPropagation();
+      input.value = "";
+      updateDrawerSearch(drawer, "");
+    });
+    clearButton?.addEventListener("click", () => {
+      input.value = "";
+      updateDrawerSearch(drawer, "");
+      input.focus();
+    });
+  }
+
   function prepareDrawerState(drawer, backdrop) {
     if (!(drawer instanceof HTMLElement)) return;
     const state = drawer.dataset.state || "closed";
@@ -2446,6 +2535,7 @@
       const hasDesignSystem = content?.querySelector('[aria-label="Navegacion sistema de diseño"]');
       const designSystemGroup = drawerMenuGroups.find((group) => group.aria === "Navegacion sistema de diseño");
       if (content && !hasDesignSystem && designSystemGroup) content.insertAdjacentHTML("beforeend", renderDrawerMenuGroup(designSystemGroup));
+      mountDrawerSearch(existingDrawer);
       return;
     }
     const brandSrc = resolveRelativeUrl("../assets/brand/isotipo-sial.svg");
@@ -2471,6 +2561,7 @@
       '<a class="sial-btn sial-btn-secondary sial-btn-full" href="' + resolveRelativeUrl("../app/seleccion-empresa.html") + '">Cambiar finca</a>'
     ].join("");
     document.body.append(backdrop, drawer);
+    mountDrawerSearch(drawer);
     prepareDrawerState(drawer, backdrop);
     hydrateContext();
   }

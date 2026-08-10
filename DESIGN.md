@@ -254,6 +254,8 @@ No añadir acciones de negocio al header si pertenecen al formulario. El título
 - Un proceso independiente debe tener ruta y vista independiente.
 - Las vistas de consulta son de solo lectura: no incorporan acciones de creación, armado o edición encubiertas.
 - Tabs cambian secciones equivalentes; segmented controls cambian modo dentro del mismo contexto.
+- El drawer global mantiene un buscador visible sobre la lista desplazable cuando la navegación supera una pantalla.
+- La búsqueda filtra por sección y nombre de vista, oculta grupos sin coincidencias y ofrece un estado vacío orientativo sin cambiar de ruta automáticamente.
 
 ## 7. Componentes
 
@@ -485,6 +487,12 @@ Una vista marcada como consulta:
 - no permite armar, crear, editar o confirmar operaciones;
 - diferencia filtros activos de estados del registro;
 - presenta vacío y error sin ofrecer acciones fuera de alcance.
+
+La consulta general de pallets y la consulta por finca son rutas independientes. La variante por finca:
+
+- bloquea la finca según el contexto activo y no ofrece selector de finca;
+- prioriza semana y disponibilidad (`Disponibles`, `Cargados`, `Todos`);
+- reutiliza búsqueda, escaneo, estados, detalle y contrato de solo consulta del catálogo general.
 
 ### 9.4 Fechas y horas
 
