@@ -102,10 +102,28 @@
     }
   }
 
+  function installTimePickerDemo() {
+    const grid = document.querySelector('[data-library-section="formularios"] .library-preview-grid');
+    if (!grid || grid.querySelector("[data-library-time-picker]")) return;
+    const article = document.createElement("article");
+    article.className = "sial-card sial-card-pad library-demo-card";
+    article.dataset.libraryTimePicker = "";
+    article.innerHTML = [
+      "<h3>Selector de hora</h3>",
+      '<p class="library-muted">Captura táctil en formato de 24 horas, con acceso rápido a la hora actual y confirmación explícita.</p>',
+      '<div class="sial-field"><label class="sial-label" for="library-time-picker">Hora de inicio</label>',
+      '<input class="sial-input-wrap sial-input" id="library-time-picker" name="horaDemo" type="time" value="08:20"></div>',
+      "<code>SialMobileUI.openTimePicker({ target, title })</code>"
+    ].join("");
+    grid.appendChild(article);
+    window.SialMobileUI.mountTimePickers(article);
+  }
+
   function initializeLibraryDemos() {
     activateBarcodeScannerPanels();
     if (uiReady()) installAlertSystemDemo();
     if (uiReady()) installMotionMap();
+    if (uiReady()) installTimePickerDemo();
   }
 
   if (document.readyState === "loading") {

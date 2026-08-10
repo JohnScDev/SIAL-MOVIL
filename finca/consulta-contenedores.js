@@ -4,6 +4,7 @@
   var contextKey = "sial-mobile-context";
   var workflowKey = "sial-mobile-workflow";
   var scheduleKey = "sial-mobile-container-schedules";
+  var vehicleOperationKey = "sial-mobile-vehicle-operations";
   var contextFarmCodes = {
     "finca-santa-isabel": "0527",
     "finca-la-esperanza": "0412",
@@ -11,6 +12,7 @@
   };
   var containers = [];
   var retryRequested = false;
+  var pendingDetailId = "";
 
   function $(selector, root) {
     return (root || document).querySelector(selector);
@@ -80,6 +82,10 @@
       {
         id: "PCO-2026-031",
         container: "SIALU1234567",
+        vehicleOperationId: "OP-VEH-2026-418",
+        vehiclePlate: "TRK-421",
+        vehicleType: "TRACTOMULA",
+        driver: "Carlos Méndez",
         type: "40RF",
         farmCode: farm.code,
         farmName: farm.name,
@@ -95,6 +101,10 @@
       {
         id: "PCO-2026-032",
         container: "MSCU1234567",
+        vehicleOperationId: "OP-VEH-2026-421",
+        vehiclePlate: "CAM-101",
+        vehicleType: "CAMIÓN",
+        driver: "Ana Lucía Paz",
         type: "40RF",
         farmCode: farm.code,
         farmName: farm.name,
@@ -110,6 +120,10 @@
       {
         id: "PCO-2026-033",
         container: "TCLU7654321",
+        vehicleOperationId: "OP-VEH-2026-423",
+        vehiclePlate: "RIG-118",
+        vehicleType: "CAMIÓN RÍGIDO",
+        driver: "Julián Pérez",
         type: "20RF",
         farmCode: farm.code,
         farmName: farm.name,
@@ -125,6 +139,10 @@
       {
         id: "PCO-2026-034",
         container: "BANU4567890",
+        vehicleOperationId: "OP-VEH-2026-430",
+        vehiclePlate: "CMN-204",
+        vehicleType: "CAMIÓN",
+        driver: "Pedro Rojas",
         type: "40HC",
         farmCode: farm.code,
         farmName: farm.name,
@@ -140,6 +158,10 @@
       {
         id: "PCO-2026-028",
         container: "TLLU3344556",
+        vehicleOperationId: "OP-VEH-2026-397",
+        vehiclePlate: "CAM-102",
+        vehicleType: "CAMIÓN RÍGIDO",
+        driver: "Pedro Rojas",
         type: "40RF",
         farmCode: farm.code,
         farmName: farm.name,
@@ -157,7 +179,19 @@
 
   function readContainers() {
     var stored = readJson(scheduleKey, []);
-    return Array.isArray(stored) && stored.length ? stored : demoContainers();
+    var linkedVehicles = readJson(vehicleOperationKey, []);
+    var source = Array.isArray(stored) && stored.length ? stored : demoContainers();
+    return source.map(function (item) {
+      var linked = Array.isArray(linkedVehicles) ? linkedVehicles.find(function (vehicle) {
+        return vehicle.id === item.vehicleOperationId || vehicle.plate === item.vehiclePlate || vehicle.container === item.container;
+      }) : null;
+      return Object.assign({}, item, {
+        vehicleOperationId: item.vehicleOperationId || (linked && linked.id) || "",
+        vehiclePlate: item.vehiclePlate || (linked && linked.plate) || "",
+        vehicleType: item.vehicleType || (linked && linked.type) || "",
+        driver: item.driver || (linked && linked.driver) || ""
+      });
+    });
   }
 
   function normalizeContainer(value) {
@@ -181,12 +215,42 @@
     }).format(date);
   }
 
+  function formatDay(value) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return "Sin fecha";
+    return new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", year: "numeric" }).format(date).replace(/\.$/, "");
+  }
+
+  function formatHour(value) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return "--:--";
+    return new Intl.DateTimeFormat("es-CO", { hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  }
+
+  function dateTimeTemplate(value, label) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return '<span class="sial-query-time is-empty">Sin fecha y hora</span>';
+    return [
+      '<time class="sial-query-time" datetime="' + escapeHtml(date.toISOString()) + '" aria-label="' + escapeHtml(label + ": " + formatDate(value)) + '">',
+      '<span>' + escapeHtml(formatDay(value)) + '</span>',
+      '<strong>' + escapeHtml(formatHour(value)) + '</strong>',
+      '</time>'
+    ].join("");
+  }
+
+  function linkedVehicleHref(item) {
+    if (!item.vehiclePlate) return "";
+    var params = new URLSearchParams({ vehicle: item.vehiclePlate });
+    if (item.vehicleOperationId) params.set("detail", item.vehicleOperationId);
+    return "consulta-vehiculos.html?" + params.toString();
+  }
+
   function matchesFilters(item) {
     var query = $("[data-container-search]").value.trim().toLowerCase();
     var week = $("[data-container-week]").value;
     var status = $("[data-container-status]").value;
     var farm = activeFarm();
-    var searchable = [item.container, item.id, item.type, item.stage, item.process, item.operation].join(" ").toLowerCase();
+    var searchable = [item.container, item.vehiclePlate, item.vehicleType, item.driver, item.id, item.type, item.stage, item.process, item.operation].join(" ").toLowerCase();
 
     return (!item.farmCode || item.farmCode === farm.code) &&
       (!query || searchable.indexOf(query) >= 0) &&
@@ -202,8 +266,9 @@
       '<span class="sial-query-item-body">',
       '<span class="sial-query-item-title"><strong>' + escapeHtml(item.container) + '</strong><span class="sial-pill ' + status.className + '">' + status.label + '</span></span>',
       '<span class="sial-query-item-meta"><span><strong>' + escapeHtml(item.type) + '</strong></span><span>' + escapeHtml(item.id) + '</span><span>' + escapeHtml(item.week) + '</span></span>',
+      '<span class="sial-query-relation"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h11v8H3z"/><path d="M14 11h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span><small>Vehículo asociado</small><strong>' + escapeHtml(item.vehiclePlate || "Sin asociación") + '</strong></span></span>',
       '<span class="sial-query-item-stage"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>' + escapeHtml(item.stage) + '</span>',
-      '<span class="sial-query-item-foot"><span>Actualizado ' + escapeHtml(formatDate(item.updatedAt)) + '</span></span>',
+      '<span class="sial-query-item-foot"><span>Fecha <strong>' + escapeHtml(formatDay(item.updatedAt)) + '</strong></span><span>Hora <strong>' + escapeHtml(formatHour(item.updatedAt)) + '</strong></span></span>',
       '</span>',
       '<svg class="sial-icon sial-query-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
       '</button>'
@@ -257,6 +322,7 @@
   }
 
   function detailContent(item) {
+    var vehicleHref = linkedVehicleHref(item);
     var status = statusMeta(item.status);
     var content = document.createElement("div");
     content.className = "sial-query-detail";
@@ -271,9 +337,10 @@
       '<div class="sial-query-detail-field"><span>FINCA</span><strong>' + escapeHtml((item.farmCode || "--") + " · " + (item.farmName || "--")) + '</strong></div>',
       '<div class="sial-query-detail-field"><span>OPERACIÓN</span><strong>' + escapeHtml(item.operation || "--") + '</strong></div>',
       '</div></section>',
+      item.vehiclePlate ? '<section class="sial-query-detail-section"><h3>Relación vehículo + contenedor</h3><a class="sial-query-related-link" href="' + escapeHtml(vehicleHref) + '"><span class="sial-query-related-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M3 9h11v8H3z"/><path d="M14 11h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></span><span class="sial-query-related-copy"><small>VEHÍCULO ASOCIADO</small><strong>' + escapeHtml(item.vehiclePlate) + '</strong><span>' + escapeHtml([item.vehicleType, item.driver].filter(Boolean).join(" · ")) + '</span></span><svg class="sial-icon sial-query-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></section>' : '<section class="sial-query-detail-section"><div class="sial-status warning"><div class="sial-feedback-copy"><strong>Sin vehículo asociado</strong><p>Este contenedor aún no tiene un vehículo relacionado.</p></div></div></section>',
       '<section class="sial-query-detail-section"><h3>Recorrido operativo</h3><div class="container-stage-track">' + stageRows(item) + '</div></section>',
       '<section class="sial-query-detail-section"><h3>Auditoría</h3>',
-      '<div class="sial-list-row"><strong>Última actualización</strong><span>' + escapeHtml(formatDate(item.updatedAt)) + '</span></div>',
+      '<div class="sial-list-row"><strong>Última actualización</strong>' + dateTimeTemplate(item.updatedAt, "Última actualización") + '</div>',
       '<p class="sial-query-detail-note">' + escapeHtml(item.audit || "Auditoría no disponible.") + '</p>',
       '</section>',
       item.observation ? '<section class="sial-query-detail-section"><h3>Observaciones</h3><p class="sial-query-detail-note">' + escapeHtml(item.observation) + '</p></section>' : ""
@@ -319,12 +386,24 @@
     });
   }
 
+  function applyUrlContext() {
+    var params = new URLSearchParams(window.location.search);
+    var container = (params.get("container") || "").trim().toUpperCase();
+    pendingDetailId = params.get("detail") || "";
+    if (!container) return;
+    $("[data-container-search]").value = container;
+    $("[data-container-week]").value = "all";
+    $("[data-container-status]").value = "all";
+  }
+
   function clearFilters() {
     $("[data-container-search]").value = "";
     $("[data-container-week]").value = weekAtOffset(0);
     $("[data-container-status]").value = "all";
     render();
     $("[data-container-search]").focus();
+    pendingDetailId = "";
+    window.history.replaceState(window.history.state, document.title, window.location.pathname);
   }
 
   function load() {
@@ -339,12 +418,18 @@
       }
       containers = requestedState === "empty" ? [] : readContainers();
       render();
+      if (pendingDetailId) {
+        var detailId = pendingDetailId;
+        pendingDetailId = "";
+        window.setTimeout(function () { openDetail(detailId); }, 40);
+      }
     }, 320);
   }
 
   function init() {
     var farm = activeFarm();
     populateWeeks();
+    applyUrlContext();
     $("[data-container-context-farm]").textContent = farm.code + " · " + farm.name;
 
     $("[data-container-search]").addEventListener("input", render);

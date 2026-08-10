@@ -1870,6 +1870,176 @@
     });
   }
 
+  function normalizeTimeValue(value) {
+    const match = String(value || "").match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return "";
+    const hour = Number(match[1]);
+    const minute = Number(match[2]);
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return "";
+    return String(hour).padStart(2, "0") + ":" + String(minute).padStart(2, "0");
+  }
+
+  function currentTimeValue(date = new Date()) {
+    return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
+  }
+
+  function setTimePickerValue(target, value) {
+    if (!target) return;
+    target.value = normalizeTimeValue(value);
+    target.removeAttribute("aria-invalid");
+    target.setCustomValidity("");
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+    target.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function openTimePicker(options = {}) {
+    const target = resolveElement(options.target);
+    const id = options.id || ("time-picker-" + (target?.id || Date.now()));
+    const initialValue = normalizeTimeValue(options.value || target?.value) || currentTimeValue();
+    const initialParts = initialValue.split(":");
+    let selectedHour = initialParts[0];
+    let selectedMinute = initialParts[1];
+    const content = document.createElement("div");
+    content.className = "sial-time-picker";
+
+    const display = document.createElement("div");
+    display.className = "sial-time-picker-display";
+    display.setAttribute("aria-live", "polite");
+    display.innerHTML = [
+      "<span>Hora seleccionada</span>",
+      '<strong><b data-sial-time-hour></b><i aria-hidden="true">:</i><b data-sial-time-minute></b></strong>',
+      "<small>Formato de 24 horas</small>"
+    ].join("");
+
+    const nowButton = document.createElement("button");
+    nowButton.className = "sial-time-now";
+    nowButton.type = "button";
+    nowButton.innerHTML = [
+      '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>',
+      "<span><strong>Ahora</strong><small>Usar la hora del dispositivo</small></span>"
+    ].join("");
+
+    const columns = document.createElement("div");
+    columns.className = "sial-time-picker-columns";
+    let hourSelect = null;
+    let minuteSelect = null;
+
+    function buildTimeSelect(label, values, selected, onSelect) {
+      const field = document.createElement("label");
+      field.className = "sial-time-picker-field";
+      const heading = document.createElement("span");
+      heading.className = "sial-time-picker-label";
+      heading.textContent = label;
+      const select = document.createElement("select");
+      select.className = "sial-time-select";
+      select.setAttribute("aria-label", label);
+      values.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        option.selected = value === selected;
+        select.appendChild(option);
+      });
+      select.addEventListener("change", () => {
+        onSelect(select.value);
+        syncTimePicker();
+        replayMotionState(display, "is-time-updated", 260);
+      });
+      field.append(heading, select);
+      return { field, select };
+    }
+
+    function syncTimePicker() {
+      display.querySelector("[data-sial-time-hour]").textContent = selectedHour;
+      display.querySelector("[data-sial-time-minute]").textContent = selectedMinute;
+      if (hourSelect) hourSelect.value = selectedHour;
+      if (minuteSelect) minuteSelect.value = selectedMinute;
+    }
+
+    const hours = Array.from({ length: 24 }, (_, index) => String(index).padStart(2, "0"));
+    const minutes = Array.from({ length: 60 }, (_, index) => String(index).padStart(2, "0"));
+    const hourField = buildTimeSelect("Hora", hours, selectedHour, (value) => {
+      selectedHour = value;
+    });
+    const minuteField = buildTimeSelect("Minutos", minutes, selectedMinute, (value) => {
+      selectedMinute = value;
+    });
+    hourSelect = hourField.select;
+    minuteSelect = minuteField.select;
+    columns.append(hourField.field, minuteField.field);
+
+    nowButton.addEventListener("click", () => {
+      const nowParts = currentTimeValue().split(":");
+      selectedHour = nowParts[0];
+      selectedMinute = nowParts[1];
+      syncTimePicker();
+      replayMotionState(display, "is-time-updated", 260);
+    });
+
+    content.append(display, nowButton, columns);
+    syncTimePicker();
+
+    const dialog = openDialog({
+      id,
+      variant: "sheet",
+      title: options.title || "Seleccionar hora",
+      message: options.message || "Indica la hora exacta de la operación.",
+      content,
+      returnFocus: options.returnFocus || target,
+      actions: [
+        { label: "Cancelar", variant: "secondary" },
+        {
+          label: options.confirmLabel || "Usar esta hora",
+          onClick: () => {
+            const value = selectedHour + ":" + selectedMinute;
+            setTimePickerValue(target, value);
+            if (typeof options.onSelect === "function") options.onSelect(value, target);
+          }
+        }
+      ],
+      onClose: options.onClose
+    });
+
+    return dialog;
+  }
+  function mountTimePickers(scope = document) {
+    const inputs = [];
+    if (scope instanceof Element && scope.matches('input[type="time"]:not([data-sial-native-time])')) inputs.push(scope);
+    if (scope && typeof scope.querySelectorAll === "function") {
+      inputs.push(...scope.querySelectorAll('input[type="time"]:not([data-sial-native-time])'));
+    }
+    inputs.forEach((input) => {
+      if (input.dataset.sialTimePickerMounted === "true") return;
+      input.dataset.sialTimePickerMounted = "true";
+      input.classList.add("sial-time-input-control");
+      const frame = document.createElement("div");
+      frame.className = "sial-time-input";
+      input.parentNode.insertBefore(frame, input);
+      frame.appendChild(input);
+      const trigger = document.createElement("button");
+      trigger.className = "sial-time-input-trigger";
+      trigger.type = "button";
+      trigger.setAttribute("aria-label", "Seleccionar " + (input.labels?.[0]?.textContent?.trim().toLowerCase() || "hora"));
+      trigger.innerHTML = '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>';
+      frame.appendChild(trigger);
+      const open = () => openTimePicker({
+        id: "time-picker-" + (input.id || input.name || Date.now()),
+        target: input,
+        title: input.dataset.timePickerTitle || input.labels?.[0]?.textContent?.trim() || "Seleccionar hora"
+      });
+      trigger.addEventListener("click", open);
+      input.addEventListener("click", (event) => {
+        event.preventDefault();
+        open();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (!["Enter", " ", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        open();
+      });
+    });
+  }
+
   function selectedContext() {
     return readStoredPayload(contextStorageKey, {});
   }
@@ -2148,8 +2318,8 @@
       aria: "Navegacion finca",
       items: [
         { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
-        { href: "../finca/consulta-contenedores.html", label: "Contenedores por finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
-        { href: "../finca/consulta-vehiculos.html", label: "Vehículos por finca", icon: drawerIcon('<path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>') },
+        { href: "../finca/consulta-contenedores.html", label: "Trazabilidad contenedores", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
+        { href: "../finca/consulta-vehiculos.html", label: "Trazabilidad vehículos", icon: drawerIcon('<path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>') },
         { href: "../finca/inspeccion-externa.html?selectContainer=1", label: "Inspeccion externa", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/>') },
         { href: "../finca/inspeccion-interna.html?selectContainer=1", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../finca/sesion-responsabilidad.html", label: "Sesion responsabilidad", icon: drawerIcon('<path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/>') },
@@ -2450,6 +2620,7 @@
   refreshSelectionViews();
   ensureGlobalDrawer();
   ensureHeaderSessionAction();
+  mountTimePickers();
   prepareDrawerState(document.querySelector(".sial-drawer"), document.querySelector(".sial-drawer-backdrop"));
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
@@ -2460,6 +2631,9 @@
     normalizeSscc,
     setTheme,
     motionApplications,
+    openTimePicker,
+    mountTimePickers,
+    setTimePickerValue,
     requestSignOut,
     ensureHeaderSessionAction,
     showToast,

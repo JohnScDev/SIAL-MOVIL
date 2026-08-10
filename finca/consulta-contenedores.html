@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="manifest" href="../manifest.webmanifest">
   <meta name="theme-color" content="#005CA8">
-  <title>SIAL Móvil - Contenedores por finca</title>
+  <title>SIAL Móvil - Trazabilidad de contenedores</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
   <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260803">
   <link rel="stylesheet" href="../shared/sial-mobile-query.css?v=20260803">
@@ -19,8 +19,8 @@
       </a>
       <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
       <div class="sial-page-title">
-        <h1>Contenedores por finca</h1>
-        <p>Consulta por semana operativa</p>
+        <h1>Trazabilidad contenedores</h1>
+        <p>Vehículo, contenedor y semana operativa</p>
       </div>
       <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
         <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
@@ -43,12 +43,12 @@
         <div class="sial-query-panel-head">
           <div class="sial-query-panel-copy">
             <h2 id="container-filters-title">Buscar contenedores</h2>
-            <p>Consulta por número, programación, semana o estado.</p>
+            <p>Consulta por número, vehículo, programación, semana o estado.</p>
           </div>
         </div>
 
         <div class="sial-search-row">
-          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" autocapitalize="characters" placeholder="Contenedor o programación" aria-label="Buscar contenedor o programación" data-container-search>
+          <input class="sial-input-wrap sial-input" type="search" inputmode="search" autocomplete="off" autocapitalize="characters" placeholder="Contenedor, placa o programación" aria-label="Buscar contenedor, placa del vehículo o programación" data-container-search>
           <button class="sial-btn sial-btn-primary sial-btn-icon sial-query-scan" type="button" data-container-scan aria-label="Escanear contenedor">
             <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
           </button>

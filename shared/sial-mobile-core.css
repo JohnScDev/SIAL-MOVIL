@@ -2054,6 +2054,212 @@ html[data-theme="dark"] .sial-auth-logo {
   gap: 10px;
 }
 
+.sial-time-input {
+  position: relative;
+  width: 100%;
+}
+
+.sial-time-input-control {
+  width: 100%;
+  padding-right: 54px;
+  appearance: none;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.sial-time-input-control::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.sial-time-input-trigger {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: var(--sial-primary-100);
+  color: var(--sial-primary-600);
+  cursor: pointer;
+}
+
+.sial-time-input-trigger .sial-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.sial-time-input:focus-within .sial-time-input-control {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-time-input-trigger:focus-visible,
+.sial-time-select:focus-visible,
+.sial-time-now:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 26%, transparent);
+  outline-offset: 2px;
+}
+
+.sial-time-picker {
+  display: grid;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sial-time-picker-display {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 17px 14px;
+  overflow: hidden;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(254, 204, 0, .2) 0 7px, transparent 8px),
+    linear-gradient(135deg, var(--sial-primary-700), var(--sial-primary-500));
+  color: var(--sial-on-primary);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--sial-primary-700) 24%, transparent);
+}
+
+.sial-time-picker-display::after {
+  content: "";
+  position: absolute;
+  right: -22px;
+  bottom: -45px;
+  width: 116px;
+  height: 116px;
+  border: 16px solid rgba(255, 255, 255, .08);
+  border-radius: 50%;
+}
+
+.sial-time-picker-display > span,
+.sial-time-picker-display > small {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  opacity: .82;
+}
+
+.sial-time-picker-display > strong {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.sial-time-picker-display > strong b {
+  min-width: 52px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sial-time-picker-display > strong i {
+  margin-inline: 1px;
+  color: var(--sial-yellow);
+  font-style: normal;
+}
+
+.sial-time-now {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+}
+
+.sial-time-now > .sial-icon {
+  width: 20px;
+  height: 20px;
+  justify-self: center;
+  color: var(--sial-primary-500);
+}
+
+.sial-time-now > span {
+  display: grid;
+}
+
+.sial-time-now strong {
+  font-size: 12px;
+}
+
+.sial-time-now small {
+  color: var(--sial-text-2);
+  font-size: 10px;
+}
+
+.sial-time-picker-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sial-time-picker-field {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.sial-time-picker-label {
+  color: var(--sial-text-2);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+.sial-time-select {
+  width: 100%;
+  min-height: 62px;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border);
+  border-radius: 13px;
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  font-size: 21px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sial-time-select:focus {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-modal-backdrop[data-dialog-id^="time-picker-"] .sial-dialog-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sial-time-picker-display.is-time-updated > strong {
+  animation: sial-time-confirm var(--sial-motion-base) var(--sial-motion-emphasis);
+}
+
+@keyframes sial-time-confirm {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
 .sial-picker {
   display: grid;
   gap: 12px;

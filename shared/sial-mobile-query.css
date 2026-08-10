@@ -393,6 +393,184 @@
   line-height: 1.5;
 }
 
+.sial-query-relation {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid color-mix(in srgb, var(--sial-primary-500) 18%, var(--sial-border-subtle));
+  border-radius: var(--sial-radius-control);
+  background: color-mix(in srgb, var(--sial-primary-100) 58%, var(--sial-surface));
+  color: var(--sial-primary-600);
+}
+
+.sial-query-relation > .sial-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.sial-query-relation > span {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.sial-query-relation small {
+  color: var(--sial-text-2);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.sial-query-relation strong {
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-query-item-foot strong {
+  color: var(--sial-text);
+  font-weight: 700;
+}
+
+.sial-query-time {
+  display: inline-grid;
+  justify-items: end;
+  gap: 1px;
+  color: var(--sial-text-2);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+
+.sial-query-time > span {
+  font-size: 10px;
+}
+
+.sial-query-time > strong {
+  color: var(--sial-text);
+  font-size: 12px;
+}
+
+.sial-query-time.is-empty {
+  font-size: 11px;
+}
+
+.sial-query-related-link {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--sial-primary-500) 26%, var(--sial-border));
+  border-radius: var(--sial-radius-surface);
+  background: linear-gradient(110deg, color-mix(in srgb, var(--sial-primary-100) 70%, transparent), transparent 72%), var(--sial-surface);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--sial-motion-fast) var(--sial-motion-ease),
+    border-color var(--sial-motion-fast) var(--sial-motion-ease),
+    box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-query-related-link:active {
+  transform: translateY(1px) scale(.99);
+}
+
+.sial-query-related-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 20%, transparent);
+  outline-offset: 2px;
+}
+
+.sial-query-related-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+}
+
+.sial-query-related-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.sial-query-related-copy small {
+  color: var(--sial-text-3);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .035em;
+}
+
+.sial-query-related-copy strong,
+.sial-query-related-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-query-related-copy strong {
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.sial-query-related-copy span {
+  color: var(--sial-text-2);
+  font-size: 10px;
+}
+
+.sial-trace-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sial-trace-event {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-surface-raised);
+}
+
+.sial-trace-event-icon {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--sial-primary-500);
+  border-radius: 50%;
+  background: var(--sial-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sial-primary-500) 10%, transparent);
+}
+
+.sial-trace-event-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.sial-trace-event-copy strong {
+  color: var(--sial-text);
+  font-size: 11px;
+}
+
+.sial-trace-event-copy span {
+  overflow: hidden;
+  color: var(--sial-text-2);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 390px) {
   .sial-query-context {
     grid-template-columns: 40px minmax(0, 1fr);

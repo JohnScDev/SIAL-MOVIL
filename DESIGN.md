@@ -493,6 +493,20 @@ Una vista marcada como consulta:
 - No inferir zona horaria ni fuente del valor en la propuesta.
 - Los campos obligatorios deben indicar la regla y el orden esperado.
 
+Los campos `input[type="time"]` consumen el selector táctil compartido de SIAL. El componente presenta únicamente dos controles nativos compactos —hora y minutos— en formato de 24 horas, ofrece el acceso rápido **Ahora** y exige confirmación antes de modificar el formulario; no utiliza listas internas extensas.
+
+La API `SialMobileUI.openTimePicker({ target, title })` conserva el valor estándar `HH:mm`, dispara los eventos `input` y `change`, devuelve el foco al campo y respeta movimiento reducido. Un caso excepcional puede conservar el control nativo con `data-sial-native-time`.
+
+En trazabilidad, fecha y hora se presentan como partes legibles de un mismo `time[datetime]`. La etapa actual conserva el instante del último evento confirmado; no representa ubicación GPS en tiempo real.
+
+### 9.5 Relación vehículo + contenedor
+
+- Vehículo y contenedor se relacionan mediante identificadores operativos estables; la placa y el número son etiquetas visibles, no la única llave.
+- La consulta de vehículos permite buscar por contenedor y la consulta de contenedores permite buscar por placa o conductor.
+- El detalle ofrece navegación bidireccional conservando filtro y registro relacionado.
+- Si la relación no existe, la vista lo indica explícitamente y no inventa una asociación.
+- Ambas superficies siguen siendo de solo consulta: el vínculo no habilita edición, armado ni confirmación.
+
 ## 10. Offline y sincronización
 
 ### 10.1 Estados canónicos

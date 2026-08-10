@@ -4,6 +4,7 @@
   var contextKey = "sial-mobile-context";
   var workflowKey = "sial-mobile-workflow";
   var operationKey = "sial-mobile-vehicle-operations";
+  var containerScheduleKey = "sial-mobile-container-schedules";
   var contextFarmCodes = {
     "finca-santa-isabel": "0527",
     "finca-la-esperanza": "0412",
@@ -11,6 +12,7 @@
   };
   var vehicles = [];
   var retryRequested = false;
+  var pendingDetailId = "";
 
   function $(selector, root) {
     return (root || document).querySelector(selector);
@@ -87,6 +89,9 @@
         id: "OP-VEH-2026-418",
         schedule: "PRG-2026-031",
         plate: "TRK-421",
+        containerScheduleId: "PCO-2026-031",
+        container: "SIALU1234567",
+        containerType: "40RF",
         type: "TRACTOMULA",
         driver: "Carlos Méndez",
         carrier: "TRANSLOGÍSTICA SAS",
@@ -108,6 +113,9 @@
         id: "OP-VEH-2026-421",
         schedule: "PRG-2026-032",
         plate: "CAM-101",
+        containerScheduleId: "PCO-2026-032",
+        container: "MSCU1234567",
+        containerType: "40RF",
         type: "CAMIÓN",
         driver: "Ana Lucía Paz",
         carrier: "OPERADOR CARIBE SAS",
@@ -129,6 +137,9 @@
         id: "OP-VEH-2026-423",
         schedule: "PRG-2026-033",
         plate: "RIG-118",
+        containerScheduleId: "PCO-2026-033",
+        container: "TCLU7654321",
+        containerType: "20RF",
         type: "CAMIÓN RÍGIDO",
         driver: "Julián Pérez",
         carrier: "TRANSPORTES ANDINOS",
@@ -150,6 +161,9 @@
         id: "OP-VEH-2026-430",
         schedule: "PRG-2026-037",
         plate: "CMN-204",
+        containerScheduleId: "PCO-2026-034",
+        container: "BANU4567890",
+        containerType: "40HC",
         type: "CAMIÓN",
         driver: "Pedro Rojas",
         carrier: "OPERADOR CARIBE SAS",
@@ -171,6 +185,9 @@
         id: "OP-VEH-2026-397",
         schedule: "PRG-2026-028",
         plate: "CAM-102",
+        containerScheduleId: "PCO-2026-028",
+        container: "TLLU3344556",
+        containerType: "40RF",
         type: "CAMIÓN RÍGIDO",
         driver: "Pedro Rojas",
         carrier: "CARGA PESADA LTDA.",
@@ -193,7 +210,18 @@
 
   function readVehicles() {
     var stored = readJson(operationKey, []);
-    return Array.isArray(stored) && stored.length ? stored : demoVehicles();
+    var linkedContainers = readJson(containerScheduleKey, []);
+    var source = Array.isArray(stored) && stored.length ? stored : demoVehicles();
+    return source.map(function (item) {
+      var linked = Array.isArray(linkedContainers) ? linkedContainers.find(function (container) {
+        return container.vehicleOperationId === item.id || container.vehiclePlate === item.plate || container.container === item.container;
+      }) : null;
+      return Object.assign({}, item, {
+        containerScheduleId: item.containerScheduleId || (linked && linked.id) || "",
+        container: item.container || (linked && linked.container) || "",
+        containerType: item.containerType || (linked && linked.type) || ""
+      });
+    });
   }
 
   function statusMeta(status) {
@@ -214,6 +242,50 @@
     }).format(date);
   }
 
+  function formatDay(value) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return "Sin fecha";
+    return new Intl.DateTimeFormat("es-CO", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    }).format(date).replace(/\.$/, "");
+  }
+
+  function formatHour(value) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return "--:--";
+    return new Intl.DateTimeFormat("es-CO", { hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  }
+
+  function dateTimeTemplate(value, label) {
+    var date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return '<span class="sial-query-time is-empty">Sin fecha y hora</span>';
+    return [
+      '<time class="sial-query-time" datetime="' + escapeHtml(date.toISOString()) + '" aria-label="' + escapeHtml(label + ": " + formatDate(value)) + '">',
+      '<span>' + escapeHtml(formatDay(value)) + '</span>',
+      '<strong>' + escapeHtml(formatHour(value)) + '</strong>',
+      '</time>'
+    ].join("");
+  }
+
+  function traceRows(item) {
+    return [
+      { label: "Programación", detail: item.schedule || "Programación operativa", at: item.scheduledAt },
+      { label: item.stage || "Último evento", detail: "Último evento confirmado", at: item.updatedAt }
+    ].filter(function (event) { return !Number.isNaN(new Date(event.at || "").getTime()); }).map(function (event) {
+      return '<div class="sial-trace-event"><span class="sial-trace-event-icon" aria-hidden="true"></span><span class="sial-trace-event-copy"><strong>' + escapeHtml(event.label) + '</strong><span>' + escapeHtml(event.detail) + '</span></span>' + dateTimeTemplate(event.at, event.label) + '</div>';
+    }).join("");
+  }
+
+  function linkedContainerHref(item) {
+    if (!item.container) return "";
+    var params = new URLSearchParams({ container: item.container });
+    if (item.containerScheduleId) params.set("detail", item.containerScheduleId);
+    return "consulta-contenedores.html?" + params.toString();
+  }
+
   function isLinkedToFarm(item, farm) {
     return item.originCode === farm.code || item.destinationCode === farm.code;
   }
@@ -223,7 +295,7 @@
     var week = $("[data-vehicle-week]").value;
     var status = $("[data-vehicle-status]").value;
     var farm = activeFarm();
-    var searchable = [item.plate, item.driver, item.carrier, item.type, item.origin, item.destination, item.schedule, item.id, item.stage].join(" ").toLowerCase();
+    var searchable = [item.plate, item.container, item.containerType, item.driver, item.carrier, item.type, item.origin, item.destination, item.schedule, item.id, item.stage].join(" ").toLowerCase();
 
     return isLinkedToFarm(item, farm) &&
       (!query || searchable.indexOf(query) >= 0) &&
@@ -263,8 +335,9 @@
       '<span class="sial-query-item-title"><strong>' + escapeHtml(item.plate) + '</strong><span class="sial-pill ' + status.className + '">' + status.label + '</span></span>',
       '<span class="sial-query-item-meta"><span><strong>' + escapeHtml(item.type) + '</strong></span><span>' + escapeHtml(item.driver) + '</span></span>',
       routeTemplate(item, false),
+      '<span class="sial-query-relation"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/></svg><span><small>Contenedor asociado</small><strong>' + escapeHtml(item.container || "Sin asociación") + '</strong></span></span>',
       '<span class="sial-query-item-stage"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>' + escapeHtml(item.stage) + '</span>',
-      '<span class="sial-query-item-foot"><span>' + escapeHtml(item.direction === "ENTRADA" ? "Entrada a finca" : "Salida de finca") + '</span><span>Actualizado ' + escapeHtml(formatDate(item.updatedAt)) + '</span></span>',
+      '<span class="sial-query-item-foot"><span>' + escapeHtml(item.direction === "ENTRADA" ? "Entrada a finca" : "Salida de finca") + '</span><span>Fecha <strong>' + escapeHtml(formatDay(item.updatedAt)) + '</strong></span><span>Hora <strong>' + escapeHtml(formatHour(item.updatedAt)) + '</strong></span></span>',
       '</span>',
       '<svg class="sial-icon sial-query-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
       '</button>'
@@ -324,6 +397,7 @@
   }
 
   function detailContent(item) {
+    var containerHref = linkedContainerHref(item);
     var status = statusMeta(item.status);
     var content = document.createElement("div");
     content.className = "sial-query-detail";
@@ -338,12 +412,14 @@
       '<div class="sial-query-detail-field"><span>PROGRAMACIÓN</span><strong>' + escapeHtml(item.schedule || "--") + '</strong></div>',
       '<div class="sial-query-detail-field"><span>OPERACIÓN</span><strong>' + escapeHtml(item.id || "--") + '</strong></div>',
       '</div></section>',
+      item.container ? '<section class="sial-query-detail-section"><h3>Relación vehículo + contenedor</h3><a class="sial-query-related-link" href="' + escapeHtml(containerHref) + '"><span class="sial-query-related-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/></svg></span><span class="sial-query-related-copy"><small>CONTENEDOR ASOCIADO</small><strong>' + escapeHtml(item.container) + '</strong><span>' + escapeHtml([item.containerType, item.containerScheduleId].filter(Boolean).join(" · ")) + '</span></span><svg class="sial-icon sial-query-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></section>' : '<section class="sial-query-detail-section"><div class="sial-status warning"><div class="sial-feedback-copy"><strong>Sin contenedor asociado</strong><p>Esta operación de vehículo aún no tiene un contenedor relacionado.</p></div></div></section>',
       '<section class="sial-query-detail-section"><h3>Ruta programada</h3>' + routeTemplate(item, true) + '</section>',
       '<section class="sial-query-detail-section"><h3>Estado del recorrido</h3><div class="vehicle-journey">' + journeyRows(item) + '</div></section>',
+      '<section class="sial-query-detail-section"><h3>Trazabilidad · fecha y hora</h3><div class="sial-trace-list">' + traceRows(item) + '</div></section>',
       '<section class="sial-query-detail-section"><h3>Información operativa</h3>',
       '<div class="sial-list-row"><strong>Transportadora</strong><span>' + escapeHtml(item.carrier || "--") + '</span></div>',
-      '<div class="sial-list-row"><strong>Fecha programada</strong><span>' + escapeHtml(formatDate(item.scheduledAt)) + '</span></div>',
-      '<div class="sial-list-row"><strong>Último registro</strong><span>' + escapeHtml(formatDate(item.updatedAt)) + '</span></div>',
+      '<div class="sial-list-row"><strong>Fecha programada</strong>' + dateTimeTemplate(item.scheduledAt, "Fecha programada") + '</div>',
+      '<div class="sial-list-row"><strong>Último registro</strong>' + dateTimeTemplate(item.updatedAt, "Último registro") + '</div>',
       '<p class="sial-query-detail-note">La etapa corresponde al último evento operativo registrado; no representa ubicación GPS en tiempo real.</p>',
       '</section>',
       '<section class="sial-query-detail-section"><h3>Auditoría</h3><p class="sial-query-detail-note">' + escapeHtml(item.audit || "Auditoría no disponible.") + '</p></section>',
@@ -364,11 +440,23 @@
     });
   }
 
+  function applyUrlContext() {
+    var params = new URLSearchParams(window.location.search);
+    var vehicle = (params.get("vehicle") || "").trim().toUpperCase();
+    pendingDetailId = params.get("detail") || "";
+    if (!vehicle) return;
+    $("[data-vehicle-search]").value = vehicle;
+    $("[data-vehicle-week]").value = "all";
+    $("[data-vehicle-status]").value = "all";
+  }
+
   function clearFilters() {
     $("[data-vehicle-search]").value = "";
     $("[data-vehicle-week]").value = weekAtOffset(0);
     $("[data-vehicle-status]").value = "all";
     render();
+    pendingDetailId = "";
+    window.history.replaceState(window.history.state, document.title, window.location.pathname);
   }
 
   function load() {
@@ -382,6 +470,11 @@
       }
       vehicles = forcedState === "empty" && !retryRequested ? [] : readVehicles();
       render();
+      if (pendingDetailId) {
+        var detailId = pendingDetailId;
+        pendingDetailId = "";
+        window.setTimeout(function () { openDetail(detailId); }, 40);
+      }
     }, 320);
   }
 
@@ -404,6 +497,7 @@
     var farm = activeFarm();
     $("[data-vehicle-context-farm]").textContent = farm.code + " · " + farm.name;
     populateWeeks();
+    applyUrlContext();
     bindEvents();
     load();
   }
