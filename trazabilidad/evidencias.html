@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Expediente operativo</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260810">
+  <link rel="stylesheet" href="evidencias.css?v=20260811">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title"><h1>Expediente operativo</h1><p>Trazabilidad y evidencias</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body evidence-page">
+      <section class="sial-card sial-card-pad operation-finder" aria-labelledby="operation-finder-title">
+        <div class="operation-finder-head">
+          <div><h2 id="operation-finder-title">Consultar operación</h2><p>Busca por operación, orden de viaje, contenedor o vehículo.</p></div>
+          <span class="sial-pill">Solo consulta</span>
+        </div>
+        <label class="operation-search">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input type="search" inputmode="search" autocomplete="off" placeholder="EXP, OV, contenedor o placa" aria-label="Buscar operación" data-operation-search>
+          <button type="button" aria-label="Limpiar búsqueda" data-operation-clear hidden><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </label>
+        <div class="operation-matches" data-operation-matches hidden></div>
+      </section>
+
+      <section class="operation-dossier" aria-label="Resumen de la operación">
+        <div class="operation-dossier-top">
+          <div><span>Operación seleccionada</span><strong data-operation-id>--</strong><small data-operation-order>--</small></div>
+          <span class="sial-pill" data-operation-status>--</span>
+        </div>
+        <div class="operation-route" aria-label="Ruta operativa">
+          <span><small>Origen</small><strong data-operation-origin>--</strong></span>
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m14 7 5 5-5 5"/></svg>
+          <span><small>Ubicación actual</small><strong data-operation-location>--</strong></span>
+        </div>
+        <dl class="operation-facts">
+          <div><dt>Vehículo</dt><dd data-operation-vehicle>--</dd></div>
+          <div><dt>Contenedor</dt><dd data-operation-container>--</dd></div>
+          <div><dt>Responsable</dt><dd data-operation-responsible>--</dd></div>
+          <div><dt>Sincronización</dt><dd data-operation-sync>--</dd></div>
+        </dl>
+      </section>
+
+      <nav class="evidence-workbench-tabs" aria-label="Secciones del expediente">
+        <button type="button" data-workbench-tab="trace" aria-pressed="true">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8"/><path d="M10 6h10"/><path d="M10 18h10"/></svg>
+          <span>Trazabilidad</span><b data-trace-count>0</b>
+        </button>
+        <button type="button" data-workbench-tab="evidence" aria-pressed="false">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h3l1.5-2h3L15 6h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><circle cx="12" cy="12.5" r="3.2"/></svg>
+          <span>Evidencias</span><b data-evidence-count>0</b>
+        </button>
+      </nav>
+
+      <section class="workbench-panel trace-panel" data-trace-panel aria-labelledby="trace-title">
+        <header class="workbench-heading"><div><span>Historia de la operación</span><h2 id="trace-title">Línea de trazabilidad</h2></div><small data-trace-sync>Actualizada</small></header>
+        <div class="operation-timeline" data-trace-list></div>
+      </section>
+
+      <section class="workbench-panel event-record" data-evidence-panel aria-labelledby="event-record-title" hidden>
+        <header class="workbench-heading event-record-heading">
+          <div><span>Evento seleccionado</span><h2 id="event-record-title" data-event-title>--</h2></div>
+          <label class="event-select-wrap"><span class="sr-only">Cambiar evento</span><select aria-label="Cambiar evento" data-event-select></select></label>
+        </header>
+
+        <div class="event-status-line">
+          <span class="sial-pill" data-event-status>--</span>
+          <span data-event-sync>--</span>
+        </div>
+
+        <dl class="event-facts">
+          <div><dt>Fase</dt><dd data-event-phase>--</dd></div>
+          <div><dt>Fecha y hora</dt><dd data-event-date>--</dd></div>
+          <div><dt>Ubicación</dt><dd data-event-location>--</dd></div>
+          <div><dt>Usuario</dt><dd data-event-user>--</dd></div>
+        </dl>
+
+        <div class="event-summary"><span>Resumen del evento</span><p data-event-summary>--</p></div>
+
+        <section class="event-section" aria-labelledby="controls-title">
+          <div class="event-section-head"><h3 id="controls-title">Puntos de control</h3><span data-control-count>0 controles</span></div>
+          <div class="control-list" data-control-list></div>
+        </section>
+
+        <section class="event-section" aria-labelledby="photos-title">
+          <div class="event-section-head"><h3 id="photos-title">Evidencias asociadas</h3><span data-photo-count>0 fotos</span></div>
+          <div class="event-photo-strip" data-photo-strip></div>
+          <div class="event-no-evidence" data-event-no-evidence hidden><strong>Evento sin evidencia fotográfica</strong><span>El evento conserva sus datos y puntos de control.</span></div>
+        </section>
+
+        <section class="event-section" aria-labelledby="comments-title">
+          <div class="event-section-head"><h3 id="comments-title">Comentarios y anotaciones</h3><span data-comment-count>0</span></div>
+          <div class="event-comments" data-comment-list></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div class="sial-modal-backdrop evidence-detail-backdrop" data-evidence-detail hidden>
+    <section class="sial-bottom-sheet evidence-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="evidence-detail-title">
+      <div class="evidence-sheet-handle" aria-hidden="true"></div>
+      <header class="evidence-detail-head">
+        <div><span data-detail-counter>Evidencia</span><h2 id="evidence-detail-title" data-detail-title>Detalle</h2></div>
+        <button class="sial-btn sial-btn-icon" type="button" data-detail-close aria-label="Cerrar detalle"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </header>
+      <div class="evidence-detail-photo" data-detail-photo></div>
+      <div class="evidence-detail-status"><span class="sial-pill" data-detail-status>Estado</span><span data-detail-sync>Sincronizado</span></div>
+      <dl class="evidence-detail-meta">
+        <div><dt>Evento</dt><dd data-detail-event>--</dd></div>
+        <div><dt>Capturada por</dt><dd data-detail-author>--</dd></div>
+        <div><dt>Fecha y hora</dt><dd data-detail-date>--</dd></div>
+        <div><dt>Punto de control</dt><dd data-detail-checkpoint>--</dd></div>
+      </dl>
+      <div class="evidence-detail-note"><span>Observación</span><p data-detail-note>--</p></div>
+    </section>
+  </div>
+
+  <script src="../shared/sial-mobile-core.js?v=20260810"></script>
+  <script src="evidencias.js?v=20260811"></script>
+</body>
+</html>

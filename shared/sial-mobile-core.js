@@ -2355,6 +2355,7 @@
       aria: "Navegacion trazabilidad",
       items: [
         { href: "../trazabilidad/sincronizacion.html", label: "Sincronización móvil", icon: drawerIcon('<path d="M20 7h-7V3"/><path d="m20 7-4-4"/><path d="M4 17h7v4"/><path d="m4 17 4 4"/>') },
+        { href: "../trazabilidad/evidencias.html", label: "Evidencias operativas", icon: drawerIcon('<path d="M4 8a2 2 0 0 1 2-2h3l1.5-2h3L15 6h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><circle cx="12" cy="12.5" r="3.2"/>') },
         { href: "../trazabilidad/consultar-contenedor.html", label: "Consultar contenedor", icon: drawerIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>') },
         { href: "../trazabilidad/consultar-operacion.html", label: "Consultar operacion", icon: drawerIcon('<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/>') }
       ]

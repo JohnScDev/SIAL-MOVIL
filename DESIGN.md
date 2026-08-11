@@ -256,6 +256,7 @@ No añadir acciones de negocio al header si pertenecen al formulario. El título
 - Tabs cambian secciones equivalentes; segmented controls cambian modo dentro del mismo contexto.
 - El drawer global mantiene un buscador visible sobre la lista desplazable cuando la navegación supera una pantalla.
 - La búsqueda filtra por sección y nombre de vista, oculta grupos sin coincidencias y ofrece un estado vacío orientativo sin cambiar de ruta automáticamente.
+- La consulta móvil de evidencias agrupa fotografías por evento, conserva operación, responsable, fecha, punto de control y sincronización, y abre el detalle en un bottom sheet de solo lectura.
 
 ## 7. Componentes
 
