@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - HU344 Rearmar pallets en ZE</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260819">
+  <link rel="stylesheet" href="hu591.css?v=20260819">
+  <link rel="stylesheet" href="hu344.css?v=20260819">
+</head>
+<body>
+  <main class="sial-page" data-hu344-root>
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../puerto-ze/index.html" aria-label="Volver">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Rearmar pallets</h1>
+        <p>HU344 · Por referencia en ZE</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body hu591-page hu344-page">
+      <section class="sial-flow-banner hu591-context-banner hu344-context" aria-label="Contexto del rearmado">
+        <div>
+          <strong data-hu344-zone>Zona Externa</strong>
+          <span>Pallet <b data-hu344-context-pallet>pendiente</b></span>
+        </div>
+        <span class="sial-pill warning" data-hu344-context-status>Sin seleccionar</span>
+      </section>
+
+      <nav class="hu344-progress" aria-label="Progreso del rearmado">
+        <span class="is-active" data-hu344-step="context"><b>1</b>Pallet</span>
+        <span data-hu344-step="sources"><b>2</b>Orígenes</span>
+        <span data-hu344-step="result"><b>3</b>Resultado</span>
+      </nav>
+
+      <form class="sial-form hu591-form hu344-form" data-hu344-form novalidate>
+        <section class="sial-card sial-card-pad hu591-section" data-hu344-base-section aria-labelledby="hu344-base-title">
+          <div class="hu591-section-head">
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true">
+                <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/></svg>
+              </span>
+              <div>
+                <h2 class="sial-section-title" id="hu344-base-title">Pallets de origen</h2>
+                <p>Selecciona uno o varios pallets para redistribuir.</p>
+              </div>
+            </div>
+            <span class="sial-pill" data-hu344-base-pill>Sin seleccionar</span>
+          </div>
+          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu344-select-base>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg>
+            Seleccionar pallets
+          </button>
+          <p class="sial-field-note" data-hu344-base-status>La selección muestra estado, referencia y cajas de cada pallet.</p>
+          <div class="hu344-base-list" data-hu344-base-list aria-live="polite"></div>
+        </section>
+
+        <section class="sial-card sial-card-pad hu591-section" data-hu344-mode-section aria-labelledby="hu344-mode-title">
+          <div class="hu591-section-head">
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true">
+                <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 6h7v5H4z"/><path d="M4 13h7v5H4z"/><path d="M15 9h5v6h-5z"/><path d="m11 8 4 4-4 4"/></svg>
+              </span>
+              <div>
+                <h2 class="sial-section-title" id="hu344-mode-title">Tipo de rearmado</h2>
+                <p>Aplica una regla común a los pallets resultado.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hu344-mode-switch" role="group" aria-label="Tipo de rearmado">
+            <button type="button" data-hu344-mode="INCOMPLETE" aria-pressed="true" disabled><strong>Completar incompleto</strong><span>Misma referencia</span></button>
+            <button type="button" data-hu344-mode="MIXED" aria-pressed="false" disabled><strong>Pallet mixto</strong><span>Dos referencias</span></button>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad hu591-section hu344-balance" data-hu344-balance-section aria-labelledby="hu344-balance-title">
+          <div class="hu591-section-head">
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true">
+                <svg class="sial-icon" viewBox="0 0 24 24"><path d="M5 6h14"/><path d="M7 10h10"/><path d="M9 14h6"/><path d="M11 18h2"/></svg>
+              </span>
+              <div>
+                <h2 class="sial-section-title" id="hu344-balance-title">Conciliación de cajas</h2>
+                <p>Distribuye todas las cajas entre los resultados.</p>
+              </div>
+            </div>
+            <span class="sial-pill" data-hu344-capacity-pill>0 asignadas</span>
+          </div>
+          <div class="hu344-capacity" aria-label="Conciliación de cajas">
+            <span><b data-hu344-selected-boxes>0</b> cajas de origen</span>
+            <span><b data-hu344-remaining-boxes>0</b> por asignar</span>
+            <div aria-hidden="true"><i data-hu344-capacity-bar></i></div>
+          </div>
+          <div class="hu344-composition-lines" data-hu344-composition-lines></div>
+          <p class="sial-field-note" data-hu344-balance-status>Selecciona pallets de origen para iniciar la distribución.</p>
+        </section>
+
+        <section class="sial-card sial-card-pad hu591-section" data-hu344-result-section aria-labelledby="hu344-result-title">
+          <div class="hu591-section-head">
+            <div class="hu591-section-heading">
+              <span class="hu591-section-icon" aria-hidden="true">
+                <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="m9 12 2 2 4-5"/></svg>
+              </span>
+              <div>
+                <h2 class="sial-section-title" id="hu344-result-title">Pallets resultado</h2>
+                <p>Crea uno o varios destinos para las cajas seleccionadas.</p>
+              </div>
+            </div>
+            <span class="sial-pill" data-hu344-result-count>0 resultados</span>
+          </div>
+          <div class="hu344-result-list" data-hu344-result-list aria-live="polite"></div>
+          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu344-add-result disabled>
+            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Agregar pallet resultado
+          </button>
+          <p class="sial-field-note" data-hu344-result-status>Cada resultado requiere SSCC y una cantidad máxima de 48 cajas.</p>
+          <div class="sial-field">
+            <label class="sial-label" for="hu344-observations">Observaciones <span class="hu344-optional">Opcional</span></label>
+            <textarea class="sial-textarea" id="hu344-observations" maxlength="500" placeholder="Registra una novedad relevante del rearmado" data-hu344-observations></textarea>
+          </div>
+        </section>
+
+        <section class="hu591-label-preview hu344-label-preview" aria-label="Resumen del rearmado" data-hu344-summary>
+          <div class="hu591-label-head">
+            <span>Rearmado de pallets · ZE</span>
+            <strong data-hu344-preview-sscc>Sin resultados</strong>
+          </div>
+          <dl>
+            <div><dt>Tipo</dt><dd data-hu344-preview-type>Sin definir</dd></div>
+            <div><dt>Total cajas</dt><dd data-hu344-preview-boxes>0 cajas</dd></div>
+            <div><dt>Fincas de origen</dt><dd data-hu344-preview-farms>0 fincas</dd></div>
+            <div><dt>Sincronización</dt><dd>Pendiente al confirmar</dd></div>
+          </dl>
+          <div class="hu591-label-references">
+            <span>Composición por referencia</span>
+            <div data-hu344-preview-references><p>Selecciona el pallet base para construir la composición.</p></div>
+          </div>
+          <div class="hu344-lineage" data-hu344-lineage>
+            <span>Linaje SSCC</span>
+            <div class="hu344-lineage-empty">Selecciona los pallets de origen para construir el linaje.</div>
+          </div>
+        </section>
+
+        <p class="sial-inline-error" data-flow-error hidden></p>
+        <section class="sial-card sial-card-pad hu591-submit-card">
+          <p>Confirma que todas las cajas estén conciliadas entre los pallets de origen y resultado.</p>
+          <button class="sial-btn sial-btn-primary sial-btn-full" type="submit" data-hu344-submit>Confirmar rearmado</button>
+        </section>
+      </form>
+    </section>
+  </main>
+
+  <script src="../shared/sial-mobile-core.js?v=20260819"></script>
+  <script src="hu344.js?v=20260819"></script>
+</body>
+</html>

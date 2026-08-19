@@ -257,6 +257,7 @@ No añadir acciones de negocio al header si pertenecen al formulario. El título
 - El drawer global mantiene un buscador visible sobre la lista desplazable cuando la navegación supera una pantalla.
 - La búsqueda filtra por sección y nombre de vista, oculta grupos sin coincidencias y ofrece un estado vacío orientativo sin cambiar de ruta automáticamente.
 - La consulta móvil de evidencias agrupa fotografías por evento, conserva operación, responsable, fecha, punto de control y sincronización, y abre el detalle en un bottom sheet de solo lectura.
+- El rearmado de pallets en ZE es un proceso independiente de HU591 y del re-etiquetado: inicia seleccionando directamente uno o varios pallets de origen y cada opción indica si está completa o incompleta. El selector permite filtrar por SSCC, referencia o finca y agregar un origen mediante escaneo; un código escaneado solo se acepta si corresponde a un pallet disponible en ZE. La vista permite relaciones uno-a-uno, uno-a-muchos, muchos-a-uno y muchos-a-muchos mediante una conciliación exacta de cajas y una matriz de linaje origen–resultado. Muestra únicamente SSCC, finca, referencia, cajas y estado; la operación asociada se conserva internamente para compatibilidad y sincronización, sin pedirla ni mostrar cliente o certificación. Distingue entre completar pallets con una misma referencia y crear pallets mixtos con dos referencias. Reutiliza cards, estados, escáner de resultados y confirmación compartidos.
 
 ## 7. Componentes
 

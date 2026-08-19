@@ -2299,6 +2299,7 @@
         { href: "../puerto-ze/recepcion-ze.html", label: "HU758 - Recepcion vehiculo ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
         { href: "../puerto-ze/inspeccion-externa.html?selectContainer=1", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
         { href: "../puerto-ze/inspeccion-interna.html?selectContainer=1", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
+        { href: "../pallets/rearmar-pallet.html", label: "HU344 - Rearmar pallets en ZE", icon: drawerIcon('<path d="M4 6h7v5H4z"/><path d="M4 13h7v5H4z"/><path d="M15 9h5v6h-5z"/><path d="m11 8 4 4-4 4"/>') },
         { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') },
         { href: "../puerto-ze/hu1431-despacho-contenedor-finca.html", label: "HU1431 - Despacho contenedor a finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="m13 6 6 6-6 6"/>') }
       ]
@@ -2333,6 +2334,7 @@
       aria: "Navegacion pallets",
       items: [
         { href: "../pallets/armar-pallet.html", label: "HU591 - Armar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
+        { href: "../pallets/rearmar-pallet.html", label: "HU344 - Rearmar pallets en ZE", icon: drawerIcon('<path d="M4 6h7v5H4z"/><path d="M4 13h7v5H4z"/><path d="M15 9h5v6h-5z"/><path d="m11 8 4 4-4 4"/>') },
         { href: "../pallets/consulta-pallets.html", label: "Consulta Pallet’s", icon: drawerIcon('<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/><path d="M7 10h6"/>') },
         { href: "../pallets/reetiquetar-pallet.html", label: "Re-etiquetar pallet", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="m8 12 3 3 5-6"/><path d="M7 20h10"/>') },
         { href: "../pallets/cargar-pallets.html", label: "HU332 - Cargue contenedor", icon: drawerIcon('<path d="M12 5v14"/><path d="M5 12h14"/>') }
