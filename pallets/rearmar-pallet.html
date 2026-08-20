@@ -31,7 +31,7 @@
       <section class="sial-flow-banner hu591-context-banner hu344-context" aria-label="Contexto del rearmado">
         <div>
           <strong data-hu344-zone>Zona Externa</strong>
-          <span>Pallet <b data-hu344-context-pallet>pendiente</b></span>
+          <span><b data-hu344-context-pallet>Sin pallets</b></span>
         </div>
         <span class="sial-pill warning" data-hu344-context-status>Sin seleccionar</span>
       </section>
@@ -51,7 +51,7 @@
               </span>
               <div>
                 <h2 class="sial-section-title" id="hu344-base-title">Pallets de origen</h2>
-                <p>Selecciona uno o varios pallets para redistribuir.</p>
+                <p>Selecciona los pallets e indica cuántas cajas tomas de cada origen.</p>
               </div>
             </div>
             <span class="sial-pill" data-hu344-base-pill>Sin seleccionar</span>
@@ -60,7 +60,7 @@
             <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg>
             Seleccionar pallets
           </button>
-          <p class="sial-field-note" data-hu344-base-status>La selección muestra estado, referencia y cajas de cada pallet.</p>
+          <p class="sial-field-note" data-hu344-base-status>Después de seleccionar, define las cajas que tomarás de cada pallet.</p>
           <div class="hu344-base-list" data-hu344-base-list aria-live="polite"></div>
         </section>
 
@@ -72,14 +72,14 @@
               </span>
               <div>
                 <h2 class="sial-section-title" id="hu344-balance-title">Conciliación de cajas</h2>
-                <p>Distribuye todas las cajas entre los resultados.</p>
+                <p>La selección debe caber en un solo pallet de hasta 48 cajas.</p>
               </div>
             </div>
             <span class="sial-pill" data-hu344-capacity-pill>0 asignadas</span>
           </div>
           <div class="hu344-capacity" aria-label="Conciliación de cajas">
-            <span><b data-hu344-selected-boxes>0</b> cajas de origen</span>
-            <span><b data-hu344-remaining-boxes>0</b> por asignar</span>
+            <span><b data-hu344-selected-boxes>0</b> cajas seleccionadas</span>
+            <span><b data-hu344-remaining-boxes>48</b> disponibles</span>
             <div aria-hidden="true"><i data-hu344-capacity-bar></i></div>
           </div>
           <div class="hu344-composition-lines" data-hu344-composition-lines></div>
@@ -93,18 +93,14 @@
                 <svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="m9 12 2 2 4-5"/></svg>
               </span>
               <div>
-                <h2 class="sial-section-title" id="hu344-result-title">Pallets resultado</h2>
-                <p>Crea uno o varios destinos para las cajas seleccionadas.</p>
+                <h2 class="sial-section-title" id="hu344-result-title">Pallet resultado</h2>
+                <p>Todas las cajas seleccionadas forman un único pallet.</p>
               </div>
             </div>
-            <span class="sial-pill" data-hu344-result-count>0 resultados</span>
+            <span class="sial-pill" data-hu344-result-count>Pendiente</span>
           </div>
           <div class="hu344-result-list" data-hu344-result-list aria-live="polite"></div>
-          <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu344-add-result disabled>
-            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-            Agregar pallet resultado
-          </button>
-          <p class="sial-field-note" data-hu344-result-status>Cada resultado requiere SSCC y una cantidad máxima de 48 cajas.</p>
+          <p class="sial-field-note" data-hu344-result-status>El resultado requiere SSCC y admite máximo 48 cajas.</p>
           <div class="sial-field">
             <label class="sial-label" for="hu344-observations">Observaciones <span class="hu344-optional">Opcional</span></label>
             <textarea class="sial-textarea" id="hu344-observations" maxlength="500" placeholder="Registra una novedad relevante del rearmado" data-hu344-observations></textarea>
@@ -114,7 +110,7 @@
         <section class="hu591-label-preview hu344-label-preview" aria-label="Resumen del rearmado" data-hu344-summary>
           <div class="hu591-label-head">
             <span>Rearmado de pallets · ZE</span>
-            <strong data-hu344-preview-sscc>Sin resultados</strong>
+            <strong data-hu344-preview-sscc>Sin resultado</strong>
           </div>
           <dl>
             <div><dt>Pallets origen</dt><dd data-hu344-preview-type>Sin seleccionar</dd></div>
