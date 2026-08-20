@@ -259,6 +259,18 @@ No añadir acciones de negocio al header si pertenecen al formulario. El título
 - La consulta móvil de evidencias agrupa fotografías por evento, conserva operación, responsable, fecha, punto de control y sincronización, y abre el detalle en un bottom sheet de solo lectura.
 - El rearmado de pallets en ZE es un proceso independiente de HU591 y del re-etiquetado: inicia seleccionando directamente uno o varios pallets de origen recibidos desde finca. `Incompleto` y `Mixto` son condiciones del pallet de origen y funcionan como filtros dentro del selector; no son tipos de pallet resultado. El selector también permite filtrar por SSCC, referencia o finca y agregar un origen mediante escaneo; un código escaneado solo se acepta si corresponde a un pallet disponible en ZE. Después de seleccionar, el usuario indica cuántas cajas toma de cada pallet. En un origen mixto puede escoger una o varias referencias y definir la cantidad de cajas de cada una; las referencias desmarcadas no participan en el rearmado. El saldo no utilizado permanece disponible con su composición original. Cada operación genera exactamente un pallet resultado, con una o varias referencias según la selección, y máximo 48 cajas. La cantidad del resultado se calcula desde los orígenes y no se edita por separado. La vista admite relaciones uno-a-uno y muchos-a-uno mediante conciliación exacta y una matriz de linaje origen–resultado. Muestra únicamente SSCC, finca, referencia, cajas y estado; la operación asociada se conserva internamente para compatibilidad y sincronización, sin pedirla ni mostrar cliente o certificación. Reutiliza cards, estados, escáner de resultado y confirmación compartidos.
 
+#### Flujo operativo de pallets en ZE
+
+La autoridad del prototipo es el estado local `sial-mobile-workflow`; el backend definitivo debe confirmar estas transiciones. El recorrido visible y la navegación mantienen una única secuencia: HU342 → HU344 → HU347.
+
+| Estado origen | Acción | Estado destino | Guarda | Efectos y trazabilidad |
+| --- | --- | --- | --- | --- |
+| Contenedor recibido en ZE | HU342: descargar y conciliar cada SSCC | Pallets descargados | Recepción retorno confirmada, manifiesto completo y evidencias | Publica `zePalletInventory`; separa aptos, rechazados y pallets que requieren rearmado. |
+| Pallets descargados | HU344: rearmar incompletos o mixtos | Pallet rearmado en ZE | Evento HU342 completo, conciliación exacta, SSCC válido y máximo 48 cajas | Conserva saldos y linaje, marca `zePalletReassembly` y publica el resultado como apto para consolidación. |
+| Pallet rearmado en ZE | HU347: construir cargue consolidado | Consolidado cargado en ZE | Eventos HU342 y HU344 completos, seis posiciones, controles y evidencias | Registra posiciones, cajas, sello y temperatura; habilita el despacho a puerto. |
+
+Cada registro HU344 genera una clave local de idempotencia y conserva el linaje SSCC. HU347 no puede confirmarse sin `zePalletReassembly`; el contrato backend definitivo debe resolver concurrencia y rechazo estable de duplicados.
+
 ## 7. Componentes
 
 ### 7.1 Botones

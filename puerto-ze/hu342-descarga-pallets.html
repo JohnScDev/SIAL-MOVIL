@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - HU342 Descarga de pallets en ZE</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <link rel="stylesheet" href="hu342-hu347.css">
+</head>
+<body>
+  <main class="sial-page ze-transfer-page" data-hu342-root>
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="recepcion-ze-retorno.html" aria-label="Volver a recepción ZE">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Descarga de pallets</h1>
+        <p>HU342 · Recepción física en ZE</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body ze-transfer-body">
+      <div class="sial-status warning" data-hu342-guard hidden>
+        <span><strong>Recepción pendiente</strong>Confirma primero la llegada del contenedor cargado a ZE.</span>
+      </div>
+
+      <section class="ze-operation-ticket" aria-label="Operación activa">
+        <div class="ze-operation-ticket-copy">
+          <span class="ze-eyebrow">Operación activa</span>
+          <strong data-flow-container>SIALU1234567</strong>
+          <p><span data-flow-operation>EXP-2026-0418</span> · <span data-flow-finca>Finca Santa Isabel</span></p>
+        </div>
+        <div class="ze-operation-ticket-status">
+          <span class="sial-pill success">Recibido en ZE</span>
+          <small><span data-flow-ze>ZE Puerto Norte</span></small>
+        </div>
+      </section>
+
+      <nav class="ze-stepper" aria-label="Proceso de consolidación">
+        <span class="is-active"><b>1</b><small>Descargar</small></span>
+        <i aria-hidden="true"></i>
+        <span><b>2</b><small>Rearmar</small></span>
+        <i aria-hidden="true"></i>
+        <span><b>3</b><small>Consolidar</small></span>
+      </nav>
+
+      <section class="sial-stat-row ze-stat-row" aria-label="Avance de descarga">
+        <div class="sial-stat"><strong data-hu342-unloaded-count>0</strong><span>Descargados</span></div>
+        <div class="sial-stat"><strong data-hu342-pending-count>8</strong><span>Pendientes</span></div>
+        <div class="sial-stat"><strong data-hu342-novelty-count>0</strong><span>Con novedad</span></div>
+      </section>
+
+      <section class="sial-card sial-card-pad ze-section-card">
+        <div class="ze-section-heading">
+          <div>
+            <span class="ze-eyebrow">Lectura de muelle</span>
+            <h2 class="sial-section-title">Escanea cada SSCC</h2>
+          </div>
+          <span class="sial-pill" data-hu342-progress-pill>0 de 8</span>
+        </div>
+        <p class="ze-section-copy">La posición del contenedor se libera al confirmar el estado físico del pallet.</p>
+        <div class="ze-scan-control">
+          <label class="sial-label" for="hu342Sscc">SSCC del pallet</label>
+          <div class="ze-scan-row">
+            <input class="sial-input-wrap sial-input" id="hu342Sscc" inputmode="numeric" autocomplete="off" placeholder="Escanea o digita 18 dígitos" data-hu342-sscc>
+            <button class="sial-btn sial-btn-primary" type="button" data-hu342-scan>
+              <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
+              Escanear
+            </button>
+          </div>
+          <p class="sial-field-note" data-hu342-scan-status>Lee un pallet de la carga esperada para iniciar.</p>
+        </div>
+      </section>
+
+      <section class="sial-card sial-card-pad ze-section-card">
+        <div class="ze-section-heading">
+          <div>
+            <span class="ze-eyebrow">Mapa de descarga</span>
+            <h2 class="sial-section-title">Posiciones del contenedor</h2>
+          </div>
+          <span class="sial-pill">Puertas</span>
+        </div>
+        <div class="ze-container-map" data-hu342-container-map aria-label="Ocho posiciones de pallets"></div>
+        <div class="ze-map-legend" aria-label="Leyenda">
+          <span><i class="pending"></i>Pendiente</span>
+          <span><i class="complete"></i>Conforme</span>
+          <span><i class="novelty"></i>Novedad</span>
+        </div>
+      </section>
+
+      <section class="ze-current-pallet" data-hu342-current hidden aria-live="polite">
+        <header>
+          <div>
+            <span class="ze-eyebrow">Pallet leído</span>
+            <strong data-hu342-current-sscc></strong>
+          </div>
+          <span class="sial-pill" data-hu342-current-position></span>
+        </header>
+        <div class="ze-pallet-facts">
+          <div><span>Referencia</span><strong data-hu342-current-reference></strong></div>
+          <div><span>Finca</span><strong data-hu342-current-farm></strong></div>
+          <div><span>Cajas esperadas</span><strong data-hu342-current-boxes></strong></div>
+        </div>
+        <fieldset class="ze-classification-fieldset">
+          <legend>¿Cómo se recibió?</legend>
+          <div class="ze-classification-grid" data-hu342-classification>
+            <button type="button" data-classification="COMPLETE"><span class="ze-state-icon success">✓</span><strong>Completo</strong><small>Sin diferencia</small></button>
+            <button type="button" data-classification="INCOMPLETE"><span class="ze-state-icon warning">−</span><strong>Incompleto</strong><small>Faltan cajas</small></button>
+            <button type="button" data-classification="NOVELTY"><span class="ze-state-icon info">!</span><strong>Con novedad</strong><small>Requiere revisión</small></button>
+            <button type="button" data-classification="REJECTED"><span class="ze-state-icon error">×</span><strong>Rechazado</strong><small>No disponible</small></button>
+          </div>
+        </fieldset>
+        <div class="ze-classification-detail" data-hu342-detail hidden>
+          <div class="sial-field" data-hu342-actual-wrap hidden>
+            <label class="sial-label" for="hu342ActualBoxes">Cajas recibidas</label>
+            <input class="sial-input-wrap sial-input" id="hu342ActualBoxes" type="number" min="0" inputmode="numeric" data-hu342-actual-boxes>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu342Reason">Motivo de la novedad</label>
+            <select class="sial-select" id="hu342Reason" data-hu342-reason>
+              <option value="">Seleccionar motivo</option>
+              <option value="DIFERENCIA_CAJAS">Diferencia de cajas</option>
+              <option value="EMBALAJE_DANADO">Embalaje dañado</option>
+              <option value="ETIQUETA_ILEGIBLE">Etiqueta ilegible</option>
+              <option value="CALIDAD">Novedad de calidad</option>
+              <option value="OTRO">Otro</option>
+            </select>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu342Observation">Observación</label>
+            <textarea class="sial-textarea" id="hu342Observation" maxlength="300" placeholder="Describe lo encontrado" data-hu342-observation></textarea>
+          </div>
+        </div>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="button" data-hu342-confirm-classification disabled>Confirmar descarga del pallet</button>
+      </section>
+
+      <section class="sial-section">
+        <div class="ze-section-heading">
+          <div>
+            <span class="ze-eyebrow">Conciliación</span>
+            <h2 class="sial-section-title">Pallets recibidos</h2>
+          </div>
+          <button class="sial-chip-action" type="button" data-hu342-select-all>Conciliar manifiesto</button>
+        </div>
+        <div class="ze-pallet-list" data-hu342-pallet-list></div>
+      </section>
+
+      <form class="sial-form ze-transfer-form" data-flow-form data-event="zePalletUnload" data-status="PALLETS_DESCARGADOS_ZE" data-location="ZE" data-detail="HU342 descarga y clasificación de pallets en ZE" data-next="../pallets/rearmar-pallet.html" data-prevent-duplicate="true" novalidate>
+        <section class="sial-card sial-card-pad ze-section-card">
+          <div class="ze-section-heading">
+            <div>
+              <span class="ze-eyebrow">Evidencia de cierre</span>
+              <h2 class="sial-section-title">Verifica el punto de descarga</h2>
+            </div>
+          </div>
+          <div class="sial-evidence-grid">
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu342-puertas">Puertas y sello recibido</button>
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu342-zona-descarga">Zona de descarga</button>
+          </div>
+          <label class="sial-checkbox-row"><input type="checkbox" required data-hu342-reconcile> La cantidad descargada coincide con la conciliación registrada</label>
+          <p class="sial-inline-error" data-flow-error hidden></p>
+        </section>
+        <section class="ze-submit-panel">
+          <div><span>Resultado</span><strong data-hu342-result-copy>Descarga pendiente</strong></div>
+          <button class="sial-btn sial-btn-primary" type="submit" data-hu342-submit>Finalizar descarga</button>
+        </section>
+      </form>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script src="hu342-descarga-pallets.js"></script>
+</body>
+</html>

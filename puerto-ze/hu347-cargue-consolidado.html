@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - HU347 Cargue consolidado ZE</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+  <link rel="stylesheet" href="hu342-hu347.css">
+</head>
+<body>
+  <main class="sial-page ze-transfer-page" data-hu347-root>
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../pallets/rearmar-pallet.html" aria-label="Volver a rearmado de pallets">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title">
+        <h1>Cargue consolidado</h1>
+        <p>HU347 · Contenedor final ZE</p>
+      </div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
+      </button>
+    </header>
+
+    <section class="sial-page-body ze-transfer-body">
+      <div class="sial-status warning" data-hu347-guard data-requires="zePalletReassembly" hidden>
+        <span><strong>Rearmado pendiente</strong>Finaliza la HU344 antes de consolidar el contenedor. Falta: <span data-missing-list></span>.</span>
+      </div>
+
+      <section class="ze-operation-ticket ze-operation-ticket-final" aria-label="Contenedor final">
+        <div class="ze-operation-ticket-copy">
+          <span class="ze-eyebrow">Contenedor final</span>
+          <strong>SIALC9081726</strong>
+          <p>Loading plan LP-2026-0819 · <span data-flow-ze>ZE Puerto Norte</span></p>
+        </div>
+        <div class="ze-operation-ticket-status">
+          <span class="sial-pill success">Liberado</span>
+          <small>Inspecciones aptas</small>
+        </div>
+      </section>
+
+      <nav class="ze-stepper" aria-label="Proceso de consolidación">
+        <span class="is-complete"><b>✓</b><small>Descargar</small></span>
+        <i aria-hidden="true"></i>
+        <span data-hu347-reassembly-step><b>2</b><small>Rearmar</small></span>
+        <i aria-hidden="true"></i>
+        <span class="is-active"><b>3</b><small>Consolidar</small></span>
+      </nav>
+
+      <section class="sial-stat-row ze-stat-row" aria-label="Avance del cargue">
+        <div class="sial-stat"><strong data-hu347-selected-count>0</strong><span>Pallets</span></div>
+        <div class="sial-stat"><strong data-hu347-box-count>0</strong><span>Cajas</span></div>
+        <div class="sial-stat"><strong data-hu347-position-count>0/6</strong><span>Posiciones</span></div>
+      </section>
+
+      <section class="sial-card sial-card-pad ze-section-card">
+        <div class="ze-section-heading">
+          <div>
+            <span class="ze-eyebrow">Inventario ZE</span>
+            <h2 class="sial-section-title">Selecciona pallets aptos</h2>
+          </div>
+          <button class="sial-chip-action" type="button" data-hu347-select-eligible>Seleccionar aptos</button>
+        </div>
+        <p class="ze-section-copy">Solo aparecen pallets completos o rearmados. Los rechazados permanecen fuera del loading plan.</p>
+        <div class="ze-scan-control">
+          <label class="sial-label" for="hu347Sscc">Agregar por SSCC</label>
+          <div class="ze-scan-row">
+            <input class="sial-input-wrap sial-input" id="hu347Sscc" inputmode="numeric" autocomplete="off" placeholder="Escanea o digita el SSCC" data-hu347-sscc>
+            <button class="sial-btn sial-btn-primary" type="button" data-hu347-scan>
+              <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
+              Escanear
+            </button>
+          </div>
+          <p class="sial-field-note" data-hu347-scan-status>Escanea un pallet disponible en ZE.</p>
+        </div>
+        <div class="ze-eligible-list" data-hu347-eligible-list></div>
+      </section>
+
+      <section class="sial-card sial-card-pad ze-section-card ze-stowage-card">
+        <div class="ze-section-heading">
+          <div>
+            <span class="ze-eyebrow">Mapa de estiba</span>
+            <h2 class="sial-section-title">Distribución final</h2>
+          </div>
+          <span class="sial-pill" data-hu347-capacity-pill>0% ocupado</span>
+        </div>
+        <div class="ze-stowage-shell">
+          <div class="ze-stowage-nose"><span>Frente</span></div>
+          <div class="ze-stowage-map" data-hu347-stowage-map aria-label="Seis posiciones de estiba"></div>
+          <div class="ze-stowage-door"><span>Puertas</span></div>
+        </div>
+        <div class="ze-balance-bar" aria-label="Capacidad utilizada"><i data-hu347-capacity-bar></i></div>
+        <p class="sial-field-note" data-hu347-balance-status>Selecciona los pallets para construir la estiba.</p>
+      </section>
+
+      <form class="sial-form ze-transfer-form" data-flow-form data-event="zeConsolidatedLoad" data-status="CONSOLIDADO_CARGADO_ZE" data-location="ZE" data-detail="HU347 cargue de contenedor final consolidado en ZE" data-next="despacho-puerto.html" data-prevent-duplicate="true" novalidate>
+        <section class="sial-card sial-card-pad ze-section-card">
+          <div class="ze-section-heading">
+            <div>
+              <span class="ze-eyebrow">Control final</span>
+              <h2 class="sial-section-title">Aseguramiento del contenedor</h2>
+            </div>
+          </div>
+          <div class="sial-form-grid">
+            <div class="sial-field">
+              <label class="sial-label" for="hu347Seal">Sello final</label>
+              <input class="sial-input-wrap sial-input" id="hu347Seal" name="selloFinal" autocomplete="off" autocapitalize="characters" required placeholder="Ej. SL-9081726">
+            </div>
+            <div class="sial-field">
+              <label class="sial-label" for="hu347Temperature">Temperatura objetivo</label>
+              <div class="ze-input-suffix"><input class="sial-input-wrap sial-input" id="hu347Temperature" name="temperatura" type="number" min="10" max="18" step="0.1" required value="13.5"><span>°C</span></div>
+            </div>
+          </div>
+          <div class="ze-check-stack">
+            <label class="sial-checkbox-row"><input type="checkbox" required> Loading plan y referencias conciliados</label>
+            <label class="sial-checkbox-row"><input type="checkbox" required> Capacidad y distribución verificadas</label>
+            <label class="sial-checkbox-row"><input type="checkbox" required> Inspecciones y liberación vigentes</label>
+          </div>
+          <div class="sial-evidence-grid">
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu347-estiba-final">Estiba final</button>
+            <button class="sial-evidence-slot" type="button" data-add-photo="hu347-sello-final">Sello instalado</button>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="hu347Observation">Observaciones del cargue</label>
+            <textarea class="sial-textarea" id="hu347Observation" name="observaciones" maxlength="400" placeholder="Registra únicamente novedades de consolidación"></textarea>
+          </div>
+          <p class="sial-inline-error" data-flow-error hidden></p>
+        </section>
+        <section class="ze-submit-panel">
+          <div><span>Listo para cierre</span><strong data-hu347-result-copy>Selecciona 6 pallets</strong></div>
+          <button class="sial-btn sial-btn-primary" type="submit" data-hu347-submit>Confirmar cargue final</button>
+        </section>
+      </form>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+  <script src="hu347-cargue-consolidado.js"></script>
+</body>
+</html>

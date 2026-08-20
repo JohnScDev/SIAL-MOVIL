@@ -2309,6 +2309,9 @@
       aria: "Navegacion ciclo retorno",
       items: [
         { href: "../puerto-ze/recepcion-ze-retorno.html", label: "Recepcion ZE retorno", icon: drawerIcon('<path d="M19 12H5"/><path d="m11 18-6-6 6-6"/>') },
+        { href: "../puerto-ze/hu342-descarga-pallets.html", label: "HU342 - Descargar pallets", icon: drawerIcon('<path d="M4 6h16v9H4z"/><path d="m8 19 4-4 4 4"/><path d="M12 15v6"/>') },
+        { href: "../pallets/rearmar-pallet.html", label: "HU344 - Rearmar pallets en ZE", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="m8 12 3 3 5-6"/><path d="M8 4h8"/>') },
+        { href: "../puerto-ze/hu347-cargue-consolidado.html", label: "HU347 - Cargue consolidado", icon: drawerIcon('<path d="M4 8h16v10H4z"/><path d="M8 8V5h8v3"/><path d="M8 13h8"/>') },
         { href: "../puerto-ze/despacho-puerto.html", label: "Despacho puerto", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/><path d="M4 18h16"/>') },
         { href: "../puerto-ze/recepcion-puerto.html", label: "Recepcion puerto", icon: drawerIcon('<path d="M4 8h16"/><path d="M6 8v9h12V8"/><path d="M8 17h8"/>') },
         { href: "../puerto-ze/entrega-puerto.html", label: "Entrega en puerto", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M7 20h10"/><path d="M9 17v3"/><path d="M15 17v3"/>') }

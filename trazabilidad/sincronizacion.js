@@ -16,7 +16,7 @@
   var moduleDefinitions = [
     { id: "farm", label: "Recepción e inspecciones", match: ["HU759", "Finca"], icon: '<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>' },
     { id: "pallets", label: "Pallets", match: ["HU591", "HU344"], icon: '<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>' },
-    { id: "loading", label: "Cargue de contenedor", match: ["HU332"], icon: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>' },
+    { id: "loading", label: "Transferencia y cargue", match: ["HU332", "HU342", "HU347"], icon: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>' },
     { id: "evidence", label: "Evidencias", match: [], evidence: true, icon: '<rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m6 17 4-4 3 3 2-2 3 3"/>' }
   ];
 

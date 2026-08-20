@@ -309,7 +309,10 @@
     containerClosed: ["farmReception", "palletsLoaded"],
     farmDispatch: ["containerClosed"],
     zeReturnReception: ["farmDispatch"],
-    portDispatch: ["zeReturnReception"],
+    zePalletUnload: ["zeReturnReception"],
+    zePalletReassembly: ["zePalletUnload"],
+    zeConsolidatedLoad: ["zePalletReassembly"],
+    portDispatch: ["zeConsolidatedLoad"],
     portReception: ["portDispatch"],
     portDelivery: ["portReception"]
   };
@@ -328,6 +331,9 @@
     containerClosed: "Cierre de contenedor",
     farmDispatch: "Despacho desde finca a ZE",
     zeReturnReception: "Recepcion en ZE desde finca",
+    zePalletUnload: "HU342 - Descarga de pallets en ZE",
+    zePalletReassembly: "HU344 - Rearmado de pallets en ZE",
+    zeConsolidatedLoad: "HU347 - Cargue consolidado en ZE",
     portDispatch: "Despacho a puerto",
     portReception: "Recepcion en puerto",
     portDelivery: "Entrega final en puerto"
@@ -522,6 +528,9 @@
       ["containerClosed", "../finca/cierre-contenedor.html", "Cerrar contenedor", "Validar sellos, cantidades y evidencia."],
       ["farmDispatch", "../finca/despacho-ze.html", "Despachar a ZE", "Enviar contenedor cerrado hacia zona externa."],
       ["zeReturnReception", "../puerto-ze/recepcion-ze-retorno.html", "Recibir retorno ZE", "Confirmar llegada desde finca."],
+      ["zePalletUnload", "../puerto-ze/hu342-descarga-pallets.html", "HU342 - Descargar pallets", "Conciliar cada SSCC y clasificar su estado físico."],
+      ["zePalletReassembly", "../pallets/rearmar-pallet.html", "HU344 - Rearmar pallets", "Preparar los pallets incompletos o mixtos antes del cargue final."],
+      ["zeConsolidatedLoad", "../puerto-ze/hu347-cargue-consolidado.html", "HU347 - Cargue consolidado", "Construir y asegurar la estiba del contenedor final."],
       ["portDispatch", "../puerto-ze/despacho-puerto.html", "Despachar a puerto", "Enviar contenedor hacia terminal."],
       ["portReception", "../puerto-ze/recepcion-puerto.html", "Recibir en puerto", "Confirmar llegada y sellos."],
       ["portDelivery", "../puerto-ze/entrega-puerto.html", "Entregar / exportar", "Liberar vehiculo y cerrar trazabilidad."]
