@@ -72,7 +72,9 @@ assert.ok(css.includes(".ze-container-map"), "El estilo debe representar el mapa
 assert.ok(css.includes(".ze-stowage-map"), "El estilo debe representar el mapa de estiba.");
 assert.ok(css.includes("prefers-reduced-motion"), "Las vistas deben respetar reducción de movimiento.");
 assert.ok(css.includes('html[data-theme="dark"]'), "Las vistas deben conservar modo oscuro.");
-assert.ok(css.includes("env(safe-area-inset-bottom)"), "La acción fija debe respetar safe area.");
+assert.ok(!css.includes(".ze-submit-panel"), "HU342 no debe usar una barra de acción fija ajena al patrón móvil.");
+assert.ok(css.includes(".ze-form-result"), "HU342 debe mostrar el avance dentro del formulario.");
+assert.ok(hu342Html.includes('sial-btn-primary sial-btn-full" type="submit" data-hu342-submit'), "La acción final de HU342 debe estar dentro de la tarjeta y ocupar todo el ancho.");
 
 assert.ok(flow.includes('zePalletUnload: ["zeReturnReception"]'), "HU342 debe depender de la recepción retorno ZE.");
 assert.ok(flow.includes('zePalletReassembly: ["zePalletUnload"]'), "HU344 debe depender de HU342.");

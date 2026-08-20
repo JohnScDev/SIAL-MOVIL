@@ -14,7 +14,6 @@ html[data-theme="dark"] .ze-transfer-page {
 
 .ze-transfer-body {
   gap: 14px;
-  padding-bottom: 112px;
 }
 
 .ze-eyebrow {
@@ -503,49 +502,23 @@ html[data-theme="dark"] .ze-eyebrow {
   display: contents;
 }
 
-.ze-submit-panel {
-  position: fixed;
-  z-index: 18;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.ze-form-result {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  width: min(100%, var(--sial-page-content-max));
-  margin-inline: auto;
-  padding: 12px max(var(--sial-page-gutter), env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(var(--sial-page-gutter), env(safe-area-inset-left));
-  border-top: 1px solid var(--sial-border);
-  background: color-mix(in srgb, var(--sial-surface) 94%, transparent);
-  box-shadow: 0 -12px 34px rgba(16, 24, 40, .1);
-  backdrop-filter: blur(14px);
+  gap: 3px;
+  margin: 0;
+  padding-top: 4px;
 }
 
-.ze-submit-panel > div {
-  display: grid;
-  gap: 1px;
-  min-width: 0;
-}
-
-.ze-submit-panel span {
+.ze-form-result span {
   color: var(--sial-text-3);
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.ze-submit-panel strong {
-  overflow: hidden;
+.ze-form-result strong {
   color: var(--sial-text);
-  font-size: 11px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ze-submit-panel .sial-btn {
-  min-height: 48px;
-  white-space: nowrap;
+  font-size: 13px;
 }
 
 .ze-stowage-shell {
@@ -669,8 +642,6 @@ html[data-theme="dark"] .ze-eyebrow {
   .ze-scan-row { grid-template-columns: 1fr; }
   .ze-scan-row .sial-btn { width: 100%; }
   .ze-classification-grid { grid-template-columns: 1fr; }
-  .ze-submit-panel { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
-  .ze-submit-panel .sial-btn { width: 100%; padding-inline: 10px; font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
