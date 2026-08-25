@@ -109,7 +109,7 @@
     list.innerHTML = eligiblePallets.map(function (item) {
       var isSelected = selected.indexOf(item.sscc) >= 0;
       var origin = item.unloadClassification === "NOVELTY" ? "Apto con novedad" : item.reassembled ? "Rearmado en ZE" : "Completo";
-      return '<button class="ze-eligible-row" type="button" data-hu347-pallet="' + escapeHtml(item.sscc) + '" aria-pressed="' + String(isSelected) + '">' +
+      return '<button class="sial-selectable-row ze-eligible-row" type="button" data-hu347-pallet="' + escapeHtml(item.sscc) + '" aria-pressed="' + String(isSelected) + '">' +
         '<span class="ze-eligible-check">' + (isSelected ? "✓" : "+") + '</span>' +
         '<span class="ze-eligible-copy"><strong>' + escapeHtml(item.sscc) + '</strong><span>' + escapeHtml(item.reference + " · " + item.farm + " · " + origin) + '</span></span>' +
         '<span class="sial-pill">' + Number(item.boxes) + ' cajas</span></button>';

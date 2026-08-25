@@ -1,9 +1,9 @@
 ---
 name: SIAL Mobile Design System
-version: 1.0.0
+version: 1.1.0
 status: vigente
 language: es-CO
-lastUpdated: 2026-07-31
+lastUpdated: 2026-08-21
 owners:
   - Producto SIAL
   - Diseño UI/UX SIAL
@@ -51,6 +51,22 @@ Mientras la propuesta evoluciona, se aplica este orden:
 Una vista local no crea por sí sola una nueva regla global. Si contradice la librería o este documento, debe revisarse antes de replicarla.
 
 En React Native, el repositorio móvil vivo y sus dependencias instaladas gobiernan la implementación técnica. Este documento gobierna la intención de diseño. Los contratos backend gobiernan reglas e integración.
+
+El inventario y la matriz de adopción viven en [`libreria/patrones-de-diseno-movil.md`](libreria/patrones-de-diseno-movil.md). Es obligatorio consultarlos antes de crear una composición local: distinguen entre componentes compartidos, composiciones de dominio y deuda de migración.
+
+### 2.1 Auditoría de madurez visual — 2026-08-21
+
+La propuesta tiene dos generaciones visuales. Las vistas iniciales resuelven la tarea con el shell, cards, campos y feedback base. Las vistas recientes de evidencias, consulta contextual, pallets y ZE añaden contexto operacional, avance por etapas, selección verificable, capacidad y cierre explícito. La segunda generación es la referencia para nuevas vistas, sin obligar a rediseñar una vista existente fuera de su alcance.
+
+| Necesidad transversal | Canon compartido | Referencias maduras | No promover como genérico |
+| --- | --- | --- | --- |
+| Identificar una operación activa | `.sial-operation-ticket` + pills semánticas | HU342, HU347, evidencia | Datos, etiquetas o reglas propias de la operación |
+| Mostrar una secuencia corta | `.sial-flow-stepper` | HU342 → HU344 → HU347 | La máquina de estados ni los guards de la HU |
+| Elegir un registro operativo | `.sial-selectable-row` con `aria-pressed` | selección de pallets ZE, pickers HU591 | Filtros, elegibilidad o cantidades del dominio |
+| Mostrar capacidad conciliable | `.sial-capacity-meter` + copy de estado | HU344, HU347 | Límite de 48, posiciones o cálculo de estiba |
+| Confirmar un cierre | `.sial-submit-summary` + botón primario | HU347 y formularios de pallets | Validaciones, persistencia e idempotencia de negocio |
+
+Los mapas de contenedor/estiba, la clasificación de novedades, la matriz de linaje y la composición de referencias son patrones de dominio: deben reutilizarse dentro de su módulo mientras no existan al menos tres usos con la misma anatomía y estado.
 
 ## 3. Principios de diseño
 
@@ -817,13 +833,16 @@ Toda modificación debe registrar:
 6. aprobación de Producto/Diseño;
 7. impacto esperado en React Native.
 
-Una nueva regla se incorpora primero al sistema compartido y a la librería visual. Después se consume desde las vistas. Las excepciones locales deben documentarse y no pueden convertirse en precedente accidental.
+El sistema no limita la creación de nuevas vistas, componentes, estilos o composiciones. Cuando el problema lo requiere, una vista puede introducir un **candidato visual** con alcance local. Debe documentar su propósito, estados, accesibilidad y la razón por la que el canon actual no lo cubre; un candidato no crea precedente automático.
+
+Antes de reutilizarlo fuera de su vista de origen o declararlo como base visual, Diseño/Producto y la revisión técnica validan coherencia con marca y tokens, utilidad transversal, claro/oscuro, responsive, accesibilidad, movimiento y estados reales. Si se aprueba, se incorpora a `shared/`, se muestra en `libreria/index.html`, se registra en la matriz de patrones y pasa a ser parte de las bases visuales. Si no se aprueba, permanece aislado, se ajusta o se retira según la decisión de revisión.
 
 ## 19. Inventario vivo relacionado
 
 - `shared/sial-mobile-core.css`: tokens y estilos transversales.
 - `shared/sial-mobile-core.js`: interacciones y API UI compartida.
 - `libreria/index.html`: catálogo visual y estados reutilizables.
+- `libreria/patrones-de-diseno-movil.md`: mapeo completo de vistas, patrones, propietarios y plan de adopción.
 - `libreria/sial-mobile-library.css`: presentación del catálogo.
 - `pallets/armar-pallet.html`: formulario operativo y escaneo HU591.
 - `pallets/consulta-pallets.html`: patrón de consulta de pallets.

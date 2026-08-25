@@ -1,0 +1,225 @@
+- generic [active] [ref=f2e1]:
+  - main [ref=f2e2]:
+    - generic [ref=f2e3]:
+      - button "Abrir menú" [ref=f2e4] [cursor=pointer]
+      - generic [ref=f2e7]:
+        - heading "Pedido adicional" [level=1] [ref=f2e8]
+        - paragraph [ref=f2e9]: Solicitud desde finca
+      - generic [ref=f2e10]:
+        - button "Cambiar a modo oscuro" [ref=f2e11] [cursor=pointer]
+        - button "Cerrar sesión" [ref=f2e14] [cursor=pointer]
+    - generic [ref=f2e18]:
+      - generic [ref=f2e19]:
+        - generic [ref=f2e20]:
+          - text: Banasan S.A.S.
+          - strong [ref=f2e21]: Necesidad adicional
+          - paragraph [ref=f2e22]: Captura una necesidad extraordinaria sin reemplazar el pedido base.
+        - generic [ref=f2e23]:
+          - generic [ref=f2e24]: Finca La Ceiba
+          - generic [ref=f2e25]: SEM-2026-32
+      - generic [ref=f2e26]:
+        - generic [ref=f2e27]:
+          - generic [ref=f2e28]:
+            - text: Origen obligatorio
+            - heading "Mantener el contexto" [level=2] [ref=f2e29]
+          - generic [ref=f2e30]: Vinculado
+        - generic [ref=f2e31]:
+          - generic [ref=f2e32]:
+            - generic [ref=f2e33]: Aviso
+            - strong
+          - generic [ref=f2e34]: →
+          - generic [ref=f2e35]:
+            - generic [ref=f2e36]: Pedido base
+            - strong [ref=f2e37]: PED-SUG-2026-032-014
+          - generic [ref=f2e38]: →
+          - generic [ref=f2e39]:
+            - generic [ref=f2e40]: Finca
+            - strong [ref=f2e41]: Finca La Ceiba
+        - paragraph [ref=f2e42]: La solicitud no modifica el pedido sugerido y puede repetirse cuando exista una necesidad diferente.
+      - generic [ref=f2e43]:
+        - generic [ref=f2e44]:
+          - generic [ref=f2e45]:
+            - text: Nueva solicitud
+            - heading "Material y cantidad" [level=2] [ref=f2e46]
+          - generic [ref=f2e47]: Validación posterior
+        - generic [ref=f2e50]:
+          - strong [ref=f2e51]: El móvil captura la necesidad
+          - text: No aprueba faltantes ni clasifica el documento.
+        - generic [ref=f2e52]:
+          - generic [ref=f2e53]: Material
+          - combobox "Material" [ref=f2e54]:
+            - option "Caja de cartón corrugado · und" [selected]
+            - option "Tapa de cartón · und"
+            - option "Etiqueta de trazabilidad · rollo"
+            - option "Estiba de exportación · und"
+        - generic [ref=f2e55]:
+          - generic [ref=f2e56]:
+            - generic [ref=f2e57]: Pedido base
+            - strong [ref=f2e58]: 744 und
+          - generic [ref=f2e59]:
+            - generic [ref=f2e60]: Stock visible
+            - strong [ref=f2e61]: 1280 und
+        - generic [ref=f2e62]:
+          - generic [ref=f2e63]: Cantidad adicional
+          - spinbutton "Cantidad adicional" [ref=f2e64]
+          - paragraph [ref=f2e65]: Si supera el stock visible, la solicitud se registra con alerta para validación.
+        - generic [ref=f2e66]:
+          - generic [ref=f2e67]: Motivo
+          - combobox "Motivo" [ref=f2e68]:
+            - option "Seleccionar motivo" [selected]
+            - option "Incremento extraordinario del corte"
+            - option "Diferencia de inventario"
+            - option "Entrega incompleta del proveedor"
+            - option "Material dañado o no utilizable"
+            - option "Otra necesidad operativa"
+        - generic [ref=f2e69]:
+          - generic [ref=f2e70]: Detalle (opcional)
+          - textbox "Detalle (opcional)" [ref=f2e71]:
+            - /placeholder: Información útil para quien validará la solicitud
+      - generic [ref=f2e72]:
+        - button "Enviar a validación" [ref=f2e73] [cursor=pointer]
+        - link "Volver al pedido base" [ref=f2e74] [cursor=pointer]:
+          - /url: pedido-sugerido.html
+  - complementary [ref=f2e75]:
+    - generic [ref=f2e76]:
+      - generic [ref=f2e79]:
+        - strong [ref=f2e80]: Finca Santa Isabel
+        - generic [ref=f2e81]: operador.sial
+      - button [ref=f2e82] [cursor=pointer]
+    - search [ref=f2e86]:
+      - searchbox [ref=f2e91]
+    - generic [ref=f2e92]:
+      - navigation [ref=f2e93]:
+        - paragraph [ref=f2e94]: ZE Puerto / Control de contenedores
+        - link [ref=f2e95] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/index.html
+          - text: Dashboard ZE Puerto
+        - link [ref=f2e99] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-ze.html
+          - text: HU758 - Recepcion vehiculo ZE
+        - link [ref=f2e102] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/inspeccion-externa.html?selectContainer=1
+          - text: HU557 - Inspeccion externa ZE
+        - link [ref=f2e105] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/inspeccion-interna.html?selectContainer=1
+          - text: HU558 - Inspeccion interna ZE
+        - link [ref=f2e108] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f2e114] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/despacho-finca.html
+          - text: HU303 - Despacho a finca
+        - link [ref=f2e117] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu1431-despacho-contenedor-finca.html
+          - text: HU1431 - Despacho contenedor a finca
+      - navigation [ref=f2e121]:
+        - paragraph [ref=f2e122]: Retorno ZE / Puerto
+        - link [ref=f2e123] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-ze-retorno.html
+          - text: Recepcion ZE retorno
+        - link [ref=f2e126] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu342-descarga-pallets.html
+          - text: HU342 - Descargar pallets
+        - link [ref=f2e130] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f2e134] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu347-cargue-consolidado.html
+          - text: HU347 - Cargue consolidado
+        - link [ref=f2e138] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/despacho-puerto.html
+          - text: Despacho puerto
+        - link [ref=f2e141] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-puerto.html
+          - text: Recepcion puerto
+        - link [ref=f2e144] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/entrega-puerto.html
+          - text: Entrega en puerto
+      - navigation [ref=f2e147]:
+        - paragraph [ref=f2e148]: Finca
+        - link [ref=f2e149] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/recepcion-finca.html
+          - text: Recepcion en finca
+        - link [ref=f2e152] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-contenedores.html
+          - text: Trazabilidad contenedores
+        - link [ref=f2e155] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-pallets.html
+          - text: Pallets por finca
+        - link [ref=f2e159] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-vehiculos.html
+          - text: Trazabilidad vehículos
+        - link [ref=f2e165] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/inspeccion-externa.html?selectContainer=1
+          - text: Inspeccion externa
+        - link [ref=f2e168] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/inspeccion-interna.html?selectContainer=1
+          - text: Inspeccion interna
+        - link [ref=f2e171] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/sesion-responsabilidad.html
+          - text: Sesion responsabilidad
+        - link [ref=f2e174] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/cierre-contenedor.html
+          - text: Cierre de contenedor
+        - link [ref=f2e178] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/despacho-ze.html
+          - text: Despacho a ZE
+      - navigation [ref=f2e181]:
+        - paragraph [ref=f2e182]: Pallets
+        - link [ref=f2e183] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/armar-pallet.html
+          - text: HU591 - Armar pallet
+        - link [ref=f2e187] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f2e193] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/consulta-pallets.html
+          - text: Consulta Pallet’s
+        - link [ref=f2e197] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/reetiquetar-pallet.html
+          - text: Re-etiquetar pallet
+        - link [ref=f2e201] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/cargar-pallets.html
+          - text: HU332 - Cargue contenedor
+      - navigation [ref=f2e203]:
+        - paragraph [ref=f2e204]: Materiales y suministros
+        - link [ref=f2e205] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/index.html
+          - text: Materiales
+        - link [ref=f2e209] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/pedido-sugerido.html
+          - text: Pedido sugerido
+        - link [ref=f2e212] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/inventario-finca.html
+          - text: Inventario finca
+        - link [ref=f2e216] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/ordenes-asignadas.html
+          - text: Ordenes asignadas
+        - link [ref=f2e220] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/registrar-entrega.html
+          - text: Registrar entrega
+        - link [ref=f2e223] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/pallets.html
+          - text: Pallets materiales
+      - navigation [ref=f2e225]:
+        - paragraph [ref=f2e226]: Trazabilidad
+        - link [ref=f2e227] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/sincronizacion.html
+          - text: Sincronización móvil
+        - link [ref=f2e233] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/evidencias.html
+          - text: Evidencias operativas
+        - link [ref=f2e237] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/consultar-contenedor.html
+          - text: Consultar contenedor
+        - link [ref=f2e241] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/consultar-operacion.html
+          - text: Consultar operacion
+      - navigation [ref=f2e243]:
+        - paragraph [ref=f2e244]: Sistema de diseño
+        - link [ref=f2e245] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/libreria/index.html
+          - text: Librería
+    - link [ref=f2e249] [cursor=pointer]:
+      - /url: http://127.0.0.1:4173/app/seleccion-empresa.html
+      - text: Cambiar finca

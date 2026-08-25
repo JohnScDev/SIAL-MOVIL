@@ -1,0 +1,167 @@
+- generic [ref=f5e2]:
+  - complementary "Navegacion principal" [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - generic [ref=f5e5]: S
+      - generic [ref=f5e6]: SIAL
+    - paragraph [ref=f5e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f5e8]':
+      - link "Referencias" [ref=f5e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f5e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f5e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f5e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f5e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f5e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f5e52]:
+        - generic [ref=f5e53]:
+          - link "Materiales y Suministros" [ref=f5e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f5e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f5e62]:
+          - link "Tablero materiales" [ref=f5e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f5e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f5e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f5e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f5e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f5e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f5e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f5e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f5e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f5e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f5e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f5e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f5e96]:
+    - generic [ref=f5e97]:
+      - button "Contraer menu" [expanded] [ref=f5e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f5e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f5e106]:
+      - button "Cambiar a modo oscuro" [ref=f5e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f5e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f5e121] [cursor=pointer]:
+        - generic [ref=f5e122]: QA
+  - main [ref=f5e125]:
+    - generic [ref=f5e126]:
+      - paragraph [ref=f5e127]: Materiales / Maestra
+      - generic [ref=f5e129]:
+        - heading "Gestion de materiales" [level=1] [ref=f5e130]
+        - paragraph [ref=f5e131]: Materiales y configuración por referencia para que los pedidos usen reglas vigentes.
+      - generic [ref=f5e132]: "Historias cubiertas: HU826. Esta propuesta es estatica y deja contratos listos para backend futuro."
+      - generic [ref=f5e136]: "Canal y responsabilidad: Web: administra receta/versionado y configuración · móvil: no administra la maestra."
+      - generic [ref=f5e140]: HU826 requiere versionar la receta y vigencia antes de usar una referencia en pedidos. Los campos completos se consultan en el detalle.
+      - article [ref=f5e144]:
+        - generic [ref=f5e145]:
+          - generic [ref=f5e146]:
+            - heading "Materiales registrados" [level=2] [ref=f5e147]
+            - paragraph [ref=f5e148]: Maestra con referencia, receta, vigencia, desperdicio, sustitutos y redondeo.
+          - generic [ref=f5e149]:
+            - generic [ref=f5e150]: 1-4 de 4 registros
+            - button "Exportar Materiales registrados" [ref=f5e151] [cursor=pointer]:
+              - generic [ref=f5e154]: Exportar
+            - button "Nuevo material" [ref=f5e155] [cursor=pointer]
+        - generic [ref=f5e157]:
+          - searchbox "Buscar" [ref=f5e158]
+          - combobox "Filtrar por estado" [ref=f5e159]:
+            - option "Todos los estados" [selected]
+            - option "Activos / cerrados"
+            - option "Pendientes / revision"
+            - option "Inactivos / bloqueo"
+          - combobox "Todas las categorias" [ref=f5e160]:
+            - option "Todas las categorias" [selected]
+            - option "Cartonera"
+            - option "Estibado"
+            - option "Empaque"
+            - option "Identificacion"
+        - table [ref=f5e162]:
+          - rowgroup [ref=f5e163]:
+            - row [ref=f5e164]:
+              - columnheader "Codigo" [ref=f5e165]
+              - columnheader "Material" [ref=f5e166]
+              - columnheader "Categoria" [ref=f5e167]
+              - columnheader "Unidad" [ref=f5e168]
+              - columnheader "Proveedor" [ref=f5e169]
+              - columnheader "Estado" [ref=f5e170]
+              - columnheader "Auditoria" [ref=f5e171]
+              - columnheader "Acciones" [ref=f5e172]
+          - rowgroup [ref=f5e173]:
+            - row [ref=f5e174]:
+              - cell "MAT-CAR-001" [ref=f5e175]
+              - cell "Caja carton corrugado" [ref=f5e176]
+              - cell "Cartonera" [ref=f5e177]
+              - cell "unidad" [ref=f5e178]
+              - cell "Cartonera Caribe" [ref=f5e179]
+              - cell "Activo" [ref=f5e180]
+              - cell "Crear - almacen.admin 12/06/2026 08:10" [ref=f5e182]: Crear - almacen.admin12/06/2026 08:10
+              - cell [ref=f5e183]:
+                - generic [ref=f5e184]:
+                  - button "Visualizar detalle" [ref=f5e185] [cursor=pointer]
+                  - button "Editar material" [ref=f5e189] [cursor=pointer]
+                  - button "Inactivar material" [ref=f5e192] [cursor=pointer]
+            - row [ref=f5e196]:
+              - cell "MAT-EST-001" [ref=f5e197]
+              - cell "Estiba madera exportacion" [ref=f5e198]
+              - cell "Estibado" [ref=f5e199]
+              - cell "unidad" [ref=f5e200]
+              - cell "Estibas del Norte" [ref=f5e201]
+              - cell "Activo" [ref=f5e202]
+              - cell "Editar - almacen.admin 14/06/2026 10:35" [ref=f5e204]: Editar - almacen.admin14/06/2026 10:35
+              - cell [ref=f5e205]:
+                - generic [ref=f5e206]:
+                  - button "Visualizar detalle" [ref=f5e207] [cursor=pointer]
+                  - button "Editar material" [ref=f5e211] [cursor=pointer]
+                  - button "Inactivar material" [ref=f5e214] [cursor=pointer]
+            - row [ref=f5e218]:
+              - cell "MAT-SEP-001" [ref=f5e219]
+              - cell "Separador de pallet" [ref=f5e220]
+              - cell "Empaque" [ref=f5e221]
+              - cell "paquete" [ref=f5e222]
+              - cell "Suministros Banasan" [ref=f5e223]
+              - cell "Revision" [ref=f5e224]
+              - cell "Revision - supervisor.ze 18/06/2026 15:20" [ref=f5e226]: Revision - supervisor.ze18/06/2026 15:20
+              - cell [ref=f5e227]:
+                - generic [ref=f5e228]:
+                  - button "Visualizar detalle" [ref=f5e229] [cursor=pointer]
+                  - button "Editar material" [ref=f5e233] [cursor=pointer]
+                  - button "Inactivar material" [ref=f5e236] [cursor=pointer]
+            - row [ref=f5e240]:
+              - cell "MAT-ETQ-001" [ref=f5e241]
+              - cell "Etiqueta trazabilidad" [ref=f5e242]
+              - cell "Identificacion" [ref=f5e243]
+              - cell "rollo" [ref=f5e244]
+              - cell "Etiquetas del Caribe" [ref=f5e245]
+              - cell "Activo" [ref=f5e246]
+              - cell "Crear - almacen.admin 20/06/2026 09:22" [ref=f5e248]: Crear - almacen.admin20/06/2026 09:22
+              - cell [ref=f5e249]:
+                - generic [ref=f5e250]:
+                  - button "Visualizar detalle" [ref=f5e251] [cursor=pointer]
+                  - button "Editar material" [ref=f5e255] [cursor=pointer]
+                  - button "Inactivar material" [ref=f5e258] [cursor=pointer]
+        - generic "Paginacion de registros" [ref=f5e262]:
+          - generic [ref=f5e263]: Mostrando 1-4 de 4 registros
+          - generic [ref=f5e264]:
+            - generic [ref=f5e265]: Registros por pagina
+            - combobox "Registros por pagina" [ref=f5e266]:
+              - option "10" [selected]
+              - option "30"
+              - option "50"
+          - generic "Cambiar pagina" [ref=f5e267]:
+            - button "Anterior" [disabled] [ref=f5e268]
+            - button "1" [ref=f5e269] [cursor=pointer]
+            - button "Siguiente" [disabled] [ref=f5e270]

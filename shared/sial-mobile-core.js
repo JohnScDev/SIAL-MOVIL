@@ -871,7 +871,7 @@
     var scanner = activeBarcodeScanner;
     if (!scanner || scanner.settled || scanner.processing) return;
     if (!("BarcodeDetector" in window)) {
-      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Este navegador no expone lectura nativa; usa la lectura demo para probar el flujo.");
+      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Este navegador no expone lectura nativa; usa la entrada manual para continuar.");
       return;
     }
 
@@ -881,7 +881,7 @@
         formats: scanner.config.formats || ["code_128", "ean_13", "qr_code", "data_matrix"]
       });
     } catch (_) {
-      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Detector no disponible; usa la lectura demo.");
+      setBarcodeScannerStatus(scanner.config.unsupportedMessage || "Camara activa. Detector no disponible; usa la entrada manual.");
       return;
     }
 
@@ -914,7 +914,7 @@
     var fallback = scanner.fallback;
     if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function") {
       fallback.hidden = false;
-      setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "Camara no disponible en este entorno. Usa la lectura demo para validar el flujo.");
+      setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "Camara no disponible en este entorno. Usa la entrada manual para validar el codigo.");
       return;
     }
 
@@ -933,11 +933,11 @@
         startBarcodeScannerDetection(video);
       }).catch(function() {
         fallback.hidden = false;
-        setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "No fue posible iniciar la camara. Usa la lectura demo para continuar.");
+        setBarcodeScannerStatus(scanner.config.cameraUnavailableMessage || "No fue posible iniciar la camara. Usa la entrada manual para continuar.");
       });
     }).catch(function() {
       fallback.hidden = false;
-      setBarcodeScannerStatus(scanner.config.permissionDeniedMessage || "Permiso de camara denegado o no disponible. Usa la lectura demo para continuar.");
+      setBarcodeScannerStatus(scanner.config.permissionDeniedMessage || "Permiso de camara denegado o no disponible. Usa la entrada manual para continuar.");
     });
   }
 
@@ -947,8 +947,8 @@
 
     var title = String(config.title || "Escanear codigo").trim() || "Escanear codigo";
     var eyebrow = String(config.eyebrow || "Escaner").trim() || "Escaner";
-    var demoValue = String(config.demoValue || "");
-    var demoLabel = String(config.demoLabel || "Leer codigo demo");
+    var initialManualValue = String(config.initialManualValue || "");
+    var manualLabel = String(config.manualLabel || "Validar codigo");
     var overlay = document.createElement("div");
     overlay.className = "sial-barcode-scanner-overlay";
     overlay.setAttribute("role", "dialog");
@@ -968,9 +968,10 @@
       '<div class="sial-barcode-scanner-bottom">',
       '<strong>' + escapeCameraText(eyebrow) + '</strong>',
       '<span id="sial-barcode-scanner-status" data-barcode-scanner-status role="status" aria-live="polite">' + escapeCameraText(config.initialMessage || "Solicitando camara. Ubica el codigo dentro del marco.") + '</span>',
+      '<label class="sial-barcode-scanner-manual"><span>Entrada manual</span><input class="sial-input" type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + escapeCameraText(initialManualValue) + '" data-barcode-scanner-manual-input aria-label="Codigo ingresado manualmente"></label>',
       '<div class="sial-barcode-scanner-actions">',
       '<button class="sial-btn sial-btn-secondary" type="button" data-barcode-scanner-close>Cancelar</button>',
-      '<button class="sial-btn sial-btn-primary" type="button" data-barcode-scanner-demo' + (demoValue ? "" : " hidden") + '>' + escapeCameraText(demoLabel) + '</button>',
+      '<button class="sial-btn sial-btn-primary" type="button" data-barcode-scanner-manual>' + escapeCameraText(manualLabel) + '</button>',
       '</div>',
       '</div>'
     ].join("");
@@ -1000,8 +1001,15 @@
     overlay.querySelectorAll("[data-barcode-scanner-close]").forEach(function(button) {
       button.addEventListener("click", cancelBarcodeScanner);
     });
-    overlay.querySelector("[data-barcode-scanner-demo]").addEventListener("click", function() {
-      if (demoValue) processBarcodeCandidate(demoValue, "demo");
+    var manualInput = overlay.querySelector("[data-barcode-scanner-manual-input]");
+    function submitManualValue() {
+      processBarcodeCandidate(manualInput.value, "manual");
+    }
+    overlay.querySelector("[data-barcode-scanner-manual]").addEventListener("click", submitManualValue);
+    manualInput.addEventListener("keydown", function(event) {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      submitManualValue();
     });
 
     startBarcodeScannerCamera();
@@ -2296,11 +2304,11 @@
       aria: "Navegacion ZE Puerto",
       items: [
         { href: "../puerto-ze/index.html", label: "Dashboard ZE Puerto", icon: drawerIcon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>') },
-        { href: "../puerto-ze/recepcion-ze.html", label: "HU758 - Recepcion vehiculo ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
+        { href: "../puerto-ze/recepcion-ze.html", label: "HU758 · Recepción en ZE", icon: drawerIcon('<path d="M3 17h18"/><path d="M6 17V7h12v10"/><path d="M8 11h8"/>') },
         { href: "../puerto-ze/inspeccion-externa.html?selectContainer=1", label: "HU557 - Inspeccion externa ZE", icon: drawerIcon('<path d="M3 7h18"/><path d="M5 7v10h14V7"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
         { href: "../puerto-ze/inspeccion-interna.html?selectContainer=1", label: "HU558 - Inspeccion interna ZE", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../pallets/rearmar-pallet.html", label: "HU344 - Rearmar pallets en ZE", icon: drawerIcon('<path d="M4 6h7v5H4z"/><path d="M4 13h7v5H4z"/><path d="M15 9h5v6h-5z"/><path d="m11 8 4 4-4 4"/>') },
-        { href: "../puerto-ze/despacho-finca.html", label: "HU303 - Despacho a finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') },
+        { href: "../puerto-ze/despacho-finca.html", label: "HU303 · Salida ZE", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') },
         { href: "../puerto-ze/hu1431-despacho-contenedor-finca.html", label: "HU1431 - Despacho contenedor a finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="m13 6 6 6-6 6"/>') }
       ]
     },
@@ -2321,7 +2329,7 @@
       label: "Finca",
       aria: "Navegacion finca",
       items: [
-        { href: "../finca/recepcion-finca.html", label: "Recepcion en finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
+        { href: "../finca/recepcion-finca.html", label: "HU759 · Ingreso en Finca", icon: drawerIcon('<path d="M4 17 10 7l4 6 2-3 4 7Z"/><path d="M3 20h18"/>') },
         { href: "../finca/consulta-contenedores.html", label: "Trazabilidad contenedores", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>') },
         { href: "../finca/consulta-pallets.html", label: "Pallets por finca", icon: drawerIcon('<path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2"/><path d="M16 17v2"/>') },
         { href: "../finca/consulta-vehiculos.html", label: "Trazabilidad vehículos", icon: drawerIcon('<path d="M3 11h12v7H3z"/><path d="M15 13h3l3 3v2h-6z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>') },
@@ -2329,7 +2337,7 @@
         { href: "../finca/inspeccion-interna.html?selectContainer=1", label: "Inspeccion interna", icon: drawerIcon('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/>') },
         { href: "../finca/sesion-responsabilidad.html", label: "Sesion responsabilidad", icon: drawerIcon('<path d="M6 20V4h12v16"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/>') },
         { href: "../finca/cierre-contenedor.html", label: "Cierre de contenedor", icon: drawerIcon('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>') },
-        { href: "../finca/despacho-ze.html", label: "Despacho a ZE", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
+        { href: "../finca/despacho-ze.html", label: "Salida de Finca", icon: drawerIcon('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>') }
       ]
     },
     {
@@ -2382,7 +2390,7 @@
     if (path.includes("/login/")) return false;
     if (path.endsWith("/index.html") && !isLibrary && !path.includes("/app/") && !path.includes("/puerto-ze/") && !path.includes("/materiales/")) return false;
     if (path.includes("/app/seleccion-empresa.html") || path.includes("/app/seleccion-finca.html")) return false;
-    if (path.includes("/demo-camara.html")) return false;
+    if (document.body.hasAttribute("data-sial-no-drawer")) return false;
     return true;
   }
 
@@ -2711,6 +2719,334 @@
     edgeGesture = null;
   }
 
+  let sharedComponentUid = 0;
+
+  function nextComponentId(prefix) {
+    sharedComponentUid += 1;
+    return `${prefix}-${sharedComponentUid}`;
+  }
+
+  function mountTabs(scope = document) {
+    const rootNode = resolveElement(scope) || scope;
+    if (!rootNode?.querySelectorAll) return [];
+    const tablists = Array.from(rootNode.querySelectorAll(".sial-tabs, [role='tablist']"));
+
+    tablists.forEach((tablist) => {
+      if (tablist.dataset.sialTabsMounted === "true") return;
+      const tabs = Array.from(tablist.querySelectorAll(".sial-tab, [role='tab']"));
+      if (!tabs.length) return;
+      tablist.dataset.sialTabsMounted = "true";
+      if (!tablist.hasAttribute("role")) tablist.setAttribute("role", "tablist");
+
+      function activateTab(tab, options = {}) {
+        const targetId = tab.getAttribute("aria-controls") || tab.dataset.tabTarget || "";
+        tabs.forEach((candidate) => {
+          const active = candidate === tab;
+          candidate.classList.toggle("active", active);
+          candidate.setAttribute("aria-selected", String(active));
+          candidate.setAttribute("tabindex", active ? "0" : "-1");
+          const panelId = candidate.getAttribute("aria-controls") || candidate.dataset.tabTarget || "";
+          if (!panelId) return;
+          const panel = document.getElementById(panelId);
+          if (!panel) return;
+          panel.hidden = !active;
+          panel.setAttribute("role", "tabpanel");
+          if (!panel.hasAttribute("tabindex")) panel.tabIndex = 0;
+        });
+        tablist.dispatchEvent(new CustomEvent("sial:tabchange", {
+          bubbles: true,
+          detail: { tab, value: tab.dataset.value || targetId || tab.textContent.trim() }
+        }));
+        if (options.focus) tab.focus({ preventScroll: true });
+      }
+
+      tabs.forEach((tab) => {
+        tab.setAttribute("role", "tab");
+        if (!tab.id) tab.id = nextComponentId("sial-tab");
+        const targetId = tab.getAttribute("aria-controls") || tab.dataset.tabTarget;
+        const panel = targetId ? document.getElementById(targetId) : null;
+        if (panel && !panel.getAttribute("aria-labelledby")) panel.setAttribute("aria-labelledby", tab.id);
+        tab.addEventListener("click", () => activateTab(tab));
+      });
+
+      tablist.addEventListener("keydown", (event) => {
+        const currentIndex = tabs.indexOf(document.activeElement);
+        if (currentIndex < 0) return;
+        let nextIndex = currentIndex;
+        if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % tabs.length;
+        if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabs.length - 1;
+        if (nextIndex === currentIndex && !["Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        activateTab(tabs[nextIndex], { focus: true });
+      });
+
+      activateTab(tabs.find((tab) => tab.getAttribute("aria-selected") === "true" || tab.classList.contains("active")) || tabs[0]);
+    });
+    return tablists;
+  }
+
+  function mountSegmentedControls(scope = document) {
+    const rootNode = resolveElement(scope) || scope;
+    if (!rootNode?.querySelectorAll) return [];
+    const groups = Array.from(rootNode.querySelectorAll(".sial-segmented"));
+    groups.forEach((group) => {
+      if (group.dataset.sialSegmentedMounted === "true") return;
+      const options = Array.from(group.querySelectorAll(".sial-segment-option"));
+      if (!options.length) return;
+      group.dataset.sialSegmentedMounted = "true";
+      group.setAttribute("role", group.getAttribute("role") || "group");
+
+      function selectOption(option, shouldFocus = false) {
+        options.forEach((candidate) => {
+          const selected = candidate === option;
+          candidate.classList.toggle("active", selected);
+          candidate.setAttribute("aria-pressed", String(selected));
+          candidate.setAttribute("tabindex", selected ? "0" : "-1");
+        });
+        group.dispatchEvent(new CustomEvent("sial:segmentchange", {
+          bubbles: true,
+          detail: { option, value: option.dataset.value || option.textContent.trim() }
+        }));
+        if (shouldFocus) option.focus({ preventScroll: true });
+      }
+
+      options.forEach((option) => option.addEventListener("click", () => selectOption(option)));
+      group.addEventListener("keydown", (event) => {
+        const currentIndex = options.indexOf(document.activeElement);
+        if (currentIndex < 0 || !["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let nextIndex = currentIndex;
+        if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % options.length;
+        if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + options.length) % options.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = options.length - 1;
+        selectOption(options[nextIndex], true);
+      });
+      selectOption(options.find((option) => option.getAttribute("aria-pressed") === "true" || option.classList.contains("active")) || options[0]);
+    });
+    return groups;
+  }
+
+  function mountOtpGroups(scope = document) {
+    const rootNode = resolveElement(scope) || scope;
+    if (!rootNode?.querySelectorAll) return [];
+    const groups = Array.from(rootNode.querySelectorAll(".sial-otp-group"));
+    groups.forEach((group) => {
+      if (group.dataset.sialOtpMounted === "true") return;
+      const inputs = Array.from(group.querySelectorAll(".sial-otp-input, [data-recovery-otp]"));
+      if (!inputs.length) return;
+      group.dataset.sialOtpMounted = "true";
+
+      function publishOtp() {
+        const value = inputs.map((input) => input.value.replace(/\D/g, "").slice(0, 1)).join("");
+        const complete = value.length === inputs.length;
+        group.dataset.complete = String(complete);
+        group.dispatchEvent(new CustomEvent("sial:otpchange", { bubbles: true, detail: { value, complete } }));
+      }
+
+      function distributeDigits(rawValue) {
+        const digits = String(rawValue || "").replace(/\D/g, "").slice(0, inputs.length).split("");
+        inputs.forEach((input, index) => {
+          input.value = digits[index] || "";
+          input.classList.toggle("has-value", Boolean(input.value));
+        });
+        inputs[Math.min(digits.length, inputs.length - 1)]?.focus({ preventScroll: true });
+        publishOtp();
+      }
+
+      inputs.forEach((input, index) => {
+        input.maxLength = 1;
+        input.inputMode = "numeric";
+        input.autocapitalize = "none";
+        input.autocorrect = "off";
+        input.spellcheck = false;
+        if (!input.getAttribute("aria-label")) input.setAttribute("aria-label", `Digito ${index + 1} del codigo`);
+        input.classList.toggle("has-value", Boolean(input.value));
+        input.addEventListener("input", () => {
+          const digits = input.value.replace(/\D/g, "");
+          if (digits.length > 1) {
+            distributeDigits(digits);
+            return;
+          }
+          input.value = digits;
+          input.classList.toggle("has-value", Boolean(input.value));
+          if (input.value) inputs[index + 1]?.focus({ preventScroll: true });
+          publishOtp();
+        });
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Backspace" && !input.value && inputs[index - 1]) inputs[index - 1].focus({ preventScroll: true });
+          if (event.key === "ArrowLeft" && inputs[index - 1]) inputs[index - 1].focus({ preventScroll: true });
+          if (event.key === "ArrowRight" && inputs[index + 1]) inputs[index + 1].focus({ preventScroll: true });
+        });
+        input.addEventListener("paste", (event) => {
+          event.preventDefault();
+          distributeDigits(event.clipboardData?.getData("text") || "");
+        });
+      });
+      publishOtp();
+    });
+    return groups;
+  }
+
+  function mountSignaturePad(target, options = {}) {
+    const container = resolveElement(target);
+    if (!container) return null;
+    if (container.sialSignatureController) return container.sialSignatureController;
+    container.classList.add("sial-signature-pad", "is-interactive");
+    container.replaceChildren();
+
+    const canvas = document.createElement("canvas");
+    canvas.className = "sial-signature-canvas";
+    canvas.setAttribute("aria-label", options.label || "Area para firma digital");
+    canvas.setAttribute("role", "img");
+    canvas.tabIndex = 0;
+    const actions = document.createElement("div");
+    actions.className = "sial-signature-actions";
+    const clearButton = document.createElement("button");
+    clearButton.className = "sial-btn sial-btn-secondary";
+    clearButton.type = "button";
+    clearButton.textContent = options.clearLabel || "Limpiar firma";
+    const confirmButton = document.createElement("button");
+    confirmButton.className = "sial-btn sial-btn-primary";
+    confirmButton.type = "button";
+    confirmButton.textContent = options.confirmLabel || "Confirmar firma";
+    confirmButton.disabled = true;
+    actions.append(clearButton, confirmButton);
+    container.append(canvas, actions);
+
+    const context = canvas.getContext("2d");
+    let drawing = false;
+    let hasInk = false;
+
+    function resizeCanvas() {
+      const ratio = Math.max(1, window.devicePixelRatio || 1);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(280, Math.round(rect.width || container.clientWidth || 320));
+      const height = Math.max(150, Math.round(rect.height || 180));
+      if (canvas.width === Math.round(width * ratio) && canvas.height === Math.round(height * ratio)) return;
+      const snapshot = hasInk ? canvas.toDataURL("image/png") : "";
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.lineWidth = 2.25;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--sial-primary-500").trim() || "#005CA8";
+      if (snapshot) {
+        const image = new Image();
+        image.onload = () => context.drawImage(image, 0, 0, width, height);
+        image.src = snapshot;
+      }
+    }
+
+    function pointFor(event) {
+      const rect = canvas.getBoundingClientRect();
+      return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    }
+
+    function begin(event) {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault();
+      drawing = true;
+      canvas.setPointerCapture?.(event.pointerId);
+      const point = pointFor(event);
+      context.beginPath();
+      context.moveTo(point.x, point.y);
+    }
+
+    function draw(event) {
+      if (!drawing) return;
+      event.preventDefault();
+      const point = pointFor(event);
+      context.lineTo(point.x, point.y);
+      context.stroke();
+      hasInk = true;
+      confirmButton.disabled = false;
+      container.dataset.signatureState = "draft";
+      if (options.trackUnsavedChanges) markUnsavedChanges("signature");
+      options.onChange?.({ empty: false });
+    }
+
+    function end(event) {
+      if (!drawing) return;
+      drawing = false;
+      canvas.releasePointerCapture?.(event.pointerId);
+    }
+
+    function clear() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      hasInk = false;
+      confirmButton.disabled = true;
+      container.dataset.signatureState = "empty";
+      options.onChange?.({ empty: true });
+    }
+
+    function value() {
+      return hasInk ? canvas.toDataURL("image/png") : "";
+    }
+
+    canvas.addEventListener("pointerdown", begin);
+    canvas.addEventListener("pointermove", draw);
+    canvas.addEventListener("pointerup", end);
+    canvas.addEventListener("pointercancel", end);
+    clearButton.addEventListener("click", clear);
+    confirmButton.addEventListener("click", () => {
+      if (!hasInk) return;
+      container.dataset.signatureState = "confirmed";
+      if (options.trackUnsavedChanges) clearUnsavedChanges();
+      options.onConfirm?.(value());
+    });
+    resizeCanvas();
+    const resizeObserver = window.ResizeObserver ? new ResizeObserver(resizeCanvas) : null;
+    resizeObserver?.observe(container);
+    container.dataset.signatureState = "empty";
+    container.sialSignatureController = { clear, value, canvas, destroy: () => resizeObserver?.disconnect() };
+    return container.sialSignatureController;
+  }
+
+  function setEvidenceProgress(target, options = {}) {
+    const progress = resolveElement(target);
+    if (!progress) return null;
+    const count = Math.max(0, Number(options.count || 0));
+    const minimum = Math.max(0, Number(options.min || 0));
+    const maximum = Math.max(minimum || 1, Number(options.max || minimum || 1));
+    const percent = Math.min(100, Math.round((count / maximum) * 100));
+    const fill = progress.querySelector(".sial-evidence-progress-fill");
+    const label = progress.querySelector("[data-evidence-progress-label]");
+    if (fill) {
+      fill.style.width = `${percent}%`;
+      fill.classList.toggle("danger", count < minimum);
+      fill.classList.toggle("warning", count >= minimum && count < maximum);
+    }
+    if (label) label.textContent = options.label || `${count} de ${minimum}-${maximum} evidencias`;
+    progress.setAttribute("role", "progressbar");
+    progress.setAttribute("aria-valuemin", "0");
+    progress.setAttribute("aria-valuemax", String(maximum));
+    progress.setAttribute("aria-valuenow", String(Math.min(count, maximum)));
+    progress.dataset.complete = String(count >= minimum && count <= maximum);
+    return { count, minimum, maximum, percent, complete: count >= minimum && count <= maximum };
+  }
+
+  function setSyncState(target, options = {}) {
+    const item = resolveElement(target);
+    if (!item) return null;
+    const state = ["pending", "syncing", "success", "error"].includes(options.state) ? options.state : "pending";
+    item.classList.remove("pending", "syncing", "success", "error");
+    item.classList.add(state);
+    item.dataset.syncState = state;
+    item.setAttribute("aria-busy", String(state === "syncing"));
+    const title = item.querySelector("[data-sync-title]");
+    const message = item.querySelector("[data-sync-message]");
+    const status = item.querySelector("[data-sync-status]");
+    if (title && options.title) title.textContent = options.title;
+    if (message && options.message) message.textContent = options.message;
+    if (status) status.textContent = options.label || ({ pending: "Pendiente", syncing: "En proceso", success: "OK", error: "Reintentar" })[state];
+    item.dispatchEvent(new CustomEvent("sial:syncstatechange", { bubbles: true, detail: { state, options } }));
+    return state;
+  }
+
   setTheme(preferredTheme());
   hydrateContext();
   hydrateCompanyContext();
@@ -2718,6 +3054,9 @@
   ensureGlobalDrawer();
   ensureHeaderSessionAction();
   mountTimePickers();
+  mountTabs();
+  mountSegmentedControls();
+  mountOtpGroups();
   prepareDrawerState(document.querySelector(".sial-drawer"), document.querySelector(".sial-drawer-backdrop"));
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
@@ -2731,6 +3070,12 @@
     openTimePicker,
     mountTimePickers,
     setTimePickerValue,
+    mountTabs,
+    mountSegmentedControls,
+    mountOtpGroups,
+    mountSignaturePad,
+    setEvidenceProgress,
+    setSyncState,
     requestSignOut,
     ensureHeaderSessionAction,
     showToast,

@@ -249,7 +249,7 @@
         vehicle: "TUL458",
         user: "Maria Operadora"
       };
-      var demoPallets = [
+      var samplePallets = [
         { sscc: "177012345678900019", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 912, certification: "FAIRTRADE" },
         { sscc: "177012345678900026", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 48, weight: 913, certification: "FAIRTRADE" },
         { sscc: "177012345678900033", farmCode: "0435", farmName: "La Bacota", reference: "BAN-REF-001", boxes: 47, weight: 894, certification: "FAIRTRADE" },
@@ -336,7 +336,7 @@
         node.textContent = "";
       }
       function findPallet(sscc) {
-        return demoPallets.find(function(item) { return item.sscc === sscc; }) || null;
+        return samplePallets.find(function(item) { return item.sscc === sscc; }) || null;
       }
 
       function normalizeSscc(value) {
@@ -363,7 +363,7 @@
       }
 
       function nextScannablePallet(state) {
-        return demoPallets.find(function(pallet) {
+        return samplePallets.find(function(pallet) {
           return !state.loaded.some(function(item) { return item.sscc === pallet.sscc; })
             && pallet.farmCode === context.farmCode
             && pallet.reference === context.reference
@@ -395,8 +395,8 @@
           render(state);
         }
 
-        var demo = nextScannablePallet(readState());
-        if (!demo) {
+        var sample = nextScannablePallet(readState());
+        if (!sample) {
           showError("No hay pallets validos pendientes para esta finca, referencia y certificacion.");
           return;
         }
@@ -408,8 +408,6 @@
         window.SialMobileUI.openBarcodeScanner({
           title: "Escanear SSCC - Posicion " + readState().selectedPosition,
           eyebrow: "Lectura SSCC para cargue",
-          demoValue: demo.sscc,
-          demoLabel: "Leer SSCC demo",
           normalize: normalizeSscc,
           validate: function(sscc) {
             if (!sscc) {
@@ -431,7 +429,7 @@
           },
           onDetected: function(sscc, result) {
             $("[data-hu332-sscc]").value = sscc;
-            var source = result && result.source === "camera" ? "camara" : "lectura demo";
+            var source = result && result.source === "camera" ? "camara" : "entrada manual";
             setScanStatus("SSCC leido por " + source + ": " + sscc + ". Cargando posicion " + readState().selectedPosition + ".", "success");
             loadPallet();
           }

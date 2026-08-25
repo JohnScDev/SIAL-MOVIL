@@ -1,0 +1,1290 @@
+- generic [ref=f5e1]:
+  - generic [ref=f5e2]:
+    - complementary "Navegacion de libreria UI" [ref=f5e3]:
+      - link "Volver al catalogo SIAL" [ref=f5e4] [cursor=pointer]:
+        - /url: ../index.html
+        - generic [ref=f5e5]: S
+        - generic [ref=f5e6]: SIAL
+      - paragraph [ref=f5e7]: Libreria UI
+      - navigation "Secciones de componentes" [ref=f5e8]:
+        - link "Fundamentos" [ref=f5e9] [cursor=pointer]:
+          - /url: "#fundamentos"
+        - link "Acciones" [ref=f5e12] [cursor=pointer]:
+          - /url: "#acciones"
+        - link "Marca" [ref=f5e16] [cursor=pointer]:
+          - /url: "#marca-componentes"
+        - link "Layout" [ref=f5e21] [cursor=pointer]:
+          - /url: "#layout"
+        - link "Autenticacion" [ref=f5e25] [cursor=pointer]:
+          - /url: "#autenticacion-componentes"
+        - link "Formularios" [ref=f5e30] [cursor=pointer]:
+          - /url: "#formularios"
+        - link "Datos" [ref=f5e34] [cursor=pointer]:
+          - /url: "#datos"
+        - link "Relaciones" [ref=f5e37] [cursor=pointer]:
+          - /url: "#relaciones"
+        - link "Estados" [ref=f5e42] [cursor=pointer]:
+          - /url: "#estados"
+        - link "Mantenimiento" [ref=f5e45] [cursor=pointer]:
+          - /url: "#mantenimiento"
+        - link "Motion" [ref=f5e50] [cursor=pointer]:
+          - /url: "#view-motion"
+        - link "Indicadores" [ref=f5e54] [cursor=pointer]:
+          - /url: "#indicadores"
+        - link "Operacion" [ref=f5e58] [cursor=pointer]:
+          - /url: "#operacion"
+        - link "Changelog" [ref=f5e62] [cursor=pointer]:
+          - /url: "#changelog-componentes"
+    - banner [ref=f5e66]:
+      - link "Volver al catalogo" [ref=f5e68] [cursor=pointer]:
+        - /url: ../index.html
+      - generic [ref=f5e69]:
+        - button "Cambiar a modo oscuro" [ref=f5e70] [cursor=pointer]
+        - button "Notificaciones" [ref=f5e79] [cursor=pointer]
+        - generic [ref=f5e83]:
+          - button "Abrir menu de perfil" [expanded] [active] [ref=f5e84] [cursor=pointer]:
+            - generic [ref=f5e85]: JS
+          - menu "Menu de perfil" [ref=f5e1477]:
+            - generic [ref=f5e1478]:
+              - generic [ref=f5e1479]:
+                - generic [ref=f5e1480]: JS
+                - generic [ref=f5e1481]:
+                  - strong [ref=f5e1482]: John Salovro
+                  - generic [ref=f5e1483]: Supervisor de materiales
+              - generic [ref=f5e1484]: Banapalma
+            - generic [ref=f5e1486]:
+              - generic [ref=f5e1487]: Contexto activo
+              - strong [ref=f5e1488]: Supervisor de materiales
+              - generic [ref=f5e1489]: 5 fincas asignadas
+              - generic [ref=f5e1490]:
+                - generic [ref=f5e1491]: Materiales
+                - generic [ref=f5e1492]: Trazabilidad
+            - generic [ref=f5e1493]:
+              - menuitem "Ver mi perfil" [ref=f5e1494] [cursor=pointer]
+              - menuitem "Preferencias" [ref=f5e1499] [cursor=pointer]
+              - menuitem "Cerrar sesion" [ref=f5e1504] [cursor=pointer]
+    - main [ref=f5e88]:
+      - generic [ref=f5e89]:
+        - paragraph [ref=f5e90]: SIAL / Catalogo / Libreria UI
+        - generic [ref=f5e91]:
+          - generic [ref=f5e92]:
+            - heading "Libreria visual de componentes SIAL" [level=1] [ref=f5e93]
+            - paragraph [ref=f5e94]: Referencia navegable para validar consistencia entre modulos, estados, accesibilidad basica y compatibilidad con modo claro y oscuro.
+          - button "Cambiar a modo oscuro" [ref=f5e96] [cursor=pointer]: Probar tema
+        - note [ref=f5e97]:
+          - generic [ref=f5e100]: Esta pagina documenta la propuesta visual. Las reglas normativas siguen estando en los documentos base SIAL y Dark Mode.
+        - region "Resumen de libreria" [ref=f5e101]:
+          - article [ref=f5e102]:
+            - generic [ref=f5e103]: Tokens
+            - strong [ref=f5e104]: Centralizados
+            - generic [ref=f5e105]: Colores, superficies, bordes, foco y estados por tema.
+          - article [ref=f5e106]:
+            - generic [ref=f5e107]: Modo oscuro
+            - strong [ref=f5e108]: Funcional
+            - generic [ref=f5e109]: "`data-theme` y persistencia por `localStorage`."
+          - article [ref=f5e110]:
+            - generic [ref=f5e111]: Componentes
+            - strong [ref=f5e112]: Reusables
+            - generic [ref=f5e113]: Shell, cards, formularios, tablas, alertas y drawers.
+          - article [ref=f5e114]:
+            - generic [ref=f5e115]: Alcance
+            - strong [ref=f5e116]: Web
+            - generic [ref=f5e117]: Base para las propuestas HTML actuales.
+        - region [ref=f5e118]:
+          - generic [ref=f5e120]:
+            - heading "Tokens y estados visuales" [level=2] [ref=f5e121]
+            - paragraph [ref=f5e122]: Muestras semanticas para revisar contraste, bordes y fondos en ambos temas.
+          - generic [ref=f5e124]:
+            - generic [ref=f5e125]:
+              - generic [ref=f5e126]: Primario
+              - strong [ref=f5e127]: Acciones principales
+            - generic [ref=f5e128]:
+              - generic [ref=f5e129]: Exito
+              - strong [ref=f5e130]: Activo / correcto
+            - generic [ref=f5e131]:
+              - generic [ref=f5e132]: Advertencia
+              - strong [ref=f5e133]: Atencion operativa
+            - generic [ref=f5e134]:
+              - generic [ref=f5e135]: Error
+              - strong [ref=f5e136]: Bloqueo / validacion
+        - region [ref=f5e137]:
+          - generic [ref=f5e139]:
+            - heading "Layout, navegacion y superficie" [level=2] [ref=f5e140]
+            - paragraph [ref=f5e141]: Base visual que debe conservarse entre catalogo, gestion, registro, relacion y analitica.
+          - generic [ref=f5e143]:
+            - article [ref=f5e144]:
+              - generic [ref=f5e145]: Shell
+              - strong [ref=f5e150]: Sidebar + header + area principal
+              - paragraph [ref=f5e151]: El menu permanece a la izquierda en web, puede contraerse a iconos de modulo y permite plegar las vistas internas del modulo activo.
+            - article [ref=f5e152]:
+              - generic [ref=f5e153]: Header
+              - generic [ref=f5e154]:
+                - button "Menu ejemplo" [ref=f5e155] [cursor=pointer]
+                - button "Cambiar a modo oscuro" [ref=f5e158] [cursor=pointer]
+                - generic [ref=f5e164]: QA
+              - strong [ref=f5e165]: Acciones persistentes
+              - paragraph [ref=f5e166]: El boton de tema se ubica antes de notificaciones. El avatar abre el perfil compacto y su vista flotante con fincas asignadas.
+            - article [ref=f5e167]:
+              - generic [ref=f5e168]: Cards
+              - generic [ref=f5e169]:
+                - generic [ref=f5e170]: Estado
+                - strong [ref=f5e171]: Propuesta
+              - strong [ref=f5e172]: Superficie semantica
+              - paragraph [ref=f5e173]: Cards y stats usan borde, sombra y fondo tokenizado para ambos temas.
+            - article [ref=f5e174]:
+              - generic [ref=f5e175]: Microcopy
+              - paragraph [ref=f5e176]: Texto de ayuda breve, accionable y asociado al campo o bloque que explica.
+              - strong [ref=f5e177]: Soporte de decision
+              - paragraph [ref=f5e178]: Evita instrucciones decorativas y mantiene mensajes operativos.
+        - region [ref=f5e179]:
+          - generic [ref=f5e181]:
+            - heading "Autenticacion y acceso publico" [level=2] [ref=f5e182]
+            - paragraph [ref=f5e183]: Componentes usados por login, recuperacion de contrasena y accesos externos sin menu de aplicacion.
+          - generic [ref=f5e185]:
+            - article [ref=f5e186]:
+              - generic [ref=f5e187]: Logo publico
+              - generic [ref=f5e188]:
+                - generic "SIAL" [ref=f5e189]: S
+                - button "Cambiar a modo oscuro" [ref=f5e192] [cursor=pointer]
+              - strong [ref=f5e198]: Topbar sin menu
+              - paragraph [ref=f5e199]: "Para vistas externas: conserva marca y tema, sin avatar, permisos ni navegacion interna."
+            - article [ref=f5e200]:
+              - generic [ref=f5e201]: Login
+              - generic [ref=f5e202]:
+                - link "Consultar novedades del sistema" [ref=f5e203] [cursor=pointer]:
+                  - /url: "#changelog-componentes"
+                  - generic [ref=f5e204]: "!"
+                - strong [ref=f5e205]: Ingreso al sistema
+                - paragraph [ref=f5e206]: El acceso a novedades se ubica como accion secundaria y no compite con el formulario.
+            - article [ref=f5e207]:
+              - generic [ref=f5e208]: Recuperacion
+              - generic "Progreso de recuperacion" [ref=f5e209]:
+                - generic [ref=f5e210]:
+                  - generic [ref=f5e211]: "1"
+                  - text: Usuario
+                - generic [ref=f5e212]:
+                  - generic [ref=f5e213]: "2"
+                  - text: Codigo
+                - generic [ref=f5e214]:
+                  - generic [ref=f5e215]: "3"
+                  - text: Clave
+              - strong [ref=f5e216]: Stepper OTP
+              - paragraph [ref=f5e217]: Usado en recuperar contrasena, verificacion de codigo y nueva clave.
+            - article [ref=f5e218]:
+              - generic [ref=f5e219]: Campo seguro
+              - generic [ref=f5e220]:
+                - generic [ref=f5e221]: Contrasena
+                - generic [ref=f5e222]:
+                  - textbox "Contrasena" [ref=f5e223]:
+                    - /placeholder: Clave de acceso
+                  - button "Mostrar contrasena" [ref=f5e224] [cursor=pointer]
+                - generic [ref=f5e228]: Fortaleza adecuada.
+              - strong [ref=f5e232]: Accion embebida
+              - paragraph [ref=f5e233]: Boton icon-only y medidor progresivo para mostrar u ocultar contenido sensible y orientar nueva clave.
+        - region [ref=f5e234]:
+          - generic [ref=f5e236]:
+            - heading "Botones y alertas" [level=2] [ref=f5e237]
+            - paragraph [ref=f5e238]: Estados usados en acciones de gestion, confirmacion y retroalimentacion.
+          - generic [ref=f5e239]:
+            - generic [ref=f5e240]:
+              - button "Guardar cambios" [ref=f5e241] [cursor=pointer]
+              - button "Limpiar formulario" [ref=f5e242] [cursor=pointer]
+              - button "Cancelar" [ref=f5e243] [cursor=pointer]
+              - button "Desactivar" [ref=f5e244] [cursor=pointer]
+              - button "Guardando" [disabled] [ref=f5e245]
+              - button "Editar registro" [ref=f5e246] [cursor=pointer]
+            - generic [ref=f5e249]:
+              - generic [ref=f5e250]: Informacion contextual para decisiones de gestion.
+              - generic [ref=f5e254]: Registro guardado con trazabilidad de auditoria.
+              - generic [ref=f5e258]: Valida los campos obligatorios antes de continuar.
+              - generic [ref=f5e262]: No fue posible completar la accion solicitada.
+            - generic "Componente piloto de alerta animada" [ref=f5e268]:
+              - article [ref=f5e269]:
+                - generic [ref=f5e270]: Piloto animado
+                - strong [ref=f5e271]: Alerta con icono acoplado
+                - paragraph [ref=f5e272]: El icono entra desde el borde, se acopla a una muesca lateral y deja el mensaje estable.
+                - status [ref=f5e273]:
+                  - generic [ref=f5e277]: Informacion contextual para decisiones de gestion.
+                - list "Secuencia de animacion" [ref=f5e278]:
+                  - listitem [ref=f5e279]:
+                    - generic [ref=f5e280]: "1"
+                    - text: Entra
+                  - listitem [ref=f5e281]:
+                    - generic [ref=f5e282]: "2"
+                    - text: Encaja
+                  - listitem [ref=f5e283]:
+                    - generic [ref=f5e284]: "3"
+                    - text: Estabiliza
+              - article [ref=f5e285]:
+                - generic [ref=f5e286]: Estados disponibles
+                - generic [ref=f5e287]:
+                  - generic [ref=f5e288]: Registro guardado con trazabilidad de auditoria.
+                  - generic [ref=f5e293]: Valida los campos obligatorios antes de continuar.
+                  - generic [ref=f5e298]: No fue posible completar la accion solicitada.
+        - region [ref=f5e305]:
+          - generic [ref=f5e306]:
+            - generic [ref=f5e307]:
+              - heading "Callout de marca SIAL" [level=2] [ref=f5e308]
+              - paragraph [ref=f5e309]: Componente visual para notas no criticas donde se quiera reemplazar la franja lateral por un marcador de banano controlado.
+            - generic [ref=f5e310]: Componente nuevo
+          - generic [ref=f5e312]:
+            - article [ref=f5e313]:
+              - generic [ref=f5e318]:
+                - generic [ref=f5e319]: Nota SIAL
+                - strong [ref=f5e320]: Componente de marca para informacion auxiliar
+                - paragraph [ref=f5e321]: Usarlo en mensajes de apoyo, criterios de propuesta o notas de documentacion. No reemplaza alertas funcionales, errores ni estados de riesgo.
+            - article [ref=f5e322]:
+              - generic [ref=f5e327]:
+                - strong [ref=f5e328]: Version compacta
+                - paragraph [ref=f5e329]: Para bloques cortos dentro de catalogos o secciones de ayuda.
+        - region [ref=f5e330]:
+          - generic [ref=f5e331]:
+            - heading "Formulario base" [level=2] [ref=f5e332]
+            - paragraph [ref=f5e333]: Patron aplicable a maestras medianas y grandes con etiquetas, ayudas, validaciones, campos obligatorios y acciones completas.
+          - generic [ref=f5e334]:
+            - generic [ref=f5e335]:
+              - generic [ref=f5e336]:
+                - generic [ref=f5e337]:
+                  - text: Codigo
+                  - generic [ref=f5e338]: "*"
+                - textbox "Codigo *" [ref=f5e339]: FIN-AC01
+                - paragraph [ref=f5e340]: Se conserva en mayusculas sostenidas cuando aplica.
+              - generic [ref=f5e341]:
+                - generic [ref=f5e342]:
+                  - text: Estado
+                  - generic [ref=f5e343]: "*"
+                - combobox "Estado *" [ref=f5e344]:
+                  - option "Activo" [selected]
+                  - option "Inactivo"
+              - generic [ref=f5e345]:
+                - generic [ref=f5e346]: Creado por
+                - textbox "Creado por" [ref=f5e347]: admin.sial
+                - paragraph [ref=f5e348]: Campo de trazabilidad no editable.
+              - generic [ref=f5e349]:
+                - generic [ref=f5e350]: Fecha modificacion
+                - textbox "Fecha modificacion" [ref=f5e351]: 2026-05-02
+              - generic [ref=f5e352]:
+                - generic [ref=f5e353]: Correo electronico
+                - textbox "Correo electronico" [invalid] [ref=f5e354]: correo-invalido
+                - paragraph [ref=f5e355]: Ingresa un correo electronico valido.
+              - generic [ref=f5e356]:
+                - generic [ref=f5e357]: Observacion
+                - textbox "Observacion" [ref=f5e358]: Cambio controlado para propuesta UI/UX.
+                - paragraph [ref=f5e359]: Campo opcional con estado de ayuda visible.
+            - generic [ref=f5e360]:
+              - button "Cancelar" [ref=f5e361] [cursor=pointer]
+              - button "Limpiar formulario" [ref=f5e362] [cursor=pointer]
+              - button "Guardar registro" [ref=f5e363] [cursor=pointer]
+        - region [ref=f5e364]:
+          - generic [ref=f5e365]:
+            - generic [ref=f5e366]:
+              - heading "DatePicker SIAL" [level=2] [ref=f5e367]
+              - paragraph [ref=f5e368]: Componente experimental para seleccionar dia, mes y ano con los colores definidos del sistema, sin reemplazar aun los campos fecha actuales.
+            - generic [ref=f5e369]: Piloto UI
+          - generic [ref=f5e371]:
+            - article [ref=f5e372]:
+              - generic [ref=f5e373]: Selector completo
+              - generic [ref=f5e374]:
+                - generic [ref=f5e375]: Fecha operativa
+                - button "09/07/2026" [expanded] [ref=f5e376] [cursor=pointer]
+                - dialog "Seleccionar fecha operativa" [ref=f5e382]:
+                  - generic [ref=f5e383]:
+                    - button "Periodo anterior" [ref=f5e384] [cursor=pointer]
+                    - generic [ref=f5e387]:
+                      - button "Julio" [ref=f5e388] [cursor=pointer]
+                      - button "2026" [ref=f5e389] [cursor=pointer]
+                    - button "Periodo siguiente" [ref=f5e390] [cursor=pointer]
+                  - generic [ref=f5e393]:
+                    - generic [ref=f5e394]: L
+                    - generic [ref=f5e395]: M
+                    - generic [ref=f5e396]: M
+                    - generic [ref=f5e397]: J
+                    - generic [ref=f5e398]: V
+                    - generic [ref=f5e399]: S
+                    - generic [ref=f5e400]: D
+                  - generic [ref=f5e401]:
+                    - button "29" [ref=f5e402] [cursor=pointer]
+                    - button "30" [ref=f5e403] [cursor=pointer]
+                    - button "1" [ref=f5e404] [cursor=pointer]
+                    - button "2" [ref=f5e405] [cursor=pointer]
+                    - button "3" [ref=f5e406] [cursor=pointer]
+                    - button "4" [ref=f5e407] [cursor=pointer]
+                    - button "5" [ref=f5e408] [cursor=pointer]
+                    - button "6" [ref=f5e409] [cursor=pointer]
+                    - button "7" [ref=f5e410] [cursor=pointer]
+                    - button "8" [ref=f5e411] [cursor=pointer]
+                    - button "9" [pressed] [ref=f5e412] [cursor=pointer]
+                    - button "10" [ref=f5e413] [cursor=pointer]
+                    - button "11" [ref=f5e414] [cursor=pointer]
+                    - button "12" [ref=f5e415] [cursor=pointer]
+                    - button "13" [ref=f5e416] [cursor=pointer]
+                    - button "14" [ref=f5e417] [cursor=pointer]
+                    - button "15" [ref=f5e418] [cursor=pointer]
+                    - button "16" [ref=f5e419] [cursor=pointer]
+                    - button "17" [ref=f5e420] [cursor=pointer]
+                    - button "18" [ref=f5e421] [cursor=pointer]
+                    - button "19" [ref=f5e422] [cursor=pointer]
+                    - button "20" [ref=f5e423] [cursor=pointer]
+                    - button "21" [ref=f5e424] [cursor=pointer]
+                    - button "22" [ref=f5e425] [cursor=pointer]
+                    - button "23" [ref=f5e426] [cursor=pointer]
+                    - button "24" [ref=f5e427] [cursor=pointer]
+                    - button "25" [ref=f5e428] [cursor=pointer]
+                    - button "26" [ref=f5e429] [cursor=pointer]
+                    - button "27" [ref=f5e430] [cursor=pointer]
+                    - button "28" [ref=f5e431] [cursor=pointer]
+                    - button "29" [ref=f5e432] [cursor=pointer]
+                    - button "30" [ref=f5e433] [cursor=pointer]
+                    - button "31" [ref=f5e434] [cursor=pointer]
+                    - button "1" [ref=f5e435] [cursor=pointer]
+                    - button "2" [ref=f5e436] [cursor=pointer]
+                    - button "3" [ref=f5e437] [cursor=pointer]
+                    - button "4" [ref=f5e438] [cursor=pointer]
+                    - button "5" [ref=f5e439] [cursor=pointer]
+                    - button "6" [ref=f5e440] [cursor=pointer]
+                    - button "7" [ref=f5e441] [cursor=pointer]
+                    - button "8" [ref=f5e442] [cursor=pointer]
+                    - button "9" [ref=f5e443] [cursor=pointer]
+                  - generic [ref=f5e444]:
+                    - button "Limpiar" [ref=f5e445] [cursor=pointer]
+                    - button "Hoy" [ref=f5e446] [cursor=pointer]
+                    - button "Aplicar" [ref=f5e447] [cursor=pointer]
+            - article [ref=f5e448]:
+              - generic [ref=f5e449]: Reglas de uso
+              - strong [ref=f5e450]: Color primario del sistema
+              - paragraph [ref=f5e451]: La seleccion, foco y acciones usan el azul SIAL para mantener consistencia con formularios, filtros y controles existentes.
+              - generic [ref=f5e452]:
+                - strong [ref=f5e453]: "Aplicacion futura:"
+                - text: filtros de auditoria, programacion y formularios que requieran seleccionar fecha sin depender del control nativo del navegador.
+        - region [ref=f5e454]:
+          - generic [ref=f5e455]:
+            - heading "Formulario corto embebido" [level=2] [ref=f5e456]
+            - paragraph [ref=f5e457]: "Patron para maestras cortas de 3 a 5 campos: la gestion conserva prioridad y el registro vive dentro de la misma card."
+          - generic [ref=f5e459]:
+            - generic [ref=f5e460]:
+              - heading "Nueva clase de referencia" [level=3] [ref=f5e461]
+              - paragraph [ref=f5e462]: Los nombres se guardan en mayusculas sostenidas y la combinacion nombre + tamano no debe repetirse.
+            - generic [ref=f5e463]:
+              - generic [ref=f5e464]:
+                - generic [ref=f5e465]:
+                  - generic [ref=f5e466]:
+                    - text: Nombre clase
+                    - generic [ref=f5e467]: "*"
+                  - textbox "Nombre clase *" [ref=f5e468]:
+                    - /placeholder: Ej. PREMIUM
+                - generic [ref=f5e469]:
+                  - generic [ref=f5e470]:
+                    - text: Tamano fruta
+                    - generic [ref=f5e471]: "*"
+                  - combobox "Tamano fruta *" [ref=f5e472]:
+                    - option "Corta" [selected]
+                    - option "Larga"
+                - generic [ref=f5e473]:
+                  - generic [ref=f5e474]:
+                    - text: Estado
+                    - generic [ref=f5e475]: "*"
+                  - combobox "Estado *" [ref=f5e476]:
+                    - option "Activo" [selected]
+                    - option "Inactivo"
+              - generic [ref=f5e477]:
+                - button "Cancelar" [ref=f5e478] [cursor=pointer]
+                - button "Limpiar formulario" [ref=f5e479] [cursor=pointer]
+                - button "Guardar clase" [ref=f5e480] [cursor=pointer]
+        - region [ref=f5e481]:
+          - generic [ref=f5e482]:
+            - generic [ref=f5e483]:
+              - heading "Tabla, estados y drawer" [level=2] [ref=f5e484]
+              - paragraph [ref=f5e485]: Referencia para gestion, visualizacion lateral y trazabilidad.
+            - generic [ref=f5e486]:
+              - generic [ref=f5e487]: 3 registros visibles
+              - button "Registrar" [ref=f5e488] [cursor=pointer]
+          - generic [ref=f5e489]:
+            - generic [ref=f5e490]:
+              - searchbox "Buscar registro" [ref=f5e491]
+              - combobox "Filtrar estado" [ref=f5e492]:
+                - option "Todos" [selected]
+                - option "Activos"
+                - option "Inactivos"
+              - button "Filtrar" [ref=f5e493] [cursor=pointer]
+              - button "Limpiar" [ref=f5e494] [cursor=pointer]
+            - table [ref=f5e496]:
+              - rowgroup [ref=f5e497]:
+                - row [ref=f5e498]:
+                  - columnheader "Codigo" [ref=f5e499]
+                  - columnheader "Nombre" [ref=f5e500]
+                  - columnheader "Estado" [ref=f5e501]
+                  - columnheader "Auditoria" [ref=f5e502]
+                  - columnheader "Acciones" [ref=f5e503]
+              - rowgroup [ref=f5e504]:
+                - row [ref=f5e505]:
+                  - cell "FIN-AC01" [ref=f5e506]
+                  - cell "FINCA LA ESPERANZA" [ref=f5e507]
+                  - cell "Activo" [ref=f5e508]
+                  - cell "Editar - admin.fincas 02/05/2026 08:15" [ref=f5e510]: Editar - admin.fincas02/05/2026 08:15
+                  - cell [ref=f5e511]:
+                    - button "Ver registro" [ref=f5e512] [cursor=pointer]
+                    - button "Editar registro" [ref=f5e516] [cursor=pointer]
+                - row [ref=f5e519]:
+                  - cell "FIN-BP07" [ref=f5e520]
+                  - cell "FINCA LOS ALMENDROS" [ref=f5e521]
+                  - cell "Inactivo" [ref=f5e522]
+                  - cell "Desactivar - auditor.master 01/05/2026 14:40" [ref=f5e524]: Desactivar - auditor.master01/05/2026 14:40
+                  - cell [ref=f5e525]:
+                    - button "Ver registro" [ref=f5e526] [cursor=pointer]
+                    - button "Activar registro" [ref=f5e530] [cursor=pointer]
+            - generic "Paginacion de ejemplo" [ref=f5e533]:
+              - generic [ref=f5e534]: Mostrando 1-2 de 2 registros
+              - generic [ref=f5e535]:
+                - generic [ref=f5e536]: Registros por pagina
+                - combobox "Registros por pagina" [ref=f5e537]:
+                  - option "10" [selected]
+                  - option "30"
+                  - option "50"
+              - generic "Cambiar pagina" [ref=f5e538]:
+                - button "Anterior" [disabled] [ref=f5e539]
+                - button "1" [ref=f5e540] [cursor=pointer]
+                - button "Siguiente" [disabled] [ref=f5e541]
+        - region [ref=f5e542]:
+          - generic [ref=f5e544]:
+            - heading "Relaciones, transfer y asignaciones" [level=2] [ref=f5e545]
+            - paragraph [ref=f5e546]: Patron usado para roles por empresa, licencias por conductor y relaciones con llave compuesta.
+          - generic [ref=f5e547]:
+            - generic [ref=f5e548]:
+              - generic [ref=f5e549]:
+                - heading "Disponibles" [level=3] [ref=f5e550]
+                - generic [ref=f5e551]:
+                  - generic [ref=f5e552] [cursor=pointer]:
+                    - checkbox "Supervisor campo Gestion operativa regional." [ref=f5e553]
+                    - generic [ref=f5e554]:
+                      - strong [ref=f5e555]: Supervisor campo
+                      - text: Gestion operativa regional.
+                  - generic [ref=f5e556] [cursor=pointer]:
+                    - checkbox "Gestor documental Control de soportes." [ref=f5e557]
+                    - generic [ref=f5e558]:
+                      - strong [ref=f5e559]: Gestor documental
+                      - text: Control de soportes.
+                  - generic [ref=f5e560] [cursor=pointer]:
+                    - checkbox "Consulta auditoria Revision de trazabilidad." [ref=f5e561]
+                    - generic [ref=f5e562]:
+                      - strong [ref=f5e563]: Consulta auditoria
+                      - text: Revision de trazabilidad.
+              - generic [ref=f5e564]:
+                - button "Agregar" [ref=f5e565] [cursor=pointer]
+                - button "Quitar" [ref=f5e566] [cursor=pointer]
+              - generic [ref=f5e567]:
+                - heading "Incluidos" [level=3] [ref=f5e568]
+                - generic [ref=f5e569]:
+                  - generic [ref=f5e570] [cursor=pointer]:
+                    - checkbox "Administrador general Acceso administrativo completo." [ref=f5e571]
+                    - generic [ref=f5e572]:
+                      - strong [ref=f5e573]: Administrador general
+                      - text: Acceso administrativo completo.
+                  - generic [ref=f5e574] [cursor=pointer]:
+                    - checkbox "Planeacion agricola Gestion de semanas y cintas." [ref=f5e575]
+                    - generic [ref=f5e576]:
+                      - strong [ref=f5e577]: Planeacion agricola
+                      - text: Gestion de semanas y cintas.
+            - article [ref=f5e580]:
+              - generic [ref=f5e581]:
+                - strong [ref=f5e582]: "Empresa: SIAL Central"
+                - paragraph [ref=f5e583]: "Roles incluidos: Administrador general, Planeacion agricola."
+              - generic [ref=f5e584]:
+                - button "Editar relacion" [ref=f5e585] [cursor=pointer]
+                - button "Inactivar" [ref=f5e586] [cursor=pointer]
+            - generic [ref=f5e587]:
+              - article [ref=f5e588]:
+                - strong [ref=f5e589]: Relacion con llave compuesta
+                - paragraph [ref=f5e590]: "Ejemplo: codigo conductor + codigo licencia. No se elimina; se inactiva o actualiza con auditoria."
+              - generic [ref=f5e591]:
+                - generic [ref=f5e592]:
+                  - checkbox "C2 Camiones rigidos de servicio publico. Vencimiento 2027-09-12" [checked] [ref=f5e593] [cursor=pointer]
+                  - generic [ref=f5e594]:
+                    - strong [ref=f5e595]: C2
+                    - text: Camiones rigidos de servicio publico.
+                  - generic [ref=f5e596]:
+                    - generic [ref=f5e597]: Vencimiento
+                    - textbox "Vencimiento" [ref=f5e598]: 2027-09-12
+                - generic [ref=f5e599]:
+                  - checkbox "C3 Vehiculos articulados y tractocamiones. Vencimiento" [ref=f5e600] [cursor=pointer]
+                  - generic [ref=f5e601]:
+                    - strong [ref=f5e602]: C3
+                    - text: Vehiculos articulados y tractocamiones.
+                  - generic [ref=f5e603]:
+                    - generic [ref=f5e604]: Vencimiento
+                    - textbox "Vencimiento" [ref=f5e605]
+              - generic [ref=f5e606]:
+                - paragraph [ref=f5e607]: Roles disponibles para empresa
+                - generic [ref=f5e608]:
+                  - generic [ref=f5e609] [cursor=pointer]:
+                    - checkbox "Administrador general Gestion completa de tablas maestras." [checked] [ref=f5e610]
+                    - generic [ref=f5e611]:
+                      - strong [ref=f5e612]: Administrador general
+                      - text: Gestion completa de tablas maestras.
+                  - generic [ref=f5e613] [cursor=pointer]:
+                    - checkbox "Consulta auditoria Lectura de trazabilidad y cambios." [ref=f5e614]
+                    - generic [ref=f5e615]:
+                      - strong [ref=f5e616]: Consulta auditoria
+                      - text: Lectura de trazabilidad y cambios.
+        - region [ref=f5e617]:
+          - generic [ref=f5e619]:
+            - heading "Estados funcionales" [level=2] [ref=f5e620]
+            - paragraph [ref=f5e621]: Cada vista de gestion debe contemplar carga, vacio, error, sin permisos y validacion.
+          - generic [ref=f5e622]:
+            - generic [ref=f5e623]:
+              - article [ref=f5e624]:
+                - generic [ref=f5e625]: Loading
+                - paragraph [ref=f5e628]: Se usa mientras se cargan registros o filtros dependientes.
+              - article [ref=f5e629]:
+                - generic [ref=f5e630]: Vacio
+                - generic [ref=f5e631]: No hay registros que coincidan con los filtros aplicados.
+              - article [ref=f5e632]:
+                - generic [ref=f5e633]: Sin permisos
+                - status "Estado sin permisos" [ref=f5e634]:
+                  - generic [ref=f5e639]:
+                    - strong [ref=f5e640]: Acceso restringido
+                    - paragraph [ref=f5e641]: Solo usuarios administrativos pueden gestionar esta tabla maestra.
+              - article [ref=f5e642]:
+                - generic [ref=f5e643]: Error
+                - alert "Error de consulta" [ref=f5e644]:
+                  - generic [ref=f5e650]:
+                    - strong [ref=f5e651]: No se pudo consultar la informacion
+                    - paragraph [ref=f5e652]: Intenta nuevamente sin salir de la vista.
+            - alert "Error embebido compartido" [ref=f5e653]:
+              - generic [ref=f5e657]:
+                - strong [ref=f5e658]: Error embebido de modulo
+                - paragraph [ref=f5e659]: Usar cuando una tabla, card o consulta falle sin sacar al usuario de la vista actual.
+              - generic [ref=f5e660]:
+                - button "Reintentar" [ref=f5e661] [cursor=pointer]
+                - link "Ver pagina 500" [ref=f5e662] [cursor=pointer]:
+                  - /url: ../Errores/500.html
+              - generic [ref=f5e663]: Codigo 500 · Error interno del servicio
+        - region [ref=f5e664]:
+          - generic [ref=f5e665]:
+            - generic [ref=f5e666]:
+              - heading "Mantenimiento" [level=2] [ref=f5e667]
+              - paragraph [ref=f5e668]: Estado visual para ventanas programadas o servicios temporalmente detenidos.
+            - generic [ref=f5e669]: "503"
+          - status "Servicio en mantenimiento" [ref=f5e671]:
+            - generic [ref=f5e676]:
+              - strong [ref=f5e677]: Servicio en mantenimiento
+              - paragraph [ref=f5e678]: Usar cuando una seccion, consulta o modulo este temporalmente detenido por una ventana operativa.
+            - generic [ref=f5e679]:
+              - button "Reintentar" [ref=f5e680] [cursor=pointer]
+              - link "Ver pagina 503" [ref=f5e681] [cursor=pointer]:
+                - /url: ../Errores/503.html
+            - generic [ref=f5e682]: Codigo 503 - Servicio temporalmente no disponible
+        - region [ref=f5e683]:
+          - generic [ref=f5e684]:
+            - generic [ref=f5e685]:
+              - heading "SIAL View Motion" [level=2] [ref=f5e686]
+              - paragraph [ref=f5e687]: "Capa estetica reversible para transiciones entre paginas y vistas: barra superior, salida suave y loader institucional diferido."
+            - generic [ref=f5e688]: Reversible
+          - generic [ref=f5e689]:
+            - generic [ref=f5e690]:
+              - article [ref=f5e691]:
+                - generic [ref=f5e692]: Inmediato
+                - strong [ref=f5e693]: Barra superior
+                - paragraph [ref=f5e694]: Confirma el cambio de vista sin bloquear lectura ni mover el layout.
+              - article [ref=f5e695]:
+                - generic [ref=f5e696]: Diferido
+                - strong [ref=f5e697]: Overlay SIAL
+                - paragraph [ref=f5e698]: Solo aparece si la navegacion tarda, usando isotipo y texto operativo.
+              - article [ref=f5e699]:
+                - generic [ref=f5e700]: Entrada
+                - strong [ref=f5e701]: Fade y elevacion
+                - paragraph [ref=f5e702]: El contenido nuevo entra con movimiento breve y componentes escalonados.
+            - generic "Previsualizacion de SIAL View Motion" [ref=f5e703]: Cargando vista
+            - paragraph [ref=f5e710]: "Identificacion tecnica: bloques `SIAL View Motion START/END`, helper `initPageTransitions()` y atributo opcional `data-view-motion-disabled`."
+        - region [ref=f5e711]:
+          - generic [ref=f5e712]:
+            - generic [ref=f5e713]:
+              - heading "Indicadores, KPIs y medidores" [level=2] [ref=f5e714]
+              - paragraph [ref=f5e715]: Componentes analiticos reutilizables para monitoreo operativo, gestion y calidad de datos. Esta seccion no representa un tablero final.
+            - generic [ref=f5e716]:
+              - generic [ref=f5e717]: Componentes base
+              - generic [ref=f5e718]: Datos simulados
+              - link "Abrir vista funcional" [ref=f5e719] [cursor=pointer]:
+                - /url: ../Indicadores/index.html
+          - generic [ref=f5e721]:
+            - generic [ref=f5e722]:
+              - article [ref=f5e723]:
+                - generic [ref=f5e724]:
+                  - generic [ref=f5e725]: Disponibilidad
+                  - generic [ref=f5e726]: Activo
+                - strong [ref=f5e727]: "84"
+                - paragraph [ref=f5e728]: Vehiculos disponibles para asignacion operativa.
+                - generic [ref=f5e729]:
+                  - generic [ref=f5e730]: +6%
+                  - generic [ref=f5e731]: vs. semana anterior
+              - article [ref=f5e732]:
+                - generic [ref=f5e733]:
+                  - generic [ref=f5e734]: Riesgo documental
+                  - generic [ref=f5e735]: 7 dias
+                - strong [ref=f5e736]: "14"
+                - paragraph [ref=f5e737]: SOAT, tecnomecanica o licencia proximos a vencer.
+                - generic [ref=f5e738]:
+                  - generic [ref=f5e739]: Atencion
+                  - generic [ref=f5e740]: requiere revision
+              - article [ref=f5e741]:
+                - generic [ref=f5e742]:
+                  - generic [ref=f5e743]: Bloqueos
+                  - generic [ref=f5e744]: No asignable
+                - strong [ref=f5e745]: "6"
+                - paragraph [ref=f5e746]: Registros inactivos o sin condiciones minimas.
+                - generic [ref=f5e747]:
+                  - generic [ref=f5e748]: "-2"
+                  - generic [ref=f5e749]: bloqueos resueltos
+              - article [ref=f5e750]:
+                - generic [ref=f5e751]:
+                  - generic [ref=f5e752]: Calendario
+                  - generic [ref=f5e753]: Completo
+                - strong [ref=f5e754]: 52/52
+                - paragraph [ref=f5e755]: Semanas generadas con secuencia de cintas valida.
+                - generic [ref=f5e756]:
+                  - generic [ref=f5e757]: 100%
+                  - generic [ref=f5e758]: cobertura anual
+            - generic [ref=f5e759]:
+              - article [ref=f5e760]:
+                - generic [ref=f5e761]:
+                  - generic [ref=f5e762]: Indicador ejecutivo
+                  - generic [ref=f5e763]: Proyectado
+                - generic [ref=f5e764]:
+                  - generic [ref=f5e765]:
+                    - strong [ref=f5e766]: 91.4%
+                    - paragraph [ref=f5e767]: Cumplimiento operativo proyectado al cierre de la semana.
+                  - generic "Detalle del indicador ejecutivo" [ref=f5e768]:
+                    - generic [ref=f5e769]:
+                      - generic [ref=f5e770]: Meta
+                      - strong [ref=f5e771]: 95%
+                    - generic [ref=f5e772]:
+                      - generic [ref=f5e773]: Actual
+                      - strong [ref=f5e774]: 88%
+                    - generic [ref=f5e775]:
+                      - generic [ref=f5e776]: Brecha
+                      - strong [ref=f5e777]: "-3.6%"
+                - generic "Avance proyectado 91.4% con meta de 95%" [ref=f5e778]: Meta
+                - generic [ref=f5e780]:
+                  - generic [ref=f5e781]: Riesgo medio
+                  - generic [ref=f5e782]: requiere recuperar 3.6 puntos antes del cierre.
+              - article [ref=f5e783]:
+                - generic [ref=f5e785]:
+                  - heading "Medidores de proyeccion" [level=3] [ref=f5e786]
+                  - paragraph [ref=f5e787]: Gauges para lectura ejecutiva de cumplimiento, riesgo y capacidad.
+                - generic [ref=f5e788]:
+                  - img "Proyeccion de despachos 76%" [ref=f5e789]:
+                    - generic [ref=f5e790]:
+                      - strong [ref=f5e791]: 76%
+                      - generic [ref=f5e792]: Despachos
+                  - img "Riesgo documental 62%" [ref=f5e793]:
+                    - generic [ref=f5e794]:
+                      - strong [ref=f5e795]: 62%
+                      - generic [ref=f5e796]: Riesgo doc.
+                  - img "Capacidad disponible 89%" [ref=f5e797]:
+                    - generic [ref=f5e798]:
+                      - strong [ref=f5e799]: 89%
+                      - generic [ref=f5e800]: Capacidad
+            - generic [ref=f5e801]:
+              - article [ref=f5e802]:
+                - generic [ref=f5e803]:
+                  - generic [ref=f5e804]:
+                    - heading "Proyeccion contra meta" [level=3] [ref=f5e805]
+                    - paragraph [ref=f5e806]: Comparativo entre meta, avance real y proyeccion con lectura de brecha.
+                  - generic [ref=f5e807]: Semana 18
+                - generic "Comparativo de meta, avance y proyeccion" [ref=f5e808]:
+                  - generic [ref=f5e809]:
+                    - generic [ref=f5e810]: Meta semanal
+                    - strong [ref=f5e813]: 95%
+                  - generic [ref=f5e814]:
+                    - generic [ref=f5e815]: Avance actual
+                    - strong [ref=f5e818]: 68%
+                  - generic [ref=f5e819]:
+                    - generic [ref=f5e820]: Proyeccion cierre
+                    - strong [ref=f5e823]: 91%
+                - note [ref=f5e824]:
+                  - generic [ref=f5e827]: La proyeccion no debe ocultar la brecha frente a la meta definida.
+              - article [ref=f5e828]:
+                - generic [ref=f5e829]:
+                  - generic [ref=f5e830]:
+                    - heading "Capacidad y saturacion" [level=3] [ref=f5e831]
+                    - paragraph [ref=f5e832]: Medidor para anticipar sobrecarga operativa por recurso o modulo.
+                  - generic [ref=f5e833]: Operable
+                - generic "Capacidad usada 78%" [ref=f5e834]:
+                  - generic [ref=f5e835]:
+                    - generic [ref=f5e836]: Baja
+                    - generic [ref=f5e837]: Media
+                    - generic [ref=f5e838]: Alta
+                    - generic [ref=f5e839]: Critica
+                  - generic [ref=f5e840]: 78%
+                - generic [ref=f5e842]:
+                  - generic [ref=f5e843]:
+                    - strong [ref=f5e844]: "128"
+                    - text: operaciones programadas
+                  - generic [ref=f5e845]:
+                    - strong [ref=f5e846]: "31"
+                    - text: recursos por confirmar
+                  - generic [ref=f5e847]:
+                    - strong [ref=f5e848]: "9"
+                    - text: alertas de saturacion
+            - article [ref=f5e849]:
+              - generic [ref=f5e850]:
+                - generic [ref=f5e851]:
+                  - heading "Matriz de riesgo operativo" [level=3] [ref=f5e852]
+                  - paragraph [ref=f5e853]: Cruce compacto entre probabilidad e impacto para priorizar gestion.
+                - generic [ref=f5e854]: Priorizacion
+              - table "Matriz de riesgo operativo" [ref=f5e855]:
+                - row [ref=f5e856]:
+                  - columnheader "Bajo" [ref=f5e857]
+                  - columnheader "Medio" [ref=f5e858]
+                  - columnheader "Alto" [ref=f5e859]
+                - row "Impacto alto 2 5 8" [ref=f5e860]:
+                  - rowheader "Impacto alto" [ref=f5e861]
+                  - generic [ref=f5e862]: "2"
+                  - generic [ref=f5e863]: "5"
+                  - generic [ref=f5e864]: "8"
+                - row "Impacto medio 1 4 6" [ref=f5e865]:
+                  - rowheader "Impacto medio" [ref=f5e866]
+                  - generic [ref=f5e867]: "1"
+                  - generic [ref=f5e868]: "4"
+                  - generic [ref=f5e869]: "6"
+                - row "Impacto bajo 0 1 3" [ref=f5e870]:
+                  - rowheader "Impacto bajo" [ref=f5e871]
+                  - generic [ref=f5e872]: "0"
+                  - generic [ref=f5e873]: "1"
+                  - generic [ref=f5e874]: "3"
+            - article [ref=f5e875]:
+              - generic [ref=f5e876]:
+                - generic [ref=f5e877]:
+                  - heading "Visualizaciones analiticas operativas" [level=3] [ref=f5e878]
+                  - paragraph [ref=f5e879]: Maquetas inspiradas en seguimiento por fecha, hora, tiempos y comportamiento comparativo.
+                - generic [ref=f5e880]: Series operativas
+              - generic [ref=f5e881]:
+                - article [ref=f5e882]:
+                  - generic [ref=f5e883]:
+                    - strong [ref=f5e884]: Operaciones por fecha
+                    - generic [ref=f5e885]: Noviembre
+                  - img "Linea de operaciones por fecha con pico al cierre" [ref=f5e886]:
+                    - generic [ref=f5e889]:
+                      - generic [ref=f5e890]: "7"
+                      - generic [ref=f5e891]: "64"
+                      - generic [ref=f5e892]: "34"
+                      - generic [ref=f5e893]: "72"
+                      - generic [ref=f5e894]: "110"
+                - article [ref=f5e895]:
+                  - generic [ref=f5e896]:
+                    - strong [ref=f5e897]: Espera por hora
+                    - generic [ref=f5e898]: Minutos
+                  - generic "Tiempo de espera por hora" [ref=f5e899]:
+                    - generic [ref=f5e900]:
+                      - strong [ref=f5e901]: "5"
+                      - emphasis [ref=f5e902]: "8"
+                    - generic [ref=f5e903]:
+                      - strong [ref=f5e904]: "18"
+                      - emphasis [ref=f5e905]: "9"
+                    - generic [ref=f5e906]:
+                      - strong [ref=f5e907]: "25"
+                      - emphasis [ref=f5e908]: "10"
+                    - generic [ref=f5e909]:
+                      - strong [ref=f5e910]: "20"
+                      - emphasis [ref=f5e911]: "11"
+                    - generic [ref=f5e912]:
+                      - strong [ref=f5e913]: "8"
+                      - emphasis [ref=f5e914]: "12"
+                    - generic [ref=f5e915]:
+                      - strong [ref=f5e916]: "10"
+                      - emphasis [ref=f5e917]: "15"
+                    - generic [ref=f5e918]:
+                      - strong [ref=f5e919]: "14"
+                      - emphasis [ref=f5e920]: "16"
+                    - generic [ref=f5e921]:
+                      - strong [ref=f5e922]: "3"
+                      - emphasis [ref=f5e923]: "17"
+                - article [ref=f5e924]:
+                  - generic [ref=f5e925]:
+                    - strong [ref=f5e926]: Atencion por hora
+                    - generic [ref=f5e927]: Asignadas / pendientes
+                  - generic "Operaciones asignadas y pendientes por hora" [ref=f5e928]:
+                    - generic [ref=f5e929]:
+                      - strong [ref=f5e930]: "68"
+                      - emphasis [ref=f5e931]: "8"
+                    - generic [ref=f5e932]:
+                      - strong [ref=f5e933]: "105"
+                      - emphasis [ref=f5e934]: "9"
+                    - generic [ref=f5e935]:
+                      - strong [ref=f5e936]: "84"
+                      - emphasis [ref=f5e937]: "10"
+                    - generic [ref=f5e938]:
+                      - strong [ref=f5e939]: "93"
+                      - emphasis [ref=f5e940]: "11"
+                    - generic [ref=f5e941]:
+                      - strong [ref=f5e942]: "47"
+                      - emphasis [ref=f5e943]: "12"
+                    - generic [ref=f5e944]:
+                      - strong [ref=f5e945]: "34"
+                      - emphasis [ref=f5e946]: "13"
+                    - generic [ref=f5e947]:
+                      - strong [ref=f5e948]: "35"
+                      - emphasis [ref=f5e949]: "14"
+                    - generic [ref=f5e950]:
+                      - strong [ref=f5e951]: "28"
+                      - emphasis [ref=f5e952]: "17"
+                  - generic [ref=f5e953]:
+                    - generic [ref=f5e954]: Atendidas
+                    - generic [ref=f5e956]: Pendientes
+                - article [ref=f5e958]:
+                  - generic [ref=f5e959]:
+                    - strong [ref=f5e960]: Retencion por hora
+                    - generic [ref=f5e961]: Minutos
+                  - generic "Tiempo de retencion por hora" [ref=f5e962]:
+                    - generic [ref=f5e963]:
+                      - strong [ref=f5e964]: "0"
+                      - emphasis [ref=f5e965]: "6"
+                    - generic [ref=f5e966]:
+                      - strong [ref=f5e967]: "0"
+                      - emphasis [ref=f5e968]: "7"
+                    - generic [ref=f5e969]:
+                      - strong [ref=f5e970]: "3"
+                      - emphasis [ref=f5e971]: "10"
+                    - generic [ref=f5e972]:
+                      - strong [ref=f5e973]: "1"
+                      - emphasis [ref=f5e974]: "14"
+                    - generic [ref=f5e975]:
+                      - strong [ref=f5e976]: "16"
+                      - emphasis [ref=f5e977]: "15"
+                    - generic [ref=f5e978]:
+                      - strong [ref=f5e979]: "2"
+                      - emphasis [ref=f5e980]: "16"
+                    - generic [ref=f5e981]:
+                      - strong [ref=f5e982]: "0"
+                      - emphasis [ref=f5e983]: "17"
+                    - generic [ref=f5e984]:
+                      - strong [ref=f5e985]: "0"
+                      - emphasis [ref=f5e986]: "22"
+            - article [ref=f5e987]:
+              - generic [ref=f5e989]:
+                - heading "Galeria de graficas reutilizables" [level=3] [ref=f5e990]
+                - paragraph [ref=f5e991]: "Patrones para futuras vistas analiticas: area, donut, barras comparativas, radial y lineas multiples."
+              - generic [ref=f5e992]:
+                - article [ref=f5e993]:
+                  - generic [ref=f5e994]: Area
+                  - img "Grafica de area con eventos marcados" [ref=f5e995]
+                  - strong [ref=f5e1000]: Comportamiento con hitos
+                - article [ref=f5e1001]:
+                  - generic [ref=f5e1002]: Donut
+                  - img "Distribucion 64%, 24%, 12%" [ref=f5e1003]:
+                    - generic [ref=f5e1004]:
+                      - strong [ref=f5e1005]: 64%
+                      - generic [ref=f5e1006]: Activo
+                  - strong [ref=f5e1007]: Distribucion proporcional
+                - article [ref=f5e1008]:
+                  - generic [ref=f5e1009]: Comparativo
+                  - generic "Comparativo de cumplimiento por linea" [ref=f5e1010]:
+                    - strong [ref=f5e1012]: 73%
+                    - strong [ref=f5e1014]: 64%
+                    - strong [ref=f5e1016]: 52%
+                  - strong [ref=f5e1017]: Barras segmentadas
+                - article [ref=f5e1018]:
+                  - generic [ref=f5e1019]: Radial
+                  - img "Avance radial 56%" [ref=f5e1020]:
+                    - generic [ref=f5e1021]:
+                      - strong [ref=f5e1022]: 56%
+                      - generic [ref=f5e1023]: Avance
+                  - strong [ref=f5e1024]: Medidor radial
+                - article [ref=f5e1025]:
+                  - generic [ref=f5e1026]: Lineas
+                  - img "Comparacion de dos series" [ref=f5e1027]
+                  - strong [ref=f5e1032]: Comparacion entre series
+                - article [ref=f5e1033]:
+                  - generic [ref=f5e1034]: Columnas
+                  - generic "Columnas comparativas por periodo" [ref=f5e1035]
+                  - strong [ref=f5e1040]: Comparativo por periodo
+            - generic [ref=f5e1041]:
+              - article [ref=f5e1042]:
+                - generic [ref=f5e1044]:
+                  - heading "Medidores de cumplimiento" [level=3] [ref=f5e1045]
+                  - paragraph [ref=f5e1046]: Barras compactas para reglas, cobertura y calidad operativa.
+                - generic [ref=f5e1047]:
+                  - generic [ref=f5e1048]:
+                    - generic [ref=f5e1049]: Semanas generadas
+                    - generic "Semanas generadas 100%" [ref=f5e1050]
+                    - strong [ref=f5e1052]: 100%
+                  - generic [ref=f5e1053]:
+                    - generic [ref=f5e1054]: Vehiculos documentados
+                    - generic "Vehiculos documentados 84%" [ref=f5e1055]
+                    - strong [ref=f5e1057]: 84%
+                  - generic [ref=f5e1058]:
+                    - generic [ref=f5e1059]: Usuarios con empresa activa
+                    - generic "Usuarios con empresa activa 92%" [ref=f5e1060]
+                    - strong [ref=f5e1062]: 92%
+                  - generic [ref=f5e1063]:
+                    - generic [ref=f5e1064]: Datos con observacion QA
+                    - generic "Datos con observacion QA 11%" [ref=f5e1065]
+                    - strong [ref=f5e1067]: 11%
+              - article [ref=f5e1068]:
+                - generic [ref=f5e1070]:
+                  - heading "Distribucion por estado" [level=3] [ref=f5e1071]
+                  - paragraph [ref=f5e1072]: Lectura rapida para etapas, estados o categorias.
+                - generic [ref=f5e1073]:
+                  - generic [ref=f5e1074]:
+                    - generic [ref=f5e1075]: Disponible
+                    - strong [ref=f5e1078]: 46%
+                  - generic [ref=f5e1079]:
+                    - generic [ref=f5e1080]: En inspeccion
+                    - strong [ref=f5e1083]: 18%
+                  - generic [ref=f5e1084]:
+                    - generic [ref=f5e1085]: En transito
+                    - strong [ref=f5e1088]: 28%
+                  - generic [ref=f5e1089]:
+                    - generic [ref=f5e1090]: Bloqueado
+                    - strong [ref=f5e1093]: 8%
+            - generic [ref=f5e1094]:
+              - article [ref=f5e1095]:
+                - generic [ref=f5e1096]:
+                  - generic [ref=f5e1097]:
+                    - heading "Tendencia compacta" [level=3] [ref=f5e1098]
+                    - paragraph [ref=f5e1099]: Serie visual para comparar periodos sin saturar la gestion.
+                  - generic [ref=f5e1100]: 6 meses
+                - generic "Tendencia de registros activos" [ref=f5e1101]
+                - paragraph [ref=f5e1108]: Usar para volumen, cumplimiento o actividad auditada por periodo.
+              - article [ref=f5e1109]:
+                - generic [ref=f5e1111]:
+                  - heading "Ranking operativo" [level=3] [ref=f5e1112]
+                  - paragraph [ref=f5e1113]: Top de entidades por volumen o alertas.
+                - list [ref=f5e1114]:
+                  - listitem [ref=f5e1115]:
+                    - generic [ref=f5e1116]: AgroCeiba
+                    - strong [ref=f5e1117]: "128"
+                  - listitem [ref=f5e1118]:
+                    - generic [ref=f5e1119]: Banapalma
+                    - strong [ref=f5e1120]: "96"
+                  - listitem [ref=f5e1121]:
+                    - generic [ref=f5e1122]: Puerto Norte
+                    - strong [ref=f5e1123]: "74"
+              - article [ref=f5e1124]:
+                - generic [ref=f5e1126]:
+                  - heading "Alertas priorizadas" [level=3] [ref=f5e1127]
+                  - paragraph [ref=f5e1128]: Eventos que requieren gestion, no decoracion visual.
+                - generic [ref=f5e1129]:
+                  - generic [ref=f5e1130]:
+                    - strong [ref=f5e1131]: Documento proximo a vencer
+                    - generic [ref=f5e1132]: 14 registros dentro de 7 dias.
+                  - generic [ref=f5e1133]:
+                    - strong [ref=f5e1134]: Asignacion bloqueada
+                    - generic [ref=f5e1135]: 3 conductores sin licencia activa.
+                  - generic [ref=f5e1136]:
+                    - strong [ref=f5e1137]: Regla cumplida
+                    - generic [ref=f5e1138]: Secuencia de cintas sin saltos.
+            - article [ref=f5e1139]:
+              - generic [ref=f5e1140]:
+                - generic [ref=f5e1141]:
+                  - heading "Tabla analitica compacta" [level=3] [ref=f5e1142]
+                  - paragraph [ref=f5e1143]: Resumen por modulo para monitoreo, con foco en accion y trazabilidad.
+                - generic [ref=f5e1144]: "Ultima actualizacion: 12/05/2026 08:30"
+              - table [ref=f5e1146]:
+                - rowgroup [ref=f5e1147]:
+                  - row [ref=f5e1148]:
+                    - columnheader "Modulo" [ref=f5e1149]
+                    - columnheader "Indicador" [ref=f5e1150]
+                    - columnheader "Valor" [ref=f5e1151]
+                    - columnheader "Estado" [ref=f5e1152]
+                    - columnheader "Accion sugerida" [ref=f5e1153]
+                - rowgroup [ref=f5e1154]:
+                  - row [ref=f5e1155]:
+                    - cell "Transporte" [ref=f5e1156]
+                    - cell "Documentos por vencer" [ref=f5e1157]
+                    - cell "14" [ref=f5e1158]
+                    - cell "Revision" [ref=f5e1159]
+                    - cell "Validar vigencias antes de asignar." [ref=f5e1161]
+                  - row [ref=f5e1162]:
+                    - cell "Planeacion" [ref=f5e1163]
+                    - cell "Semanas generadas" [ref=f5e1164]
+                    - cell "52/52" [ref=f5e1165]
+                    - cell "Correcto" [ref=f5e1166]
+                    - cell "Continuar monitoreo de secuencia." [ref=f5e1168]
+                  - row [ref=f5e1169]:
+                    - cell "Puerto" [ref=f5e1170]
+                    - cell "Contenedores bloqueados" [ref=f5e1171]
+                    - cell "6" [ref=f5e1172]
+                    - cell "Bloqueo" [ref=f5e1173]
+                    - cell "Revisar etapa y disponibilidad." [ref=f5e1175]
+            - note [ref=f5e1176]:
+              - generic [ref=f5e1179]: Estos componentes deben alimentarse desde datos auditables. El indicador no reemplaza la tabla de gestion ni las reglas de permisos del modulo.
+        - region [ref=f5e1180]:
+          - generic [ref=f5e1182]:
+            - heading "Patrones operativos y analiticos" [level=2] [ref=f5e1183]
+            - paragraph [ref=f5e1184]: Componentes usados en monitoreo, validacion y control operativo.
+          - generic [ref=f5e1185]:
+            - generic [ref=f5e1186]:
+              - article [ref=f5e1187]:
+                - generic [ref=f5e1188]: Activos
+                - strong [ref=f5e1189]: 82%
+                - generic [ref=f5e1190]: Registros disponibles para operacion.
+              - article [ref=f5e1191]:
+                - generic [ref=f5e1192]: Pendientes QA
+                - strong [ref=f5e1193]: 18%
+                - generic [ref=f5e1194]: Validaciones documentales o de negocio.
+              - article [ref=f5e1195]:
+                - generic [ref=f5e1196]: Bloqueos
+                - strong [ref=f5e1197]: 6%
+                - generic [ref=f5e1198]: Registros no asignables por regla activa.
+            - generic [ref=f5e1199]:
+              - generic [ref=f5e1200]:
+                - generic [ref=f5e1201]:
+                  - generic [ref=f5e1202]: Registros activos
+                  - generic [ref=f5e1205]: 82%
+                - generic [ref=f5e1206]:
+                  - generic [ref=f5e1207]: Pendientes QA
+                  - generic [ref=f5e1210]: 18%
+                - generic [ref=f5e1211]:
+                  - generic [ref=f5e1212]: Bloqueos
+                  - generic [ref=f5e1215]: 6%
+                - generic [ref=f5e1216]:
+                  - strong [ref=f5e1217]: Alerta
+                  - generic [ref=f5e1218]: Documento proximo a vencer
+                  - generic [ref=f5e1219]: 7 dias
+              - generic [ref=f5e1220]:
+                - generic [ref=f5e1221]:
+                  - strong [ref=f5e1222]: Regla cumplida
+                  - generic [ref=f5e1223]: La secuencia activa no presenta saltos.
+                - generic [ref=f5e1224]:
+                  - strong [ref=f5e1225]: Revision requerida
+                  - generic [ref=f5e1226]: Existe una semana con nota operativa.
+                - generic [ref=f5e1227]:
+                  - strong [ref=f5e1228]: Bloqueo funcional
+                  - generic [ref=f5e1229]: Un registro inactivo no debe ser asignable.
+            - generic [ref=f5e1230]:
+              - article [ref=f5e1231]:
+                - generic [ref=f5e1233]:
+                  - heading "Secuencia de cintas" [level=3] [ref=f5e1234]
+                  - paragraph [ref=f5e1235]: Patron compacto para reglas de calendario.
+                - generic [ref=f5e1236]:
+                  - generic [ref=f5e1237]: 1 BL
+                  - generic [ref=f5e1238]: 2 AZ
+                  - generic [ref=f5e1239]: 3 RO
+                  - generic [ref=f5e1240]: 4 CA
+                  - generic [ref=f5e1241]: 5 NE
+                  - generic [ref=f5e1242]: 6 NA
+                  - generic [ref=f5e1243]: 7 VE
+                  - generic [ref=f5e1244]: 8 AM
+              - article [ref=f5e1245]:
+                - generic [ref=f5e1247]:
+                  - heading "Filtros operativos" [level=3] [ref=f5e1248]
+                  - paragraph [ref=f5e1249]: Toolbar para vistas analiticas o de monitoreo.
+                - generic [ref=f5e1250]:
+                  - generic [ref=f5e1251]:
+                    - generic [ref=f5e1252]: Ano
+                    - combobox "Ano" [ref=f5e1253]:
+                      - option "2026" [selected]
+                  - generic [ref=f5e1254]:
+                    - generic [ref=f5e1255]: Busqueda
+                    - searchbox "Buscar periodo o cinta" [ref=f5e1256]
+                  - generic [ref=f5e1257]:
+                    - generic [ref=f5e1258]: Cinta
+                    - combobox "Cinta" [ref=f5e1259]:
+                      - option "Todas las cintas" [selected]
+                  - generic [ref=f5e1260]:
+                    - generic [ref=f5e1261]: Estado
+                    - combobox "Estado" [ref=f5e1262]:
+                      - option "Todos los estados" [selected]
+                  - button "Consultar" [ref=f5e1263] [cursor=pointer]
+            - generic [ref=f5e1264]:
+              - generic [ref=f5e1266]:
+                - paragraph [ref=f5e1267]: Calendario
+                - heading "Semanas y meses de referencia" [level=3] [ref=f5e1268]
+                - paragraph [ref=f5e1269]: La tira de cintas y el calendario se separan para evitar competencia visual con las metricas.
+              - generic "Muestra de semanas" [ref=f5e1270]:
+                - generic [ref=f5e1271]: "1"
+                - generic [ref=f5e1272]: "2"
+                - generic [ref=f5e1273]: "3"
+                - generic [ref=f5e1274]: "4"
+                - generic [ref=f5e1275]: "5"
+                - generic [ref=f5e1276]: "6"
+                - generic [ref=f5e1277]: "7"
+                - generic [ref=f5e1278]: "8"
+              - generic "Muestra de calendario mensual" [ref=f5e1279]:
+                - generic [ref=f5e1280]:
+                  - heading "Enero" [level=3] [ref=f5e1281]
+                  - table [ref=f5e1282]:
+                    - rowgroup [ref=f5e1283]:
+                      - row [ref=f5e1284]:
+                        - columnheader "Sem" [ref=f5e1285]
+                        - columnheader "L" [ref=f5e1286]
+                        - columnheader "M" [ref=f5e1287]
+                        - columnheader "M" [ref=f5e1288]
+                        - columnheader "J" [ref=f5e1289]
+                        - columnheader "V" [ref=f5e1290]
+                        - columnheader "S" [ref=f5e1291]
+                        - columnheader "D" [ref=f5e1292]
+                    - rowgroup [ref=f5e1293]:
+                      - row [ref=f5e1294]:
+                        - cell [ref=f5e1295]:
+                          - button "1" [ref=f5e1296] [cursor=pointer]
+                        - cell "29" [ref=f5e1297]
+                        - cell "30" [ref=f5e1298]
+                        - cell "31" [ref=f5e1299]
+                        - cell "1" [ref=f5e1300]
+                        - cell "2" [ref=f5e1301]
+                        - cell "3" [ref=f5e1302]
+                        - cell "4" [ref=f5e1303]
+                      - row [ref=f5e1304]:
+                        - cell [ref=f5e1305]:
+                          - button "2" [ref=f5e1306] [cursor=pointer]
+                        - cell "5" [ref=f5e1307]
+                        - cell "6" [ref=f5e1308]
+                        - cell "7" [ref=f5e1309]
+                        - cell "8" [ref=f5e1310]
+                        - cell "9" [ref=f5e1311]
+                        - cell "10" [ref=f5e1312]
+                        - cell "11" [ref=f5e1313]
+                - generic [ref=f5e1314]:
+                  - heading "Febrero" [level=3] [ref=f5e1315]
+                  - table [ref=f5e1316]:
+                    - rowgroup [ref=f5e1317]:
+                      - row [ref=f5e1318]:
+                        - columnheader "Sem" [ref=f5e1319]
+                        - columnheader "L" [ref=f5e1320]
+                        - columnheader "M" [ref=f5e1321]
+                        - columnheader "M" [ref=f5e1322]
+                        - columnheader "J" [ref=f5e1323]
+                        - columnheader "V" [ref=f5e1324]
+                        - columnheader "S" [ref=f5e1325]
+                        - columnheader "D" [ref=f5e1326]
+                    - rowgroup [ref=f5e1327]:
+                      - row [ref=f5e1328]:
+                        - cell [ref=f5e1329]:
+                          - button "6" [ref=f5e1330] [cursor=pointer]
+                        - cell "2" [ref=f5e1331]
+                        - cell "3" [ref=f5e1332]
+                        - cell "4" [ref=f5e1333]
+                        - cell "5" [ref=f5e1334]
+                        - cell "6" [ref=f5e1335]
+                        - cell "7" [ref=f5e1336]
+                        - cell "8" [ref=f5e1337]
+                      - row [ref=f5e1338]:
+                        - cell [ref=f5e1339]:
+                          - button "7" [ref=f5e1340] [cursor=pointer]
+                        - cell "9" [ref=f5e1341]
+                        - cell "10" [ref=f5e1342]
+                        - cell "11" [ref=f5e1343]
+                        - cell "12" [ref=f5e1344]
+                        - cell "13" [ref=f5e1345]
+                        - cell "14" [ref=f5e1346]
+                        - cell "15" [ref=f5e1347]
+                - generic [ref=f5e1348]:
+                  - heading "Marzo" [level=3] [ref=f5e1349]
+                  - table [ref=f5e1350]:
+                    - rowgroup [ref=f5e1351]:
+                      - row [ref=f5e1352]:
+                        - columnheader "Sem" [ref=f5e1353]
+                        - columnheader "L" [ref=f5e1354]
+                        - columnheader "M" [ref=f5e1355]
+                        - columnheader "M" [ref=f5e1356]
+                        - columnheader "J" [ref=f5e1357]
+                        - columnheader "V" [ref=f5e1358]
+                        - columnheader "S" [ref=f5e1359]
+                        - columnheader "D" [ref=f5e1360]
+                    - rowgroup [ref=f5e1361]:
+                      - row [ref=f5e1362]:
+                        - cell [ref=f5e1363]:
+                          - button "10" [ref=f5e1364] [cursor=pointer]
+                        - cell "2" [ref=f5e1365]
+                        - cell "3" [ref=f5e1366]
+                        - cell "4" [ref=f5e1367]
+                        - cell "5" [ref=f5e1368]
+                        - cell "6" [ref=f5e1369]
+                        - cell "7" [ref=f5e1370]
+                        - cell "8" [ref=f5e1371]
+                      - row [ref=f5e1372]:
+                        - cell [ref=f5e1373]:
+                          - button "11" [ref=f5e1374] [cursor=pointer]
+                        - cell "9" [ref=f5e1375]
+                        - cell "10" [ref=f5e1376]
+                        - cell "11" [ref=f5e1377]
+                        - cell "12" [ref=f5e1378]
+                        - cell "13" [ref=f5e1379]
+                        - cell "14" [ref=f5e1380]
+                        - cell "15" [ref=f5e1381]
+            - generic [ref=f5e1382]:
+              - strong [ref=f5e1383]: "Nota operativa:"
+              - text: los componentes analiticos no reemplazan la gestion; complementan monitoreo, validacion y trazabilidad.
+        - region [ref=f5e1384]:
+          - generic [ref=f5e1386]:
+            - heading "Changelog externo, interno y administracion" [level=2] [ref=f5e1387]
+            - paragraph [ref=f5e1388]: Patron reutilizable para comunicar versiones con la misma estructura visual; cambia el enfoque del contenido segun audiencia.
+          - generic [ref=f5e1389]:
+            - article [ref=f5e1390]:
+              - generic [ref=f5e1391]:
+                - generic [ref=f5e1392]: 05/05/2026
+                - strong [ref=f5e1393]: v0.9.0
+                - generic [ref=f5e1394]: equipo.qa
+              - generic [ref=f5e1395]:
+                - generic [ref=f5e1396]:
+                  - generic [ref=f5e1397]:
+                    - paragraph [ref=f5e1398]: Catalogo
+                    - heading "Libreria UI y modo oscuro extendido" [level=2] [ref=f5e1399]
+                  - generic [ref=f5e1400]: Mejora
+                - paragraph [ref=f5e1401]: Entrada publica enfocada en cambios visibles y beneficio para usuarios finales.
+                - list [ref=f5e1402]:
+                  - listitem [ref=f5e1403]: Base visual reutilizable para nuevas vistas.
+                  - listitem [ref=f5e1404]: Modo oscuro compartido desde tokens centrales.
+            - generic [ref=f5e1405]:
+              - table "Muestra administrativa de changelog" [ref=f5e1407]:
+                - rowgroup [ref=f5e1408]:
+                  - row [ref=f5e1409]:
+                    - columnheader "Version" [ref=f5e1410]
+                    - columnheader "Audiencia" [ref=f5e1411]
+                    - columnheader "Estado" [ref=f5e1412]
+                    - columnheader "Acciones" [ref=f5e1413]
+                - rowgroup [ref=f5e1414]:
+                  - row [ref=f5e1415]:
+                    - cell [ref=f5e1416]:
+                      - strong [ref=f5e1417]: v0.9.0
+                    - cell "Ambos" [ref=f5e1418]
+                    - cell "Publicado" [ref=f5e1419]
+                    - cell [ref=f5e1421]:
+                      - generic [ref=f5e1422]:
+                        - button "Editar version" [ref=f5e1423] [cursor=pointer]
+                        - button "Remover version" [ref=f5e1426] [cursor=pointer]
+              - generic [ref=f5e1430]:
+                - generic [ref=f5e1431]:
+                  - heading "Entrada de changelog" [level=3] [ref=f5e1432]
+                  - paragraph [ref=f5e1433]: Formulario administrativo para crear o editar publicaciones.
+                - generic [ref=f5e1434]:
+                  - generic [ref=f5e1435]:
+                    - generic [ref=f5e1436]:
+                      - generic [ref=f5e1437]: Version
+                      - textbox "Version" [ref=f5e1438]: v0.9.0
+                    - generic [ref=f5e1439]:
+                      - generic [ref=f5e1440]: Audiencia
+                      - combobox "Audiencia" [ref=f5e1441]:
+                        - option "Externo" [selected]
+                        - option "Interno"
+                        - option "Ambos"
+                    - generic [ref=f5e1442]:
+                      - generic [ref=f5e1443]: Resumen
+                      - textbox "Resumen" [ref=f5e1444]: Mejora funcional publicada por version.
+                  - generic [ref=f5e1445]:
+                    - button "Cancelar" [ref=f5e1446] [cursor=pointer]
+                    - button "Limpiar formulario" [ref=f5e1447] [cursor=pointer]
+                    - button "Guardar entrada" [ref=f5e1448] [cursor=pointer]
+            - note [ref=f5e1449]:
+              - generic [ref=f5e1452]: El changelog externo e interno usan la misma composicion. La administracion reutiliza tabla, formulario embebido, acciones Cancelar/Limpiar/Guardar y auditoria visual.
+  - complementary [ref=f5e1453]:
+    - generic [ref=f5e1454]:
+      - generic [ref=f5e1455]:
+        - heading [level=3] [ref=f5e1456]: Detalle del registro
+        - paragraph [ref=f5e1457]: Visualizacion lateral derecha sin cubrir el menu principal.
+      - button [ref=f5e1458] [cursor=pointer]
+    - generic [ref=f5e1462]:
+      - generic [ref=f5e1463]:
+        - generic [ref=f5e1464]: Codigo
+        - generic [ref=f5e1465]: "-"
+      - generic [ref=f5e1466]:
+        - generic [ref=f5e1467]: Nombre
+        - generic [ref=f5e1468]: "-"
+      - generic [ref=f5e1469]:
+        - generic [ref=f5e1470]: Estado
+        - generic [ref=f5e1471]: "-"
+      - generic [ref=f5e1472]:
+        - generic [ref=f5e1473]: Responsable
+        - generic [ref=f5e1474]: "-"
+      - generic [ref=f5e1475]: Auditoria

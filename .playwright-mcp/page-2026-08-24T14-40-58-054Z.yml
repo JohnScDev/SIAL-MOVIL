@@ -1,0 +1,225 @@
+- generic [ref=f8e2]:
+  - complementary "Navegación principal" [ref=f8e3]:
+    - generic [ref=f8e4]:
+      - generic [ref=f8e5]: S
+      - generic [ref=f8e6]: SIAL
+    - paragraph [ref=f8e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f8e8]':
+      - link "Referencias" [ref=f8e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f8e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f8e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f8e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f8e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f8e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f8e52]:
+        - generic [ref=f8e53]:
+          - link "Materiales y Suministros" [ref=f8e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f8e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f8e62]:
+          - link "Tablero materiales" [ref=f8e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f8e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f8e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f8e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f8e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f8e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f8e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f8e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f8e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f8e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f8e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f8e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f8e96]:
+    - generic [ref=f8e97]:
+      - button "Abrir menú" [ref=f8e98] [cursor=pointer]
+      - textbox "Búsqueda principal" [ref=f8e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f8e106]:
+      - button "Cambiar a modo oscuro" [ref=f8e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f8e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f8e121] [cursor=pointer]:
+        - generic [ref=f8e122]: QA
+  - main [ref=f8e125]:
+    - generic [ref=f8e126]:
+      - link "Volver a Pedidos" [ref=f8e127] [cursor=pointer]:
+        - /url: gestion-pedidos-materiales.html
+      - generic [ref=f8e130]:
+        - generic [ref=f8e131]:
+          - paragraph [ref=f8e132]: Materiales / Pedidos
+          - heading "Revisar cantidades del pedido" [level=1] [ref=f8e133]
+          - paragraph [ref=f8e134]: Compara el sugerido, ajusta lo necesario y deja el motivo antes de confirmar.
+        - generic [ref=f8e135]: Pendiente de revisión
+      - alert [ref=f8e136]:
+        - generic [ref=f8e139]:
+          - strong [ref=f8e140]: Regla de ajuste pendiente
+          - text: La matriz oficial de tolerancias, el tratamiento del sugerido cero y el aprobador aún no están publicados. Esta propuesta bloquea cualquier cambio de cantidad hasta que exista esa configuración.
+      - article [ref=f8e141]:
+        - generic "Contexto del pedido" [ref=f8e142]:
+          - generic [ref=f8e143]:
+            - generic [ref=f8e144]: Pedido
+            - strong [ref=f8e145]: PED-SUG-2026-32-014
+          - generic [ref=f8e146]:
+            - generic [ref=f8e147]: Aviso de corte
+            - strong [ref=f8e148]: AC-2026-032
+          - generic [ref=f8e149]:
+            - generic [ref=f8e150]: Finca
+            - strong [ref=f8e151]: La Ceiba
+          - generic [ref=f8e152]:
+            - generic [ref=f8e153]: Referencia y semana
+            - strong [ref=f8e154]: AGSTDRA · SEM-2026-32
+        - generic [ref=f8e155]:
+          - generic [ref=f8e156]:
+            - heading "Cantidades por material" [level=2] [ref=f8e157]
+            - paragraph [ref=f8e158]: El estado de cada fila se actualiza al cambiar la cantidad solicitada.
+          - button "Restablecer cantidades" [ref=f8e159] [cursor=pointer]
+        - table [ref=f8e164]:
+          - rowgroup [ref=f8e165]:
+            - row [ref=f8e166]:
+              - columnheader "Material" [ref=f8e167]
+              - columnheader "Sugerido" [ref=f8e168]
+              - columnheader "Stock visible" [ref=f8e169]
+              - columnheader "Cantidad solicitada" [ref=f8e170]
+              - columnheader "Variación" [ref=f8e171]
+              - columnheader "Validación" [ref=f8e172]
+          - rowgroup [ref=f8e173]:
+            - row [ref=f8e174]:
+              - cell "Caja de cartón corrugado MAT-CAR-001 · unidades" [ref=f8e175]:
+                - generic [ref=f8e176]:
+                  - strong [ref=f8e177]: Caja de cartón corrugado
+                  - generic [ref=f8e178]: MAT-CAR-001 · unidades
+              - cell "744 unidades" [ref=f8e179]:
+                - strong [ref=f8e180]: "744"
+                - generic [ref=f8e181]: unidades
+              - cell "1.280 unidades" [ref=f8e182]:
+                - strong [ref=f8e183]: "1.280"
+                - generic [ref=f8e184]: unidades
+              - cell [ref=f8e185]:
+                - spinbutton "Cantidad solicitada de Caja de cartón corrugado" [ref=f8e186]: "744"
+              - cell "0" [ref=f8e187]
+              - cell "Sin cambio No requiere aplicar una tolerancia." [ref=f8e188]:
+                - generic [ref=f8e189]: Sin cambio
+                - generic [ref=f8e190]: No requiere aplicar una tolerancia.
+            - row [ref=f8e191]:
+              - cell "Tapa de cartón MAT-TAP-001 · unidades" [ref=f8e192]:
+                - generic [ref=f8e193]:
+                  - strong [ref=f8e194]: Tapa de cartón
+                  - generic [ref=f8e195]: MAT-TAP-001 · unidades
+              - cell "804 unidades" [ref=f8e196]:
+                - strong [ref=f8e197]: "804"
+                - generic [ref=f8e198]: unidades
+              - cell "900 unidades" [ref=f8e199]:
+                - strong [ref=f8e200]: "900"
+                - generic [ref=f8e201]: unidades
+              - cell [ref=f8e202]:
+                - spinbutton "Cantidad solicitada de Tapa de cartón" [ref=f8e203]: "804"
+              - cell "0" [ref=f8e204]
+              - cell "Sin cambio No requiere aplicar una tolerancia." [ref=f8e205]:
+                - generic [ref=f8e206]: Sin cambio
+                - generic [ref=f8e207]: No requiere aplicar una tolerancia.
+            - row [ref=f8e208]:
+              - cell "Etiqueta de trazabilidad MAT-ETQ-001 · rollos" [ref=f8e209]:
+                - generic [ref=f8e210]:
+                  - strong [ref=f8e211]: Etiqueta de trazabilidad
+                  - generic [ref=f8e212]: MAT-ETQ-001 · rollos
+              - cell "25 rollos" [ref=f8e213]:
+                - strong [ref=f8e214]: "25"
+                - generic [ref=f8e215]: rollos
+              - cell "12 rollos" [ref=f8e216]:
+                - strong [ref=f8e217]: "12"
+                - generic [ref=f8e218]: rollos
+              - cell [ref=f8e219]:
+                - spinbutton "Cantidad solicitada de Etiqueta de trazabilidad" [ref=f8e220]: "25"
+              - cell "0" [ref=f8e221]
+              - cell "Sin cambio No requiere aplicar una tolerancia." [ref=f8e222]:
+                - generic [ref=f8e223]: Sin cambio
+                - generic [ref=f8e224]: No requiere aplicar una tolerancia.
+            - row [ref=f8e225]:
+              - cell "Estiba de exportación MAT-EST-001 · unidades" [ref=f8e226]:
+                - generic [ref=f8e227]:
+                  - strong [ref=f8e228]: Estiba de exportación
+                  - generic [ref=f8e229]: MAT-EST-001 · unidades
+              - cell "28 unidades" [ref=f8e230]:
+                - strong [ref=f8e231]: "28"
+                - generic [ref=f8e232]: unidades
+              - cell "12 unidades" [ref=f8e233]:
+                - strong [ref=f8e234]: "12"
+                - generic [ref=f8e235]: unidades
+              - cell [ref=f8e236]:
+                - spinbutton "Cantidad solicitada de Estiba de exportación" [ref=f8e237]: "28"
+              - cell "0" [ref=f8e238]
+              - cell "Sin cambio No requiere aplicar una tolerancia." [ref=f8e239]:
+                - generic [ref=f8e240]: Sin cambio
+                - generic [ref=f8e241]: No requiere aplicar una tolerancia.
+        - paragraph [ref=f8e242]: Los porcentajes de referencia no se aplican como regla operativa. Solo las cantidades sin cambio pueden confirmarse mientras la matriz oficial siga pendiente.
+        - generic [ref=f8e243]:
+          - region [ref=f8e244]:
+            - generic [ref=f8e245]:
+              - heading "Justificación del ajuste" [level=2] [ref=f8e246]
+              - paragraph [ref=f8e247]: Solo es obligatoria cuando cambias una cantidad.
+            - generic [ref=f8e248]:
+              - generic [ref=f8e249]: Motivo
+              - combobox "Motivo" [ref=f8e250]:
+                - option "Seleccionar motivo" [selected]
+                - option "Cambio en la necesidad de producción"
+                - option "Diferencia de inventario identificada"
+                - option "Ajuste de presentación o empaque"
+                - option "Otro motivo operativo"
+            - generic [ref=f8e251]:
+              - generic [ref=f8e252]:
+                - text: Detalle del ajuste
+                - generic [ref=f8e253]: (opcional)
+              - textbox "Detalle del ajuste (opcional)" [ref=f8e254]:
+                - /placeholder: Agrega información útil para quien revise el pedido.
+          - complementary [ref=f8e255]:
+            - heading "Resultado de la revisión" [level=2] [ref=f8e256]
+            - generic [ref=f8e257]:
+              - generic [ref=f8e258]:
+                - generic [ref=f8e259]: Sin cambios
+                - strong [ref=f8e260]: "4"
+              - generic [ref=f8e261]:
+                - generic [ref=f8e262]: Dentro del límite
+                - strong [ref=f8e263]: "0"
+              - generic [ref=f8e264]:
+                - generic [ref=f8e265]: Requieren aprobación
+                - strong [ref=f8e266]: "0"
+              - generic [ref=f8e267]:
+                - generic [ref=f8e268]: Con bloqueo
+                - strong [ref=f8e269]: "0"
+            - generic [ref=f8e273]:
+              - strong [ref=f8e274]: Cantidades confirmadas
+              - generic [ref=f8e275]: El pedido conserva las cantidades sugeridas.
+        - generic [ref=f8e276]:
+          - paragraph [ref=f8e277]: No se registrarán diferencias de cantidad.
+          - generic [ref=f8e278]:
+            - link "Guardar para después" [ref=f8e279] [cursor=pointer]:
+              - /url: gestion-pedidos-materiales.html
+            - button "Confirmar pedido" [ref=f8e280] [cursor=pointer]
+      - article [ref=f8e281]:
+        - generic [ref=f8e283]:
+          - heading "Trazabilidad de la revisión" [level=2] [ref=f8e284]
+          - paragraph [ref=f8e285]: Diferencias y decisiones asociadas al pedido.
+        - generic [ref=f8e286]:
+          - generic [ref=f8e287]: Aún no hay diferencias de cantidad.
+          - generic [ref=f8e288]:
+            - generic [ref=f8e290]:
+              - strong [ref=f8e291]: Pedido sugerido recibido
+              - paragraph [ref=f8e292]: AC-2026-032 · La Ceiba · PED-SUG-2026-32-014
+            - time [ref=f8e293]: 03/08/2026, 09:18

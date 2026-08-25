@@ -1,0 +1,167 @@
+- generic [ref=f17e2]:
+  - complementary "Navegacion principal" [ref=f17e3]:
+    - generic [ref=f17e4]:
+      - generic [ref=f17e5]: S
+      - generic [ref=f17e6]: SIAL
+    - paragraph [ref=f17e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f17e8]':
+      - link "Referencias" [ref=f17e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f17e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f17e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f17e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f17e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f17e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f17e52]:
+        - generic [ref=f17e53]:
+          - link "Materiales y Suministros" [ref=f17e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f17e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f17e62]:
+          - link "Tablero materiales" [ref=f17e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f17e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f17e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f17e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f17e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f17e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f17e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f17e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f17e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f17e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f17e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f17e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f17e96]:
+    - generic [ref=f17e97]:
+      - button "Contraer menu" [expanded] [ref=f17e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f17e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f17e106]:
+      - button "Cambiar a modo oscuro" [ref=f17e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f17e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f17e121] [cursor=pointer]:
+        - generic [ref=f17e122]: QA
+  - main [ref=f17e125]:
+    - generic [ref=f17e126]:
+      - paragraph [ref=f17e127]: Materiales / Entregas
+      - generic [ref=f17e129]:
+        - heading "Seguimiento de entregas y POD" [level=1] [ref=f17e130]
+        - paragraph [ref=f17e131]: Consulta de entrega efectiva, evidencia, firma digital y trazabilidad asociada.
+      - generic [ref=f17e132]: "Historias cubiertas: HU681, HU682, HU547, HU607. Esta propuesta es estatica y deja contratos listos para backend futuro."
+      - generic [ref=f17e136]: "Canal y responsabilidad: Web: seguimiento, gestión y auditoría · móvil: captura de recepción, foto y firma."
+      - generic [ref=f17e140]: El historial completo de inspecciones del contenedor se consulta en Seguridad / Auditoria operativa.
+      - article [ref=f17e144]:
+        - generic [ref=f17e145]:
+          - generic [ref=f17e146]:
+            - heading "Entregas y evidencias POD" [level=2] [ref=f17e147]
+            - paragraph [ref=f17e148]: Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.
+          - generic [ref=f17e149]:
+            - generic [ref=f17e150]: 1-3 de 3 registros
+            - button "Exportar Entregas y evidencias POD" [ref=f17e151] [cursor=pointer]:
+              - generic [ref=f17e154]: Exportar
+            - link "Ver auditoria" [ref=f17e155] [cursor=pointer]:
+              - /url: ../Trazabilidad/auditoria-operativa.html
+        - generic [ref=f17e157]:
+          - searchbox "Buscar" [ref=f17e158]
+          - combobox "Filtrar por estado" [ref=f17e159]:
+            - option "Todos los estados" [selected]
+            - option "Activos / cerrados"
+            - option "Pendientes / revision"
+            - option "Inactivos / bloqueo"
+          - combobox "Todas las fincas" [ref=f17e160]:
+            - option "Todas las fincas" [selected]
+            - option "Finca Santa Isabel"
+            - option "Finca El Retiro"
+            - option "Finca Las Palmas"
+        - table [ref=f17e162]:
+          - rowgroup [ref=f17e163]:
+            - row [ref=f17e164]:
+              - columnheader "Orden" [ref=f17e165]
+              - columnheader "Documento" [ref=f17e166]
+              - columnheader "Finca" [ref=f17e167]
+              - columnheader "Transportista" [ref=f17e168]
+              - columnheader "Recepcion" [ref=f17e169]
+              - columnheader "Evidencia" [ref=f17e170]
+              - columnheader "Estado" [ref=f17e171]
+              - columnheader "Auditoria" [ref=f17e172]
+              - columnheader "Acciones" [ref=f17e173]
+          - rowgroup [ref=f17e174]:
+            - row [ref=f17e175]:
+              - cell "OTI-546-001 HU681/HU682/HU547" [ref=f17e176]:
+                - generic [ref=f17e177]:
+                  - strong [ref=f17e178]: OTI-546-001
+                  - generic [ref=f17e179]: HU681/HU682/HU547
+              - cell "RPT-2026-0881" [ref=f17e180]
+              - cell "Finca Santa Isabel" [ref=f17e181]
+              - cell "Carlos Mendoza" [ref=f17e182]
+              - cell "Laura Pineda 28/06/2026 15:40" [ref=f17e183]: Laura Pineda28/06/2026 15:40
+              - cell "Foto receptor + firma digital POD-682-001" [ref=f17e184]: Foto receptor + firma digitalPOD-682-001
+              - cell "Entregada" [ref=f17e185]
+              - cell "Entregar - transportista.app 28/06/2026 15:40" [ref=f17e187]: Entregar - transportista.app28/06/2026 15:40
+              - cell [ref=f17e188]:
+                - generic [ref=f17e189]:
+                  - button "Visualizar detalle" [ref=f17e190] [cursor=pointer]
+                  - link "Ver auditoria operativa" [ref=f17e194] [cursor=pointer]:
+                    - /url: ../Trazabilidad/auditoria-operativa.html
+            - row [ref=f17e198]:
+              - cell "OTI-546-002 HU681/HU682" [ref=f17e199]:
+                - generic [ref=f17e200]:
+                  - strong [ref=f17e201]: OTI-546-002
+                  - generic [ref=f17e202]: HU681/HU682
+              - cell "REM-2026-0184" [ref=f17e203]
+              - cell "Finca El Retiro" [ref=f17e204]
+              - cell "Ana Ramirez" [ref=f17e205]
+              - cell "Pendiente Pendiente" [ref=f17e206]: PendientePendiente
+              - cell "Requerida para cierre Pendiente" [ref=f17e207]: Requerida para cierrePendiente
+              - cell "En transito" [ref=f17e208]
+              - cell "Salida - transporte 28/06/2026 13:20" [ref=f17e210]: Salida - transporte28/06/2026 13:20
+              - cell [ref=f17e211]:
+                - generic [ref=f17e212]:
+                  - button "Visualizar detalle" [ref=f17e213] [cursor=pointer]
+                  - link "Ver auditoria operativa" [ref=f17e217] [cursor=pointer]:
+                    - /url: ../Trazabilidad/auditoria-operativa.html
+            - row [ref=f17e221]:
+              - cell "OTI-546-003 HU547" [ref=f17e222]:
+                - generic [ref=f17e223]:
+                  - strong [ref=f17e224]: OTI-546-003
+                  - generic [ref=f17e225]: HU547
+              - cell "RES-2026-0045" [ref=f17e226]
+              - cell "Finca Las Palmas" [ref=f17e227]
+              - cell "Sin asignar" [ref=f17e228]
+              - cell "Pendiente Pendiente" [ref=f17e229]: PendientePendiente
+              - cell "Foto obligatoria Pendiente" [ref=f17e230]: Foto obligatoriaPendiente
+              - cell "Asignado" [ref=f17e231]
+              - cell "Asignar - almacen.pedidos 28/06/2026 12:12" [ref=f17e233]: Asignar - almacen.pedidos28/06/2026 12:12
+              - cell [ref=f17e234]:
+                - generic [ref=f17e235]:
+                  - button "Visualizar detalle" [ref=f17e236] [cursor=pointer]
+                  - link "Ver auditoria operativa" [ref=f17e240] [cursor=pointer]:
+                    - /url: ../Trazabilidad/auditoria-operativa.html
+        - generic "Paginacion de registros" [ref=f17e244]:
+          - generic [ref=f17e245]: Mostrando 1-3 de 3 registros
+          - generic [ref=f17e246]:
+            - generic [ref=f17e247]: Registros por pagina
+            - combobox "Registros por pagina" [ref=f17e248]:
+              - option "10" [selected]
+              - option "30"
+              - option "50"
+          - generic "Cambiar pagina" [ref=f17e249]:
+            - button "Anterior" [disabled] [ref=f17e250]
+            - button "1" [ref=f17e251] [cursor=pointer]
+            - button "Siguiente" [disabled] [ref=f17e252]

@@ -1,0 +1,159 @@
+- generic [ref=f15e2]:
+  - complementary "Navegación principal" [ref=f15e3]:
+    - generic [ref=f15e4]:
+      - generic [ref=f15e5]: S
+      - generic [ref=f15e6]: SIAL
+    - paragraph [ref=f15e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f15e8]':
+      - link "Referencias" [ref=f15e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f15e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f15e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f15e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f15e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f15e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f15e52]:
+        - generic [ref=f15e53]:
+          - link "Materiales y Suministros" [ref=f15e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f15e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f15e62]:
+          - link "Tablero materiales" [ref=f15e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f15e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f15e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f15e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f15e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f15e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f15e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f15e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f15e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f15e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f15e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f15e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f15e96]:
+    - generic [ref=f15e97]:
+      - button "Contraer menu" [expanded] [ref=f15e98] [cursor=pointer]
+      - textbox "Búsqueda principal" [ref=f15e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f15e106]:
+      - button "Cambiar a modo oscuro" [ref=f15e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f15e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f15e121] [cursor=pointer]:
+        - generic [ref=f15e122]: QA
+  - main [ref=f15e125]:
+    - generic [ref=f15e126]:
+      - link "Volver a pedidos adicionales" [ref=f15e127] [cursor=pointer]:
+        - /url: pedidos-adicionales.html
+      - paragraph [ref=f15e130]: Materiales / Pedidos adicionales
+      - generic [ref=f15e132]:
+        - heading "Nuevo pedido adicional" [level=1] [ref=f15e133]
+        - paragraph [ref=f15e134]: Registra solo la necesidad que no quedó cubierta por el pedido semanal.
+      - note [ref=f15e135]:
+        - generic [ref=f15e136]:
+          - strong [ref=f15e137]: Solicitud vinculada al corte actual
+          - text: Ya existen 4 pedidos adicionales esta semana. La HU no define un máximo automático; cada solicitud conserva su propio motivo, actor y trazabilidad.
+      - generic [ref=f15e138]:
+        - generic "Cadena de origen del pedido" [ref=f15e139]:
+          - generic [ref=f15e140]:
+            - generic [ref=f15e141]: Aviso de corte
+            - strong [ref=f15e142]: AC-2026-032
+          - generic [ref=f15e143]: →
+          - generic [ref=f15e144]:
+            - generic [ref=f15e145]: Pedido base
+            - strong [ref=f15e146]: PED-SUG-2026-32-014
+          - generic [ref=f15e147]: →
+          - generic [ref=f15e148]:
+            - generic [ref=f15e149]: Nueva solicitud
+            - strong [ref=f15e150]: Adicional 5 · SEM-2026-32
+        - generic [ref=f15e151]:
+          - generic [ref=f15e152]:
+            - generic [ref=f15e153]: Finca
+            - strong [ref=f15e154]: La Ceiba
+          - generic [ref=f15e155]:
+            - generic [ref=f15e156]: Referencia
+            - strong [ref=f15e157]: AGSTDRA
+          - generic [ref=f15e158]:
+            - generic [ref=f15e159]: Pedido base
+            - strong [ref=f15e160]: Validado
+          - generic [ref=f15e161]:
+            - generic [ref=f15e162]: Responsable
+            - strong [ref=f15e163]: QA Materiales · Web
+        - generic [ref=f15e164]:
+          - generic [ref=f15e165]:
+            - heading "Materiales adicionales" [level=2] [ref=f15e166]
+            - paragraph [ref=f15e167]: La cantidad se contrasta con el stock visible; los faltantes no se aprueban automáticamente.
+          - button "Agregar material" [ref=f15e168] [cursor=pointer]
+        - table [ref=f15e172]:
+          - rowgroup [ref=f15e173]:
+            - row [ref=f15e174]:
+              - columnheader "Material" [ref=f15e175]
+              - columnheader "Pedido base" [ref=f15e176]
+              - columnheader "Stock visible" [ref=f15e177]
+              - columnheader "Cantidad adicional" [ref=f15e178]
+              - columnheader "Validación" [ref=f15e179]
+              - columnheader [ref=f15e180]
+          - rowgroup [ref=f15e181]:
+            - row [ref=f15e182]:
+              - cell "Caja de cartón corrugado MAT-CAR-001 · unidades" [ref=f15e183]:
+                - combobox "Material" [ref=f15e184]:
+                  - option "Caja de cartón corrugado" [selected]
+                  - option "Tapa de cartón"
+                  - option "Etiqueta de trazabilidad"
+                  - option "Estiba de exportación"
+                - generic [ref=f15e185]: MAT-CAR-001 · unidades
+              - cell "790 unidades" [ref=f15e186]:
+                - strong [ref=f15e187]: "790"
+                - generic [ref=f15e188]: unidades
+              - cell "1.280 unidades" [ref=f15e189]:
+                - strong [ref=f15e190]: "1.280"
+                - generic [ref=f15e191]: unidades
+              - cell [ref=f15e192]:
+                - spinbutton "Cantidad adicional de Caja de cartón corrugado" [ref=f15e193]
+              - cell "Cantidad requerida Ingresa un entero mayor que cero." [ref=f15e194]:
+                - generic [ref=f15e195]: Cantidad requerida
+                - generic [ref=f15e196]: Ingresa un entero mayor que cero.
+              - cell [ref=f15e197]:
+                - button "Quitar Caja de cartón corrugado" [disabled] [ref=f15e198] [cursor=pointer]
+        - generic [ref=f15e203]:
+          - generic [ref=f15e204]:
+            - heading "Motivo de la solicitud" [level=2] [ref=f15e205]
+            - paragraph [ref=f15e206]: Explica por qué la necesidad no quedó cubierta en el pedido base.
+          - generic [ref=f15e207]:
+            - generic [ref=f15e208]: Motivo
+            - combobox "Motivo" [ref=f15e209]:
+              - option "Seleccionar motivo" [selected]
+              - option "Incremento extraordinario del corte"
+              - option "Diferencia de inventario"
+              - option "Entrega incompleta del proveedor"
+              - option "Material dañado o no utilizable"
+              - option "Otra necesidad operativa"
+          - generic [ref=f15e210]:
+            - generic [ref=f15e211]:
+              - text: Detalle
+              - generic [ref=f15e212]: (opcional)
+            - textbox "Detalle (opcional)" [ref=f15e213]:
+              - /placeholder: Agrega información útil para la validación.
+        - generic [ref=f15e214]:
+          - generic [ref=f15e218]:
+            - strong [ref=f15e219]: Completa las cantidades
+            - generic [ref=f15e220]: 1 línea necesita una cantidad válida.
+          - generic [ref=f15e221]:
+            - button "Guardar borrador" [ref=f15e222] [cursor=pointer]
+            - button "Enviar a validación" [disabled] [ref=f15e223]

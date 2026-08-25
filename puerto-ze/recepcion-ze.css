@@ -1,0 +1,466 @@
+/* HU758 · composición propuesta. Los hooks de flujo permanecen en HTML/JS. */
+.sial-operation-ticket {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-color: var(--sial-border-subtle);
+  background: var(--sial-surface);
+}
+
+.sial-operation-ticket-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .9fr);
+  gap: 14px;
+}
+
+.sial-eyebrow,
+.sial-operation-ticket-label {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.sial-operation-ticket-operation {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+
+.sial-operation-ticket-operation strong {
+  color: var(--sial-text);
+  font-size: clamp(18px, 5vw, 22px);
+  letter-spacing: .025em;
+}
+
+.sial-operation-ticket-meta {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--sial-border-subtle);
+}
+
+.sial-operation-ticket-meta strong {
+  overflow: hidden;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sial-section-heading .sial-section-title {
+  margin: 0;
+}
+
+.sial-section-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--sial-primary-500) 28%, var(--sial-border));
+  border-radius: 10px;
+  background: var(--sial-primary-50);
+  color: var(--sial-primary-600);
+}
+
+.sial-section-icon .sial-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.sial-confirmation-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 0;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-confirmation-copy {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sial-confirmation-card .sial-inline-error {
+  margin: 0;
+}
+
+/* La nota de fecha hace más alta su fila; los demás campos deben conservar
+   sus etiquetas y controles pegados al inicio de la misma fila. */
+.sial-form-grid > .sial-field {
+  align-content: start;
+}
+
+.sial-select-control {
+  position: relative;
+  min-width: 0;
+  height: 48px;
+}
+
+.sial-select-control.is-open {
+  z-index: 20;
+}
+
+.sial-select-native,
+.sial-datetime-input-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sial-select-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+  box-shadow: none;
+  transition: border-color var(--sial-motion-fast) var(--sial-motion-ease), box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-select-trigger:hover,
+.sial-select-control.is-open .sial-select-trigger {
+  border-color: var(--sial-border);
+}
+
+.sial-select-control.is-open .sial-select-trigger {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.sial-select-trigger:focus-visible,
+.sial-datetime-trigger:focus-visible,
+.sial-datetime-popover button:focus-visible {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sial-focus) 15%, transparent);
+}
+
+.sial-select-chevron,
+.sial-datetime-chevron {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--sial-text-2);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: transform var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-select-control.is-open .sial-select-chevron {
+  transform: rotate(180deg);
+}
+
+.sial-select-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% - 1px);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 4px;
+  max-height: 220px;
+  overflow: auto;
+  padding: 4px 6px 6px;
+  border: 1px solid var(--sial-border);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: var(--sial-surface-overlay);
+  box-shadow: var(--sial-shadow-overlay);
+}
+
+.sial-select-option {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+}
+
+.sial-select-option:hover,
+.sial-select-option[aria-selected="true"] {
+  background: var(--sial-primary-50);
+  color: var(--sial-primary-700);
+  font-weight: 600;
+}
+
+.sial-select-option[aria-selected="true"]::after {
+  content: "✓";
+  color: var(--sial-primary-500);
+  font-weight: 700;
+}
+
+.sial-datetime-control {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  box-shadow: none;
+  transition: border-color var(--sial-motion-fast) var(--sial-motion-ease), box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-datetime-control:focus-within {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-datetime-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-left: 15px;
+  fill: none;
+  stroke: var(--sial-primary-600);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.sial-datetime-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+}
+
+.sial-datetime-trigger-copy {
+  min-width: 0;
+  display: block;
+  flex: 1;
+}
+
+.sial-datetime-trigger-copy small {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sial-datetime-trigger-copy strong {
+  overflow: hidden;
+  color: var(--sial-text);
+  font-size: 14px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-datetime-popover {
+  position: absolute;
+  z-index: 12;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: 18px;
+  background: var(--sial-surface-overlay);
+  box-shadow: var(--sial-shadow-overlay);
+}
+
+.sial-datetime-popover[hidden],
+.sial-select-menu[hidden] {
+  display: none;
+}
+
+.sial-picker-header,
+.sial-picker-actions,
+.sial-picker-time-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sial-picker-header strong {
+  flex: 1;
+  color: var(--sial-text);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.sial-picker-nav,
+.sial-picker-action {
+  min-width: 36px;
+  min-height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 10px;
+  background: var(--sial-surface);
+  color: var(--sial-primary-600);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sial-picker-action {
+  min-width: auto;
+  padding: 0 12px;
+}
+
+.sial-picker-action.is-primary {
+  border-color: var(--sial-primary-500);
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+}
+
+.sial-picker-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.sial-picker-weekday,
+.sial-picker-day {
+  min-height: 32px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--sial-text-2);
+  font: inherit;
+  font-size: 11px;
+}
+
+.sial-picker-weekday {
+  min-height: 24px;
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sial-picker-day:not(:disabled):hover,
+.sial-picker-day.is-selected {
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+  font-weight: 700;
+}
+
+.sial-picker-day.is-today {
+  box-shadow: inset 0 0 0 1px var(--sial-primary-500);
+}
+
+.sial-picker-day.is-outside {
+  color: var(--sial-text-3);
+  opacity: .55;
+}
+
+.sial-picker-day:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
+
+.sial-picker-time {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--sial-border-subtle);
+}
+
+.sial-picker-time-head span {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sial-picker-time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sial-picker-time-grid select {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--sial-border);
+  border-radius: 10px;
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+html[data-theme="dark"] .sial-datetime-control {
+  background: var(--sial-field-bg);
+}
+
+html[data-theme="dark"] .sial-datetime-icon {
+  stroke: var(--sial-primary-500);
+}
+
+@media (max-width: 420px) {
+  .sial-operation-ticket-details {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .sial-operation-ticket-operation {
+    grid-column: 1 / -1;
+  }
+
+  .sial-operation-ticket-meta {
+    padding-top: 10px;
+    padding-left: 0;
+    border-top: 1px solid var(--sial-border-subtle);
+    border-left: 0;
+  }
+
+}

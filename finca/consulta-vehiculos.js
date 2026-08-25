@@ -81,7 +81,7 @@
     return value.toISOString();
   }
 
-  function demoVehicles() {
+  function sampleVehicles() {
     var farm = activeFarm();
     var now = new Date();
     return [
@@ -211,7 +211,7 @@
   function readVehicles() {
     var stored = readJson(operationKey, []);
     var linkedContainers = readJson(containerScheduleKey, []);
-    var source = Array.isArray(stored) && stored.length ? stored : demoVehicles();
+    var source = Array.isArray(stored) && stored.length ? stored : sampleVehicles();
     return source.map(function (item) {
       var linked = Array.isArray(linkedContainers) ? linkedContainers.find(function (container) {
         return container.vehicleOperationId === item.id || container.vehiclePlate === item.plate || container.container === item.container;

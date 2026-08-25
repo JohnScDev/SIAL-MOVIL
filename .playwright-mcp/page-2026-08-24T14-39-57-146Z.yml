@@ -1,0 +1,173 @@
+- generic [ref=f1e2]:
+  - complementary "Navegacion principal" [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - generic [ref=f1e5]: S
+      - generic [ref=f1e6]: SIAL
+    - paragraph [ref=f1e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f1e8]':
+      - link "Referencias" [ref=f1e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f1e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f1e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f1e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f1e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f1e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f1e52]:
+        - generic [ref=f1e53]:
+          - link "Materiales y Suministros" [ref=f1e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f1e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f1e62]:
+          - link "Tablero materiales" [ref=f1e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f1e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f1e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f1e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f1e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f1e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f1e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f1e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f1e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f1e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f1e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f1e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f1e96]:
+    - generic [ref=f1e97]:
+      - button "Contraer menu" [expanded] [ref=f1e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f1e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f1e106]:
+      - button "Cambiar a modo oscuro" [ref=f1e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f1e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f1e121] [cursor=pointer]:
+        - generic [ref=f1e122]: QA
+  - main [ref=f1e125]:
+    - generic [ref=f1e126]:
+      - paragraph [ref=f1e127]: Materiales / Inventario
+      - generic [ref=f1e129]:
+        - heading "Inventario por finca" [level=1] [ref=f1e130]
+        - paragraph [ref=f1e131]: Consulta de stock disponible por finca y material antes de confirmar pedidos.
+      - generic [ref=f1e132]: "Historias cubiertas: HU662. Esta propuesta es estatica y deja contratos listos para backend futuro."
+      - generic [ref=f1e136]: "Canal y responsabilidad: Web: consulta de gestión · móvil: consulta complementaria, sin editar saldos."
+      - generic [ref=f1e140]: "El saldo no se edita como un número libre: se consulta desde movimientos, reservas y novedades de inventario."
+      - article [ref=f1e144]:
+        - generic [ref=f1e145]:
+          - generic [ref=f1e146]:
+            - heading "Stock disponible en finca" [level=2] [ref=f1e147]
+            - paragraph [ref=f1e148]: Inventario derivado por movimientos, reservas, daños y fecha de actualización.
+          - generic [ref=f1e149]:
+            - generic [ref=f1e150]: 1-4 de 4 registros
+            - button "Exportar Stock disponible en finca" [ref=f1e151] [cursor=pointer]:
+              - generic [ref=f1e154]: Exportar
+        - generic [ref=f1e156]:
+          - searchbox "Buscar" [ref=f1e157]
+          - combobox "Filtrar por estado" [ref=f1e158]:
+            - option "Todos los estados" [selected]
+            - option "Activos / cerrados"
+            - option "Pendientes / revision"
+            - option "Inactivos / bloqueo"
+          - combobox "Todas las fincas" [ref=f1e159]:
+            - option "Todas las fincas" [selected]
+            - option "Finca Santa Isabel"
+            - option "Finca El Retiro"
+            - option "Finca Las Palmas"
+        - table [ref=f1e161]:
+          - rowgroup [ref=f1e162]:
+            - row [ref=f1e163]:
+              - columnheader "Finca" [ref=f1e164]
+              - columnheader "Material" [ref=f1e165]
+              - columnheader "Saldo / reservas" [ref=f1e166]
+              - columnheader "Cobertura" [ref=f1e167]
+              - columnheader "Último movimiento / actualización" [ref=f1e168]
+              - columnheader "Estado" [ref=f1e169]
+              - columnheader "Auditoria" [ref=f1e170]
+              - columnheader "Acciones" [ref=f1e171]
+          - rowgroup [ref=f1e172]:
+            - row [ref=f1e173]:
+              - cell "Finca Santa Isabel Movimientos de inventario · HU662" [ref=f1e174]:
+                - generic [ref=f1e175]:
+                  - strong [ref=f1e176]: Finca Santa Isabel
+                  - generic [ref=f1e177]: Movimientos de inventario · HU662
+              - cell "Caja carton corrugado" [ref=f1e178]
+              - cell [ref=f1e179]:
+                - strong [ref=f1e180]: 1280 unidad
+                - text: "Reservado: 120 · Dañado:"
+              - cell "2.4 dias" [ref=f1e181]
+              - cell "Entrada por recepción · MOV-8821 28/06/2026 07:40" [ref=f1e182]: Entrada por recepción · MOV-882128/06/2026 07:40
+              - cell "Activo" [ref=f1e183]
+              - cell "Sincronizar - sistema 28/06/2026 07:40" [ref=f1e185]: Sincronizar - sistema28/06/2026 07:40
+              - cell [ref=f1e186]:
+                - button "Visualizar detalle" [ref=f1e188] [cursor=pointer]
+            - row [ref=f1e192]:
+              - cell "Finca El Retiro Movimientos de inventario · HU662" [ref=f1e193]:
+                - generic [ref=f1e194]:
+                  - strong [ref=f1e195]: Finca El Retiro
+                  - generic [ref=f1e196]: Movimientos de inventario · HU662
+              - cell "Caja carton corrugado" [ref=f1e197]
+              - cell [ref=f1e198]:
+                - strong [ref=f1e199]: 360 unidad
+                - text: "Reservado: 40 · Dañado: 12"
+              - cell "0.8 dias" [ref=f1e200]
+              - cell "Ajuste por daño · MOV-8814 28/06/2026 07:50" [ref=f1e201]: Ajuste por daño · MOV-881428/06/2026 07:50
+              - cell "Revision" [ref=f1e202]
+              - cell "Sincronizar - sistema 28/06/2026 07:50" [ref=f1e204]: Sincronizar - sistema28/06/2026 07:50
+              - cell [ref=f1e205]:
+                - button "Visualizar detalle" [ref=f1e207] [cursor=pointer]
+            - row [ref=f1e211]:
+              - cell "Finca Santa Isabel Movimientos de inventario · HU662" [ref=f1e212]:
+                - generic [ref=f1e213]:
+                  - strong [ref=f1e214]: Finca Santa Isabel
+                  - generic [ref=f1e215]: Movimientos de inventario · HU662
+              - cell "Estiba madera exportacion" [ref=f1e216]
+              - cell [ref=f1e217]:
+                - strong [ref=f1e218]: 94 unidad
+                - text: "Reservado: 12 · Dañado: 2"
+              - cell "3.1 dias" [ref=f1e219]
+              - cell "Salida a orden OTI-546-001 28/06/2026 06:58" [ref=f1e220]: Salida a orden OTI-546-00128/06/2026 06:58
+              - cell "Activo" [ref=f1e221]
+              - cell "Sincronizar - sistema 28/06/2026 06:58" [ref=f1e223]: Sincronizar - sistema28/06/2026 06:58
+              - cell [ref=f1e224]:
+                - button "Visualizar detalle" [ref=f1e226] [cursor=pointer]
+            - row [ref=f1e230]:
+              - cell "Finca Las Palmas Conteo pendiente · HU662" [ref=f1e231]:
+                - generic [ref=f1e232]:
+                  - strong [ref=f1e233]: Finca Las Palmas
+                  - generic [ref=f1e234]: Conteo pendiente · HU662
+              - cell "Separador de pallet" [ref=f1e235]
+              - cell [ref=f1e236]:
+                - strong [ref=f1e237]: 18 paquete
+                - text: "Reservado: · Dañado: 3"
+              - cell "Stock bajo" [ref=f1e238]
+              - cell "Conteo pendiente · MOV-8792 27/06/2026 18:12" [ref=f1e239]: Conteo pendiente · MOV-879227/06/2026 18:12
+              - cell "Revision" [ref=f1e240]
+              - cell "Sincronizar - sistema 27/06/2026 18:12" [ref=f1e242]: Sincronizar - sistema27/06/2026 18:12
+              - cell [ref=f1e243]:
+                - button "Visualizar detalle" [ref=f1e245] [cursor=pointer]
+        - generic "Paginacion de registros" [ref=f1e249]:
+          - generic [ref=f1e250]: Mostrando 1-4 de 4 registros
+          - generic [ref=f1e251]:
+            - generic [ref=f1e252]: Registros por pagina
+            - combobox "Registros por pagina" [ref=f1e253]:
+              - option "10" [selected]
+              - option "30"
+              - option "50"
+          - generic "Cambiar pagina" [ref=f1e254]:
+            - button "Anterior" [disabled] [ref=f1e255]
+            - button "1" [ref=f1e256] [cursor=pointer]
+            - button "Siguiente" [disabled] [ref=f1e257]

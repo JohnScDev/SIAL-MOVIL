@@ -75,7 +75,7 @@
     return new Date(date.getTime() + amount * 86400000);
   }
 
-  function demoContainers() {
+  function sampleContainers() {
     var farm = activeFarm();
     var now = new Date();
     return [
@@ -180,7 +180,7 @@
   function readContainers() {
     var stored = readJson(scheduleKey, []);
     var linkedVehicles = readJson(vehicleOperationKey, []);
-    var source = Array.isArray(stored) && stored.length ? stored : demoContainers();
+    var source = Array.isArray(stored) && stored.length ? stored : sampleContainers();
     return source.map(function (item) {
       var linked = Array.isArray(linkedVehicles) ? linkedVehicles.find(function (vehicle) {
         return vehicle.id === item.vehicleOperationId || vehicle.plate === item.vehiclePlate || vehicle.container === item.container;
@@ -366,8 +366,6 @@
     window.SialMobileUI.openBarcodeScanner({
       title: "Escanear contenedor",
       eyebrow: "Consulta por finca",
-      demoValue: first ? first.container : "SIALU1234567",
-      demoLabel: "Leer contenedor demo",
       normalize: normalizeContainer,
       validate: function (value) {
         var code = normalizeContainer(value);

@@ -1,0 +1,217 @@
+- generic [active] [ref=f1e1]:
+  - main [ref=f1e2]:
+    - generic [ref=f1e3]:
+      - link "Volver" [ref=f1e4] [cursor=pointer]:
+        - /url: ../app/home.html
+      - generic [ref=f1e8]:
+        - heading "ZE Puerto" [level=1] [ref=f1e9]
+        - paragraph [ref=f1e10]: Control de contenedores
+      - generic [ref=f1e11]:
+        - button "Cambiar a modo oscuro" [ref=f1e12] [cursor=pointer]
+        - button "Cerrar sesión" [ref=f1e15] [cursor=pointer]
+    - generic [ref=f1e19]:
+      - region "Datos de operacion activa" [ref=f1e20]:
+        - heading "Operacion activa" [level=2] [ref=f1e21]
+        - generic [ref=f1e22]:
+          - strong [ref=f1e23]: Operacion
+          - generic [ref=f1e24]: EXP-2026-0418
+        - generic [ref=f1e25]:
+          - strong [ref=f1e26]: Orden / viaje
+          - generic [ref=f1e27]: ORD-ZE-2041 / VIAJE-7751
+        - generic [ref=f1e28]:
+          - strong [ref=f1e29]: Placa cabezote
+          - generic [ref=f1e30]: TUL458
+        - generic [ref=f1e31]:
+          - strong [ref=f1e32]: Conductor
+          - generic [ref=f1e33]: Carlos Mendoza
+        - generic [ref=f1e34]:
+          - strong [ref=f1e35]: Transportista
+          - generic [ref=f1e36]: Transbanasan
+        - generic [ref=f1e37]:
+          - strong [ref=f1e38]: Contenedor
+          - generic [ref=f1e39]: SIALU1234567
+        - generic [ref=f1e40]:
+          - strong [ref=f1e41]: Zona Externa
+          - generic [ref=f1e42]: ZE Puerto Norte
+        - generic [ref=f1e43]:
+          - strong [ref=f1e44]: Ubicacion actual
+          - generic [ref=f1e45]: Zona Externa
+      - generic [ref=f1e46]:
+        - generic [ref=f1e47]:
+          - strong [ref=f1e48]: DISPONIBLE
+          - generic [ref=f1e49]: Estado contenedor
+        - generic [ref=f1e50]:
+          - strong [ref=f1e51]: "0"
+          - generic [ref=f1e52]: Eventos registrados
+        - generic [ref=f1e53]:
+          - strong [ref=f1e54]: "0"
+          - generic [ref=f1e55]: Pendientes sync
+      - region "Proxima accion" [ref=f1e56]:
+        - heading "Siguiente accion permitida" [level=2] [ref=f1e57]
+        - generic [ref=f1e58]:
+          - heading "HU758 · Recepción en ZE" [level=1] [ref=f1e59]
+          - paragraph [ref=f1e60]: Registrar llegada de vehículo en zona externa.
+          - link "HU758 · Recepción en ZE" [ref=f1e61] [cursor=pointer]:
+            - /url: ../puerto-ze/recepcion-ze.html
+      - region "Acciones disponibles segun estado" [ref=f1e63]:
+        - link "Registrar recepcion en ZE HU758 - Llegada del vehiculo a zona externa." [ref=f1e64] [cursor=pointer]:
+          - /url: recepcion-ze.html
+          - generic [ref=f1e66]:
+            - strong [ref=f1e67]: Registrar recepcion en ZE
+            - generic [ref=f1e68]: HU758 - Llegada del vehiculo a zona externa.
+        - link "HU1431 - Despacho contenedor a finca Vista de catalogo para DESPACHO_A_FINCA. No reemplaza HU303." [ref=f1e71] [cursor=pointer]:
+          - /url: hu1431-despacho-contenedor-finca.html
+          - generic [ref=f1e73]:
+            - strong [ref=f1e74]: HU1431 - Despacho contenedor a finca
+            - generic [ref=f1e75]: Vista de catalogo para DESPACHO_A_FINCA. No reemplaza HU303.
+      - generic [ref=f1e78]:
+        - heading "Trazabilidad" [level=2] [ref=f1e79]
+        - status [ref=f1e81]:
+          - generic [ref=f1e85]:
+            - generic [ref=f1e86]: Información.
+            - generic [ref=f1e87]:
+              - strong [ref=f1e88]: Sin eventos registrados
+              - text: La trazabilidad se construira con cada registro del flujo.
+  - complementary [ref=f1e89]:
+    - generic [ref=f1e90]:
+      - generic [ref=f1e93]:
+        - strong [ref=f1e94]: Finca Santa Isabel
+        - generic [ref=f1e95]: operador.sial
+      - button [ref=f1e96] [cursor=pointer]
+    - search [ref=f1e100]:
+      - searchbox [ref=f1e105]
+    - generic [ref=f1e106]:
+      - navigation [ref=f1e107]:
+        - paragraph [ref=f1e108]: ZE Puerto / Control de contenedores
+        - link [ref=f1e109] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/index.html
+          - text: Dashboard ZE Puerto
+        - link [ref=f1e113] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-ze.html
+          - text: HU758 - Recepcion vehiculo ZE
+        - link [ref=f1e116] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/inspeccion-externa.html?selectContainer=1
+          - text: HU557 - Inspeccion externa ZE
+        - link [ref=f1e119] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/inspeccion-interna.html?selectContainer=1
+          - text: HU558 - Inspeccion interna ZE
+        - link [ref=f1e122] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f1e128] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/despacho-finca.html
+          - text: HU303 - Despacho a finca
+        - link [ref=f1e131] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu1431-despacho-contenedor-finca.html
+          - text: HU1431 - Despacho contenedor a finca
+      - navigation [ref=f1e135]:
+        - paragraph [ref=f1e136]: Retorno ZE / Puerto
+        - link [ref=f1e137] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-ze-retorno.html
+          - text: Recepcion ZE retorno
+        - link [ref=f1e140] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu342-descarga-pallets.html
+          - text: HU342 - Descargar pallets
+        - link [ref=f1e144] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f1e148] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu347-cargue-consolidado.html
+          - text: HU347 - Cargue consolidado
+        - link [ref=f1e152] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/despacho-puerto.html
+          - text: Despacho puerto
+        - link [ref=f1e155] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-puerto.html
+          - text: Recepcion puerto
+        - link [ref=f1e158] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/entrega-puerto.html
+          - text: Entrega en puerto
+      - navigation [ref=f1e161]:
+        - paragraph [ref=f1e162]: Finca
+        - link [ref=f1e163] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/recepcion-finca.html
+          - text: Recepcion en finca
+        - link [ref=f1e166] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-contenedores.html
+          - text: Trazabilidad contenedores
+        - link [ref=f1e169] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-pallets.html
+          - text: Pallets por finca
+        - link [ref=f1e173] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-vehiculos.html
+          - text: Trazabilidad vehículos
+        - link [ref=f1e179] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/inspeccion-externa.html?selectContainer=1
+          - text: Inspeccion externa
+        - link [ref=f1e182] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/inspeccion-interna.html?selectContainer=1
+          - text: Inspeccion interna
+        - link [ref=f1e185] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/sesion-responsabilidad.html
+          - text: Sesion responsabilidad
+        - link [ref=f1e188] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/cierre-contenedor.html
+          - text: Cierre de contenedor
+        - link [ref=f1e192] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/despacho-ze.html
+          - text: Despacho a ZE
+      - navigation [ref=f1e195]:
+        - paragraph [ref=f1e196]: Pallets
+        - link [ref=f1e197] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/armar-pallet.html
+          - text: HU591 - Armar pallet
+        - link [ref=f1e201] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f1e207] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/consulta-pallets.html
+          - text: Consulta Pallet’s
+        - link [ref=f1e211] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/reetiquetar-pallet.html
+          - text: Re-etiquetar pallet
+        - link [ref=f1e215] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/cargar-pallets.html
+          - text: HU332 - Cargue contenedor
+      - navigation [ref=f1e217]:
+        - paragraph [ref=f1e218]: Materiales y suministros
+        - link [ref=f1e219] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/index.html
+          - text: Materiales
+        - link [ref=f1e223] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/pedido-sugerido.html
+          - text: Pedido sugerido
+        - link [ref=f1e226] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/inventario-finca.html
+          - text: Inventario finca
+        - link [ref=f1e230] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/ordenes-asignadas.html
+          - text: Ordenes asignadas
+        - link [ref=f1e234] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/registrar-entrega.html
+          - text: Registrar entrega
+        - link [ref=f1e237] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/pallets.html
+          - text: Pallets materiales
+      - navigation [ref=f1e239]:
+        - paragraph [ref=f1e240]: Trazabilidad
+        - link [ref=f1e241] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/sincronizacion.html
+          - text: Sincronización móvil
+        - link [ref=f1e247] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/evidencias.html
+          - text: Evidencias operativas
+        - link [ref=f1e251] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/consultar-contenedor.html
+          - text: Consultar contenedor
+        - link [ref=f1e255] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/consultar-operacion.html
+          - text: Consultar operacion
+      - navigation [ref=f1e257]:
+        - paragraph [ref=f1e258]: Sistema de diseño
+        - link [ref=f1e259] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/libreria/index.html
+          - text: Librería
+    - link [ref=f1e263] [cursor=pointer]:
+      - /url: http://127.0.0.1:8765/app/seleccion-empresa.html
+      - text: Cambiar finca

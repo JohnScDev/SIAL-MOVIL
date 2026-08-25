@@ -1,0 +1,246 @@
+- generic [ref=f4e1]:
+  - main [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - button "Abrir menu" [ref=f4e338] [cursor=pointer]
+      - generic [ref=f4e7]:
+        - heading "Registrar entrega" [level=1] [ref=f4e339]
+        - paragraph [ref=f4e9]: HU681 / HU682 / HU547
+      - generic [ref=f4e10]:
+        - button "Cambiar a modo oscuro" [ref=f4e340] [cursor=pointer]
+        - button "Cerrar sesión" [ref=f4e341] [cursor=pointer]
+    - generic [ref=f4e18]:
+      - generic [ref=f4e446]:
+        - generic [ref=f4e447]:
+          - text: Banasan S.A.S.
+          - strong [ref=f4e448]: Registrar recepción
+          - paragraph [ref=f4e449]: HU547 · HU681 · registra lo recibido, las diferencias y el soporte.
+        - generic [ref=f4e450]:
+          - generic [ref=f4e451]: Finca La Ceiba
+          - generic [ref=f4e452]: SEM-2026-32
+      - generic [ref=f4e453]:
+        - generic [ref=f4e454]:
+          - generic [ref=f4e455]:
+            - generic [ref=f4e456]: RPT-2026-0881
+            - strong [ref=f4e457]: OTI-546-001
+            - generic [ref=f4e458]: Bodega central → Finca La Ceiba
+          - generic [ref=f4e459]: PENDIENTE
+        - generic [ref=f4e462]:
+          - strong [ref=f4e463]: Validación de recepción
+          - text: Registra cada línea. Si existe diferencia, explica la novedad y conserva la evidencia.
+      - generic [ref=f4e464]:
+        - generic [ref=f4e466]:
+          - text: Datos de recepción
+          - heading "Quién y cuándo recibe" [level=2] [ref=f4e467]
+        - generic [ref=f4e468]:
+          - generic [ref=f4e469]: Responsable que recibe
+          - textbox "Responsable que recibe" [ref=f4e470]:
+            - /placeholder: Nombre completo
+        - generic [ref=f4e471]:
+          - generic [ref=f4e472]: Fecha y hora
+          - textbox "Fecha y hora" [ref=f4e473]: 2026-08-03T15:40
+        - generic [ref=f4e474]:
+          - generic [ref=f4e475]: Observaciones o novedad
+          - textbox "Observaciones o novedad" [ref=f4e476]:
+            - /placeholder: Obligatoria si hay faltantes, rechazo o devolución
+      - generic [ref=f4e477]:
+        - generic [ref=f4e478]:
+          - generic [ref=f4e479]:
+            - text: Conciliación
+            - heading "Lo solicitado frente a lo recibido" [level=2] [ref=f4e480]
+          - generic [ref=f4e481]: Por línea
+        - generic [ref=f4e482]:
+          - article [ref=f4e483]:
+            - generic [ref=f4e484]:
+              - generic [ref=f4e485]:
+                - strong [ref=f4e486]: Caja de cartón corrugado
+                - generic [ref=f4e487]: "Solicitado: 1480 und"
+              - generic [ref=f4e488]: und
+            - generic [ref=f4e489]:
+              - generic [ref=f4e490]:
+                - generic [ref=f4e491]: Recibido
+                - spinbutton "Recibido" [ref=f4e492]
+              - generic [ref=f4e493]:
+                - generic [ref=f4e494]: Devuelto
+                - spinbutton "Devuelto" [ref=f4e495]: "0"
+              - generic [ref=f4e496]:
+                - generic [ref=f4e497]: Faltante / rechazo
+                - strong [ref=f4e498]: 1480 und
+          - article [ref=f4e499]:
+            - generic [ref=f4e500]:
+              - generic [ref=f4e501]:
+                - strong [ref=f4e502]: Estiba de exportación
+                - generic [ref=f4e503]: "Solicitado: 28 und"
+              - generic [ref=f4e504]: und
+            - generic [ref=f4e505]:
+              - generic [ref=f4e506]:
+                - generic [ref=f4e507]: Recibido
+                - spinbutton "Recibido" [ref=f4e508]
+              - generic [ref=f4e509]:
+                - generic [ref=f4e510]: Devuelto
+                - spinbutton "Devuelto" [ref=f4e511]: "0"
+              - generic [ref=f4e512]:
+                - generic [ref=f4e513]: Faltante / rechazo
+                - strong [ref=f4e514]: 28 und
+      - generic [ref=f4e515]:
+        - generic [ref=f4e516]:
+          - generic [ref=f4e517]:
+            - text: HU682 · soporte
+            - heading "Evidencia de entrega" [level=2] [ref=f4e518]
+          - generic [ref=f4e519]: Completa
+        - generic [ref=f4e520]:
+          - button "Foto POD capturada Foto registrada en esta entrega" [ref=f4e521] [cursor=pointer]:
+            - strong [ref=f4e525]: Foto POD capturada
+            - generic [ref=f4e526]: Foto registrada en esta entrega
+          - button "Firma digital capturada Firma confirmada" [ref=f4e527] [cursor=pointer]:
+            - strong [ref=f4e530]: Firma digital capturada
+            - generic [ref=f4e531]: Firma confirmada
+        - alert "Ocurrió un error. Revisa la recepción. Indica quién recibe los materiales en la finca." [active] [ref=f4e543]:
+          - generic [ref=f4e549]:
+            - strong [ref=f4e550]: Revisa la recepción
+            - paragraph [ref=f4e551]: Indica quién recibe los materiales en la finca.
+      - generic [ref=f4e532]:
+        - button "Guardar avance" [ref=f4e533] [cursor=pointer]
+        - button "Cerrar recepción" [ref=f4e534] [cursor=pointer]
+  - complementary [ref=f4e108]:
+    - generic [ref=f4e109]:
+      - generic [ref=f4e112]:
+        - strong [ref=f4e113]: Finca Santa Isabel
+        - generic [ref=f4e114]: operador.sial
+      - button [ref=f4e115] [cursor=pointer]
+    - search [ref=f4e119]:
+      - searchbox [ref=f4e124]
+    - generic [ref=f4e125]:
+      - navigation [ref=f4e126]:
+        - paragraph [ref=f4e127]: ZE Puerto / Control de contenedores
+        - link [ref=f4e128] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/index.html
+          - text: Dashboard ZE Puerto
+        - link [ref=f4e132] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-ze.html
+          - text: HU758 - Recepcion vehiculo ZE
+        - link [ref=f4e135] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/inspeccion-externa.html?selectContainer=1
+          - text: HU557 - Inspeccion externa ZE
+        - link [ref=f4e138] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/inspeccion-interna.html?selectContainer=1
+          - text: HU558 - Inspeccion interna ZE
+        - link [ref=f4e141] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f4e147] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/despacho-finca.html
+          - text: HU303 - Despacho a finca
+        - link [ref=f4e150] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu1431-despacho-contenedor-finca.html
+          - text: HU1431 - Despacho contenedor a finca
+      - navigation [ref=f4e154]:
+        - paragraph [ref=f4e155]: Retorno ZE / Puerto
+        - link [ref=f4e156] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-ze-retorno.html
+          - text: Recepcion ZE retorno
+        - link [ref=f4e159] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu342-descarga-pallets.html
+          - text: HU342 - Descargar pallets
+        - link [ref=f4e163] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f4e167] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/hu347-cargue-consolidado.html
+          - text: HU347 - Cargue consolidado
+        - link [ref=f4e171] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/despacho-puerto.html
+          - text: Despacho puerto
+        - link [ref=f4e174] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/recepcion-puerto.html
+          - text: Recepcion puerto
+        - link [ref=f4e177] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/puerto-ze/entrega-puerto.html
+          - text: Entrega en puerto
+      - navigation [ref=f4e180]:
+        - paragraph [ref=f4e181]: Finca
+        - link [ref=f4e182] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/recepcion-finca.html
+          - text: Recepcion en finca
+        - link [ref=f4e185] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-contenedores.html
+          - text: Trazabilidad contenedores
+        - link [ref=f4e188] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-pallets.html
+          - text: Pallets por finca
+        - link [ref=f4e192] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/consulta-vehiculos.html
+          - text: Trazabilidad vehículos
+        - link [ref=f4e198] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/inspeccion-externa.html?selectContainer=1
+          - text: Inspeccion externa
+        - link [ref=f4e201] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/inspeccion-interna.html?selectContainer=1
+          - text: Inspeccion interna
+        - link [ref=f4e204] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/sesion-responsabilidad.html
+          - text: Sesion responsabilidad
+        - link [ref=f4e207] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/cierre-contenedor.html
+          - text: Cierre de contenedor
+        - link [ref=f4e211] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/finca/despacho-ze.html
+          - text: Despacho a ZE
+      - navigation [ref=f4e214]:
+        - paragraph [ref=f4e215]: Pallets
+        - link [ref=f4e216] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/armar-pallet.html
+          - text: HU591 - Armar pallet
+        - link [ref=f4e220] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=f4e226] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/consulta-pallets.html
+          - text: Consulta Pallet’s
+        - link [ref=f4e230] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/reetiquetar-pallet.html
+          - text: Re-etiquetar pallet
+        - link [ref=f4e234] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/pallets/cargar-pallets.html
+          - text: HU332 - Cargue contenedor
+      - navigation [ref=f4e236]:
+        - paragraph [ref=f4e237]: Materiales y suministros
+        - link [ref=f4e238] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/index.html
+          - text: Materiales
+        - link [ref=f4e242] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/pedido-sugerido.html
+          - text: Pedido sugerido
+        - link [ref=f4e245] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/inventario-finca.html
+          - text: Inventario finca
+        - link [ref=f4e249] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/ordenes-asignadas.html
+          - text: Ordenes asignadas
+        - link [ref=f4e253] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/registrar-entrega.html
+          - text: Registrar entrega
+        - link [ref=f4e256] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/materiales/pallets.html
+          - text: Pallets materiales
+      - navigation [ref=f4e258]:
+        - paragraph [ref=f4e259]: Trazabilidad
+        - link [ref=f4e260] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/sincronizacion.html
+          - text: Sincronización móvil
+        - link [ref=f4e266] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/evidencias.html
+          - text: Evidencias operativas
+        - link [ref=f4e270] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/consultar-contenedor.html
+          - text: Consultar contenedor
+        - link [ref=f4e274] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/trazabilidad/consultar-operacion.html
+          - text: Consultar operacion
+      - navigation [ref=f4e276]:
+        - paragraph [ref=f4e277]: Sistema de diseño
+        - link [ref=f4e278] [cursor=pointer]:
+          - /url: http://127.0.0.1:4173/libreria/index.html
+          - text: Librería
+    - link [ref=f4e282] [cursor=pointer]:
+      - /url: http://127.0.0.1:4173/app/seleccion-empresa.html
+      - text: Cambiar finca

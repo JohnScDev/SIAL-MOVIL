@@ -1,0 +1,204 @@
+- generic [ref=f16e2]:
+  - complementary "Navegacion principal" [ref=f16e3]:
+    - generic [ref=f16e4]:
+      - generic [ref=f16e5]: S
+      - generic [ref=f16e6]: SIAL
+    - paragraph [ref=f16e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f16e8]':
+      - link "Referencias" [ref=f16e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f16e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f16e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f16e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f16e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f16e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f16e52]:
+        - generic [ref=f16e53]:
+          - link "Materiales y Suministros" [ref=f16e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f16e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f16e62]:
+          - link "Tablero materiales" [ref=f16e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f16e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f16e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f16e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f16e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f16e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f16e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f16e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f16e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f16e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f16e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f16e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f16e96]:
+    - generic [ref=f16e97]:
+      - button "Contraer menu" [expanded] [ref=f16e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f16e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f16e106]:
+      - button "Cambiar a modo oscuro" [ref=f16e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f16e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f16e121] [cursor=pointer]:
+        - generic [ref=f16e122]: QA
+  - main [ref=f16e125]:
+    - generic [ref=f16e126]:
+      - paragraph [ref=f16e127]: Materiales / Pedidos
+      - generic [ref=f16e128]:
+        - generic [ref=f16e129]:
+          - heading "Pedido sugerido por finca" [level=1] [ref=f16e130]
+          - paragraph [ref=f16e131]: Calcula la necesidad de materiales desde el aviso de corte, la receta vigente y el inventario disponible.
+        - link "Pedidos adicionales" [ref=f16e132] [cursor=pointer]:
+          - /url: pedidos-adicionales.html
+      - note [ref=f16e133]: "Web: genera y consulta el pedido sugerido. Móvil solo consulta el resultado cuando el rol de campo lo necesita; no duplica este cálculo."
+      - article [ref=f16e134]:
+        - generic [ref=f16e135]:
+          - generic [ref=f16e136]:
+            - heading "Origen del cálculo" [level=2] [ref=f16e137]
+            - paragraph [ref=f16e138]: Selecciona un aviso publicado y una finca dentro de tu alcance.
+          - link "Ver aviso" [ref=f16e139] [cursor=pointer]:
+            - /url: ../Gestion%20de%20Planeacion/consultar-aviso-corte.html?aviso=AC-2026-032
+        - generic [ref=f16e143]:
+          - generic [ref=f16e144]:
+            - generic [ref=f16e145]: Aviso de corte
+            - combobox "Aviso de corte" [ref=f16e146]:
+              - option "AC-2026-032 · SEM-2026-32 · Publicado" [selected]
+              - option "Los borradores no están disponibles" [disabled]
+          - generic [ref=f16e147]:
+            - generic [ref=f16e148]: Finca
+            - combobox "Finca" [ref=f16e149]:
+              - option "La Ceiba · lista para calcular" [selected]
+              - option "Marte · receta pendiente"
+              - option "Vijagual · inventario pendiente"
+              - option "Solo se muestran fincas autorizadas" [disabled]
+          - button "Calcular sugerido" [ref=f16e150] [cursor=pointer]
+      - generic [ref=f16e154]:
+        - status [ref=f16e155]:
+          - generic [ref=f16e158]:
+            - strong [ref=f16e159]: Información lista para calcular
+            - generic [ref=f16e160]: Las fuentes están completas. Revisa la fórmula antes de generar el pedido sugerido.
+        - article [ref=f16e161]:
+          - generic "Fuentes utilizadas" [ref=f16e162]:
+            - generic [ref=f16e163]:
+              - generic [ref=f16e166]: Aviso publicado
+              - strong [ref=f16e167]: AC-2026-032 · Inicial
+            - generic [ref=f16e168]:
+              - generic [ref=f16e171]: Receta aplicada
+              - strong [ref=f16e172]: REC-AGSTDRA · versión 3
+            - generic [ref=f16e173]:
+              - generic [ref=f16e176]: Inventario consultado
+              - strong [ref=f16e177]: 03/08/2026, 06:40
+            - generic [ref=f16e178]:
+              - generic [ref=f16e181]: Alcance
+              - strong [ref=f16e182]: Banasan · finca autorizada
+          - generic [ref=f16e183]:
+            - generic [ref=f16e184]:
+              - paragraph [ref=f16e185]: La Ceiba · AGSTDRA
+              - heading "Cálculo de materiales" [level=2] [ref=f16e186]
+              - paragraph [ref=f16e187]: 2.004 cajas y 38 palés planificados en SEM-2026-32.
+            - generic [ref=f16e188]: Pendiente de generar
+          - table [ref=f16e190]:
+            - rowgroup [ref=f16e191]:
+              - row [ref=f16e192]:
+                - columnheader "Material" [ref=f16e193]
+                - columnheader "Necesidad del aviso" [ref=f16e194]
+                - columnheader "Stock físico" [ref=f16e195]
+                - columnheader "Ya reservado" [ref=f16e196]
+                - columnheader "Por recibir" [ref=f16e197]
+                - columnheader "Margen de seguridad" [ref=f16e198]
+                - columnheader "Sugerido" [ref=f16e199]
+            - rowgroup [ref=f16e200]:
+              - row [ref=f16e201]:
+                - cell "Caja de cartón corrugado MAT-CAR-001 · unidades" [ref=f16e202]:
+                  - generic [ref=f16e203]:
+                    - strong [ref=f16e204]: Caja de cartón corrugado
+                    - generic [ref=f16e205]: MAT-CAR-001 · unidades
+                - cell "2.004" [ref=f16e206]
+                - cell "1.280" [ref=f16e207]
+                - cell "120" [ref=f16e208]
+                - cell "200" [ref=f16e209]
+                - cell "100" [ref=f16e210]
+                - cell "744 unidades" [ref=f16e211]:
+                  - strong [ref=f16e212]: "744"
+                  - generic [ref=f16e213]: unidades
+              - row [ref=f16e214]:
+                - cell "Tapa de cartón MAT-TAP-001 · unidades" [ref=f16e215]:
+                  - generic [ref=f16e216]:
+                    - strong [ref=f16e217]: Tapa de cartón
+                    - generic [ref=f16e218]: MAT-TAP-001 · unidades
+                - cell "2.004" [ref=f16e219]
+                - cell "900" [ref=f16e220]
+                - cell "100" [ref=f16e221]
+                - cell "500" [ref=f16e222]
+                - cell "100" [ref=f16e223]
+                - cell "804 unidades" [ref=f16e224]:
+                  - strong [ref=f16e225]: "804"
+                  - generic [ref=f16e226]: unidades
+              - row [ref=f16e227]:
+                - cell "Etiqueta de trazabilidad MAT-ETQ-001 · rollos" [ref=f16e228]:
+                  - generic [ref=f16e229]:
+                    - strong [ref=f16e230]: Etiqueta de trazabilidad
+                    - generic [ref=f16e231]: MAT-ETQ-001 · rollos
+                - cell "42" [ref=f16e232]
+                - cell "12" [ref=f16e233]
+                - cell "2" [ref=f16e234]
+                - cell "10" [ref=f16e235]
+                - cell "3" [ref=f16e236]
+                - cell "25 rollos" [ref=f16e237]:
+                  - strong [ref=f16e238]: "25"
+                  - generic [ref=f16e239]: rollos
+              - row [ref=f16e240]:
+                - cell "Estiba de exportación MAT-EST-001 · unidades" [ref=f16e241]:
+                  - generic [ref=f16e242]:
+                    - strong [ref=f16e243]: Estiba de exportación
+                    - generic [ref=f16e244]: MAT-EST-001 · unidades
+                - cell "38" [ref=f16e245]
+                - cell "12" [ref=f16e246]
+                - cell "3" [ref=f16e247]
+                - cell "5" [ref=f16e248]
+                - cell "4" [ref=f16e249]
+                - cell "28 unidades" [ref=f16e250]:
+                  - strong [ref=f16e251]: "28"
+                  - generic [ref=f16e252]: unidades
+          - generic [ref=f16e253]:
+            - strong [ref=f16e254]: "Cómo se obtiene:"
+            - generic [ref=f16e255]: necesidad del aviso + margen de seguridad − stock utilizable − cantidades por recibir. El stock reservado no se considera disponible.
+          - generic [ref=f16e256]:
+            - generic [ref=f16e257]:
+              - generic [ref=f16e258]: Materiales calculados
+              - strong [ref=f16e259]: "4"
+              - generic [ref=f16e260]: Las cantidades conservan su unidad de medida por material.
+            - generic [ref=f16e261]:
+              - button "Exportar cálculo" [ref=f16e262] [cursor=pointer]
+              - button "Generar pedido sugerido" [ref=f16e265] [cursor=pointer]
+        - article [ref=f16e266]:
+          - generic [ref=f16e268]:
+            - heading "Trazabilidad del cálculo" [level=2] [ref=f16e269]
+            - paragraph [ref=f16e270]: Origen y resultado de las acciones realizadas sobre este sugerido.
+          - generic [ref=f16e271]:
+            - generic [ref=f16e272]:
+              - generic [ref=f16e274]:
+                - strong [ref=f16e275]: Cálculo consultado
+                - paragraph [ref=f16e276]: AC-2026-032 · La Ceiba · Web
+              - time [ref=f16e277]: 03/08/2026, 09:15
+            - generic [ref=f16e278]:
+              - generic [ref=f16e280]:
+                - strong [ref=f16e281]: Fuentes verificadas
+                - paragraph [ref=f16e282]: REC-AGSTDRA · versión 3 · inventario 03/08/2026, 06:40
+              - time [ref=f16e283]: 03/08/2026, 09:15

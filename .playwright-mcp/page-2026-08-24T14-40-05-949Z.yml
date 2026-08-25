@@ -1,0 +1,177 @@
+- generic [ref=f2e2]:
+  - complementary "Navegacion principal" [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]: S
+      - generic [ref=f2e6]: SIAL
+    - paragraph [ref=f2e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f2e8]':
+      - link "Referencias" [ref=f2e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f2e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f2e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f2e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f2e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f2e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f2e52]:
+        - generic [ref=f2e53]:
+          - link "Materiales y Suministros" [ref=f2e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f2e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f2e62]:
+          - link "Tablero materiales" [ref=f2e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f2e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f2e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f2e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f2e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f2e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f2e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f2e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f2e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f2e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f2e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f2e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f2e96]:
+    - generic [ref=f2e97]:
+      - button "Contraer menu" [expanded] [ref=f2e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f2e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f2e106]:
+      - button "Cambiar a modo oscuro" [ref=f2e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f2e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f2e121] [cursor=pointer]:
+        - generic [ref=f2e122]: QA
+  - main [ref=f2e125]:
+    - generic [ref=f2e126]:
+      - paragraph [ref=f2e127]: Materiales / Ordenes
+      - generic [ref=f2e129]:
+        - heading "Ordenes de transporte de insumos" [level=1] [ref=f2e130]
+        - paragraph [ref=f2e131]: Ordenes con documento logistico, vehiculo, finca destino y notificaciones operativas.
+      - generic [ref=f2e132]: "Historias cubiertas: HU546, HU669, HU670, HU532. Esta propuesta es estatica y deja contratos listos para backend futuro."
+      - generic [ref=f2e136]: "Canal y responsabilidad: Web: registra y notifica · móvil: consulta y ejecuta hitos de campo."
+      - generic [ref=f2e140]: La notificacion reemplaza archivos manuales y correos sueltos como mecanismo principal de coordinacion.
+      - article [ref=f2e144]:
+        - generic [ref=f2e145]:
+          - generic [ref=f2e146]:
+            - heading "Ordenes de transporte" [level=2] [ref=f2e147]
+            - paragraph [ref=f2e148]: Ordenes de insumos con documento, vehiculo, finca destino y notificacion.
+          - generic [ref=f2e149]:
+            - generic [ref=f2e150]: 1-3 de 3 registros
+            - button "Exportar Ordenes de transporte" [ref=f2e151] [cursor=pointer]:
+              - generic [ref=f2e154]: Exportar
+            - button "Notificar pendientes" [ref=f2e155] [cursor=pointer]
+        - generic [ref=f2e157]:
+          - searchbox "Buscar" [ref=f2e158]
+          - combobox "Filtrar por estado" [ref=f2e159]:
+            - option "Todos los estados" [selected]
+            - option "Activos / cerrados"
+            - option "Pendientes / revision"
+            - option "Inactivos / bloqueo"
+          - combobox "Todos los documentos" [ref=f2e160]:
+            - option "Todos los documentos" [selected]
+            - option "RPT"
+            - option "Remision"
+            - option "Reserva"
+        - table [ref=f2e162]:
+          - rowgroup [ref=f2e163]:
+            - row [ref=f2e164]:
+              - columnheader "Orden" [ref=f2e165]
+              - columnheader "Documento" [ref=f2e166]
+              - columnheader "Finca destino" [ref=f2e167]
+              - columnheader "Vehiculo / conductor" [ref=f2e168]
+              - columnheader "Materiales" [ref=f2e169]
+              - columnheader "Estado" [ref=f2e170]
+              - columnheader "Auditoria" [ref=f2e171]
+              - columnheader "Acciones" [ref=f2e172]
+          - rowgroup [ref=f2e173]:
+            - row [ref=f2e174]:
+              - cell "OTI-546-001 HU546/HU669/HU670/HU532" [ref=f2e175]:
+                - generic [ref=f2e176]:
+                  - strong [ref=f2e177]: OTI-546-001
+                  - generic [ref=f2e178]: HU546/HU669/HU670/HU532
+              - cell "RPT RPT-2026-0881" [ref=f2e179]:
+                - generic [ref=f2e180]: RPT
+                - text: RPT-2026-0881
+              - cell "Finca Santa Isabel" [ref=f2e181]
+              - cell "TUL458 Carlos Mendoza" [ref=f2e182]: TUL458Carlos Mendoza
+              - cell "Caja carton corrugado, Estiba madera 1480 unidades" [ref=f2e183]: Caja carton corrugado, Estiba madera1480 unidades
+              - 'cell "Notificado Transporte: pendiente Conductor: pendiente" [ref=f2e184]':
+                - generic [ref=f2e185]: Notificado
+                - generic [ref=f2e186]: "Transporte: pendienteConductor: pendiente"
+              - cell "Notificar - sistema 28/06/2026 10:30" [ref=f2e187]: Notificar - sistema28/06/2026 10:30
+              - cell [ref=f2e188]:
+                - generic [ref=f2e189]:
+                  - button "Visualizar detalle" [ref=f2e190] [cursor=pointer]
+                  - button "Notificar a transporte" [ref=f2e194] [cursor=pointer]
+                  - button "Notificar al conductor" [ref=f2e198] [cursor=pointer]
+                  - button "Inactivar orden" [ref=f2e202] [cursor=pointer]
+            - row [ref=f2e206]:
+              - cell "OTI-546-002 HU546/HU669" [ref=f2e207]:
+                - generic [ref=f2e208]:
+                  - strong [ref=f2e209]: OTI-546-002
+                  - generic [ref=f2e210]: HU546/HU669
+              - cell "Remision REM-2026-0184" [ref=f2e211]:
+                - generic [ref=f2e212]: Remision
+                - text: REM-2026-0184
+              - cell "Finca El Retiro" [ref=f2e213]
+              - cell "CAM-102 Ana Ramirez" [ref=f2e214]: CAM-102Ana Ramirez
+              - cell "Caja carton corrugado 520 unidades" [ref=f2e215]: Caja carton corrugado520 unidades
+              - 'cell "Listo despacho Transporte: pendiente Conductor: pendiente" [ref=f2e216]':
+                - generic [ref=f2e217]: Listo despacho
+                - generic [ref=f2e218]: "Transporte: pendienteConductor: pendiente"
+              - cell "Crear - usuario.logistico 28/06/2026 11:05" [ref=f2e219]: Crear - usuario.logistico28/06/2026 11:05
+              - cell [ref=f2e220]:
+                - generic [ref=f2e221]:
+                  - button "Visualizar detalle" [ref=f2e222] [cursor=pointer]
+                  - button "Notificar a transporte" [ref=f2e226] [cursor=pointer]
+                  - button "Notificar al conductor" [ref=f2e230] [cursor=pointer]
+                  - button "Inactivar orden" [ref=f2e234] [cursor=pointer]
+            - row [ref=f2e238]:
+              - cell "OTI-546-003 HU546/HU670" [ref=f2e239]:
+                - generic [ref=f2e240]:
+                  - strong [ref=f2e241]: OTI-546-003
+                  - generic [ref=f2e242]: HU546/HU670
+              - cell "Reserva RES-2026-0045" [ref=f2e243]:
+                - generic [ref=f2e244]: Reserva
+                - text: RES-2026-0045
+              - cell "Finca Las Palmas" [ref=f2e245]
+              - cell "Sin asignar --" [ref=f2e246]: Sin asignar--
+              - cell "Separador de pallet 35 paquetes" [ref=f2e247]: Separador de pallet35 paquetes
+              - 'cell "Asignado Transporte: pendiente Conductor: sin asignar" [ref=f2e248]':
+                - generic [ref=f2e249]: Asignado
+                - generic [ref=f2e250]: "Transporte: pendienteConductor: sin asignar"
+              - cell "Asignar - almacen.pedidos 28/06/2026 12:12" [ref=f2e251]: Asignar - almacen.pedidos28/06/2026 12:12
+              - cell [ref=f2e252]:
+                - generic [ref=f2e253]:
+                  - button "Visualizar detalle" [ref=f2e254] [cursor=pointer]
+                  - button "Notificar a transporte" [ref=f2e258] [cursor=pointer]
+                  - button "Notificar al conductor" [disabled] [ref=f2e262] [cursor=pointer]
+                  - button "Inactivar orden" [ref=f2e266] [cursor=pointer]
+        - generic "Paginacion de registros" [ref=f2e270]:
+          - generic [ref=f2e271]: Mostrando 1-3 de 3 registros
+          - generic [ref=f2e272]:
+            - generic [ref=f2e273]: Registros por pagina
+            - combobox "Registros por pagina" [ref=f2e274]:
+              - option "10" [selected]
+              - option "30"
+              - option "50"
+          - generic "Cambiar pagina" [ref=f2e275]:
+            - button "Anterior" [disabled] [ref=f2e276]
+            - button "1" [ref=f2e277] [cursor=pointer]
+            - button "Siguiente" [disabled] [ref=f2e278]

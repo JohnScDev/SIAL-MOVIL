@@ -1,0 +1,173 @@
+- generic [ref=f11e2]:
+  - complementary "Navegación principal" [ref=f11e3]:
+    - generic [ref=f11e4]:
+      - generic [ref=f11e5]: S
+      - generic [ref=f11e6]: SIAL
+    - paragraph [ref=f11e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f11e8]':
+      - link "Referencias" [ref=f11e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f11e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f11e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f11e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f11e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f11e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f11e52]:
+        - generic [ref=f11e53]:
+          - link "Materiales y Suministros" [ref=f11e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f11e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f11e62]:
+          - link "Tablero materiales" [ref=f11e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f11e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f11e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f11e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f11e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f11e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f11e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f11e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f11e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f11e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f11e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f11e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f11e96]:
+    - generic [ref=f11e97]:
+      - button "Contraer menu" [expanded] [ref=f11e98] [cursor=pointer]
+      - textbox "Búsqueda principal" [ref=f11e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f11e106]:
+      - button "Cambiar a modo oscuro" [ref=f11e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f11e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f11e121] [cursor=pointer]:
+        - generic [ref=f11e122]: QA
+  - main [ref=f11e125]:
+    - generic [ref=f11e126]:
+      - paragraph [ref=f11e127]: Materiales / Pedidos adicionales
+      - generic [ref=f11e129]:
+        - heading "Pedidos adicionales" [level=1] [ref=f11e130]
+        - paragraph [ref=f11e131]: Consulta solicitudes excepcionales sin perder su relación con el pedido semanal.
+      - article [ref=f11e132]:
+        - generic [ref=f11e133]:
+          - generic [ref=f11e134]:
+            - heading "Gestión de solicitudes" [level=2] [ref=f11e135]
+            - paragraph [ref=f11e136]: Cada adicional conserva el pedido base, su motivo y el estado del procesamiento.
+          - link "Nuevo pedido adicional" [ref=f11e137] [cursor=pointer]:
+            - /url: pedidos-adicionales.html?nuevo=1&base=PED-SUG-2026-32-014
+        - generic [ref=f11e140]:
+          - textbox "Buscar pedidos adicionales" [ref=f11e145]:
+            - /placeholder: Buscar pedido, finca, aviso o motivo
+          - combobox "Filtrar por estado" [ref=f11e146]:
+            - option "Todos los estados" [selected]
+            - option "Pendiente de validación"
+            - option "Aprobado"
+            - option "En preparación"
+            - option "Entregado"
+        - table [ref=f11e148]:
+          - rowgroup [ref=f11e149]:
+            - row [ref=f11e150]:
+              - columnheader "Pedido adicional" [ref=f11e151]
+              - columnheader "Origen" [ref=f11e152]
+              - columnheader "Solicitud" [ref=f11e153]
+              - columnheader "Motivo" [ref=f11e154]
+              - columnheader "Documento" [ref=f11e155]
+              - columnheader "Estado" [ref=f11e156]
+              - columnheader "Última actualización" [ref=f11e157]
+              - columnheader "Acciones" [ref=f11e158]
+          - rowgroup [ref=f11e159]:
+            - row [ref=f11e160]:
+              - cell "PAD-2026-32-002 Adicional 2 de SEM-2026-32" [ref=f11e161]:
+                - generic [ref=f11e162]:
+                  - strong [ref=f11e163]: PAD-2026-32-002
+                  - generic [ref=f11e164]: Adicional 2 de SEM-2026-32
+              - cell "PED-SUG-2026-32-014 AC-2026-032 · La Ceiba" [ref=f11e165]:
+                - generic [ref=f11e166]:
+                  - strong [ref=f11e167]: PED-SUG-2026-32-014
+                  - generic [ref=f11e168]: AC-2026-032 · La Ceiba
+              - cell [ref=f11e169]:
+                - strong [ref=f11e170]: 2 materiales
+                - text: 160 unidades
+              - cell "Incremento extraordinario del corte" [ref=f11e171]
+              - cell "Pendiente de clasificación" [ref=f11e172]
+              - cell "Pendiente de validación" [ref=f11e173]
+              - cell "Hoy, 10:42" [ref=f11e175]
+              - cell [ref=f11e176]:
+                - link "Consultar" [ref=f11e177] [cursor=pointer]:
+                  - /url: pedidos-adicionales.html?pedido=PAD-2026-32-002
+            - row [ref=f11e181]:
+              - cell "PAD-2026-32-001 Adicional 1 de SEM-2026-32" [ref=f11e182]:
+                - generic [ref=f11e183]:
+                  - strong [ref=f11e184]: PAD-2026-32-001
+                  - generic [ref=f11e185]: Adicional 1 de SEM-2026-32
+              - cell "PED-SUG-2026-32-014 AC-2026-032 · La Ceiba" [ref=f11e186]:
+                - generic [ref=f11e187]:
+                  - strong [ref=f11e188]: PED-SUG-2026-32-014
+                  - generic [ref=f11e189]: AC-2026-032 · La Ceiba
+              - cell [ref=f11e190]:
+                - strong [ref=f11e191]: 1 material
+                - text: 80 unidades
+              - cell "Diferencia de inventario" [ref=f11e192]
+              - cell "Remisión pendiente" [ref=f11e193]
+              - cell "Aprobado" [ref=f11e194]
+              - cell "Ayer, 16:10" [ref=f11e196]
+              - cell [ref=f11e197]:
+                - link "Consultar" [ref=f11e198] [cursor=pointer]:
+                  - /url: pedidos-adicionales.html?pedido=PAD-2026-32-001
+            - row [ref=f11e202]:
+              - cell "PAD-2026-31-004 Adicional 4 de SEM-2026-31" [ref=f11e203]:
+                - generic [ref=f11e204]:
+                  - strong [ref=f11e205]: PAD-2026-31-004
+                  - generic [ref=f11e206]: Adicional 4 de SEM-2026-31
+              - cell "PED-SUG-2026-31-009 AC-2026-031 · Vijagual" [ref=f11e207]:
+                - generic [ref=f11e208]:
+                  - strong [ref=f11e209]: PED-SUG-2026-31-009
+                  - generic [ref=f11e210]: AC-2026-031 · Vijagual
+              - cell [ref=f11e211]:
+                - strong [ref=f11e212]: 2 materiales
+                - text: 240 unidades
+              - cell "Entrega incompleta del proveedor" [ref=f11e213]
+              - cell "REM-2026-0192" [ref=f11e214]
+              - cell "En preparación" [ref=f11e215]
+              - cell "01/08/2026, 11:25" [ref=f11e217]
+              - cell [ref=f11e218]:
+                - link "Consultar" [ref=f11e219] [cursor=pointer]:
+                  - /url: pedidos-adicionales.html?pedido=PAD-2026-31-004
+            - row [ref=f11e223]:
+              - cell "PAD-2026-31-003 Adicional 3 de SEM-2026-31" [ref=f11e224]:
+                - generic [ref=f11e225]:
+                  - strong [ref=f11e226]: PAD-2026-31-003
+                  - generic [ref=f11e227]: Adicional 3 de SEM-2026-31
+              - cell "PED-SUG-2026-31-006 AC-2026-031 · Marte" [ref=f11e228]:
+                - generic [ref=f11e229]:
+                  - strong [ref=f11e230]: PED-SUG-2026-31-006
+                  - generic [ref=f11e231]: AC-2026-031 · Marte
+              - cell [ref=f11e232]:
+                - strong [ref=f11e233]: 1 material
+                - text: 40 unidades
+              - cell "Cambio operativo" [ref=f11e234]
+              - cell "RPT-2026-0894" [ref=f11e235]
+              - cell "Entregado" [ref=f11e236]
+              - cell "31/07/2026, 17:40" [ref=f11e238]
+              - cell [ref=f11e239]:
+                - link "Consultar" [ref=f11e240] [cursor=pointer]:
+                  - /url: pedidos-adicionales.html?pedido=PAD-2026-31-003
+      - note [ref=f11e244]:
+        - generic [ref=f11e245]:
+          - strong [ref=f11e246]: Continuidad del flujo
+          - text: La clasificación en RPT, remisión o reserva ocurre después de validar el pedido y pertenece a la HU667.

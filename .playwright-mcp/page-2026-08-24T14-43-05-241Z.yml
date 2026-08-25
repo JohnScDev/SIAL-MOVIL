@@ -1,0 +1,116 @@
+- generic [ref=f16e2]:
+  - complementary "Navegacion principal" [ref=f16e3]:
+    - generic [ref=f16e4]:
+      - generic [ref=f16e5]: S
+      - generic [ref=f16e6]: SIAL
+    - paragraph [ref=f16e7]: Gestion
+    - 'navigation "Gestion: modulos y vistas" [ref=f16e8]':
+      - link "Referencias" [ref=f16e11] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-referencias.html
+      - link "Fincas" [ref=f16e17] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Fincas/gestion-fincas.html
+      - link "Transporte" [ref=f16e24] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Transporte/gestion-conductores.html
+      - link "Empresa" [ref=f16e33] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Empresas/gestion-empresas.html
+      - link "Usuarios" [ref=f16e40] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Usuarios/gestion-usuarios.html
+      - link "Planeacion" [ref=f16e48] [cursor=pointer]:
+        - /url: ../Gestion%20de%20Planeacion/gestion-avisos-corte.html
+      - generic [ref=f16e52]:
+        - generic [ref=f16e53]:
+          - link "Materiales y Suministros" [ref=f16e54] [cursor=pointer]:
+            - /url: index.html
+          - button "Contraer vistas de Materiales y Suministros" [expanded] [ref=f16e59] [cursor=pointer]
+        - generic "Vistas de Materiales y Suministros" [ref=f16e62]:
+          - link "Tablero materiales" [ref=f16e63] [cursor=pointer]:
+            - /url: index.html
+          - link "Gestion de pedidos" [ref=f16e65] [cursor=pointer]:
+            - /url: gestion-pedidos-materiales.html
+          - link "Inventario por finca" [ref=f16e67] [cursor=pointer]:
+            - /url: inventario-materiales-finca.html
+          - link "Inventario de pallets" [ref=f16e69] [cursor=pointer]:
+            - /url: inventario-pallets.html
+          - link "Ordenes de transporte" [ref=f16e71] [cursor=pointer]:
+            - /url: ordenes-transporte-insumos.html
+          - link "Resumen proveedores" [ref=f16e73] [cursor=pointer]:
+            - /url: resumen-proveedores.html
+          - link "Seguimiento entregas" [ref=f16e75] [cursor=pointer]:
+            - /url: seguimiento-entregas.html
+          - link "Gestion de materiales" [ref=f16e77] [cursor=pointer]:
+            - /url: gestion-materiales.html
+          - link "Gestion de proveedores" [ref=f16e79] [cursor=pointer]:
+            - /url: gestion-proveedores.html
+          - link "Reglas documentales" [ref=f16e81] [cursor=pointer]:
+            - /url: reglas-documentales.html
+      - link "Puerto" [ref=f16e85] [cursor=pointer]:
+        - /url: ../Gestion%20Operaciones%20Puerto/gestion-contenedores.html
+      - link "Seguridad" [ref=f16e91] [cursor=pointer]:
+        - /url: ../Trazabilidad/auditoria-operativa.html
+  - banner [ref=f16e96]:
+    - generic [ref=f16e97]:
+      - button "Contraer menu" [expanded] [ref=f16e98] [cursor=pointer]
+      - textbox "Busqueda principal" [ref=f16e105]:
+        - /placeholder: Buscar...
+    - generic [ref=f16e106]:
+      - button "Cambiar a modo oscuro" [ref=f16e107] [cursor=pointer]
+      - button "Notificaciones" [ref=f16e116] [cursor=pointer]
+      - button "Abrir menu de perfil" [ref=f16e121] [cursor=pointer]:
+        - generic [ref=f16e122]: QA
+  - main [ref=f16e125]:
+    - generic [ref=f16e126]:
+      - paragraph [ref=f16e127]: Materiales / Pedidos
+      - generic [ref=f16e128]:
+        - generic [ref=f16e129]:
+          - heading "Pedido sugerido por finca" [level=1] [ref=f16e130]
+          - paragraph [ref=f16e131]: Calcula la necesidad de materiales desde el aviso de corte, la receta vigente y el inventario disponible.
+        - link "Pedidos adicionales" [ref=f16e132] [cursor=pointer]:
+          - /url: pedidos-adicionales.html
+      - note [ref=f16e133]: "Web: genera y consulta el pedido sugerido. Móvil solo consulta el resultado cuando el rol de campo lo necesita; no duplica este cálculo."
+      - article [ref=f16e134]:
+        - generic [ref=f16e135]:
+          - generic [ref=f16e136]:
+            - heading "Origen del cálculo" [level=2] [ref=f16e137]
+            - paragraph [ref=f16e138]: Selecciona un aviso publicado y una finca dentro de tu alcance.
+          - link "Ver aviso" [ref=f16e139] [cursor=pointer]:
+            - /url: ../Gestion%20de%20Planeacion/consultar-aviso-corte.html?aviso=AC-2026-032
+        - generic [ref=f16e143]:
+          - generic [ref=f16e144]:
+            - generic [ref=f16e145]: Aviso de corte
+            - combobox "Aviso de corte" [ref=f16e146]:
+              - option "AC-2026-032 · SEM-2026-32 · Publicado" [selected]
+              - option "Los borradores no están disponibles" [disabled]
+          - generic [ref=f16e147]:
+            - generic [ref=f16e148]: Finca
+            - combobox "Finca" [ref=f16e149]:
+              - option "La Ceiba · lista para calcular" [selected]
+              - option "Marte · receta pendiente"
+              - option "Vijagual · inventario pendiente"
+              - option "Solo se muestran fincas autorizadas" [disabled]
+          - button "Calcular sugerido" [ref=f16e150] [cursor=pointer]
+      - generic [ref=f16e154]:
+        - alert [active] [ref=f16e284]:
+          - generic [ref=f16e287]:
+            - strong [ref=f16e288]: Cálculo bloqueado
+            - generic [ref=f16e289]: "No se puede calcular: la referencia ALGFT18BD no tiene una receta vigente."
+        - article [ref=f16e290]:
+          - generic "Fuentes utilizadas" [ref=f16e291]:
+            - generic [ref=f16e292]:
+              - generic [ref=f16e295]: Aviso publicado
+              - strong [ref=f16e296]: AC-2026-032 · Inicial
+            - generic [ref=f16e297]:
+              - generic [ref=f16e300]: Receta
+              - strong [ref=f16e301]: Sin receta vigente
+            - generic [ref=f16e302]:
+              - generic [ref=f16e305]: Inventario consultado
+              - strong [ref=f16e306]: 03/08/2026, 06:35
+            - generic [ref=f16e307]:
+              - generic [ref=f16e310]: Alcance
+              - strong [ref=f16e311]: Banasan · finca autorizada
+          - generic [ref=f16e312]:
+            - generic [ref=f16e313]:
+              - paragraph [ref=f16e314]: Marte · ALGFT18BD
+              - heading "Qué debes resolver" [level=2] [ref=f16e315]
+              - paragraph [ref=f16e316]: Solicita al responsable de materiales publicar la receta antes de generar el pedido.
+            - link "Revisar configuración" [ref=f16e317] [cursor=pointer]:
+              - /url: gestion-materiales.html

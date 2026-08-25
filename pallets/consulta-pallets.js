@@ -73,7 +73,7 @@
     return new Date(date.getTime() + amount * 86400000);
   }
 
-  function demoPallets() {
+  function samplePallets() {
     var farm = activeFarm();
     var today = new Date();
     return [
@@ -162,7 +162,7 @@
       seen.add(item.sscc);
       unique.push(item);
     });
-    return unique.length ? unique : demoPallets();
+    return unique.length ? unique : samplePallets();
   }
 
   function normalizeSscc(value) {
@@ -351,8 +351,6 @@
     window.SialMobileUI.openBarcodeScanner({
       title: "Escanear SSCC",
       eyebrow: "Consulta de pallet",
-      demoValue: first ? first.sscc : "177012345678900073",
-      demoLabel: "Leer SSCC demo",
       normalize: normalizeSscc,
       validate: function (value) {
         var sscc = normalizeSscc(value);

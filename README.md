@@ -36,6 +36,10 @@ Prototipo navegable de la version movil de SIAL. El alcance movil no replica SIA
 
 `libreria/index.html` es la referencia unica para crear o modificar componentes emergentes. Conserva los tokens, temas y medidas tactiles de la propuesta y documenta los patrones disponibles en `SialMobileUI`.
 
+La libreria integrada incluye demostraciones funcionales de navegacion por tabs, segmented controls, OTP, firma tactil, progreso de evidencias, estados de sincronizacion, recuperacion de acceso, selectores, feedback, capas, camara y escaner. La seccion `API integrada` se genera desde la superficie publica real de `SialMobileUI`, evitando que el catalogo documente capacidades inexistentes o deje APIs compartidas sin referencia.
+
+Los patrones operativos compuestos —operacion activa, prioridad, consulta, evidencia y firma— muestran como ensamblar los componentes base sin duplicar estilos o comportamiento en cada vista.
+
 ## Reglas de uso por componente
 
 - Toast flotante: confirmaciones breves que no requieren una decision.
@@ -65,5 +69,6 @@ node --check login/sial-mobile-login.js
 node qa/mobile-motion-contract.js
 node qa/mobile-brand-assets-contract.js
 node qa/mobile-library-catalog-contract.js
+node qa/mobile-library-integration-contract.js
 git diff --check
 ```

@@ -318,18 +318,18 @@
   };
 
   const labels = {
-    zeReception: "Recepcion vehiculo en ZE",
+    zeReception: "Recepción en ZE",
     portExternalInspection: "Inspeccion externa ZE",
     portInternalInspection: "Inspeccion interna ZE",
-    zeDispatch: "Despacho a finca",
-    farmReception: "Recepcion en finca",
+    zeDispatch: "Salida ZE",
+    farmReception: "Ingreso en Finca",
     farmExternalInspection: "Inspeccion externa en finca",
     farmInternalInspection: "Inspeccion interna en finca",
     responsibility: "Sesion de responsabilidad",
     palletBuilt: "HU591 - Armado de pallet",
     palletsLoaded: "HU332 - Cargue contenedor",
     containerClosed: "Cierre de contenedor",
-    farmDispatch: "Despacho desde finca a ZE",
+    farmDispatch: "Salida de Finca",
     zeReturnReception: "Recepcion en ZE desde finca",
     zePalletUnload: "HU342 - Descarga de pallets en ZE",
     zePalletReassembly: "HU344 - Rearmado de pallets en ZE",
@@ -384,6 +384,22 @@
       { value: "int-esquina-id", label: "Esq. int. inf. der." },
       { value: "int-cableado", label: "Cableado / ductos visibles" },
       { value: "int-novedad-adicional", label: "Evidencia novedad adicional" }
+    ],
+    zeDispatch: [
+      { value: "dispatch-vehiculo", label: "Vehículo y placas" },
+      { value: "dispatch-contenedor", label: "Contenedor y sellos" },
+      { value: "dispatch-documentacion", label: "Documentación de salida" },
+      { value: "dispatch-carga", label: "Carga asegurada" },
+      { value: "dispatch-zona", label: "Zona de salida" },
+      { value: "dispatch-novedad", label: "Novedad de salida" }
+    ],
+    farmDispatch: [
+      { value: "farm-dispatch-vehiculo", label: "Vehículo y placas" },
+      { value: "farm-dispatch-contenedor", label: "Contenedor y sellos" },
+      { value: "farm-dispatch-documentacion", label: "Documentación de salida" },
+      { value: "farm-dispatch-carga", label: "Carga asegurada" },
+      { value: "farm-dispatch-zona", label: "Zona de salida" },
+      { value: "farm-dispatch-novedad", label: "Novedad de salida" }
     ]
   };
 
@@ -515,18 +531,18 @@
 
   function getNextAction(state) {
     const sequence = [
-      ["zeReception", "../puerto-ze/recepcion-ze.html", "Registrar recepcion en ZE", "Iniciar trazabilidad del vehiculo en zona externa."],
+      ["zeReception", "../puerto-ze/recepcion-ze.html", "HU758 · Recepción en ZE", "Registrar llegada de vehículo en zona externa."],
       ["portExternalInspection", "../puerto-ze/inspeccion-externa.html?selectContainer=1", "Inspeccion externa ZE", "Evidencia fotografica externa estructural."],
       ["portInternalInspection", "../puerto-ze/inspeccion-interna.html?selectContainer=1", "Inspeccion interna ZE", "Evidencia fotografica interna de 15 a 23 fotos."],
-      ["zeDispatch", "../puerto-ze/despacho-finca.html", "Despachar a finca", "Registrar salida con sellos, firmas y responsabilidad."],
-      ["farmReception", "../finca/recepcion-finca.html", "Recibir en finca", "Confirmar llegada e iniciar operacion de finca."],
+      ["zeDispatch", "../puerto-ze/despacho-finca.html", "HU303 · Salida ZE", "Registrar salida operativa hacia finca."],
+      ["farmReception", "../finca/recepcion-finca.html", "HU759 · Ingreso en Finca", "Confirmar llegada e iniciar la operación de finca."],
       ["farmExternalInspection", "../finca/inspeccion-externa.html?selectContainer=1", "Inspeccion externa finca", "Validar condiciones antes del cargue."],
       ["farmInternalInspection", "../finca/inspeccion-interna.html?selectContainer=1", "Inspeccion interna finca", "Registrar evidencia interna antes del cargue."],
       ["responsibility", "../finca/sesion-responsabilidad.html", "Sesion responsabilidad", "Capturar responsables y firmas."],
       ["palletBuilt", "../pallets/armar-pallet.html", "HU591 - Armar pallet", "Registrar SSCC, múltiples referencias, cajas y lotes reales."],
       ["palletsLoaded", "../pallets/cargar-pallets.html", "HU332 - Cargue contenedor", "Registrar cargue scan-to-load del contenedor."],
       ["containerClosed", "../finca/cierre-contenedor.html", "Cerrar contenedor", "Validar sellos, cantidades y evidencia."],
-      ["farmDispatch", "../finca/despacho-ze.html", "Despachar a ZE", "Enviar contenedor cerrado hacia zona externa."],
+      ["farmDispatch", "../finca/despacho-ze.html", "Salida de Finca", "Registrar salida operativa hacia zona externa."],
       ["zeReturnReception", "../puerto-ze/recepcion-ze-retorno.html", "Recibir retorno ZE", "Confirmar llegada desde finca."],
       ["zePalletUnload", "../puerto-ze/hu342-descarga-pallets.html", "HU342 - Descargar pallets", "Conciliar cada SSCC y clasificar su estado físico."],
       ["zePalletReassembly", "../pallets/rearmar-pallet.html", "HU344 - Rearmar pallets", "Preparar los pallets incompletos o mixtos antes del cargue final."],
@@ -1962,7 +1978,23 @@
     });
   }
 
+  function syncOperationalMenuLabels() {
+    const labels = {
+      "ze-action-recepcion": ["HU758 · Recepción en ZE", "Registrar llegada de vehículo en zona externa."],
+      "ze-action-despacho": ["HU303 · Salida ZE", "Registrar salida operativa hacia finca."]
+    };
+    Object.entries(labels).forEach(([id, copy]) => {
+      const link = document.getElementById(id);
+      if (!link) return;
+      const title = link.querySelector("strong");
+      const detail = title?.nextElementSibling;
+      if (title) title.textContent = copy[0];
+      if (detail) detail.textContent = copy[1];
+    });
+  }
+
   function boot() {
+    syncOperationalMenuLabels();
     const state = readState();
     ensureInspectionContextSummary(state);
     hydrateSummary(state);
@@ -2151,6 +2183,10 @@
           showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
           return;
         }
+        if ((evEventName === "zeDispatch" || evEventName === "farmDispatch") && currentCount >= 6) {
+          showToast({ type: "warning", title: "Maximo alcanzado", message: "La salida permite maximo 6 evidencias." });
+          return;
+        }
         var pointList = (evidencePointCatalog[evEventName] || []).slice();
         if (!pointList.length) {
           document.querySelectorAll("[data-control-point][data-control-point-event='" + evEventName + "']").forEach(function(cp) {
@@ -2170,6 +2206,7 @@
 
         function maxCaptureSlots() {
           if (evEventName === "portInternalInspection") return Math.max(0, 23 - currentCount);
+          if (evEventName === "zeDispatch" || evEventName === "farmDispatch") return Math.max(0, 6 - currentCount);
           return pointList.length;
         }
 

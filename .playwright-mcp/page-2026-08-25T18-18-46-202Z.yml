@@ -1,0 +1,364 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - link "Volver" [ref=e4] [cursor=pointer]:
+        - /url: ../app/home.html
+      - generic [ref=e8]:
+        - heading "Ingreso vehiculo finca" [level=1] [ref=e9]
+        - paragraph [ref=e10]: HU759 - Consulta previa, inspeccion y recepcion
+      - generic [ref=e11]:
+        - button "Cambiar a modo oscuro" [ref=e12] [cursor=pointer]
+        - button "Cerrar sesión" [ref=e15] [cursor=pointer]
+    - generic [ref=e19]:
+      - complementary "Resumen de recepción" [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: Operación
+            - strong [ref=e24]: EXP-2026-0418
+          - generic [ref=e25]:
+            - generic [ref=e26]: Contenedor
+            - strong [ref=e27]: SIALU1234567
+          - status [ref=e28]:
+            - generic [ref=e29]: Sincronización
+            - generic [ref=e30]: Sincronizado
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e39]:
+              - heading "Consulta previa" [level=2] [ref=e40]
+              - paragraph [ref=e41]: Busca la placa para cargar datos simulados del viaje programado.
+            - generic [ref=e42]: Programacion semanal
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - generic [ref=e45]: Placa del vehiculo
+              - textbox "Placa del vehiculo" [ref=e46]: TUL458
+            - button "Consultar" [ref=e47] [cursor=pointer]
+          - status [ref=e48]:
+            - generic [ref=e52]:
+              - generic [ref=e53]: Información.
+              - generic [ref=e54]:
+                - strong [ref=e55]: Datos simulados disponibles
+                - text: Usa TUL458, ABC123 o XYZ789 para revisar la consulta previa.
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - heading "Viaje validado" [level=2] [ref=e62]
+            - generic [ref=e63]: Coincide finca/semana
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]: Operacion
+              - strong [ref=e67]: EXP-2026-0418
+            - generic [ref=e68]:
+              - generic [ref=e69]: Semana
+              - strong [ref=e70]: 2026-W28
+            - generic [ref=e71]:
+              - generic [ref=e72]: Finca destino
+              - strong [ref=e73]: Finca Santa Isabel
+            - generic [ref=e74]:
+              - generic [ref=e75]: Transportadora
+              - strong [ref=e76]: Transbanasan
+            - generic [ref=e77]:
+              - generic [ref=e78]: Conductor
+              - strong [ref=e79]: Carlos Mendoza
+            - generic [ref=e80]:
+              - generic [ref=e81]: Documento
+              - strong [ref=e82]: "1012345678"
+        - generic [ref=e83]:
+          - heading "Datos de ingreso" [level=2] [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]:
+              - generic [ref=e94]: Tipo de vehiculo
+              - generic [ref=e95]:
+                - combobox [ref=e96]
+                - button "Seleccionar opción" [ref=e97] [cursor=pointer]:
+                  - generic [ref=e98]: Contenedor transportado
+                - text: ✓
+            - generic [ref=e101]:
+              - generic [ref=e102]: Numero de contenedor
+              - textbox "Numero de contenedor" [ref=e103]: SIALU1234567
+            - generic [ref=e104]:
+              - generic [ref=e105]: Conductor
+              - textbox "Conductor" [ref=e106]: Carlos Mendoza
+            - generic [ref=e107]:
+              - generic [ref=e108]: Documento conductor
+              - textbox "Documento conductor" [ref=e109]: "1012345678"
+            - generic [ref=e110]:
+              - generic [ref=e111]: Transportadora
+              - textbox "Transportadora" [ref=e112]: Transbanasan
+            - generic [ref=e113]:
+              - generic [ref=e114]: Finca receptora
+              - textbox "Finca receptora" [ref=e115]: Finca Santa Isabel
+            - generic [ref=e116]:
+              - generic [ref=e117]: Operacion o viaje
+              - textbox "Operacion o viaje" [ref=e118]: EXP-2026-0418
+            - generic [ref=e119]:
+              - generic [ref=e120]: Fecha y hora de llegada
+              - generic [ref=e121]:
+                - textbox [ref=e122]: 2026-07-10T08:20
+                - button "Fecha y hora de llegada" [expanded] [ref=e123] [cursor=pointer]:
+                  - strong [ref=e125]: 10/07/2026 · 08:20 a. m.
+                - dialog "Seleccionar fecha y hora" [ref=e387]:
+                  - generic [ref=e419]:
+                    - button "Semana anterior" [ref=e420] [cursor=pointer]: ‹
+                    - strong [ref=e421]: 13 – 19 de julio de 2026
+                    - button "Semana siguiente" [ref=e422] [cursor=pointer]: ›
+                  - generic [ref=e423]:
+                    - generic [ref=e424]: lu
+                    - generic [ref=e425]: ma
+                    - generic [ref=e426]: mi
+                    - generic [ref=e427]: ju
+                    - generic [ref=e428]: vi
+                    - generic [ref=e429]: sá
+                    - generic [ref=e430]: do
+                    - button "13" [ref=e431] [cursor=pointer]
+                    - button "14" [ref=e432] [cursor=pointer]
+                    - button "15" [ref=e433] [cursor=pointer]
+                    - button "16" [ref=e434] [cursor=pointer]
+                    - button "17" [ref=e435] [cursor=pointer]
+                    - button "18" [ref=e436] [cursor=pointer]
+                    - button "19" [ref=e437] [cursor=pointer]
+                  - generic [ref=e438]:
+                    - generic [ref=e439]:
+                      - generic [ref=e440]: Hora de recepción
+                      - generic [ref=e441]: 08:20 a. m.
+                    - generic [ref=e442]:
+                      - combobox "Hora" [ref=e443]:
+                        - option "01"
+                        - option "02"
+                        - option "03"
+                        - option "04"
+                        - option "05"
+                        - option "06"
+                        - option "07"
+                        - option "08" [selected]
+                        - option "09"
+                        - option "10"
+                        - option "11"
+                        - option "12"
+                      - combobox "Minutos" [ref=e444]:
+                        - option "00"
+                        - option "05"
+                        - option "10"
+                        - option "15"
+                        - option "20" [selected]
+                        - option "25"
+                        - option "30"
+                        - option "35"
+                        - option "40"
+                        - option "45"
+                        - option "50"
+                        - option "55"
+                      - combobox "Meridiano" [ref=e445]:
+                        - option "a. m." [selected]
+                        - option "p. m."
+                  - generic [ref=e446]:
+                    - button "Borrar" [ref=e447] [cursor=pointer]
+                    - button "Hoy" [ref=e448] [cursor=pointer]
+                    - button "Aplicar" [ref=e449] [cursor=pointer]
+              - paragraph [ref=e128]: Usa la hora local de recepción. No puede ser futura.
+          - generic [ref=e129]:
+            - generic [ref=e130]: Procedencia
+            - generic [ref=e131]:
+              - combobox [ref=e132]
+              - button "Seleccionar opción" [ref=e133] [cursor=pointer]:
+                - generic [ref=e134]: Zona Externa
+              - text: ✓
+          - generic [ref=e137]:
+            - generic [ref=e138]: Observaciones de ingreso
+            - textbox "Observaciones de ingreso" [ref=e139]:
+              - /placeholder: Retrasos, danos visibles, faltantes o inconsistencias del viaje
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - heading "Checklist tecnico" [level=2] [ref=e147]
+            - generic [ref=e148]: Antes de cargue
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - checkbox "Limpieza del contenedor Sin residuos, olores fuertes, humedad visible ni contaminantes." [checked] [ref=e151]
+              - generic [ref=e152]:
+                - strong [ref=e153]: Limpieza del contenedor
+                - generic [ref=e154]: Sin residuos, olores fuertes, humedad visible ni contaminantes.
+            - generic [ref=e155]:
+              - checkbox "Estado estructural Piso, paredes, techo y puertas sin dano que comprometa la inocuidad." [checked] [ref=e156]
+              - generic [ref=e157]:
+                - strong [ref=e158]: Estado estructural
+                - generic [ref=e159]: Piso, paredes, techo y puertas sin dano que comprometa la inocuidad.
+            - generic [ref=e160]:
+              - checkbox "Sellos de llegada Sellos de origen visibles y consistentes con la programacion." [checked] [ref=e161]
+              - generic [ref=e162]:
+                - strong [ref=e163]: Sellos de llegada
+                - generic [ref=e164]: Sellos de origen visibles y consistentes con la programacion.
+            - generic [ref=e165]:
+              - checkbox "Viaje programado La placa corresponde a la finca y semana operativa seleccionada." [checked] [ref=e166]
+              - generic [ref=e167]:
+                - strong [ref=e168]: Viaje programado
+                - generic [ref=e169]: La placa corresponde a la finca y semana operativa seleccionada.
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - heading "Evidencias obligatorias" [level=2] [ref=e176]
+            - generic [ref=e177]: 2 fotos minimas
+          - generic [ref=e178]:
+            - button "Sellos de llegada" [ref=e179] [cursor=pointer]
+            - button "Interior del contenedor" [ref=e180] [cursor=pointer]
+          - paragraph [ref=e181]: La propuesta exige ambas fotos antes de registrar el ingreso.
+        - generic [ref=e182]:
+          - heading "Resultado esperado" [level=2] [ref=e190]
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - strong [ref=e193]: Registro local
+              - generic [ref=e194]: La recepcion queda guardada en el dispositivo.
+              - generic [ref=e195]: LOCAL_PENDING_SYNC
+            - generic [ref=e196]:
+              - strong [ref=e197]: Estados simulados
+              - generic [ref=e198]: Contenedor RECIBIDO_EN_FINCA, vehiculo EN_FINCA y camion EN_FINCA_SIN_CARGA.
+              - generic [ref=e199]: HU759
+            - generic [ref=e200]:
+              - strong [ref=e201]: Siguiente paso
+              - generic [ref=e202]: Habilita inspeccion/cargue y continua hacia HU332.
+              - generic [ref=e203]: Scan-to-load
+      - region "Confirmar ingreso en finca" [ref=e204]:
+        - paragraph [ref=e205]: Confirma que la consulta previa, la inspección y las evidencias de llegada son correctas antes de registrar el ingreso.
+        - button "Registrar ingreso" [ref=e206] [cursor=pointer]
+        - link "Ir a HU332" [ref=e207] [cursor=pointer]:
+          - /url: ../pallets/cargar-pallets.html
+  - complementary [ref=e208]:
+    - generic [ref=e209]:
+      - generic [ref=e212]:
+        - strong [ref=e213]: Finca Santa Isabel
+        - generic [ref=e214]: operador.sial
+      - button [ref=e215] [cursor=pointer]
+    - search [ref=e219]:
+      - searchbox [ref=e224]
+    - generic [ref=e225]:
+      - navigation [ref=e226]:
+        - paragraph [ref=e227]: ZE Puerto / Control de contenedores
+        - link [ref=e228] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/index.html
+          - text: Dashboard ZE Puerto
+        - link [ref=e232] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-ze.html
+          - text: HU758 - Recepcion vehiculo ZE
+        - link [ref=e235] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/inspeccion-externa.html?selectContainer=1
+          - text: HU557 - Inspeccion externa ZE
+        - link [ref=e238] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/inspeccion-interna.html?selectContainer=1
+          - text: HU558 - Inspeccion interna ZE
+        - link [ref=e241] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=e247] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/despacho-finca.html
+          - text: HU303 - Despacho a finca
+        - link [ref=e250] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu1431-despacho-contenedor-finca.html
+          - text: HU1431 - Despacho contenedor a finca
+      - navigation [ref=e254]:
+        - paragraph [ref=e255]: Retorno ZE / Puerto
+        - link [ref=e256] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-ze-retorno.html
+          - text: Recepcion ZE retorno
+        - link [ref=e259] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu342-descarga-pallets.html
+          - text: HU342 - Descargar pallets
+        - link [ref=e263] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=e267] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/hu347-cargue-consolidado.html
+          - text: HU347 - Cargue consolidado
+        - link [ref=e271] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/despacho-puerto.html
+          - text: Despacho puerto
+        - link [ref=e274] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/recepcion-puerto.html
+          - text: Recepcion puerto
+        - link [ref=e277] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/puerto-ze/entrega-puerto.html
+          - text: Entrega en puerto
+      - navigation [ref=e280]:
+        - paragraph [ref=e281]: Finca
+        - link [ref=e282] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/recepcion-finca.html
+          - text: Recepcion en finca
+        - link [ref=e285] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-contenedores.html
+          - text: Trazabilidad contenedores
+        - link [ref=e288] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-pallets.html
+          - text: Pallets por finca
+        - link [ref=e292] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/consulta-vehiculos.html
+          - text: Trazabilidad vehículos
+        - link [ref=e298] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/inspeccion-externa.html?selectContainer=1
+          - text: Inspeccion externa
+        - link [ref=e301] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/inspeccion-interna.html?selectContainer=1
+          - text: Inspeccion interna
+        - link [ref=e304] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/sesion-responsabilidad.html
+          - text: Sesion responsabilidad
+        - link [ref=e307] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/cierre-contenedor.html
+          - text: Cierre de contenedor
+        - link [ref=e311] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/finca/despacho-ze.html
+          - text: Despacho a ZE
+      - navigation [ref=e314]:
+        - paragraph [ref=e315]: Pallets
+        - link [ref=e316] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/armar-pallet.html
+          - text: HU591 - Armar pallet
+        - link [ref=e320] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/rearmar-pallet.html
+          - text: HU344 - Rearmar pallets en ZE
+        - link [ref=e326] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/consulta-pallets.html
+          - text: Consulta Pallet’s
+        - link [ref=e330] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/reetiquetar-pallet.html
+          - text: Re-etiquetar pallet
+        - link [ref=e334] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/pallets/cargar-pallets.html
+          - text: HU332 - Cargue contenedor
+      - navigation [ref=e336]:
+        - paragraph [ref=e337]: Materiales y suministros
+        - link [ref=e338] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/index.html
+          - text: Materiales
+        - link [ref=e342] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/pedido-sugerido.html
+          - text: Pedido sugerido
+        - link [ref=e345] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/inventario-finca.html
+          - text: Inventario finca
+        - link [ref=e349] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/ordenes-asignadas.html
+          - text: Ordenes asignadas
+        - link [ref=e353] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/registrar-entrega.html
+          - text: Registrar entrega
+        - link [ref=e356] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/materiales/pallets.html
+          - text: Pallets materiales
+      - navigation [ref=e358]:
+        - paragraph [ref=e359]: Trazabilidad
+        - link [ref=e360] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/sincronizacion.html
+          - text: Sincronización móvil
+        - link [ref=e366] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/evidencias.html
+          - text: Evidencias operativas
+        - link [ref=e370] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/consultar-contenedor.html
+          - text: Consultar contenedor
+        - link [ref=e374] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/trazabilidad/consultar-operacion.html
+          - text: Consultar operacion
+      - navigation [ref=e376]:
+        - paragraph [ref=e377]: Sistema de diseño
+        - link [ref=e378] [cursor=pointer]:
+          - /url: http://127.0.0.1:8765/libreria/index.html
+          - text: Librería
+    - link [ref=e382] [cursor=pointer]:
+      - /url: http://127.0.0.1:8765/app/seleccion-empresa.html
+      - text: Cambiar finca

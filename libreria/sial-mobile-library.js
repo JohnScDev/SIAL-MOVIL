@@ -119,11 +119,319 @@
     window.SialMobileUI.mountTimePickers(article);
   }
 
+  function appendJumpLink(section, label) {
+    const jump = document.querySelector(".library-jump");
+    if (!jump || jump.querySelector(`a[href="#${section.id}"]`)) return;
+    const link = document.createElement("a");
+    link.href = `#${section.id}`;
+    link.textContent = label;
+    jump.appendChild(link);
+  }
+
+  function installOperationalPatterns() {
+    const shell = document.querySelector(".library-shell");
+    if (!shell || shell.querySelector('[data-library-section="patrones-operativos"]')) return;
+    const section = document.createElement("section");
+    section.id = "patrones-operativos";
+    section.className = "library-section";
+    section.dataset.librarySection = "patrones-operativos";
+    section.innerHTML = [
+      '<div class="library-section-head">',
+      '<h2>Patrones operativos integrados</h2>',
+      '<p>Composiciones reutilizables para jornada, consultas, prioridades, evidencias y firma.</p>',
+      '</div>',
+      '<div class="library-preview-grid">',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="library-operational-heading"><div><span class="sial-pill info">Operacion activa</span><h3>EXP-2026-0418</h3></div><span class="sial-pill warning">Pendiente</span></div>',
+      '<div class="sial-list-row"><strong>Contenedor</strong><span>SIALU1234567</span></div>',
+      '<div class="sial-list-row"><strong>Vehiculo</strong><span>TUL458</span></div>',
+      '<a class="sial-priority-item" href="#patrones-operativos"><span class="sial-priority-dot"></span><span class="sial-priority-copy"><strong>Continuar inspeccion</strong><span>Siguiente accion permitida por trazabilidad.</span></span></a>',
+      '<code>.sial-card + .sial-list-row + .sial-priority-item</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<h3>Resultado de consulta</h3>',
+      '<div class="sial-field"><label class="sial-label" for="library-query">Busqueda operativa</label><input id="library-query" class="sial-input" type="search" value="SIALU1234567"></div>',
+      '<div class="library-query-result"><div><strong>SIALU1234567</strong><span>Finca Santa Isabel · Semana 34</span></div><span class="sial-pill success">Vigente</span></div>',
+      '<code>Campo de busqueda + resultado + estado semantico</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="sial-operation-ticket"><div><span class="sial-pill info">Operación activa</span><h3>HU342 · Descargar</h3></div><span class="sial-pill warning">Paso 1 de 3</span></div>',
+      '<nav class="sial-flow-stepper" aria-label="Ejemplo de flujo secuencial"><span class="is-active"><b>1</b><small>Descargar</small></span><i aria-hidden="true"></i><span><b>2</b><small>Rearmar</small></span><i aria-hidden="true"></i><span><b>3</b><small>Consolidar</small></span></nav>',
+      '<button class="sial-selectable-row" type="button" aria-pressed="true"><span class="sial-pill">✓</span><span><strong>SSCC 177012345678900019</strong><small>Pallet apto · 48 cajas</small></span><span class="sial-pill success">Listo</span></button>',
+      '<code>.sial-operation-ticket + .sial-flow-stepper + .sial-selectable-row</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card library-integrated-capture" data-library-integrated-capture>',
+      '<div class="library-operational-heading"><div><span class="sial-pill">Captura critica</span><h3>Evidencias y firma</h3></div><span class="sial-pill error" data-library-evidence-state>Incompleto</span></div>',
+      '<div class="sial-evidence-progress" data-library-evidence-progress><div class="sial-evidence-progress-bar"><div class="sial-evidence-progress-fill"></div></div><span data-evidence-progress-label></span></div>',
+      '<div class="library-counter-actions"><button class="sial-btn sial-btn-secondary" type="button" data-library-evidence-remove>Quitar</button><button class="sial-btn sial-btn-primary" type="button" data-library-evidence-add>Agregar evidencia</button></div>',
+      '<div data-library-signature></div>',
+      '<code>SialMobileUI.setEvidenceProgress + SialMobileUI.mountSignaturePad</code>',
+      '</article>',
+      '</div>'
+    ].join("");
+    shell.appendChild(section);
+    appendJumpLink(section, "Operativos");
+
+    const progress = section.querySelector("[data-library-evidence-progress]");
+    progress.dataset.count = "2";
+    window.SialMobileUI.setEvidenceProgress(progress, { count: 2, min: 3, max: 5 });
+    window.SialMobileUI.mountSignaturePad(section.querySelector("[data-library-signature]"), {
+      label: "Firma de conformidad del responsable",
+      trackUnsavedChanges: false,
+      onConfirm() {
+        window.SialMobileUI.showToast({ type: "success", title: "Firma confirmada", message: "La firma queda lista para asociarse al registro." });
+      }
+    });
+  }
+
+  function installHu758ComponentCatalog() {
+    const shell = document.querySelector(".library-shell");
+    if (!shell || shell.querySelector('[data-library-section="hu758-componentes"]')) return;
+    const section = document.createElement("section");
+    section.id = "hu758-componentes";
+    section.className = "library-section library-hu758-section";
+    section.dataset.librarySection = "hu758-componentes";
+    section.innerHTML = [
+      '<div class="library-section-head">',
+      '<h2>Componentes promovidos · HU758</h2>',
+      '<p>Catálogo visual de los componentes calibrados en Recepción en ZE antes de reutilizarlos en nuevas vistas.</p>',
+      '</div>',
+      '<div class="library-preview-grid">',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="library-hu758-section-heading">',
+      '<span class="library-hu758-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg></span>',
+      '<div><h3>Datos del vehículo y operación</h3><p class="library-muted">Encabezado de sección con icono identificador.</p></div>',
+      '</div>',
+      '<code>.sial-section-heading + .sial-section-icon</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="library-hu758-ticket"><div><span>Operación</span><strong>EXP-2026-0418</strong></div><div><span>Contenedor</span><strong>SIALU1234567</strong></div></div>',
+      '<p class="library-muted">Resumen operativo plano con los datos respaldados por la vista, sin contexto redundante.</p>',
+      '<code>.sial-operation-ticket</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="library-hu758-fields">',
+      '<div><label class="sial-label" for="library-hu758-zone">Zona externa</label><div class="library-hu758-select"><button id="library-hu758-zone" type="button" aria-expanded="false" data-hu758-demo-select>ZE Puerto Norte <span>⌄</span></button><div class="library-hu758-menu" data-hu758-demo-menu hidden><button type="button" data-hu758-demo-option="ZE Puerto Norte">ZE Puerto Norte</button><button type="button" data-hu758-demo-option="ZE Terminal Sur">ZE Terminal Sur</button><button type="button" data-hu758-demo-option="ZE Bananera">ZE Bananera</button></div></div></div>',
+      '<div><label class="sial-label">Fecha y hora</label><div class="library-hu758-date"><button type="button" data-hu758-week-prev aria-label="Semana anterior">‹</button><strong data-hu758-week-label>4 – 10 de mayo de 2026</strong><button type="button" data-hu758-week-next aria-label="Semana siguiente">›</button></div><div class="library-hu758-week-days"><span>lu 4</span><span class="is-selected">ma 5</span><span>mi 6</span><span>ju 7</span><span>vi 8</span><span>sá 9</span><span>do 10</span></div></div>',
+      '</div>',
+      '<code>.sial-select-control + .sial-datetime-control · semana navegable</code>',
+      '</article>',
+      '<article class="sial-card sial-card-pad library-demo-card">',
+      '<div class="library-hu758-confirmation"><p>Confirma que los datos y la evidencia son correctos antes de registrar.</p><button class="sial-btn sial-btn-primary sial-btn-full" type="button">Registrar recepción</button></div>',
+      '<p class="library-muted">Bloque hermano al final del formulario; no es una card anidada.</p>',
+      '<code>form → .sial-confirmation-card → button[form=&quot;...&quot;]</code>',
+      '</article>',
+      '</div>',
+      '<div class="library-spec"><strong>Regla de promoción</strong><p>Reutilizar estos patrones cuando exista la misma jerarquía de captura operativa. Mantener el contenido y los estados en la vista consumidora; no copiar estilos locales.</p></div>'
+    ].join("");
+    shell.appendChild(section);
+    appendJumpLink(section, "HU758");
+    if (window.location.hash === "#hu758-componentes") window.setTimeout(() => section.scrollIntoView({ block: "start" }), 0);
+
+    const menu = section.querySelector("[data-hu758-demo-menu]");
+    const trigger = section.querySelector("[data-hu758-demo-select]");
+    trigger?.addEventListener("click", () => {
+      const open = menu.hidden;
+      menu.hidden = !open;
+      trigger.setAttribute("aria-expanded", String(open));
+    });
+    section.querySelectorAll("[data-hu758-demo-option]").forEach((option) => option.addEventListener("click", () => {
+      trigger.childNodes[0].textContent = option.dataset.hu758DemoOption + " ";
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }));
+
+    const labels = ["4 – 10 de mayo de 2026", "11 – 17 de mayo de 2026", "18 – 24 de mayo de 2026"];
+    let week = 0;
+    const weekLabel = section.querySelector("[data-hu758-week-label]");
+    const renderWeek = () => { weekLabel.textContent = labels[week]; };
+    section.querySelector("[data-hu758-week-prev]")?.addEventListener("click", () => { week = Math.max(0, week - 1); renderWeek(); });
+    section.querySelector("[data-hu758-week-next]")?.addEventListener("click", () => { week = Math.min(labels.length - 1, week + 1); renderWeek(); });
+  }
+
+  function installApiReference() {
+    const shell = document.querySelector(".library-shell");
+    if (!shell || shell.querySelector('[data-library-section="api-integrada"]') || !uiReady()) return;
+    const section = document.createElement("section");
+    section.id = "api-integrada";
+    section.className = "library-section";
+    section.dataset.librarySection = "api-integrada";
+    const descriptions = {
+      openPhotoCapture: "Captura guiada de una o varias evidencias",
+      openCamera: "Compatibilidad con captura fotografica simple",
+      openBarcodeScanner: "Escaner con validacion y alternativa manual",
+      closeBarcodeScanner: "Cierre controlado del escaner",
+      normalizeSscc: "Normalizacion compartida de codigos SSCC",
+      setTheme: "Tema claro u oscuro persistente",
+      mountTabs: "Tabs accesibles con teclado y paneles asociados",
+      mountSegmentedControls: "Seleccion exclusiva dentro del mismo contexto",
+      mountOtpGroups: "OTP numerico con pegado y avance de foco",
+      mountSignaturePad: "Firma tactil con limpiar y confirmar",
+      setEvidenceProgress: "Progreso y rango valido de evidencias",
+      setSyncState: "Estado visual y accesible de sincronizacion",
+      openTimePicker: "Selector tactil de hora en formato 24 horas",
+      mountTimePickers: "Activacion progresiva de campos de hora",
+      openMobilePicker: "Selector contextual con busqueda opcional",
+      showToast: "Confirmacion temporal no bloqueante",
+      setInlineStatus: "Feedback contextual junto al dato corregible",
+      revealValidationError: "Revela, desplaza y enfoca un error",
+      showBanner: "Estado global persistente con accion opcional",
+      openDialog: "Modal o bottom sheet accesible",
+      openDecisionSheet: "Decision contextual con jerarquia semantica",
+      mountModalLayer: "Gestion de foco y apilamiento de capas",
+      navigateTo: "Navegacion animada con proteccion de cambios",
+      markUnsavedChanges: "Registro de cambios pendientes",
+      ensureGlobalDrawer: "Menu lateral global y buscable",
+      selectedContext: "Lectura del contexto operativo activo",
+      selectedCompany: "Lectura de la empresa activa",
+      requestSignOut: "Confirmacion y cierre de sesion"
+    };
+    const aliases = {
+      clearInlineStatus: "Limpieza del feedback contextual",
+      hideBanner: "Retiro de un banner por identificador",
+      closeDialog: "Cierre programatico de una capa",
+      unmountModalLayer: "Desmontaje y retorno de foco",
+      replayMotionState: "Reproduccion accesible de un estado animado",
+      clearUnsavedChanges: "Limpieza de cambios pendientes",
+      hasUnsavedChanges: "Consulta de cambios pendientes",
+      openDrawer: "Apertura programatica del drawer",
+      closeDrawer: "Cierre programatico del drawer",
+      setSelectedContext: "Persistencia del contexto operativo",
+      setSelectedCompany: "Persistencia de la empresa activa",
+      clearSelectedCompany: "Limpieza de empresa activa",
+      clearSelectedContext: "Limpieza de contexto activo",
+      ensureHeaderSessionAction: "Accion de sesion consistente en headers",
+      hydrateAlertStatuses: "Semantica y accesibilidad de alertas existentes",
+      playLogoIntro: "Intro de marca respetando movimiento reducido",
+      setTimePickerValue: "Actualizacion consistente de un campo de hora",
+      motionApplications: "Mapa de duraciones por interaccion"
+    };
+    const api = Object.keys(window.SialMobileUI).sort();
+    section.innerHTML = '<div class="library-section-head"><h2>API integrada</h2><p>Inventario vivo de la superficie publica compartida. Si una capacidad aparece aqui, las vistas deben consumirla antes de crear una variante local.</p></div><div class="library-component-meta" data-library-api-map></div>';
+    const map = section.querySelector("[data-library-api-map]");
+    api.forEach((name) => {
+      const row = document.createElement("div");
+      row.className = "library-component-row";
+      const method = document.createElement("strong");
+      const purpose = document.createElement("span");
+      const reference = document.createElement("code");
+      method.textContent = name;
+      purpose.textContent = descriptions[name] || aliases[name] || "Capacidad compartida del nucleo movil";
+      reference.textContent = `SialMobileUI.${name}`;
+      row.append(method, purpose, reference);
+      map.appendChild(row);
+    });
+    shell.appendChild(section);
+    appendJumpLink(section, "API");
+  }
+
+  function installRecoveryFlowDemo() {
+    const section = document.querySelector('[data-library-section="autenticacion"]');
+    const grid = section?.querySelector(".library-preview-grid");
+    if (!grid || grid.querySelector("[data-library-recovery-functional]")) return;
+    const article = document.createElement("article");
+    article.className = "sial-card sial-card-pad library-demo-card";
+    article.dataset.libraryRecoveryFunctional = "";
+    article.innerHTML = '<span class="sial-pill">Flujo integrado</span><h3>Recuperacion completa</h3><p class="library-muted">Demuestra usuario, OTP y nueva contrasena dentro de una sola capa accesible.</p><button class="sial-btn sial-btn-primary" type="button" data-library-open-recovery>Probar recuperacion</button><code>Usuario -> OTP -> nueva contrasena</code>';
+    grid.appendChild(article);
+  }
+
+  function createRecoveryDemoContent() {
+    const shell = document.createElement("div");
+    shell.className = "sial-recovery-flow library-recovery-demo";
+    let step = "user";
+    let user = "operador.sial";
+
+    function statusNode() {
+      const status = document.createElement("div");
+      status.className = "sial-status error";
+      status.hidden = true;
+      return status;
+    }
+
+    function render() {
+      const steps = ["user", "code", "password"];
+      const current = steps.indexOf(step);
+      shell.innerHTML = '<ol class="sial-recovery-steps">' + steps.map((name, index) => `<li class="sial-recovery-step ${index < current ? "is-done" : ""} ${index === current ? "is-current" : ""}" ${index === current ? 'aria-current="step"' : ""}><span>${index + 1}</span><strong>${({ user: "Usuario", code: "Codigo", password: "Contrasena" })[name]}</strong></li>`).join("") + '</ol><div data-library-recovery-body></div>';
+      const body = shell.querySelector("[data-library-recovery-body]");
+      if (step === "user") {
+        body.innerHTML = '<form class="sial-form"><label class="sial-field"><span class="sial-label">Usuario</span><input class="sial-input" name="libraryRecoveryUser" autocomplete="username" value="' + user + '" required></label><div class="sial-status error" data-recovery-demo-status hidden></div><button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Enviar codigo</button></form>';
+        body.querySelector("form").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const input = body.querySelector("input");
+          const value = input.value.trim();
+          if (!value) {
+            window.SialMobileUI.setInlineStatus(body.querySelector("[data-recovery-demo-status]"), { type: "error", title: "Dato requerido", message: "Ingresa el usuario para continuar.", field: input });
+            return;
+          }
+          user = value;
+          step = "code";
+          render();
+        });
+      }
+      if (step === "code") {
+        body.innerHTML = '<form class="sial-form"><p class="library-muted">Codigo enviado para ' + user + '.</p><div class="sial-otp-group" aria-label="Codigo de seguridad"><input class="sial-otp-input" inputmode="numeric" autocomplete="one-time-code"><input class="sial-otp-input" inputmode="numeric"><input class="sial-otp-input" inputmode="numeric"><input class="sial-otp-input" inputmode="numeric"><input class="sial-otp-input" inputmode="numeric"><input class="sial-otp-input" inputmode="numeric"></div><div class="sial-status error" data-recovery-demo-status hidden></div><button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Verificar codigo</button></form>';
+        const form = body.querySelector("form");
+        const group = form.querySelector(".sial-otp-group");
+        window.SialMobileUI.mountOtpGroups(form);
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const value = Array.from(group.querySelectorAll("input")).map((input) => input.value).join("");
+          if (value.length !== 6) {
+            window.SialMobileUI.setInlineStatus(form.querySelector("[data-recovery-demo-status]"), { type: "error", title: "Codigo incompleto", message: "Ingresa los 6 digitos para continuar.", field: group.querySelector("input:placeholder-shown") || group.querySelector("input") });
+            return;
+          }
+          step = "password";
+          render();
+        });
+      }
+      if (step === "password") {
+        body.innerHTML = '<form class="sial-form"><label class="sial-field"><span class="sial-label">Nueva contrasena</span><input class="sial-input" name="libraryPassword" type="password" autocomplete="new-password" minlength="8" required></label><label class="sial-field"><span class="sial-label">Confirmar contrasena</span><input class="sial-input" name="libraryPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required></label><div class="sial-status error" data-recovery-demo-status hidden></div><button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Guardar contrasena</button></form>';
+        const form = body.querySelector("form");
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const password = form.elements.libraryPassword;
+          const confirmation = form.elements.libraryPasswordConfirm;
+          if (password.value.length < 8 || password.value !== confirmation.value) {
+            window.SialMobileUI.setInlineStatus(form.querySelector("[data-recovery-demo-status]"), { type: "error", title: "Verifica la contrasena", message: "Usa minimo 8 caracteres y confirma el mismo valor.", field: password.value.length < 8 ? password : confirmation });
+            return;
+          }
+          window.SialMobileUI.showToast({ type: "success", title: "Acceso restablecido", message: "El flujo completo finalizo correctamente." });
+          window.SialMobileUI.closeDialog("library-recovery-flow");
+        });
+      }
+    }
+    render();
+    return shell;
+  }
+
+  function installSyncInteraction() {
+    const stack = document.querySelector('[data-library-section="offline-sync"] .sial-sync-stack');
+    const item = stack?.querySelector(".sial-sync-item.error");
+    if (!item || item.dataset.librarySyncMounted === "true") return;
+    item.dataset.librarySyncMounted = "true";
+    item.querySelector("strong")?.setAttribute("data-sync-title", "");
+    item.querySelector("span:not(.sial-pill)")?.setAttribute("data-sync-message", "");
+    const button = item.querySelector("button");
+    if (button) {
+      button.dataset.librarySyncRetry = "";
+      button.setAttribute("data-sync-status", "");
+    }
+  }
+
   function initializeLibraryDemos() {
     activateBarcodeScannerPanels();
     if (uiReady()) installAlertSystemDemo();
     if (uiReady()) installMotionMap();
     if (uiReady()) installTimePickerDemo();
+    if (uiReady()) installOperationalPatterns();
+    installHu758ComponentCatalog();
+    if (uiReady()) installApiReference();
+    if (uiReady()) installRecoveryFlowDemo();
+    if (uiReady()) installSyncInteraction();
+    if (uiReady()) window.SialMobileUI.mountTabs(document);
+    if (uiReady()) window.SialMobileUI.mountSegmentedControls(document);
+    if (uiReady()) window.SialMobileUI.mountOtpGroups(document);
   }
 
   if (document.readyState === "loading") {
@@ -140,19 +448,41 @@
   });
 
   document.addEventListener("click", (event) => {
-    const segment = event.target.closest(".sial-segment-option");
-    if (segment) {
-      segment.parentElement.querySelectorAll(".sial-segment-option").forEach((item) => {
-        item.setAttribute("aria-pressed", String(item === segment));
+    const evidenceButton = event.target.closest("[data-library-evidence-add], [data-library-evidence-remove]");
+    if (evidenceButton && uiReady()) {
+      const progress = document.querySelector("[data-library-evidence-progress]");
+      const current = Number(progress?.dataset.count || 0);
+      const delta = evidenceButton.hasAttribute("data-library-evidence-add") ? 1 : -1;
+      const count = Math.max(0, Math.min(5, current + delta));
+      progress.dataset.count = String(count);
+      const result = window.SialMobileUI.setEvidenceProgress(progress, { count, min: 3, max: 5 });
+      const state = document.querySelector("[data-library-evidence-state]");
+      if (state) {
+        state.textContent = result.complete ? "Completo" : "Incompleto";
+        state.classList.toggle("error", !result.complete);
+        state.classList.toggle("success", result.complete);
+      }
+    }
+
+    if (event.target.closest("[data-library-open-recovery]") && uiReady()) {
+      window.SialMobileUI.openDialog({
+        id: "library-recovery-flow",
+        variant: "sheet",
+        title: "Recuperar acceso",
+        content: createRecoveryDemoContent(),
+        actions: []
       });
     }
 
-    const tab = event.target.closest(".sial-tab");
-    if (tab) {
-      tab.parentElement.querySelectorAll(".sial-tab").forEach((item) => {
-        item.classList.toggle("active", item === tab);
-        item.setAttribute("aria-selected", String(item === tab));
-      });
+    const syncRetry = event.target.closest("[data-library-sync-retry]");
+    if (syncRetry && uiReady()) {
+      const item = syncRetry.closest(".sial-sync-item");
+      window.SialMobileUI.setSyncState(item, { state: "syncing", title: "Sincronizando", message: "Enviando registro pendiente", label: "En proceso" });
+      syncRetry.disabled = true;
+      window.setTimeout(() => {
+        window.SialMobileUI.setSyncState(item, { state: "success", title: "Sincronizado", message: "Confirmado por el servicio", label: "OK" });
+        syncRetry.disabled = false;
+      }, 900);
     }
 
     if (event.target.closest("[data-library-toast]") && uiReady()) {
@@ -255,8 +585,8 @@
       window.SialMobileUI.openBarcodeScanner({
         title: "Escaner compartido",
         eyebrow: "Patron reutilizable",
-        demoValue: "177012345678900019",
-        demoLabel: "Leer codigo demo",
+        initialManualValue: "177012345678900019",
+        manualLabel: "Validar SSCC de ejemplo",
         normalize: window.SialMobileUI.normalizeSscc,
         validate(value) {
           return value.length === 18
