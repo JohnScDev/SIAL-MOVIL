@@ -40,17 +40,97 @@
         </dl>
       </section>
 
-      <form class="sial-card sial-card-pad sial-form sial-inspection-form" id="inspection-external-ze-form" data-flow-form data-flow-mode="prototype" data-event="portExternalInspection" data-detail="Inspección externa ZE" data-prevent-duplicate="true">
-        <section class="sial-inspection-section sial-evidence-section" data-evidence-event="portExternalInspection" aria-labelledby="externalEvidenceTitle">
+      <form class="sial-form sial-inspection-form sial-inspection-staged-form" id="inspection-external-ze-form" data-flow-form data-flow-mode="prototype" data-event="portExternalInspection" data-detail="Inspección externa ZE" data-prevent-duplicate="true" data-require-control-points="true">
+        <section class="sial-card sial-card-pad sial-inspection-section sial-evidence-section" data-evidence-event="portExternalInspection" aria-labelledby="externalEvidenceTitle">
           <div class="sial-inspection-section-heading">
             <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="m9 7 1.5-2h3L15 7"/><circle cx="12" cy="13" r="3"/></svg></span>
-            <div><h2 class="sial-section-title" id="externalEvidenceTitle">Evidencia fotográfica externa</h2><p>Registra los doce puntos requeridos de la inspección.</p></div>
+            <div><h2 class="sial-section-title" id="externalEvidenceTitle">Evidencia fotográfica externa</h2><p>Registra primero la evidencia visual de la inspección.</p></div>
           </div>
           <button class="sial-evidence-trigger" type="button" data-capture-evidence="portExternalInspection"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>Completar evidencias (<span data-evidence-count="portExternalInspection">0</span>/12)</span></button>
           <div class="sial-evidence-gallery" data-evidence-gallery="portExternalInspection" role="region" aria-label="Galería de evidencia externa"></div>
         </section>
 
-        <section class="sial-inspection-section" aria-labelledby="inspectionResultTitle">
+        <section class="sial-card sial-card-pad sial-inspection-section" aria-labelledby="externalCheckpointsTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="m8 9 2 2 4-4"/><path d="M8 15h8"/></svg></span>
+            <div><h2 class="sial-section-title" id="externalCheckpointsTitle">Puntos inspeccionados</h2><p>Verifica cada punto estructural o indícalo como no aplicable.</p></div>
+          </div>
+          <div class="sial-checklist" role="list" aria-label="Verificación de puntos de la inspección externa" data-compact-control-point-selects>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="panel-frontal" data-control-point-name="Panel frontal">
+              <div class="sial-checkpoint-header"><strong>Panel frontal</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[panel_frontal]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de panel frontal"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="lado-izquierdo" data-control-point-name="Lado izquierdo">
+              <div class="sial-checkpoint-header"><strong>Lado izquierdo</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[lado_izquierdo]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de lado izquierdo"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="lado-derecho" data-control-point-name="Lado derecho">
+              <div class="sial-checkpoint-header"><strong>Lado derecho</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[lado_derecho]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de lado derecho"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="piso" data-control-point-name="Piso">
+              <div class="sial-checkpoint-header"><strong>Piso</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[piso]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de piso"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="techo" data-control-point-name="Techo">
+              <div class="sial-checkpoint-header"><strong>Techo</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[techo]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de techo"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="puertas" data-control-point-name="Puertas">
+              <div class="sial-checkpoint-header"><strong>Puertas</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[puertas]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de puertas"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="refrigeracion-conexiones" data-control-point-name="Sistema de refrigeración y conexiones accesibles">
+              <div class="sial-checkpoint-header"><strong>Sistema de refrigeración y conexiones accesibles</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[refrigeracion_conexiones]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación del sistema de refrigeración y conexiones"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="panel-refrigeracion-interno" data-control-point-name="Panel de refrigeración interno">
+              <div class="sial-checkpoint-header"><strong>Panel de refrigeración interno</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[panel_refrigeracion_interno]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación del panel de refrigeración interno"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="panel-divisor" data-control-point-name="Panel divisor">
+              <div class="sial-checkpoint-header"><strong>Panel divisor</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[panel_divisor]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de panel divisor"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="panel-bastidor" data-control-point-name="Panel bastidor">
+              <div class="sial-checkpoint-header"><strong>Panel bastidor</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[panel_bastidor]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de panel bastidor"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+            <article class="sial-checkpoint" role="listitem" data-control-point data-control-point-event="portExternalInspection" data-control-point="sellos" data-control-point-name="Sellos">
+              <div class="sial-checkpoint-header"><strong>Sellos</strong><span class="sial-pill" data-cp-status>Pendiente</span></div>
+              <div class="sial-checkpoint-body"><input type="hidden" name="puntos_inspeccion[sellos]" data-cp-value><div class="sial-cp-options" role="group" aria-label="Verificación de sellos"><button class="sial-cp-option" type="button" data-cp-option="VERIFICADO" aria-pressed="false">Verificado</button><button class="sial-cp-option" type="button" data-cp-option="NO_APLICA" aria-pressed="false">No aplica</button></div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad sial-inspection-section" aria-labelledby="externalLabelsTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M7 9h10"/><path d="M7 13h6"/></svg></span>
+            <div><h2 class="sial-section-title" id="externalLabelsTitle">Etiquetas empleadas en la inspección</h2><p>Indica el rango usado; el total se calcula automáticamente.</p></div>
+          </div>
+          <div class="sial-field" data-label-register>
+            <span class="sial-label">Etiquetas internas</span>
+            <div class="sial-form-grid">
+              <label class="sial-field"><span class="sial-label">Desde el número</span><input class="sial-input-wrap sial-input" type="text" name="etiquetas_internas_desde" autocomplete="off" data-label-range-start aria-describedby="inspectionInternalLabelRangeError"></label>
+              <label class="sial-field"><span class="sial-label">Hasta el número</span><input class="sial-input-wrap sial-input" type="text" name="etiquetas_internas_hasta" autocomplete="off" data-label-range-end aria-describedby="inspectionInternalLabelRangeError"></label>
+              <label class="sial-field"><span class="sial-label">Etiquetas dañadas</span><input class="sial-input-wrap sial-input" type="number" name="etiquetas_internas_danadas" inputmode="numeric" min="0"></label>
+              <label class="sial-field"><span class="sial-label">Total utilizadas</span><input class="sial-input-wrap sial-input" type="number" name="etiquetas_internas_total" readonly data-label-total aria-label="Total de etiquetas internas utilizadas, calculado desde el rango"></label>
+            </div>
+            <p class="sial-field-note" id="inspectionInternalLabelRangeError" data-label-range-error hidden></p>
+          </div>
+          <div class="sial-field" data-label-register>
+            <span class="sial-label">Etiquetas externas</span>
+            <div class="sial-form-grid">
+              <label class="sial-field"><span class="sial-label">Desde el número</span><input class="sial-input-wrap sial-input" type="text" name="etiquetas_externas_desde" autocomplete="off" data-label-range-start aria-describedby="inspectionExternalLabelRangeError"></label>
+              <label class="sial-field"><span class="sial-label">Hasta el número</span><input class="sial-input-wrap sial-input" type="text" name="etiquetas_externas_hasta" autocomplete="off" data-label-range-end aria-describedby="inspectionExternalLabelRangeError"></label>
+              <label class="sial-field"><span class="sial-label">Etiquetas dañadas</span><input class="sial-input-wrap sial-input" type="number" name="etiquetas_externas_danadas" inputmode="numeric" min="0"></label>
+              <label class="sial-field"><span class="sial-label">Total utilizadas</span><input class="sial-input-wrap sial-input" type="number" name="etiquetas_externas_total" readonly data-label-total aria-label="Total de etiquetas externas utilizadas, calculado desde el rango"></label>
+            </div>
+            <p class="sial-field-note" id="inspectionExternalLabelRangeError" data-label-range-error hidden></p>
+          </div>
+        </section>
+
+        <section class="sial-card sial-card-pad sial-inspection-section" aria-labelledby="inspectionResultTitle">
           <div class="sial-inspection-section-heading">
             <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="m8 9 2 2 4-4"/><path d="M8 15h8"/></svg></span>
             <h2 class="sial-section-title" id="inspectionResultTitle">Resultado de la inspección</h2>
@@ -77,7 +157,7 @@
       </form>
 
       <section class="sial-card sial-card-pad sial-confirmation-card sial-inspection-confirmation-card" aria-label="Confirmación de inspección">
-        <p class="sial-confirmation-copy">Confirma que la evidencia, el resultado y las observaciones corresponden a la inspección externa.</p>
+        <p class="sial-confirmation-copy">Confirma los puntos verificados, las etiquetas, la evidencia y el resultado antes de finalizar la inspección externa.</p>
         <button class="sial-btn sial-btn-primary sial-btn-full" type="submit" form="inspection-external-ze-form">Finalizar inspección externa</button>
       </section>
     </section>

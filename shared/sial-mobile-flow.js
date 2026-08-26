@@ -685,6 +685,22 @@
     return (st.evidence || {})[eventName] ? (st.evidence[eventName] || []).length : 0;
   }
 
+  function controlPointStatusClass(value) {
+    if (value === "SIN_NOVEDAD" || value === "VERIFICADO") return " success";
+    if (value === "CON_NOVEDAD") return " warning";
+    if (value === "NO_INSPECCIONABLE" || value === "NO_APLICA") return " info";
+    return "";
+  }
+
+  function controlPointStatusLabel(value) {
+    if (value === "VERIFICADO") return "Verificado";
+    if (value === "NO_APLICA") return "No aplica";
+    if (value === "SIN_NOVEDAD") return "Sin novedad";
+    if (value === "CON_NOVEDAD") return "Con novedad";
+    if (value === "NO_INSPECCIONABLE") return "No inspeccionable";
+    return value || "Pendiente";
+  }
+
   function hasAnyControlPointNoveltyBlocking(form) {
     return Array.from(form.querySelectorAll("[data-control-point]")).some(function(cp) {
       return (cp.querySelector("[data-cp-value]") || {}).value === "CON_NOVEDAD"
@@ -737,6 +753,14 @@
       }
       if (formPhotos > 23 && !form.dataset.authorizedExcess) {
         return "Se alcanzo el maximo de 23 fotografias. Solicita autorizacion de excepcion para continuar.";
+      }
+    }
+    if (form.dataset.requireControlPoints === "true") {
+      var missingControlPoints = Array.from(form.querySelectorAll("[data-control-point]")).filter(function(container) {
+        return !(container.querySelector("[data-cp-value]") || {}).value;
+      });
+      if (missingControlPoints.length) {
+        return "Completa la verificación de todos los puntos inspeccionados.";
       }
     }
     if (form.dataset.assertBoxesMin && (state.boxes || 0) < Number(form.dataset.assertBoxesMin)) {
@@ -1898,6 +1922,100 @@
     }, 0);
   }
 
+  function mountCompactInspectionPointSelects() {
+    document.querySelectorAll("[data-compact-control-point-selects] [data-control-point]").forEach(function(node) {
+      if (node.dataset.compactControlPointMounted === "true") return;
+      var sourceInput = node.querySelector("[data-cp-value]");
+      var header = node.querySelector(".sial-checkpoint-header");
+      var body = node.querySelector(".sial-checkpoint-body");
+      if (!sourceInput || !header || !body) return;
+
+      var pointKey = node.dataset.controlPoint || "point";
+      var controlId = "inspection-point-" + pointKey + "-select";
+      var menuId = controlId + "-options";
+      var currentValue = sourceInput.value || "";
+      var status = header.querySelector("[data-cp-status]");
+      if (status) status.remove();
+
+      var control = document.createElement("div");
+      control.className = "sial-select-control";
+      control.dataset.sialSelect = "";
+
+      var select = document.createElement("select");
+      select.className = "sial-select-native";
+      select.id = controlId;
+      select.name = sourceInput.name;
+      select.dataset.cpValue = "";
+      select.dataset.cpSelect = "";
+      select.tabIndex = -1;
+      select.setAttribute("aria-hidden", "true");
+      select.setAttribute("inert", "");
+      [
+        { value: "", label: "Pendiente" },
+        { value: "VERIFICADO", label: "Verificado" },
+        { value: "NO_APLICA", label: "No aplica" }
+      ].forEach(function(item) {
+        var option = document.createElement("option");
+        option.value = item.value;
+        option.textContent = item.label;
+        select.appendChild(option);
+      });
+      select.value = currentValue;
+
+      var trigger = document.createElement("button");
+      trigger.className = "sial-select-trigger";
+      trigger.type = "button";
+      trigger.setAttribute("aria-haspopup", "listbox");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.setAttribute("aria-controls", menuId);
+      trigger.setAttribute("aria-label", "Estado de " + (node.dataset.controlPointName || pointKey));
+      trigger.innerHTML = '<span data-sial-select-value>Pendiente</span><svg class="sial-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
+
+      var menu = document.createElement("div");
+      menu.className = "sial-select-menu";
+      menu.id = menuId;
+      menu.setAttribute("role", "listbox");
+      menu.tabIndex = -1;
+      menu.hidden = true;
+
+      control.append(select, trigger, menu);
+      header.classList.add("sial-checkpoint-compact-row");
+      header.appendChild(control);
+      body.remove();
+      sourceInput.remove();
+      node.dataset.compactControlPointMounted = "true";
+      if (window.SialMobileUI && typeof window.SialMobileUI.mountSelectControls === "function") {
+        window.SialMobileUI.mountSelectControls(node);
+      }
+    });
+  }
+
+  function persistControlPointSelect(select) {
+    var container = select.closest("[data-control-point]");
+    if (!container) return;
+    var eventName = container.dataset.controlPointEvent || "";
+    var pointKey = container.dataset.controlPoint || "";
+    if (!eventName || !pointKey) return;
+    var value = select.value || "";
+    if (isPrototypeReviewPage()) {
+      markUnsaved("control-point");
+      return;
+    }
+
+    var state = readState();
+    state.controlPoints = state.controlPoints || {};
+    state.controlPoints[eventName] = state.controlPoints[eventName] || [];
+    var existingIndex = state.controlPoints[eventName].findIndex(function(point) { return point.code === pointKey; });
+    if (!value) {
+      if (existingIndex >= 0) state.controlPoints[eventName].splice(existingIndex, 1);
+    } else if (existingIndex >= 0) {
+      state.controlPoints[eventName][existingIndex].value = value;
+    } else {
+      state.controlPoints[eventName].push({ code: pointKey, name: container.dataset.controlPointName || pointKey, value: value, observation: "", hasPhoto: false });
+    }
+    writeState(state);
+  }
+
   function hydrateControlPoints(state) {
     document.querySelectorAll("[data-control-point]").forEach((node) => {
       const eventName = node.dataset.controlPointEvent || "";
@@ -1907,13 +2025,25 @@
       const pointData = points.find(function(p) { return p.code === pointKey; });
       if (!pointData) return;
       const valueInput = node.querySelector("[data-cp-value]");
-      if (valueInput) valueInput.value = pointData.value || "";
+      if (valueInput) {
+        valueInput.value = pointData.value || "";
+        if (valueInput.matches("select")) {
+          var valueNode = valueInput.closest("[data-sial-select]")?.querySelector("[data-sial-select-value]");
+          var selectedOption = valueInput.options[valueInput.selectedIndex];
+          if (valueNode && selectedOption) valueNode.textContent = selectedOption.textContent;
+        }
+      }
+      node.querySelectorAll("[data-cp-option]").forEach(function(button) {
+        var isSelected = button.dataset.cpOption === pointData.value;
+        button.classList.toggle("active", isSelected);
+        button.setAttribute("aria-pressed", String(isSelected));
+      });
       const obsInput = node.querySelector("[data-cp-observation]");
       if (obsInput) obsInput.value = pointData.observation || "";
       const statusEl = node.querySelector("[data-cp-status]");
       if (statusEl) {
-        statusEl.textContent = pointData.value || "Pendiente";
-        statusEl.className = "sial-pill" + (pointData.value === "SIN_NOVEDAD" ? " success" : pointData.value === "CON_NOVEDAD" ? " warning" : pointData.value === "NO_INSPECCIONABLE" ? " info" : "");
+        statusEl.textContent = controlPointStatusLabel(pointData.value);
+        statusEl.className = "sial-pill" + controlPointStatusClass(pointData.value);
       }
       const photoSlot = node.querySelector("[data-cp-photo]");
       if (photoSlot && pointData.hasPhoto) {
@@ -2016,8 +2146,61 @@
     });
   }
 
+  function parseInspectionLabelNumber(value) {
+    var normalized = String(value || "").trim().toUpperCase().replace(/\s+/g, "");
+    var match = normalized.match(/^(.+?)(\d+)$/);
+    if (!match) return null;
+    var sequence = Number(match[2]);
+    if (!Number.isSafeInteger(sequence)) return null;
+    return { prefix: match[1], sequence: sequence };
+  }
+
+  function updateLabelRegister(register) {
+    var start = register.querySelector("[data-label-range-start]");
+    var end = register.querySelector("[data-label-range-end]");
+    var total = register.querySelector("[data-label-total]");
+    var error = register.querySelector("[data-label-range-error]");
+    if (!start || !end || !total) return;
+
+    function clearError() {
+      if (!error) return;
+      error.textContent = "";
+      error.classList.remove("error");
+      error.hidden = true;
+    }
+
+    function showError(message) {
+      if (!error) return;
+      error.textContent = message;
+      error.classList.add("error");
+      error.hidden = false;
+    }
+
+    if (!start.value.trim() || !end.value.trim()) {
+      total.value = "";
+      clearError();
+      return;
+    }
+
+    var from = parseInspectionLabelNumber(start.value);
+    var to = parseInspectionLabelNumber(end.value);
+    if (!from || !to || from.prefix !== to.prefix || to.sequence < from.sequence) {
+      total.value = "";
+      showError("Usa un rango consecutivo con el mismo prefijo.");
+      return;
+    }
+
+    total.value = String(to.sequence - from.sequence + 1);
+    clearError();
+  }
+
+  function hydrateLabelRegisters() {
+    document.querySelectorAll("[data-label-register]").forEach(updateLabelRegister);
+  }
+
   function boot() {
     syncOperationalMenuLabels();
+    mountCompactInspectionPointSelects();
     const state = readState();
     ensureInspectionContextSummary(state);
     hydrateSummary(state);
@@ -2026,6 +2209,7 @@
     hydrateLists(state);
     hydrateAlerts(state);
     hydrateControlPoints(state);
+    hydrateLabelRegisters();
     hydrateSignatures(state);
     hydrateEvidence(state);
     hydratePhotoSlots(state);
@@ -2036,6 +2220,18 @@
       const inspectionContainerSearch = event.target.closest("[data-inspection-container-search-input]");
       if (!inspectionContainerSearch) return;
       filterInspectionContainerOptions(inspectionContainerSearch);
+    });
+
+    document.addEventListener("input", (event) => {
+      const labelRangeInput = event.target.closest("[data-label-range-start], [data-label-range-end]");
+      if (!labelRangeInput) return;
+      const register = labelRangeInput.closest("[data-label-register]");
+      if (register) updateLabelRegister(register);
+    });
+
+    document.addEventListener("change", (event) => {
+      const pointSelect = event.target.closest("select[data-cp-select]");
+      if (pointSelect) persistControlPointSelect(pointSelect);
     });
 
     document.addEventListener("click", (event) => {
@@ -2150,13 +2346,19 @@
         const eventName = container.dataset.controlPointEvent || "";
         const pointKey = container.dataset.controlPoint;
         if (!eventName || !pointKey) return;
+        const valueInput = container.querySelector("[data-cp-value]");
+        if (valueInput) valueInput.value = value;
         if (isPrototypeReviewPage()) {
-          container.querySelectorAll("[data-cp-option]").forEach(function(b) { b.classList.remove("active"); });
+          container.querySelectorAll("[data-cp-option]").forEach(function(b) {
+            var isSelected = b === cpOption;
+            b.classList.toggle("active", isSelected);
+            b.setAttribute("aria-pressed", String(isSelected));
+          });
           cpOption.classList.add("active");
           const statusEl = container.querySelector("[data-cp-status]");
           if (statusEl) {
-            statusEl.textContent = value;
-            statusEl.className = "sial-pill" + (value === "SIN_NOVEDAD" ? " success" : value === "CON_NOVEDAD" ? " warning" : value === "NO_INSPECCIONABLE" ? " info" : "");
+            statusEl.textContent = controlPointStatusLabel(value);
+            statusEl.className = "sial-pill" + controlPointStatusClass(value);
           }
           var needsNovelty = value === "CON_NOVEDAD";
           var needsReason = value === "NO_INSPECCIONABLE";
@@ -2177,12 +2379,16 @@
           currentState.controlPoints[eventName].push({ code: pointKey, name: container.dataset.controlPointName || pointKey, value: value, observation: "", hasPhoto: false });
         }
         writeState(currentState);
-        container.querySelectorAll("[data-cp-option]").forEach(function(b) { b.classList.remove("active"); });
+        container.querySelectorAll("[data-cp-option]").forEach(function(b) {
+          var isSelected = b === cpOption;
+          b.classList.toggle("active", isSelected);
+          b.setAttribute("aria-pressed", String(isSelected));
+        });
         cpOption.classList.add("active");
         const statusEl = container.querySelector("[data-cp-status]");
         if (statusEl) {
-          statusEl.textContent = value;
-          statusEl.className = "sial-pill" + (value === "SIN_NOVEDAD" ? " success" : value === "CON_NOVEDAD" ? " warning" : value === "NO_INSPECCIONABLE" ? " info" : "");
+          statusEl.textContent = controlPointStatusLabel(value);
+          statusEl.className = "sial-pill" + controlPointStatusClass(value);
         }
         var needsNovelty = value === "CON_NOVEDAD";
         var needsReason = value === "NO_INSPECCIONABLE";
