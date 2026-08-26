@@ -3,25 +3,44 @@
   gap: 12px;
 }
 
+.hu591-intro {
+  display: grid;
+  gap: 3px;
+  padding: 2px 2px 0;
+}
+
+.hu591-intro h2,
+.hu591-intro p {
+  margin: 0;
+}
+
+.hu591-intro h2 {
+  color: var(--sial-text);
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.hu591-intro p {
+  color: var(--sial-text-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
 .hu591-form {
   gap: 12px;
   padding: 0 !important;
 }
 
 .hu591-context-banner {
-  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
-  border-color: color-mix(in srgb, var(--sial-primary-500) 22%, var(--sial-border-subtle));
-  background:
-    linear-gradient(105deg, color-mix(in srgb, var(--sial-primary-500) 10%, transparent), transparent 64%),
-    var(--sial-surface);
 }
 
 .hu591-context-banner > div {
   min-width: 0;
   display: grid;
-  gap: 3px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
 }
 
 .hu591-context-banner strong {
@@ -32,7 +51,10 @@
 }
 
 .hu591-context-banner span {
+  color: var(--sial-text-2);
+  font-size: 11px;
   font-weight: 600;
+  text-align: right;
 }
 
 .hu591-context-banner b {
@@ -112,6 +134,32 @@
   min-height: 48px;
 }
 
+.hu591-manual-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1;
+  text-align: center;
+}
+
+.hu591-manual-divider::before,
+.hu591-manual-divider::after {
+  height: 1px;
+  flex: 1 1 auto;
+  background: var(--sial-border-subtle);
+  content: "";
+}
+
+.hu591-field-counter {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: right;
+}
+
 .hu591-add-reference {
   min-height: 48px;
   border-style: solid;
@@ -120,6 +168,14 @@
 .hu591-reference-list {
   display: grid;
   gap: 10px;
+}
+
+.hu591-reference-total {
+  margin: 0;
+  color: var(--sial-success);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
 }
 
 .hu591-reference-empty {
@@ -251,15 +307,65 @@
   padding: 16px;
   border: 1px solid color-mix(in srgb, var(--sial-primary-500) 36%, var(--sial-border));
   border-radius: var(--sial-radius-large);
+}
+
+/* Candidato de familia Pallets: etiqueta operativa con materialidad de papel translúcido. */
+.sial-pallet-identification-label {
+  position: relative;
+  overflow: hidden;
+  gap: 12px;
+  padding-left: 20px;
+  border-color: rgba(72, 82, 96, .16);
+  border-radius: var(--sial-radius-surface);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--sial-primary-500) 14%, transparent), transparent 56%),
-    var(--sial-surface-raised);
-  box-shadow: var(--sial-shadow-soft);
+    repeating-linear-gradient(96deg, color-mix(in srgb, var(--sial-primary-700) 2.5%, transparent) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(8deg, rgba(116, 105, 82, .018) 0 1px, transparent 1px 7px),
+    linear-gradient(135deg, color-mix(in srgb, var(--sial-primary-500) 11%, transparent), transparent 58%),
+    color-mix(in srgb, var(--sial-surface-raised) 95%, var(--sial-yellow));
+  box-shadow:
+    0 14px 28px color-mix(in srgb, var(--sial-primary-700) 9%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 74%, transparent);
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+}
+
+/* El contorno exterior se mantiene neutro: el volumen nace del papel y de la luz interior. */
+.hu591-label-preview.sial-pallet-identification-label {
+  box-shadow:
+    0 1px 2px rgba(49, 58, 69, .08),
+    0 9px 18px rgba(49, 58, 69, .11),
+    inset 0 1px 0 rgba(255, 255, 255, .86),
+    inset 0 -1px 0 rgba(84, 94, 107, .08);
+}
+
+.sial-pallet-identification-label::before {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  bottom: 12px;
+  left: -8px;
+  width: 16px;
+  background: radial-gradient(circle at 50% 8px, var(--sial-surface) 0 5.5px, transparent 6px) center top / 16px 16px repeat-y;
+  pointer-events: none;
+  content: "";
+}
+
+.sial-pallet-identification-label::after {
+  position: absolute;
+  inset: 5px 5px 5px 12px;
+  border: 1px solid rgba(255, 255, 255, .56);
+  border-radius: calc(var(--sial-radius-surface) - 5px);
+  pointer-events: none;
+  content: "";
 }
 
 .hu591-label-head {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--sial-primary-500) 28%, var(--sial-border));
 }
 
 .hu591-label-head span {
@@ -270,10 +376,33 @@
   text-transform: uppercase;
 }
 
-.hu591-label-head strong {
+.hu591-label-head small {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.hu591-label-sscc {
+  display: grid;
+  gap: 3px;
+  padding: 2px 0 12px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--sial-primary-500) 28%, var(--sial-border));
+}
+
+.hu591-label-sscc span {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.hu591-label-sscc strong {
   color: var(--sial-text);
   font-size: clamp(18px, 5vw, 24px);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 
@@ -291,7 +420,12 @@
   padding: 10px;
   border: 1px solid var(--sial-border-subtle);
   border-radius: var(--sial-radius-control);
-  background: color-mix(in srgb, var(--sial-surface) 84%, transparent);
+  background: color-mix(in srgb, var(--sial-surface-raised) 88%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 58%, transparent);
+}
+
+.hu591-label-preview dl div:last-child {
+  grid-column: 1 / -1;
 }
 
 .hu591-label-preview dt {
@@ -339,7 +473,8 @@
   padding: 9px;
   border-radius: var(--sial-radius-control);
   border: 1px solid var(--sial-border-subtle);
-  background: color-mix(in srgb, var(--sial-surface) 84%, transparent);
+  background: color-mix(in srgb, var(--sial-surface-raised) 84%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 54%, transparent);
 }
 
 .hu591-label-reference-row > div {
@@ -362,18 +497,7 @@
   grid-column: 1 / -1;
 }
 
-.hu591-submit-card {
-  display: grid;
-  gap: 10px;
-  box-shadow: none;
-}
-
-.hu591-submit-card p {
-  margin: 0;
-  color: var(--sial-text-2);
-  font-size: 11px;
-  line-height: 1.4;
-}
+.hu591-confirmation-card { margin-top: 2px; }
 
 .hu591-reference-picker {
   display: grid;

@@ -18,6 +18,9 @@
     carrier: "Transbanasan",
     order: "ORD-ZE-2041",
     journey: "VIAJE-7751",
+    inspectionWeek: "34 / 2026",
+    inspectionTape: "AZ",
+    inspectionContainerType: "Contenedor reefer aislado",
     ze: "ZE Puerto Norte",
     status: "PENDIENTE_RECEPCION_ZE",
     operationStatus: "PENDIENTE_RECEPCION_ZE",
@@ -385,6 +388,14 @@
       { value: "int-cableado", label: "Cableado / ductos visibles" },
       { value: "int-novedad-adicional", label: "Evidencia novedad adicional" }
     ],
+    farmExternalInspection: Array.from({ length: 12 }, function(_, index) {
+      var position = index + 1;
+      return { value: "farm-ext-evidence-" + position, label: "Evidencia " + position };
+    }),
+    farmInternalInspection: Array.from({ length: 16 }, function(_, index) {
+      var position = index + 1;
+      return { value: "farm-int-evidence-" + position, label: "Evidencia " + position };
+    }),
     zeDispatch: [
       { value: "dispatch-vehiculo", label: "Vehículo y placas" },
       { value: "dispatch-contenedor", label: "Contenedor y sellos" },
@@ -401,6 +412,15 @@
       { value: "farm-dispatch-zona", label: "Zona de salida" },
       { value: "farm-dispatch-novedad", label: "Novedad de salida" }
     ]
+  };
+
+  const evidenceCaptureLimits = {
+    portExternalInspection: 12,
+    portInternalInspection: 23,
+    farmExternalInspection: 12,
+    farmInternalInspection: 16,
+    zeDispatch: 6,
+    farmDispatch: 6
   };
 
   const locationLabels = {
@@ -486,6 +506,9 @@
     document.querySelectorAll("[data-flow-carrier]").forEach((node) => { node.textContent = state.carrier; });
     document.querySelectorAll("[data-flow-order]").forEach((node) => { node.textContent = state.order; });
     document.querySelectorAll("[data-flow-journey]").forEach((node) => { node.textContent = state.journey; });
+    document.querySelectorAll("[data-flow-inspection-week]").forEach((node) => { node.textContent = state.inspectionWeek || ""; });
+    document.querySelectorAll("[data-flow-inspection-tape]").forEach((node) => { node.textContent = state.inspectionTape || ""; });
+    document.querySelectorAll("[data-flow-inspection-container-type]").forEach((node) => { node.textContent = state.inspectionContainerType || ""; });
     document.querySelectorAll("[data-flow-status]").forEach((node) => { node.textContent = state.containerStatus || state.status; });
     document.querySelectorAll("[data-flow-container-status]").forEach((node) => { node.textContent = state.containerStatus; });
     document.querySelectorAll("[data-flow-operation-status]").forEach((node) => { node.textContent = state.operationStatus; });
@@ -2179,12 +2202,9 @@
           st = { ...st, evidence: window._sialPrototypeEvidence || {} };
         }
         var currentCount = (st.evidence || {})[evEventName] ? (st.evidence[evEventName] || []).length : 0;
-        if (evEventName === "portInternalInspection" && currentCount >= 23) {
-          showToast({ type: "warning", title: "Maximo alcanzado", message: "Se alcanzo el maximo de 23 fotografias." });
-          return;
-        }
-        if ((evEventName === "zeDispatch" || evEventName === "farmDispatch") && currentCount >= 6) {
-          showToast({ type: "warning", title: "Maximo alcanzado", message: "La salida permite maximo 6 evidencias." });
+        var evidenceLimit = evidenceCaptureLimits[evEventName] || 0;
+        if (evidenceLimit && currentCount >= evidenceLimit) {
+          showToast({ type: "warning", title: "Máximo alcanzado", message: "Se alcanzó el máximo de " + evidenceLimit + " evidencias." });
           return;
         }
         var pointList = (evidencePointCatalog[evEventName] || []).slice();
@@ -2205,9 +2225,7 @@
         }
 
         function maxCaptureSlots() {
-          if (evEventName === "portInternalInspection") return Math.max(0, 23 - currentCount);
-          if (evEventName === "zeDispatch" || evEventName === "farmDispatch") return Math.max(0, 6 - currentCount);
-          return pointList.length;
+          return evidenceLimit ? Math.max(0, evidenceLimit - currentCount) : pointList.length;
         }
 
         function captureForPoint(point) {
@@ -2734,6 +2752,20 @@
         hydrateLists(state);
         markUnsaved("box");
         showToast({ type: "info", title: "Caja lista para editar", message: "Ajusta el codigo y vuelve a registrarla." });
+      }
+
+      const resetForm = event.target.closest("[data-reset-form]");
+      if (resetForm) {
+        var resetFormId = resetForm.dataset.resetForm || "";
+        var targetForm = resetFormId ? document.getElementById(resetFormId) : resetForm.closest("form");
+        if (!targetForm) return;
+        targetForm.reset();
+        targetForm.querySelectorAll(".sial-select-native").forEach(function(select) {
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        clearInline(targetForm);
+        showToast({ type: "info", title: "Formulario limpio", message: "Puedes registrar un nuevo despacho." });
+        return;
       }
 
       const reset = event.target.closest("[data-reset-flow]");

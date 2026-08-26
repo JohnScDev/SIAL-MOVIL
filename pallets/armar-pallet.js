@@ -24,7 +24,6 @@
     "unidad-operativa-puerto": "0435"
   };
   var draftReferences = [];
-  var readings = [];
   var ssccSource = "TYPED";
   var draftStartedAt = new Date().toISOString();
 
@@ -150,6 +149,17 @@
     setFieldStatus($("[data-hu591-sscc-status]"), result.message, result.ok ? "success" : "error");
   }
 
+  function updateSsccCount(value) {
+    var counter = $("[data-hu591-sscc-count]");
+    if (counter) counter.textContent = normalizeSscc(value).length;
+  }
+
+  function updateObservationsCount() {
+    var field = $("[data-hu591-observations]");
+    var counter = $("[data-hu591-observations-count]");
+    if (field && counter) counter.textContent = field.value.length;
+  }
+
   function clearValidationFeedback(field) {
     if (field) {
       field.removeAttribute("aria-invalid");
@@ -165,6 +175,7 @@
     var code = normalizeSscc(value).slice(0, 18);
     var result = validateSscc(code);
     $("[data-hu591-sscc]").value = code;
+    updateSsccCount(code);
     ssccSource = source || "TYPED";
     if (result.ok && message) result.message = message;
     setSsccStatus(result);
@@ -276,9 +287,7 @@
               return currentByCode[code] || makeReference(code);
             });
             clearValidationFeedback($("[data-hu591-open-reference-picker]"));
-            readings = readings.filter(function (reading) { return staged.has(reading.referenceCode); });
             renderReferenceCards();
-            renderReadings();
             markDirty("reference");
           }
         }
@@ -289,13 +298,15 @@
   function renderReferenceCards() {
     var list = $("[data-hu591-reference-list]");
     var count = $("[data-hu591-reference-count]");
+    var total = $("[data-hu591-reference-total]");
     count.textContent = draftReferences.length + " seleccionada" + (draftReferences.length === 1 ? "" : "s");
+    if (total) total.textContent = totalBoxes() + " cajas";
     if (!draftReferences.length) {
       list.innerHTML = [
         '<div class="hu591-reference-empty">',
         '<svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/></svg>',
         '<strong>Sin referencias</strong>',
-        '<span>Usa “Agregar referencias” para comenzar el pallet.</span>',
+        '<span>Usa “Agregar referencia” para comenzar el pallet.</span>',
         '</div>'
       ].join("");
       setFieldStatus($("[data-hu591-references-status]"), "Selecciona al menos una referencia para continuar.", "");
@@ -315,7 +326,6 @@
       }).join("");
       setFieldStatus($("[data-hu591-references-status]"), "Completa las cajas de cada referencia.", "");
     }
-    updateReadingReferenceOptions();
     updateSummary();
   }
 
@@ -344,94 +354,10 @@
     var removeReference = event.target.closest("[data-hu591-remove-reference]");
     if (removeReference) {
       draftReferences.splice(index, 1);
-      readings = readings.filter(function (reading) {
-        return reading.referenceCode !== removeReference.closest("[data-hu591-reference-card]").querySelector("header strong").textContent;
-      });
       renderReferenceCards();
-      renderReadings();
       markDirty("reference");
       return;
     }
-  }
-
-  function updateReadingReferenceOptions() {
-    var select = $("[data-hu591-reading-reference]");
-    var previous = select.value;
-    select.innerHTML = '<option value="">Selecciona una referencia</option>' + draftReferences.map(function (item) {
-      return '<option value="' + item.code + '">' + item.code + ' · ' + escapeHtml(references[item.code].name) + '</option>';
-    }).join("");
-    if (selectedCodes().indexOf(previous) >= 0) select.value = previous;
-  }
-
-  function normalizeReading(value) {
-    return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
-  }
-
-  function registerReading(rawValue, source) {
-    var input = $("[data-hu591-reading-input]");
-    var referenceCode = $("[data-hu591-reading-reference]").value;
-    var value = normalizeReading(rawValue);
-    if (!referenceCode) {
-      setFieldStatus($("[data-hu591-reading-status]"), "Selecciona la referencia relacionada con la lectura.", "error");
-      $("[data-hu591-reading-reference]").focus();
-      return false;
-    }
-    if (!value) {
-      setFieldStatus($("[data-hu591-reading-status]"), "Escanea o digita un código para agregarlo.", "error");
-      input.focus();
-      return false;
-    }
-    if (readings.some(function (item) { return item.code === value; })) {
-      setFieldStatus($("[data-hu591-reading-status]"), "El código " + value + " ya está asociado al pallet.", "warning");
-      return false;
-    }
-    readings.push({ code: value, referenceCode: referenceCode, source: source });
-    input.value = "";
-    renderReadings();
-    setFieldStatus($("[data-hu591-reading-status]"), "Lectura agregada a " + referenceCode + ".", "success");
-    markDirty("scan");
-    return true;
-  }
-
-  function renderReadings() {
-    var list = $("[data-hu591-reading-list]");
-    $("[data-hu591-reading-count]").textContent = readings.length + " lectura" + (readings.length === 1 ? "" : "s");
-    if (!readings.length) {
-      list.innerHTML = '<div class="sial-list-row"><strong>Sin lecturas</strong><span>Esta sección es opcional.</span></div>';
-      return;
-    }
-    list.innerHTML = readings.map(function (item, index) {
-      return '<div class="sial-list-row"><div><strong>' + escapeHtml(item.code) + '</strong><span>' + escapeHtml(item.referenceCode) + '</span></div><button class="sial-chip-action" type="button" data-hu591-remove-reading="' + index + '">Quitar</button></div>';
-    }).join("");
-  }
-
-  function openReadingScanner() {
-    var referenceCode = $("[data-hu591-reading-reference]").value;
-    if (!referenceCode) {
-      setFieldStatus($("[data-hu591-reading-status]"), "Selecciona una referencia antes de abrir la cámara.", "error");
-      $("[data-hu591-reading-reference]").focus();
-      return;
-    }
-    if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") {
-      setFieldStatus($("[data-hu591-reading-status]"), "El escáner no está disponible. Digita el código manualmente.", "error");
-      return;
-    }
-    window.SialMobileUI.openBarcodeScanner({
-      title: "Escanear etiqueta",
-      eyebrow: referenceCode,
-      normalize: normalizeReading,
-      validate: function (value) {
-        return value ? { ok: true, value: value } : { ok: false, message: "No se detectó un código." };
-      },
-      onDetected: function (value) { registerReading(value, "SCANNED"); }
-    });
-  }
-
-  function lastSsccForFarm(farmCode) {
-    var ready = readPageState().readyPallets.filter(function (item) {
-      return item.farmCode === farmCode && item.status === "LISTO_PARA_CARGUE";
-    });
-    return ready[0] ? ready[0].sscc : "--";
   }
 
   function updateSummary() {
@@ -444,7 +370,6 @@
     $("[data-hu591-preview-farm]").textContent = farm.code + " · " + farm.name;
     $("[data-hu591-preview-week]").textContent = week;
     $("[data-hu591-preview-boxes]").textContent = totalBoxes() + " cajas";
-    $("[data-hu591-preview-last-sscc]").textContent = lastSsccForFarm(farm.code);
     var preview = $("[data-hu591-preview-references]");
     if (!draftReferences.length) {
       preview.innerHTML = "<p>Agrega referencias para construir el resumen.</p>";
@@ -525,7 +450,6 @@
       }),
       boxes: totalBoxes(),
       observations: $("[data-hu591-observations]").value.trim(),
-      readings: readings.slice(),
       startTime: $("[data-hu591-start-time]").value,
       endTime: $("[data-hu591-end-time]").value,
       startedAt: draftStartedAt,
@@ -553,9 +477,15 @@
   function wireForm() {
     var form = $("[data-flow-form]");
     renderReferenceCards();
-    renderReadings();
     updateSummary();
-    $("[data-hu591-start-time]").value = new Date().toTimeString().slice(0, 5);
+    if (!$("[data-hu591-start-time]").value) {
+      var currentTime = new Date().toTimeString().slice(0, 5);
+      $("[data-hu591-start-time]").value = currentTime;
+      $("[data-hu591-start-time]").dispatchEvent(new Event("input", { bubbles: true }));
+      $("[data-hu591-start-time]").dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    updateSsccCount($("[data-hu591-sscc]").value);
+    updateObservationsCount();
 
     $("[data-hu591-scan-sscc]").addEventListener("click", openSsccScanner);
     $("[data-hu591-open-reference-picker]").addEventListener("click", openReferencePicker);
@@ -569,29 +499,16 @@
     $("[data-hu591-sscc]").addEventListener("input", function (event) {
       event.target.value = event.target.value.replace(/\D/g, "").slice(0, 18);
       ssccSource = "TYPED";
+      updateSsccCount(event.target.value);
       if (event.target.value.length === 18) setSsccStatus(validateSscc(event.target.value));
       if (event.target.value.length === 18 && validateSscc(event.target.value).ok) clearValidationFeedback(event.target);
       updateSummary();
       markDirty("hu591");
     });
-    $("[data-hu591-scan-reading]").addEventListener("click", openReadingScanner);
-    $("[data-hu591-add-reading]").addEventListener("click", function () {
-      registerReading($("[data-hu591-reading-input]").value, "TYPED");
+    $("[data-hu591-observations]").addEventListener("input", function () {
+      updateObservationsCount();
+      markDirty("field");
     });
-    $("[data-hu591-reading-input]").addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        registerReading(event.target.value, "TYPED");
-      }
-    });
-    $("[data-hu591-reading-list]").addEventListener("click", function (event) {
-      var button = event.target.closest("[data-hu591-remove-reading]");
-      if (!button) return;
-      readings.splice(Number(button.dataset.hu591RemoveReading), 1);
-      renderReadings();
-      markDirty("scan");
-    });
-    $("[data-hu591-observations]").addEventListener("input", function () { markDirty("field"); });
     $("[data-hu591-start-time]").addEventListener("input", function () { markDirty("time"); });
     $("[data-hu591-end-time]").addEventListener("input", function () { markDirty("time"); });
 

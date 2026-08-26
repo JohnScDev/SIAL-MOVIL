@@ -1,1 +1,88 @@
-﻿<!doctype html><html lang="es" data-theme="light"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <link rel="manifest" href="../manifest.webmanifest">  <meta name="theme-color" content="#005CA8">  <title>SIAL Movil - Inspeccion interna ZE</title>  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>  <link rel="stylesheet" href="../shared/sial-mobile-core.css"></head><body>  <main class="sial-page">    <header class="sial-page-header">      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>      <div class="sial-page-title"><h1>Inspeccion interna ZE</h1><p>HU558 - 15 a 23 fotos obligatorias</p></div>      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>    </header>    <section class="sial-page-body">      <div class="sial-status warning" data-requires="zeReception,portExternalInspection"><span><strong>Evento requerido</strong>Falta: <span data-missing-list></span>.</span></div>      <div class="sial-flow-banner"><strong>Contenedor <span data-flow-container></span></strong><span>Sync: <span class="sial-pill" data-flow-sync-status="portInternalInspection" data-sync-pill></span></span></div>      <section class="sial-stat-row" aria-label="Contador de evidencia">        <div class="sial-stat"><strong data-evidence-count="portInternalInspection">0</strong><span>Fotos registradas</span></div>        <div class="sial-stat"><strong>15-23</strong><span>Rango requerido</span></div>      </section>      <section class="sial-card sial-card-pad sial-form">        <div class="sial-list-row"><strong>Operacion</strong><span data-flow-operation></span></div>        <div class="sial-list-row"><strong>Orden / viaje</strong><span><span data-flow-order></span> / <span data-flow-journey></span></span></div>        <div class="sial-list-row"><strong>Vehiculo</strong><span data-flow-vehicle></span></div>        <div class="sial-list-row"><strong>Placa remolque</strong><span data-flow-trailer></span></div>        <div class="sial-list-row"><strong>Estado contenedor</strong><span data-flow-container-status></span></div>      </section>      <form class="sial-card sial-card-pad sial-form" data-flow-form data-flow-mode="prototype" data-event="portInternalInspection" data-detail="Inspeccion interna ZE" data-prevent-duplicate="true">        <section class="sial-evidence-section" data-evidence-event="portInternalInspection">          <h2 class="sial-section-title">Evidencia fotografica interna</h2>          <button class="sial-evidence-trigger" type="button" data-capture-evidence="portInternalInspection">            <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>            Agregar evidencia          </button>          <div class="sial-evidence-gallery" data-evidence-gallery="portInternalInspection" role="region" aria-label="Galeria de evidencia interna"></div>        </section>        <div class="sial-section">          <h3 class="sial-section-title">Resultado de la inspeccion</h3>          <div class="sial-field">            <label class="sial-label">Resultado *</label>            <select class="sial-select" name="resultado_inspeccion" required>              <option value="">Seleccionar resultado</option>              <option value="APTO">APTO</option>              <option value="APTO_CON_NOVEDAD">APTO con novedad</option>              <option value="NO_APTO">NO APTO</option>            </select>          </div>          <div class="sial-field"><label class="sial-label">Observaciones generales</label><textarea class="sial-textarea" name="observaciones" placeholder="Resumen de hallazgos de la inspeccion interna"></textarea></div>        </div>        <p class="sial-inline-error" data-flow-error hidden></p>        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Finalizar inspeccion interna</button>      </form>      <section class="sial-section"><h2 class="sial-section-title">Alertas</h2><div data-flow-alerts></div></section>    </section>  </main>  <script src="../shared/sial-mobile-core.js"></script>  <script src="../shared/sial-mobile-flow.js"></script></body></html>
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Inspección interna ZE</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title"><h1>Inspección interna ZE</h1><p>15 a 23 fotos obligatorias</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+
+    <section class="sial-page-body sial-inspection-page">
+      <div class="sial-status warning" data-requires="zeReception,portExternalInspection"><span><strong>Evento requerido</strong>Falta: <span data-missing-list></span>.</span></div>
+
+      <section class="sial-card sial-card-pad sial-inspection-context-card" data-inspection-context-summary>
+        <p class="sial-inspection-eyebrow">Contenedor seleccionado</p>
+        <strong class="sial-inspection-container-value" data-flow-container></strong>
+        <button class="sial-btn sial-btn-secondary sial-btn-full sial-container-change-action" type="button" data-change-inspection-container="portInternalInspection">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg><span>Cambiar contenedor</span>
+        </button>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-inspection-operation-summary" aria-labelledby="internalOperationTitle">
+        <h2 class="sial-section-title" id="internalOperationTitle">Información de la operación</h2>
+        <dl class="sial-inspection-operation-list">
+          <div><dt>Operación</dt><dd data-flow-operation></dd></div>
+          <div><dt>Orden / viaje</dt><dd><span data-flow-order></span> / <span data-flow-journey></span></dd></div>
+          <div><dt>Vehículo</dt><dd data-flow-vehicle></dd></div>
+          <div><dt>Placa remolque</dt><dd data-flow-trailer></dd></div>
+          <div><dt>Estado</dt><dd data-flow-container-status></dd></div>
+        </dl>
+      </section>
+
+      <form class="sial-card sial-card-pad sial-form sial-inspection-form" id="inspection-internal-ze-form" data-flow-form data-flow-mode="prototype" data-event="portInternalInspection" data-detail="Inspección interna ZE" data-prevent-duplicate="true">
+        <section class="sial-inspection-section sial-evidence-section" data-evidence-event="portInternalInspection" aria-labelledby="internalEvidenceTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="m9 7 1.5-2h3L15 7"/><circle cx="12" cy="13" r="3"/></svg></span>
+            <div><h2 class="sial-section-title" id="internalEvidenceTitle">Evidencia fotográfica interna</h2><p>Registra entre 15 y 23 fotografías requeridas.</p></div>
+          </div>
+          <button class="sial-evidence-trigger" type="button" data-capture-evidence="portInternalInspection"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>Completar evidencias (<span data-evidence-count="portInternalInspection">0</span>/23)</span></button>
+          <div class="sial-evidence-gallery" data-evidence-gallery="portInternalInspection" role="region" aria-label="Galería de evidencia interna"></div>
+        </section>
+
+        <section class="sial-inspection-section" aria-labelledby="internalResultTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="1"/><path d="m8 9 2 2 4-4"/><path d="M8 15h8"/></svg></span>
+            <div><h2 class="sial-section-title" id="internalResultTitle">Resultado de la inspección</h2></div>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="inspectionInternalResult">Resultado *</label>
+            <div class="sial-select-control" data-sial-select>
+              <select class="sial-select-native" id="inspectionInternalResult" name="resultado_inspeccion" required tabindex="-1" aria-hidden="true" inert>
+                <option value="">Selecciona un resultado</option>
+                <option value="APTO">APTO</option>
+                <option value="APTO_CON_NOVEDAD">APTO con novedad</option>
+                <option value="NO_APTO">NO APTO</option>
+              </select>
+              <button class="sial-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="inspection-internal-result-options" aria-label="Resultado de la inspección">
+                <span data-sial-select-value>Selecciona un resultado</span>
+                <svg class="sial-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </button>
+              <div class="sial-select-menu" id="inspection-internal-result-options" role="listbox" tabindex="-1" hidden></div>
+            </div>
+          </div>
+          <div class="sial-field"><label class="sial-label" for="inspectionInternalNotes">Observaciones generales</label><textarea class="sial-textarea" id="inspectionInternalNotes" name="observaciones" placeholder="Resumen de hallazgos de la inspección interna"></textarea></div>
+        </section>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+      </form>
+
+      <section class="sial-card sial-card-pad sial-confirmation-card sial-inspection-confirmation-card" aria-label="Confirmación de inspección">
+        <p class="sial-confirmation-copy">Confirma que la evidencia, el resultado y las observaciones corresponden a la inspección interna.</p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit" form="inspection-internal-ze-form">Finalizar inspección interna</button>
+      </section>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>

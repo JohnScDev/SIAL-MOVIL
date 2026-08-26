@@ -48,11 +48,13 @@
   }
 
   function initSelect(root) {
+    if (root.dataset.sialSelectInitialized === "true") return;
     var nativeSelect = root.querySelector(".sial-select-native");
     var trigger = root.querySelector(".sial-select-trigger");
     var valueNode = root.querySelector("[data-sial-select-value]");
     var menu = root.querySelector(".sial-select-menu");
     if (!nativeSelect || !trigger || !valueNode || !menu) return;
+    root.dataset.sialSelectInitialized = "true";
 
     function selectedIndex() { return Math.max(0, nativeSelect.selectedIndex); }
     function render() {

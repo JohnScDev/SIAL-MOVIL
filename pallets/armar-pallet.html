@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="manifest" href="../manifest.webmanifest">
   <meta name="theme-color" content="#005CA8">
-  <title>SIAL Móvil - HU591 Armado de pallet</title>
+  <title>SIAL Móvil - HU591 Armar pallet</title>
   <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
-  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260728">
-  <link rel="stylesheet" href="hu591.css?v=20260729-4">
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css?v=20260826-2">
+  <link rel="stylesheet" href="hu591.css?v=20260826-1">
 </head>
 <body>
   <main class="sial-page">
@@ -18,8 +18,8 @@
       </a>
       <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
       <div class="sial-page-title">
-        <h1>Armado de pallet</h1>
-        <p>HU591 · Referencias y cajas reales</p>
+        <h1>Armar pallet</h1>
+        <p>Referencias y cajas</p>
       </div>
       <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema">
         <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg>
@@ -27,6 +27,7 @@
     </header>
 
     <section class="sial-page-body hu591-page">
+      <section class="hu591-intro" aria-labelledby="hu591-page-title"><h2 id="hu591-page-title">Armado del pallet</h2><p>Referencias y cajas reales</p></section>
       <section class="sial-flow-banner hu591-context-banner" aria-label="Contexto del armado">
         <div>
           <strong data-hu591-context-farm>Finca Santa Isabel</strong>
@@ -49,15 +50,17 @@
             <span class="sial-pill">SSCC único</span>
           </div>
 
+          <div class="hu591-sscc-actions">
+              <button class="sial-btn sial-btn-secondary sial-btn-full" type="button" data-hu591-scan-sscc>
+                <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
+                Escanear SSCC con cámara
+              </button>
+          </div>
+          <div class="hu591-manual-divider"><span>o digítalo manualmente</span></div>
           <div class="sial-field">
             <label class="sial-label" for="hu591-sscc">Código SSCC</label>
             <input class="sial-input-wrap sial-input" id="hu591-sscc" name="pallet" inputmode="numeric" autocomplete="off" required placeholder="Escanea o digita el SSCC" data-hu591-sscc>
-            <div class="hu591-sscc-actions">
-              <button class="sial-btn sial-btn-primary" type="button" data-hu591-scan-sscc>
-                <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M7 12h10"/></svg>
-                Escanear
-              </button>
-            </div>
+            <p class="hu591-field-counter"><span data-hu591-sscc-count>0</span>/18 dígitos</p>
             <p class="sial-field-note" data-hu591-sscc-status>Debe contener 18 dígitos y no haber sido utilizado.</p>
           </div>
         </section>
@@ -77,37 +80,12 @@
           </div>
           <button class="sial-btn sial-btn-secondary sial-btn-full hu591-add-reference" type="button" data-hu591-open-reference-picker>
             <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-            Agregar referencias
+            Agregar referencia
           </button>
           <div class="hu591-reference-list" data-hu591-reference-list aria-live="polite"></div>
+          <p class="hu591-reference-total" data-hu591-reference-total>0 cajas</p>
           <p class="sial-field-note" data-hu591-references-status>Selecciona al menos una referencia para continuar.</p>
         </section>
-
-        <details class="sial-card sial-card-pad hu591-section hu591-support-section">
-          <summary>
-            <span>
-              <strong>Lecturas de apoyo</strong>
-              <small>Opcional · etiquetas de caja</small>
-            </span>
-            <span class="sial-pill" data-hu591-reading-count>0 lecturas</span>
-          </summary>
-          <div class="sial-field">
-            <label class="sial-label" for="hu591-reading-reference">Asociar lectura a</label>
-            <select class="sial-select" id="hu591-reading-reference" data-hu591-reading-reference>
-              <option value="">Selecciona una referencia</option>
-            </select>
-          </div>
-          <div class="sial-field">
-            <label class="sial-label" for="hu591-reading">Etiqueta de caja</label>
-            <input class="sial-input-wrap sial-input" id="hu591-reading" autocomplete="off" placeholder="Escanea o digita el código" data-hu591-reading-input>
-            <div class="hu591-sscc-actions">
-              <button class="sial-btn sial-btn-primary" type="button" data-hu591-scan-reading>Abrir cámara</button>
-              <button class="sial-btn sial-btn-secondary" type="button" data-hu591-add-reading>Agregar</button>
-            </div>
-            <p class="sial-field-note" data-hu591-reading-status>Primero indica la referencia relacionada con la lectura.</p>
-          </div>
-          <div class="sial-list hu591-reading-list" data-hu591-reading-list></div>
-        </details>
 
         <section class="sial-card sial-card-pad hu591-section">
           <div class="hu591-section-head">
@@ -124,11 +102,21 @@
           <div class="sial-form-grid hu591-time-grid">
             <div class="sial-field">
               <label class="sial-label" for="hu591-start-time">Hora de inicio</label>
-              <input class="sial-input-wrap sial-input" id="hu591-start-time" name="horaInicio" type="time" required data-hu591-start-time>
+              <div class="sial-time-control" data-sial-time-picker data-time-picker-label="Hora de inicio">
+                <input class="sial-time-input-native" id="hu591-start-time" name="horaInicio" type="time" required data-sial-native-time data-hu591-start-time tabindex="-1" aria-hidden="true" inert>
+                <button class="sial-time-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="hu591-start-time-picker"><span class="sial-time-trigger-copy"><strong data-sial-time-value>Seleccionar hora</strong></span><svg class="sial-time-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+                <div class="sial-time-popover" id="hu591-start-time-picker" role="dialog" aria-modal="false" aria-label="Seleccionar hora de inicio" hidden></div>
+              </div>
+              <p class="sial-field-note">Formato de 24 horas. Ejemplo: 14:00 equivale a 2:00 p. m.</p>
             </div>
             <div class="sial-field">
               <label class="sial-label" for="hu591-end-time">Hora de finalización</label>
-              <input class="sial-input-wrap sial-input" id="hu591-end-time" name="horaFinalizacion" type="time" required data-hu591-end-time>
+              <div class="sial-time-control" data-sial-time-picker data-time-picker-label="Hora de finalización">
+                <input class="sial-time-input-native" id="hu591-end-time" name="horaFinalizacion" type="time" required data-sial-native-time data-hu591-end-time tabindex="-1" aria-hidden="true" inert>
+                <button class="sial-time-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="hu591-end-time-picker"><span class="sial-time-trigger-copy"><strong data-sial-time-value>Seleccionar hora</strong></span><svg class="sial-time-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+                <div class="sial-time-popover" id="hu591-end-time-picker" role="dialog" aria-modal="false" aria-label="Seleccionar hora de finalización" hidden></div>
+              </div>
+              <p class="sial-field-note">Formato de 24 horas. Ejemplo: 14:00 equivale a 2:00 p. m.</p>
             </div>
           </div>
         </section>
@@ -149,20 +137,23 @@
           <div class="sial-field">
             <label class="sial-label" for="hu591-observations">Novedades del armado</label>
             <textarea class="sial-textarea" id="hu591-observations" name="observaciones" maxlength="500" placeholder="Registra únicamente información que ayude a entender el armado del pallet" data-hu591-observations></textarea>
-            <p class="sial-field-note">Máximo 500 caracteres.</p>
+            <p class="hu591-field-counter"><span data-hu591-observations-count>0</span>/500 caracteres</p>
           </div>
         </section>
 
-        <section class="hu591-label-preview" aria-label="Resumen final del pallet" data-hu591-summary>
+        <section class="hu591-label-preview sial-pallet-identification-label" aria-label="Etiqueta operativa del pallet" data-hu591-summary>
           <div class="hu591-label-head">
-            <span>Etiqueta pallet</span>
+            <span>Etiqueta de pallet</span>
+            <small>Identificación operativa</small>
+          </div>
+          <div class="hu591-label-sscc">
+            <span>SSCC</span>
             <strong data-hu591-preview-sscc>SSCC pendiente</strong>
           </div>
           <dl>
             <div><dt>Finca</dt><dd data-hu591-preview-farm>--</dd></div>
             <div><dt>Semana actual</dt><dd data-hu591-preview-week>--</dd></div>
-            <div><dt>Total cajas</dt><dd data-hu591-preview-boxes>0</dd></div>
-            <div><dt>Último SSCC finca</dt><dd data-hu591-preview-last-sscc>--</dd></div>
+            <div><dt>Total cajas</dt><dd data-hu591-preview-boxes>0 cajas</dd></div>
           </dl>
           <div class="hu591-label-references">
             <span>Referencias</span>
@@ -174,16 +165,16 @@
 
         <input type="hidden" name="operacion" value="EXP-2026-0418" data-hu591-operation>
         <p class="sial-inline-error" data-flow-error hidden></p>
-        <section class="sial-card sial-card-pad hu591-submit-card">
-          <p>Verifica el SSCC, las referencias, las cajas y los horarios antes de crear el pallet.</p>
+        <section class="sial-confirmation-card hu591-confirmation-card" aria-label="Confirmar creación de pallet">
+          <p class="sial-confirmation-copy">Verifica el SSCC, las referencias, las cajas y los horarios antes de crear el pallet.</p>
           <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Crear pallet</button>
         </section>
       </form>
     </section>
   </main>
 
-  <script src="../shared/sial-mobile-core.js?v=20260728"></script>
+  <script src="../shared/sial-mobile-core.js?v=20260826-2"></script>
   <script src="../shared/sial-mobile-flow.js?v=20260728"></script>
-  <script src="armar-pallet.js?v=20260729-4"></script>
+  <script src="armar-pallet.js?v=20260826-1"></script>
 </body>
 </html>

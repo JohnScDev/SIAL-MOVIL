@@ -2105,6 +2105,176 @@ html[data-theme="dark"] .sial-auth-logo {
   outline-offset: 2px;
 }
 
+/* Variante temporal inline: comparte anatomía con fecha/hora, sin calendario. */
+.sial-time-control {
+  position: relative;
+  width: 100%;
+}
+
+.sial-time-input-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sial-time-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sial-time-trigger-copy {
+  min-width: 0;
+  display: grid;
+}
+
+.sial-time-trigger-copy strong {
+  overflow: hidden;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sial-time-chevron {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: var(--sial-text-2);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.sial-time-control:focus-within .sial-time-trigger,
+.sial-time-control.is-open .sial-time-trigger {
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sial-focus) 16%, transparent);
+}
+
+.sial-time-trigger:focus-visible,
+.sial-time-popover select:focus-visible,
+.sial-time-popover button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sial-focus) 26%, transparent);
+  outline-offset: 2px;
+}
+
+.sial-time-popover {
+  position: absolute;
+  z-index: 24;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-surface);
+  background: var(--sial-surface-raised);
+  box-shadow: var(--sial-shadow-overlay);
+}
+
+.sial-time-popover[hidden] {
+  display: none;
+}
+
+.sial-time-popover-head,
+.sial-time-popover-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sial-time-popover-head span {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sial-time-popover-head strong {
+  color: var(--sial-text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sial-time-popover-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sial-time-popover-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.sial-time-popover-grid label > span {
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.sial-time-popover-grid select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--sial-border);
+  border-radius: 10px;
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sial-time-popover-actions > span {
+  flex: 1;
+}
+
+.sial-time-popover-actions .sial-picker-action {
+  min-width: 0;
+  min-height: 36px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 10px;
+  background: var(--sial-surface);
+  color: var(--sial-primary-600);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sial-time-popover-actions .sial-picker-action.is-primary {
+  border-color: var(--sial-primary-500);
+  background: var(--sial-primary-500);
+  color: var(--sial-on-primary);
+}
+
 .sial-time-picker {
   display: grid;
   gap: 12px;
@@ -6032,8 +6202,271 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
   font-size: 13px;
 }
 
+/* Confirmación final de captura: contexto breve y un único CTA a ancho completo. */
+.sial-confirmation-card {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-large);
+  background: var(--sial-surface);
+  box-shadow: var(--sial-shadow-soft);
+}
+
+.sial-confirmation-copy {
+  margin: 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sial-confirmation-card .sial-inline-error { margin: 0; }
+
 @media (max-width: 420px) {
   .sial-operation-ticket,
   .sial-submit-summary { align-items: stretch; flex-direction: column; }
   .sial-submit-summary > .sial-btn { width: 100%; }
+}
+
+/* Inspección operativa: contexto, evidencia y cierre de HU557. */
+.sial-inspection-page {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-inspection-page > .sial-status { margin: 0; }
+
+.sial-inspection-context-card,
+.sial-inspection-operation-summary,
+.sial-inspection-form,
+.sial-inspection-confirmation-card { margin: 0; }
+
+.sial-inspection-context-card {
+  display: grid;
+  gap: 5px;
+}
+
+.sial-inspection-eyebrow {
+  margin: 0;
+  color: var(--sial-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.sial-inspection-container-value {
+  color: var(--sial-text);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.sial-inspection-sync,
+.sial-inspection-helper {
+  margin: 0 0 8px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+}
+
+.sial-inspection-operation-summary {
+  display: grid;
+  gap: 10px;
+}
+
+.sial-inspection-operation-summary .sial-section-title { margin: 0; }
+
+.sial-inspection-operation-list {
+  display: grid;
+  margin: 0;
+}
+
+.sial-inspection-operation-list > div {
+  display: grid;
+  grid-template-columns: minmax(104px, .72fr) minmax(0, 1.28fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 40px;
+  border-bottom: 1px solid var(--sial-border-subtle);
+}
+
+.sial-inspection-operation-list > div:last-child { border-bottom: 0; }
+
+.sial-inspection-operation-list dt,
+.sial-inspection-operation-list dd { margin: 0; }
+
+.sial-inspection-operation-list dt {
+  color: var(--sial-text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.sial-inspection-operation-list dd {
+  overflow-wrap: anywhere;
+  color: var(--sial-text-2);
+  font-size: 13px;
+  text-align: right;
+}
+
+.sial-inspection-form { display: grid; gap: 18px; }
+
+.sial-inspection-section { display: grid; gap: 14px; }
+
+.sial-inspection-section + .sial-inspection-section {
+  padding-top: 18px;
+  border-top: 1px solid var(--sial-border-subtle);
+}
+
+.sial-inspection-section-heading {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.sial-inspection-section-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--sial-primary-500) 35%, var(--sial-border));
+  border-radius: 10px;
+  background: var(--sial-primary-50);
+  color: var(--sial-primary-600);
+}
+
+.sial-inspection-section-icon .sial-icon { width: 18px; height: 18px; }
+
+.sial-inspection-section-heading > div { min-width: 0; }
+
+.sial-inspection-section-heading .sial-section-title { margin: 0; }
+
+.sial-inspection-section-heading p {
+  margin: 3px 0 0;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sial-inspection-confirmation-card { display: grid; gap: 12px; }
+
+.sial-inspection-confirmation-card .sial-confirmation-copy { margin: 0; }
+
+/* Select contextual reutilizable: trigger visible, select nativo como contrato y menú acoplado. */
+.sial-select-control {
+  position: relative;
+  min-width: 0;
+  height: 48px;
+}
+
+.sial-select-control.is-open { z-index: 20; }
+
+.sial-select-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sial-select-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--sial-border);
+  border-radius: var(--sial-radius-control);
+  background: var(--sial-field-bg);
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+  box-shadow: none;
+  transition: border-color var(--sial-motion-fast) var(--sial-motion-ease), box-shadow var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-select-trigger:hover,
+.sial-select-control.is-open .sial-select-trigger { border-color: var(--sial-border); }
+
+.sial-select-control.is-open .sial-select-trigger {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.sial-select-trigger:focus-visible {
+  outline: 0;
+  border-color: var(--sial-focus);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sial-focus) 15%, transparent);
+}
+
+.sial-select-chevron {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--sial-text-2);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: transform var(--sial-motion-fast) var(--sial-motion-ease);
+}
+
+.sial-select-control.is-open .sial-select-chevron { transform: rotate(180deg); }
+
+.sial-select-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% - 1px);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 4px;
+  max-height: 220px;
+  overflow: auto;
+  padding: 4px 6px 6px;
+  border: 1px solid var(--sial-border);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: var(--sial-surface-overlay);
+  box-shadow: var(--sial-shadow-overlay);
+}
+
+.sial-select-menu[hidden] { display: none; }
+
+.sial-select-option {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--sial-text);
+  font: inherit;
+  text-align: left;
+}
+
+.sial-select-option:hover,
+.sial-select-option[aria-selected="true"] {
+  background: var(--sial-primary-50);
+  color: var(--sial-primary-700);
+  font-weight: 600;
+}
+
+.sial-select-option[aria-selected="true"]::after {
+  content: "✓";
+  color: var(--sial-primary-500);
+  font-weight: 700;
+}
+
+@media (max-width: 360px) {
+  .sial-inspection-operation-list > div { grid-template-columns: 1fr; gap: 2px; padding: 8px 0; }
+  .sial-inspection-operation-list dd { text-align: left; }
 }

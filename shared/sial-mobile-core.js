@@ -3047,16 +3047,195 @@
     return state;
   }
 
+  function mountSelectControls(scope = document) {
+    scope.querySelectorAll("[data-sial-select]").forEach(function(control) {
+      if (control.dataset.sialSelectInitialized === "true") return;
+      const nativeSelect = control.querySelector(".sial-select-native");
+      const trigger = control.querySelector(".sial-select-trigger");
+      const valueNode = control.querySelector("[data-sial-select-value]");
+      const menu = control.querySelector(".sial-select-menu");
+      if (!nativeSelect || !trigger || !valueNode || !menu) return;
+
+      control.dataset.sialSelectInitialized = "true";
+      const selectedIndex = function() { return Math.max(0, nativeSelect.selectedIndex); };
+      const render = function() {
+        menu.replaceChildren();
+        Array.from(nativeSelect.options).forEach(function(option, index) {
+          const item = document.createElement("button");
+          item.className = "sial-select-option";
+          item.type = "button";
+          item.role = "option";
+          item.dataset.value = option.value;
+          item.disabled = option.disabled;
+          item.setAttribute("aria-selected", String(index === selectedIndex()));
+          item.textContent = option.textContent;
+          menu.appendChild(item);
+        });
+        valueNode.textContent = nativeSelect.options[selectedIndex()]?.textContent || "Seleccionar";
+      };
+      const setOpen = function(open) {
+        control.classList.toggle("is-open", open);
+        menu.hidden = !open;
+        trigger.setAttribute("aria-expanded", String(open));
+        if (open) menu.querySelector('[aria-selected="true"]')?.focus();
+      };
+      const choose = function(item) {
+        if (item.disabled) return;
+        nativeSelect.value = item.dataset.value || "";
+        nativeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        render();
+        setOpen(false);
+        trigger.focus();
+      };
+
+      if (!trigger.getAttribute("aria-label")) trigger.setAttribute("aria-label", "Seleccionar opción");
+      trigger.addEventListener("click", function() { setOpen(menu.hidden); });
+      trigger.addEventListener("keydown", function(event) {
+        if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setOpen(true);
+        }
+      });
+      menu.addEventListener("click", function(event) {
+        const item = event.target.closest("[data-value]");
+        if (item) choose(item);
+      });
+      menu.addEventListener("keydown", function(event) {
+        const options = Array.from(menu.querySelectorAll("[data-value]:not(:disabled)"));
+        const current = options.indexOf(document.activeElement);
+        if (event.key === "Escape") { setOpen(false); trigger.focus(); return; }
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          const next = event.key === "ArrowDown" ? current + 1 : current - 1;
+          options[(next + options.length) % options.length]?.focus();
+        }
+        if ((event.key === "Enter" || event.key === " ") && document.activeElement?.dataset?.value !== undefined) {
+          event.preventDefault();
+          choose(document.activeElement);
+        }
+      });
+      nativeSelect.addEventListener("change", render);
+      document.addEventListener("click", function(event) { if (!control.contains(event.target)) setOpen(false); });
+      render();
+    });
+  }
+
+  function formatTimeForTrigger(value) {
+    const normalized = normalizeTimeValue(value);
+    if (!normalized) return "Seleccionar hora";
+    const parts = normalized.split(":");
+    const hour = Number(parts[0]);
+    const minute = parts[1];
+    const meridiem = hour >= 12 ? "p. m." : "a. m.";
+    return String(hour % 12 || 12).padStart(2, "0") + ":" + minute + " " + meridiem;
+  }
+
+  function mountInlineTimePickers(scope = document) {
+    const controls = [];
+    if (scope instanceof Element && scope.matches("[data-sial-time-picker]")) controls.push(scope);
+    if (scope && typeof scope.querySelectorAll === "function") controls.push(...scope.querySelectorAll("[data-sial-time-picker]"));
+    controls.forEach((control) => {
+      if (control.dataset.sialTimePickerInitialized === "true") return;
+      const input = control.querySelector(".sial-time-input-native");
+      const trigger = control.querySelector(".sial-time-trigger");
+      const valueNode = control.querySelector("[data-sial-time-value]");
+      const popover = control.querySelector(".sial-time-popover");
+      if (!input || !trigger || !valueNode || !popover) return;
+      control.dataset.sialTimePickerInitialized = "true";
+      let selected = normalizeTimeValue(input.value) || currentTimeValue();
+      const title = control.dataset.timePickerLabel || input.labels?.[0]?.textContent?.trim() || "Seleccionar hora";
+
+      const syncTrigger = () => {
+        valueNode.textContent = formatTimeForTrigger(input.value);
+      };
+      const setOpen = (open) => {
+        popover.hidden = !open;
+        trigger.setAttribute("aria-expanded", String(open));
+        control.classList.toggle("is-open", open);
+        if (open) render();
+      };
+      const updateSelected = () => {
+        const hour12 = Number(popover.querySelector("[data-time-only='hour']").value) % 12;
+        const minute = popover.querySelector("[data-time-only='minute']").value;
+        const meridiem = popover.querySelector("[data-time-only='meridiem']").value;
+        selected = String(hour12 + (meridiem === "PM" ? 12 : 0)).padStart(2, "0") + ":" + minute;
+      };
+      const render = () => {
+        const parts = selected.split(":");
+        const hour24 = Number(parts[0]);
+        const minute = Number(parts[1]);
+        const hour12 = hour24 % 12 || 12;
+        const minuteValues = Array.from({ length: 12 }, (_, index) => index * 5);
+        if (!minuteValues.includes(minute)) minuteValues.push(minute);
+        minuteValues.sort((left, right) => left - right);
+        const hours = Array.from({ length: 12 }, (_, index) => index + 1).map((hour) => '<option value="' + hour + '"' + (hour === hour12 ? " selected" : "") + ">" + String(hour).padStart(2, "0") + "</option>").join("");
+        const minutes = minuteValues.map((item) => '<option value="' + String(item).padStart(2, "0") + '"' + (item === minute ? " selected" : "") + ">" + String(item).padStart(2, "0") + "</option>").join("");
+        const meridiem = hour24 >= 12 ? "PM" : "AM";
+        popover.innerHTML = [
+          '<div class="sial-time-popover-head"><span>Hora seleccionada</span><strong>' + formatTimeForTrigger(selected) + "</strong></div>",
+          '<div class="sial-time-popover-grid">',
+          '<label><span>Hora</span><select data-time-only="hour" aria-label="Hora">' + hours + "</select></label>",
+          '<label><span>Minutos</span><select data-time-only="minute" aria-label="Minutos">' + minutes + "</select></label>",
+          '<label><span>Meridiano</span><select data-time-only="meridiem" aria-label="Meridiano"><option value="AM"' + (meridiem === "AM" ? " selected" : "") + '>a. m.</option><option value="PM"' + (meridiem === "PM" ? " selected" : "") + '>p. m.</option></select></label>',
+          "</div>",
+          '<div class="sial-time-popover-actions"><button class="sial-picker-action" type="button" data-time-only-action="clear">Borrar</button><span></span><button class="sial-picker-action" type="button" data-time-only-action="now">Ahora</button><button class="sial-picker-action is-primary" type="button" data-time-only-action="apply">Aplicar</button></div>'
+        ].join("");
+        popover.querySelectorAll("[data-time-only]").forEach((select) => select.addEventListener("change", () => {
+          updateSelected();
+          render();
+        }));
+        popover.querySelector("[data-time-only-action='clear']").addEventListener("click", () => {
+          setTimePickerValue(input, "");
+          setOpen(false);
+          trigger.focus();
+        });
+        popover.querySelector("[data-time-only-action='now']").addEventListener("click", () => {
+          selected = currentTimeValue();
+          render();
+        });
+        popover.querySelector("[data-time-only-action='apply']").addEventListener("click", () => {
+          setTimePickerValue(input, selected);
+          setOpen(false);
+          trigger.focus();
+        });
+      };
+
+      popover.addEventListener("click", (event) => event.stopPropagation());
+      trigger.setAttribute("aria-label", title);
+      trigger.addEventListener("click", () => setOpen(popover.hidden));
+      trigger.addEventListener("keydown", (event) => {
+        if (!["Enter", " ", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        setOpen(true);
+      });
+      input.addEventListener("input", () => {
+        selected = normalizeTimeValue(input.value) || currentTimeValue();
+        syncTrigger();
+      });
+      input.addEventListener("change", syncTrigger);
+      document.addEventListener("click", (event) => { if (!control.contains(event.target)) setOpen(false); });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !popover.hidden) {
+          setOpen(false);
+          trigger.focus();
+        }
+      });
+      syncTrigger();
+    });
+  }
+
   setTheme(preferredTheme());
   hydrateContext();
   hydrateCompanyContext();
   refreshSelectionViews();
   ensureGlobalDrawer();
   ensureHeaderSessionAction();
+  mountInlineTimePickers();
   mountTimePickers();
   mountTabs();
   mountSegmentedControls();
   mountOtpGroups();
+  mountSelectControls();
   prepareDrawerState(document.querySelector(".sial-drawer"), document.querySelector(".sial-drawer-backdrop"));
 
   window.SialMobileUI = Object.assign(window.SialMobileUI || {}, {
@@ -3068,10 +3247,12 @@
     setTheme,
     motionApplications,
     openTimePicker,
+    mountInlineTimePickers,
     mountTimePickers,
     setTimePickerValue,
     mountTabs,
     mountSegmentedControls,
+    mountSelectControls,
     mountOtpGroups,
     mountSignaturePad,
     setEvidenceProgress,

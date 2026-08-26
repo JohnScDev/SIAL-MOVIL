@@ -1,1 +1,83 @@
-﻿<!doctype html><html lang="es" data-theme="light"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <link rel="manifest" href="../manifest.webmanifest">  <meta name="theme-color" content="#005CA8">  <title>SIAL Movil - Inspeccion interna finca</title>  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>  <link rel="stylesheet" href="../shared/sial-mobile-core.css"></head><body>  <main class="sial-page">    <header class="sial-page-header">      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>      <div class="sial-page-title"><h1>Inspeccion interna</h1><p>Evidencia y resultado antes del cargue</p></div>      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>    </header>    <section class="sial-page-body">      <div class="sial-status warning" data-requires="farmReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>      <form class="sial-card sial-card-pad sial-form" data-flow-form data-event="farmInternalInspection" data-detail="Inspeccion interna finca" data-next="sesion-responsabilidad.html" data-required-photos="finca-int-paredes,finca-int-piso,finca-int-techo" data-prevent-duplicate="true">        <div class="sial-evidence-grid">          <button class="sial-evidence-slot" type="button" data-add-photo="finca-int-paredes">Paredes</button>          <button class="sial-evidence-slot" type="button" data-add-photo="finca-int-piso">Piso</button>          <button class="sial-evidence-slot" type="button" data-add-photo="finca-int-techo">Techo</button>        </div>        <div class="sial-field"><label class="sial-label">Resultado</label><select class="sial-select" name="resultado" required><option>Aprobado</option><option>Rechazado</option></select></div>        <div class="sial-field"><label class="sial-label">Observaciones</label><textarea class="sial-textarea" name="observaciones" placeholder="Condiciones internas, olores, humedad o contaminantes"></textarea></div>        <p class="sial-inline-error" data-flow-error hidden></p>        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit">Guardar inspeccion</button>      </form>      <section class="sial-section"><h2 class="sial-section-title">Alertas</h2><div data-flow-alerts></div></section>    </section>  </main>  <script src="../shared/sial-mobile-core.js"></script>  <script src="../shared/sial-mobile-flow.js"></script></body></html>
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#005CA8">
+  <title>SIAL Móvil - Inspección interna finca</title>
+  <script>(function(){var s=localStorage.getItem("sial-mobile-theme");document.documentElement.dataset.theme=s||"light";})();</script>
+  <link rel="stylesheet" href="../shared/sial-mobile-core.css">
+</head>
+<body>
+  <main class="sial-page">
+    <header class="sial-page-header">
+      <a class="sial-btn sial-btn-icon" href="../app/home.html" aria-label="Volver"><svg class="sial-icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></a>
+      <span class="sial-app-isotype" aria-hidden="true"><img src="../assets/brand/isotipo-sial.svg" alt=""></span>
+      <div class="sial-page-title"><h1>Inspección interna finca</h1><p>Integridad estructural y mecanismos</p></div>
+      <button class="sial-btn sial-btn-icon" type="button" data-theme-toggle aria-label="Cambiar tema"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7Z"/></svg></button>
+    </header>
+
+    <section class="sial-page-body sial-inspection-page">
+      <div class="sial-status warning" data-requires="farmReception"><span><strong>Evento requerido</strong>Completa primero: <span data-missing-list></span>.</span></div>
+
+      <section class="sial-card sial-card-pad sial-inspection-context-card" data-inspection-context-summary>
+        <p class="sial-inspection-eyebrow">Contenedor seleccionado</p>
+        <strong class="sial-inspection-container-value" data-flow-container>—</strong>
+        <p class="sial-inspection-helper">Selecciona el contenedor listo para despacho</p>
+        <button class="sial-btn sial-btn-secondary sial-btn-full sial-container-change-action" type="button" data-change-inspection-container="farmInternalInspection">
+          <svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.8-3.8L3 10"/><path d="M3 4v6h6"/><path d="M4 13a8 8 0 0 0 14.8 3.8L21 14"/><path d="M21 20v-6h-6"/></svg><span>Seleccionar contenedor</span>
+        </button>
+      </section>
+
+      <section class="sial-card sial-card-pad sial-inspection-operation-summary" aria-labelledby="farmInternalOperationTitle">
+        <h2 class="sial-section-title" id="farmInternalOperationTitle">Información de la operación</h2>
+        <dl class="sial-inspection-operation-list">
+          <div><dt>Operación</dt><dd data-flow-operation>Pendiente</dd></div>
+          <div><dt>Semana</dt><dd data-flow-inspection-week>Pendiente</dd></div>
+          <div><dt>Cinta</dt><dd data-flow-inspection-tape>Pendiente</dd></div>
+          <div><dt>Tipo de contenedor</dt><dd data-flow-inspection-container-type>Pendiente</dd></div>
+          <div><dt>Estado</dt><dd data-flow-container-status>Disponible</dd></div>
+        </dl>
+      </section>
+
+      <form class="sial-card sial-card-pad sial-form sial-inspection-form" id="inspection-internal-farm-form" data-flow-form data-flow-mode="prototype" data-event="farmInternalInspection" data-detail="Inspección interna finca" data-next="sesion-responsabilidad.html" data-prevent-duplicate="true">
+        <section class="sial-inspection-section sial-evidence-section" data-evidence-event="farmInternalInspection" aria-labelledby="farmInternalEvidenceTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="m9 7 1.5-2h3L15 7"/><circle cx="12" cy="13" r="3"/></svg></span>
+            <div><h2 class="sial-section-title" id="farmInternalEvidenceTitle">Evidencia fotográfica interna</h2></div>
+          </div>
+          <button class="sial-evidence-trigger" type="button" data-capture-evidence="farmInternalInspection"><svg class="sial-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>Completar evidencias (<span data-evidence-count="farmInternalInspection">0</span>/16)</span></button>
+          <div class="sial-evidence-gallery" data-evidence-gallery="farmInternalInspection" role="region" aria-label="Galería de evidencia interna"></div>
+        </section>
+
+        <section class="sial-inspection-section" aria-labelledby="farmInternalResultTitle">
+          <div class="sial-inspection-section-heading">
+            <span class="sial-inspection-section-icon" aria-hidden="true"><svg class="sial-icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="1"/><path d="m8 9 2 2 4-4"/><path d="M8 15h8"/></svg></span>
+            <div><h2 class="sial-section-title" id="farmInternalResultTitle">Resultado de la inspección</h2></div>
+          </div>
+          <div class="sial-field">
+            <label class="sial-label" for="inspectionFarmInternalResult">Resultado *</label>
+            <div class="sial-select-control" data-sial-select>
+              <select class="sial-select-native" id="inspectionFarmInternalResult" name="resultado" required tabindex="-1" aria-hidden="true" inert>
+                <option value="">Selecciona un resultado</option><option value="APTO">APTO</option><option value="APTO_CON_NOVEDAD">APTO con novedad</option><option value="NO_APTO">NO APTO</option>
+              </select>
+              <button class="sial-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="inspection-farm-internal-result-options" aria-label="Resultado de la inspección"><span data-sial-select-value>Selecciona un resultado</span><svg class="sial-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+              <div class="sial-select-menu" id="inspection-farm-internal-result-options" role="listbox" tabindex="-1" hidden></div>
+            </div>
+          </div>
+          <div class="sial-field"><label class="sial-label" for="inspectionFarmInternalNotes">Observaciones generales</label><textarea class="sial-textarea" id="inspectionFarmInternalNotes" name="observaciones" placeholder="Resumen de hallazgos de la inspección interna"></textarea></div>
+        </section>
+        <p class="sial-inline-error" data-flow-error hidden></p>
+      </form>
+
+      <section class="sial-card sial-card-pad sial-confirmation-card sial-inspection-confirmation-card" aria-label="Confirmación de inspección">
+        <p class="sial-confirmation-copy">Confirma que la evidencia, el resultado y las observaciones corresponden a la inspección interna.</p>
+        <button class="sial-btn sial-btn-primary sial-btn-full" type="submit" form="inspection-internal-farm-form">Finalizar inspección interna</button>
+      </section>
+    </section>
+  </main>
+  <script src="../shared/sial-mobile-core.js"></script>
+  <script src="../shared/sial-mobile-flow.js"></script>
+</body>
+</html>
