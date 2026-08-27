@@ -6358,12 +6358,112 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
   font-size: 13px;
 }
 
+.sial-inspection-label-capture {
+  display: grid;
+  gap: 14px;
+}
+
+.sial-inspection-label-type {
+  width: 100%;
+}
+
+.sial-inspection-label-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sial-inspection-label-summary > div {
+  display: grid;
+  gap: 3px;
+  min-height: 70px;
+  align-content: center;
+  padding: 10px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 12px;
+  background: var(--sial-surface-raised);
+}
+
+.sial-inspection-label-summary span {
+  color: var(--sial-text-2);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.sial-inspection-label-summary strong {
+  color: var(--sial-text);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.sial-inspection-label-list {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: 14px;
+  background: var(--sial-surface-raised);
+}
+
+.sial-inspection-label-empty {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  color: var(--sial-text-2);
+  font-size: 12px;
+  text-align: center;
+}
+
+.sial-inspection-label-empty strong { color: var(--sial-text); }
+
+.sial-inspection-label-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 64px;
+  padding: 10px 12px;
+}
+
+.sial-inspection-label-item + .sial-inspection-label-item {
+  border-top: 1px solid var(--sial-border-subtle);
+}
+
+.sial-inspection-label-item > div:first-child {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.sial-inspection-label-item strong {
+  overflow-wrap: anywhere;
+  color: var(--sial-text);
+  font-size: 13px;
+}
+
+.sial-inspection-label-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.sial-inspection-label-item.is-damaged { background: var(--sial-error-bg); }
+
 @media (max-width: 390px) {
   .sial-inspection-staged-form .sial-checkpoint-header.sial-checkpoint-compact-row {
     grid-template-columns: 1fr;
     gap: 8px;
     padding-block: 12px;
   }
+
+  .sial-inspection-label-summary { grid-template-columns: 1fr; }
+
+  .sial-inspection-label-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sial-inspection-label-actions { justify-content: flex-start; }
 }
 
 .sial-inspection-section-heading {

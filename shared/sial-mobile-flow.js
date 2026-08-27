@@ -1732,8 +1732,12 @@
     if (previousId && previousId !== item.id) {
       if (state.evidence && state.evidence[eventName]) state.evidence[eventName] = [];
       if (state.controlPoints && state.controlPoints[eventName]) state.controlPoints[eventName] = [];
+      if (state.inspectionLabels && state.inspectionLabels[eventName]) state.inspectionLabels[eventName] = [];
       if (window._sialPrototypeEvidence && window._sialPrototypeEvidence[eventName]) {
         window._sialPrototypeEvidence[eventName] = [];
+      }
+      if (window._sialPrototypeInspectionLabels && window._sialPrototypeInspectionLabels[eventName]) {
+        window._sialPrototypeInspectionLabels[eventName] = [];
       }
     }
   }
@@ -2146,56 +2150,107 @@
     });
   }
 
-  function parseInspectionLabelNumber(value) {
-    var normalized = String(value || "").trim().toUpperCase().replace(/\s+/g, "");
-    var match = normalized.match(/^(.+?)(\d+)$/);
-    if (!match) return null;
-    var sequence = Number(match[2]);
-    if (!Number.isSafeInteger(sequence)) return null;
-    return { prefix: match[1], sequence: sequence };
+  function normalizeInspectionLabel(value) {
+    return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
   }
 
-  function updateLabelRegister(register) {
-    var start = register.querySelector("[data-label-range-start]");
-    var end = register.querySelector("[data-label-range-end]");
-    var total = register.querySelector("[data-label-total]");
-    var error = register.querySelector("[data-label-range-error]");
-    if (!start || !end || !total) return;
-
-    function clearError() {
-      if (!error) return;
-      error.textContent = "";
-      error.classList.remove("error");
-      error.hidden = true;
-    }
-
-    function showError(message) {
-      if (!error) return;
-      error.textContent = message;
-      error.classList.add("error");
-      error.hidden = false;
-    }
-
-    if (!start.value.trim() || !end.value.trim()) {
-      total.value = "";
-      clearError();
-      return;
-    }
-
-    var from = parseInspectionLabelNumber(start.value);
-    var to = parseInspectionLabelNumber(end.value);
-    if (!from || !to || from.prefix !== to.prefix || to.sequence < from.sequence) {
-      total.value = "";
-      showError("Usa un rango consecutivo con el mismo prefijo.");
-      return;
-    }
-
-    total.value = String(to.sequence - from.sequence + 1);
-    clearError();
+  function inspectionLabelEventName(capture) {
+    return capture.closest("[data-flow-form]")?.dataset.event || "portExternalInspection";
   }
 
-  function hydrateLabelRegisters() {
-    document.querySelectorAll("[data-label-register]").forEach(updateLabelRegister);
+  function readInspectionLabels(eventName) {
+    if (isPrototypeReviewPage()) {
+      window._sialPrototypeInspectionLabels = window._sialPrototypeInspectionLabels || {};
+      return window._sialPrototypeInspectionLabels[eventName] || [];
+    }
+    var state = readState();
+    return (state.inspectionLabels || {})[eventName] || [];
+  }
+
+  function writeInspectionLabels(eventName, labels) {
+    if (isPrototypeReviewPage()) {
+      window._sialPrototypeInspectionLabels = window._sialPrototypeInspectionLabels || {};
+      window._sialPrototypeInspectionLabels[eventName] = labels;
+      return;
+    }
+    var state = readState();
+    state.inspectionLabels = state.inspectionLabels || {};
+    state.inspectionLabels[eventName] = labels;
+    writeState(state);
+  }
+
+  function selectedInspectionLabelType(capture) {
+    return capture.querySelector("[data-inspection-label-type] .sial-segment-option[aria-pressed='true']")?.dataset.value || "INTERNA";
+  }
+
+  function renderInspectionLabels() {
+    document.querySelectorAll("[data-inspection-label-capture]").forEach(function(capture) {
+      var eventName = inspectionLabelEventName(capture);
+      var labels = readInspectionLabels(eventName);
+      var list = capture.querySelector("[data-inspection-label-list]");
+      var hiddenFields = capture.querySelector("[data-inspection-label-hidden-fields]");
+      var internalCount = labels.filter(function(item) { return item.type === "INTERNA"; }).length;
+      var externalCount = labels.filter(function(item) { return item.type === "EXTERNA"; }).length;
+      var damagedCount = labels.filter(function(item) { return item.damaged; }).length;
+      capture.querySelectorAll("[data-inspection-label-count]").forEach(function(node) {
+        node.textContent = String(node.dataset.inspectionLabelCount === "INTERNA" ? internalCount : externalCount);
+      });
+      var damagedNode = capture.querySelector("[data-inspection-label-damaged-count]");
+      if (damagedNode) damagedNode.textContent = String(damagedCount);
+      if (hiddenFields) {
+        hiddenFields.replaceChildren();
+        labels.forEach(function(item) {
+          var field = document.createElement("input");
+          field.type = "hidden";
+          field.name = "etiquetas_inspeccion[]";
+          field.value = JSON.stringify({ codigo: item.code, tipo: item.type, danada: Boolean(item.damaged) });
+          hiddenFields.appendChild(field);
+        });
+      }
+      if (!list) return;
+      if (!labels.length) {
+        list.innerHTML = '<div class="sial-inspection-label-empty"><strong>Sin etiquetas registradas</strong><span>Escanea la primera etiqueta para iniciar el registro.</span></div>';
+        return;
+      }
+      list.innerHTML = labels.map(function(item, index) {
+        var type = item.type === "EXTERNA" ? "Externa" : "Interna";
+        var damageLabel = item.damaged ? "Marcada dañada" : "Marcar dañada";
+        return '<article class="sial-inspection-label-item' + (item.damaged ? ' is-damaged' : '') + '" data-inspection-label-item>' +
+          '<div><span class="sial-pill info">' + type + '</span><strong>' + escapeHtml(item.code) + '</strong></div>' +
+          '<div class="sial-inspection-label-actions"><button class="sial-chip-action' + (item.damaged ? ' danger' : '') + '" type="button" data-inspection-label-damage="' + index + '">' + damageLabel + '</button><button class="sial-chip-action" type="button" data-inspection-label-remove="' + index + '">Quitar</button></div>' +
+          '</article>';
+      }).join("");
+    });
+  }
+
+  function scanInspectionLabel(capture) {
+    if (!window.SialMobileUI || typeof window.SialMobileUI.openBarcodeScanner !== "function") {
+      showToast({ type: "error", title: "Escáner no disponible", message: "No fue posible abrir el lector de etiquetas." });
+      return;
+    }
+    var eventName = inspectionLabelEventName(capture);
+    var labelType = selectedInspectionLabelType(capture);
+    window.SialMobileUI.openBarcodeScanner({
+      title: "Escanear etiqueta " + (labelType === "EXTERNA" ? "externa" : "interna"),
+      eyebrow: "Inspección externa ZE",
+      manualLabel: "Registrar etiqueta",
+      normalize: normalizeInspectionLabel,
+      validate: function(value) {
+        var code = normalizeInspectionLabel(value);
+        if (code.length < 2 || !/^[A-Z0-9-]+$/.test(code)) return { ok: false, message: "Ingresa un código de etiqueta válido." };
+        if (readInspectionLabels(eventName).some(function(item) { return item.code === code; })) return { ok: false, message: "Esta etiqueta ya fue registrada." };
+        return { ok: true, message: "Etiqueta lista para registrar." };
+      },
+      onDetected: function(value) {
+        var code = normalizeInspectionLabel(value);
+        var labels = readInspectionLabels(eventName).slice();
+        labels.push({ code: code, type: labelType, damaged: false });
+        writeInspectionLabels(eventName, labels);
+        renderInspectionLabels();
+        markUnsaved("inspection-label");
+        showToast({ type: "success", title: "Etiqueta registrada", message: code + " se agregó como " + (labelType === "EXTERNA" ? "externa" : "interna") + "." });
+      }
+    });
   }
 
   function boot() {
@@ -2209,7 +2264,7 @@
     hydrateLists(state);
     hydrateAlerts(state);
     hydrateControlPoints(state);
-    hydrateLabelRegisters();
+    renderInspectionLabels();
     hydrateSignatures(state);
     hydrateEvidence(state);
     hydratePhotoSlots(state);
@@ -2222,16 +2277,45 @@
       filterInspectionContainerOptions(inspectionContainerSearch);
     });
 
-    document.addEventListener("input", (event) => {
-      const labelRangeInput = event.target.closest("[data-label-range-start], [data-label-range-end]");
-      if (!labelRangeInput) return;
-      const register = labelRangeInput.closest("[data-label-register]");
-      if (register) updateLabelRegister(register);
-    });
-
     document.addEventListener("change", (event) => {
       const pointSelect = event.target.closest("select[data-cp-select]");
       if (pointSelect) persistControlPointSelect(pointSelect);
+    });
+
+    document.addEventListener("click", (event) => {
+      const scanButton = event.target.closest("[data-inspection-label-scan]");
+      if (scanButton) {
+        const capture = scanButton.closest("[data-inspection-label-capture]");
+        if (capture) scanInspectionLabel(capture);
+        return;
+      }
+      const damageButton = event.target.closest("[data-inspection-label-damage]");
+      if (damageButton) {
+        const capture = damageButton.closest("[data-inspection-label-capture]");
+        if (!capture) return;
+        const eventName = inspectionLabelEventName(capture);
+        const labels = readInspectionLabels(eventName).slice();
+        const index = Number(damageButton.dataset.inspectionLabelDamage);
+        if (!labels[index]) return;
+        labels[index].damaged = !labels[index].damaged;
+        writeInspectionLabels(eventName, labels);
+        renderInspectionLabels();
+        markUnsaved("inspection-label");
+        return;
+      }
+      const removeButton = event.target.closest("[data-inspection-label-remove]");
+      if (removeButton) {
+        const capture = removeButton.closest("[data-inspection-label-capture]");
+        if (!capture) return;
+        const eventName = inspectionLabelEventName(capture);
+        const labels = readInspectionLabels(eventName).slice();
+        const index = Number(removeButton.dataset.inspectionLabelRemove);
+        if (index < 0 || index >= labels.length) return;
+        labels.splice(index, 1);
+        writeInspectionLabels(eventName, labels);
+        renderInspectionLabels();
+        markUnsaved("inspection-label");
+      }
     });
 
     document.addEventListener("click", (event) => {
