@@ -6322,45 +6322,65 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
 .sial-inspection-staged-form .sial-checklist { gap: 0; }
 
 .sial-inspection-staged-form .sial-checkpoint {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 8px;
+  align-items: center;
   border: 0;
   border-radius: 0;
   background: transparent;
   overflow: visible;
+  padding: 10px 0;
 }
 
 .sial-inspection-staged-form .sial-checkpoint + .sial-checkpoint {
   border-top: 1px solid var(--sial-border-subtle);
 }
 
-.sial-inspection-staged-form .sial-checkpoint-header.sial-checkpoint-compact-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(144px, 172px);
-  align-items: center;
-  gap: 12px;
-  min-height: 66px;
-  padding: 10px 0;
-  background: transparent;
-  border: 0;
+.sial-inspection-staged-form .sial-checkpoint-header,
+.sial-inspection-staged-form .sial-checkpoint-body {
+  display: contents;
 }
 
-.sial-inspection-staged-form .sial-checkpoint-compact-row strong {
+.sial-inspection-staged-form .sial-checkpoint-header strong {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
   line-height: 1.3;
 }
 
-.sial-inspection-staged-form .sial-checkpoint-compact-row .sial-select-control,
-.sial-inspection-staged-form .sial-checkpoint-compact-row .sial-select-trigger {
-  min-height: 44px;
-  height: 44px;
+.sial-inspection-staged-form .sial-checkpoint-body [data-cp-value] {
+  display: none;
 }
 
-.sial-inspection-staged-form .sial-checkpoint-compact-row .sial-select-trigger {
-  padding-inline: 12px;
-  font-size: 13px;
+.sial-inspection-staged-form .sial-checkpoint-body .sial-cp-options {
+  grid-column: 2;
+  grid-row: 1;
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.sial-inspection-staged-form .sial-cp-option {
+  min-height: 36px;
+  padding-inline: 9px;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .sial-inspection-label-capture {
   display: grid;
   gap: 14px;
+}
+
+.sial-inspection-context-note {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--sial-border-subtle);
+  border-radius: var(--sial-radius-small);
+  background: var(--sial-surface-raised);
+  color: var(--sial-text-2);
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .sial-inspection-label-type {
@@ -6369,7 +6389,7 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
 
 .sial-inspection-label-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -6450,10 +6470,16 @@ html[data-theme="dark"] .sial-camera-overlay { color-scheme: dark; }
 .sial-inspection-label-item.is-damaged { background: var(--sial-error-bg); }
 
 @media (max-width: 390px) {
-  .sial-inspection-staged-form .sial-checkpoint-header.sial-checkpoint-compact-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding-block: 12px;
+  .sial-inspection-staged-form .sial-checkpoint {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 8px;
+  }
+
+  .sial-inspection-staged-form .sial-checkpoint-body .sial-cp-options { grid-column: 2; }
+
+  .sial-inspection-staged-form .sial-cp-option {
+    padding-inline: 7px;
+    font-size: 10px;
   }
 
   .sial-inspection-label-summary { grid-template-columns: 1fr; }

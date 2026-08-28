@@ -2180,7 +2180,9 @@
   }
 
   function selectedInspectionLabelType(capture) {
-    return capture.querySelector("[data-inspection-label-type] .sial-segment-option[aria-pressed='true']")?.dataset.value || "INTERNA";
+    return capture.dataset.inspectionLabelDefaultType
+      || capture.querySelector("[data-inspection-label-type] .sial-segment-option[aria-pressed='true']")?.dataset.value
+      || "INTERNA";
   }
 
   function renderInspectionLabels() {
@@ -2232,7 +2234,7 @@
     var labelType = selectedInspectionLabelType(capture);
     window.SialMobileUI.openBarcodeScanner({
       title: "Escanear etiqueta " + (labelType === "EXTERNA" ? "externa" : "interna"),
-      eyebrow: "Inspección externa ZE",
+      eyebrow: labels[eventName] || "Inspección",
       manualLabel: "Registrar etiqueta",
       normalize: normalizeInspectionLabel,
       validate: function(value) {
@@ -2255,7 +2257,6 @@
 
   function boot() {
     syncOperationalMenuLabels();
-    mountCompactInspectionPointSelects();
     const state = readState();
     ensureInspectionContextSummary(state);
     hydrateSummary(state);
